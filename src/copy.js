@@ -27,6 +27,7 @@ export const FRAGGATE_GITHUB = "https://github.com/AzielEliab/fraggate";
 /** Primary FragGate door is the Worker UI. GitHub remains the source repo. */
 export const FRAGGATE = FRAGGATE_WORKER;
 export const AZBROWSER_WORKER = "https://azbrowser-download-tracker.vibelock.workers.dev/";
+export const AZNET_WORKER = "https://aznet-download-tracker.vibelock.workers.dev/";
 export const X_URL = "https://x.com/azieleliab";
 
 export const DESCRIPTION =
@@ -164,6 +165,7 @@ export const CATALOG_ONLY = ["EmbryoLock"];
 export const EXTRA_SOFTWARE = [
   EMBRYOLOCK,
   { name: "AZBrowser", href: AZBROWSER_WORKER },
+  { name: "AZNet", href: AZNET_WORKER },
   { name: "aziel-runtime", href: RUNTIME_LOCAL },
   { name: "FragGate", href: FRAGGATE_WORKER },
 ];
