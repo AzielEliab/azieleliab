@@ -24,7 +24,7 @@ export const RUNTIME_PATH = "/runtime";
 export const RUNTIME_LOCAL = CANON_ORIGIN + RUNTIME_PATH;
 /** Soft-name strip on the landing. GET /software 301s here. */
 export const SOFTWARE_SECTION = CANON_ORIGIN + "/#software";
-/** Same-site stub card. FragGate does not expose embryolock yet. */
+/** Same-site honest stub. Live catalog may list embryolock as stub / local-not-hosted. */
 export const EMBRYOLOCK_PATH = "/embryolock";
 export const EMBRYOLOCK_HREF = CANON_ORIGIN + EMBRYOLOCK_PATH;
 export const FRAGGATE_WORKER = "https://fraggate-download-tracker.vibelock.workers.dev/";
@@ -47,7 +47,9 @@ export const DESCRIPTION =
  * as EXTRA_SOFTWARE: AZBrowser, AZNet, AZHub, AZInterface). Includes
  * peacelock and azmail. Door: worker_home when the tracker is ready,
  * else GitHub, else library hub. Display names are catalog `name`. Lumen is not listed.
- * EmbryoLock stays as a name-only local-not-hosted stub on this host.
+ * EmbryoLock stays as a name-only local-not-hosted stub on this host
+ * (`/embryolock`, or the live stub entry). Live catalog at request time
+ * is preferred over this static fallback.
  * AZHub and AZInterface are separate Plain doors — never one combined engine.
  */
 export const CATALOG_SLUGS = [
@@ -178,7 +180,7 @@ export const EMBRYOLOCK_COPY = {
   open: [
     "Name only. Local-not-hosted. Not a public Worker.",
     "There is no public download-tracker and no public GitHub repository.",
-    "FragGate does not expose this name as a stub yet. The work stays local.",
+    "The live catalog may list this as a stub. It is not a FragGate engine.",
     "This page is the door. It is not the Digital Library catalog.",
   ],
 };

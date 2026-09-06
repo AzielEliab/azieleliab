@@ -1,5 +1,12 @@
 /** azieleliab.com landing Worker. Author: Aziel Eliab. */
 import { APEX_HOST, CANON_ORIGIN, SOFTWARE_SECTION } from "./copy.js";
+import {
+  loadLiveSoftware,
+  loadUpdateCheck,
+  softwareIndexBody,
+  UPDATE_CHECK_PATH,
+  UPDATE_PATH,
+} from "./liveCatalog.js";
 import { embryoLockHtml, notFoundHtml, pageHtml } from "./page.js";
 import { handleRuntimeRoot, isRuntimeRequest } from "./runtimeRoot.js";
 import { aiTxt, citeDoc, CONTENT_SIGNAL, llmsTxt, robotsTxt, sitemapXml } from "./seo.js";
@@ -81,7 +88,8 @@ export async function handleRequest(request, env = {}, ctx) {
   }
 
   const path = routePath(url.pathname);
-  if (request.method === "OPTIONS" && (path === "/v1/view" || path === "/v1/stats")) {
+  const jsonGet = new Set(["/v1/view", "/v1/stats", "/v1/software", UPDATE_PATH, UPDATE_CHECK_PATH]);
+  if (request.method === "OPTIONS" && jsonGet.has(path)) {
     return new Response(null, { status: 204, headers: { ...SECURITY, ...CORS } });
   }
 
@@ -93,17 +101,30 @@ export async function handleRequest(request, env = {}, ctx) {
     });
   }
 
+  const needsLive =
+    path === "/" ||
+    path === "/llms.txt" ||
+    path === "/cite.json" ||
+    path === "/sitemap.xml" ||
+    path === "/v1/software";
+  const live = needsLive ? await loadLiveSoftware(env) : null;
+  const doors = live && live.software;
+
   let res;
-  if (path === "/") res = html(pageHtml(await pageViews(request, env)));
+  if (path === "/") res = html(pageHtml(await pageViews(request, env), doors));
   else if (path === "/software") res = Response.redirect(SOFTWARE_SECTION, 301);
   else if (path === "/embryolock") res = html(embryoLockHtml());
   else if (path === "/robots.txt") res = text(robotsTxt(), "text/plain", { cache: "public, max-age=3600" });
-  else if (path === "/llms.txt") res = text(llmsTxt(), "text/plain", { cache: "public, max-age=3600" });
+  else if (path === "/llms.txt") res = text(llmsTxt(doors), "text/plain", { cache: "public, max-age=3600" });
   else if (path === "/ai.txt") res = text(aiTxt(), "text/plain", { cache: "public, max-age=3600" });
   else if (path === "/cite.json") {
-    res = text(JSON.stringify(citeDoc(), null, 1) + "\n", "application/json", { cache: "public, max-age=3600" });
+    res = text(JSON.stringify(citeDoc(doors), null, 1) + "\n", "application/json", { cache: "public, max-age=3600" });
   } else if (path === "/sitemap.xml") {
-    res = text(sitemapXml(), "application/xml", { cache: "public, max-age=3600" });
+    res = text(sitemapXml(new Date(), doors), "application/xml", { cache: "public, max-age=3600" });
+  } else if (path === "/v1/software") {
+    res = json(softwareIndexBody(live));
+  } else if (path === UPDATE_PATH || path === UPDATE_CHECK_PATH) {
+    res = json(await loadUpdateCheck(env));
   } else if (path === "/v1/stats" || (path === "/v1/view" && request.method !== "POST")) {
     res = json(viewsBody(await readViews(env)));
   } else if (path === "/v1/view" && request.method === "POST") {
