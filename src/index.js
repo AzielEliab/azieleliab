@@ -1,5 +1,5 @@
 /** azieleliab.com landing Worker. Author: Aziel Eliab. */
-import { APEX_HOST, CANON_ORIGIN } from "./copy.js";
+import { APEX_HOST, CANON_ORIGIN, SOFTWARE_SECTION } from "./copy.js";
 import { notFoundHtml, pageHtml } from "./page.js";
 import { handleRuntimeRoot, isRuntimeRequest } from "./runtimeRoot.js";
 import { aiTxt, citeDoc, CONTENT_SIGNAL, llmsTxt, robotsTxt, sitemapXml } from "./seo.js";
@@ -95,6 +95,7 @@ export async function handleRequest(request, env = {}, ctx) {
 
   let res;
   if (path === "/") res = html(pageHtml(await pageViews(request, env)));
+  else if (path === "/software") res = Response.redirect(SOFTWARE_SECTION, 301);
   else if (path === "/robots.txt") res = text(robotsTxt(), "text/plain", { cache: "public, max-age=3600" });
   else if (path === "/llms.txt") res = text(llmsTxt(), "text/plain", { cache: "public, max-age=3600" });
   else if (path === "/ai.txt") res = text(aiTxt(), "text/plain", { cache: "public, max-age=3600" });

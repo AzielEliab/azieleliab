@@ -122,6 +122,8 @@ export const CONTENT_SIGNAL = "search=yes, ai-input=yes, ai-train=yes";
 
 const PUBLIC_ALLOW = [
   "/",
+  "/software",
+  "/software/",
   "/cite.json",
   "/llms.txt",
   "/ai.txt",
@@ -309,6 +311,7 @@ export function llmsTxt() {
     "## Machine routes",
     "",
     "- GET " + CANON_ORIGIN + "/",
+    "- GET " + CANON_ORIGIN + "/software  (301 to /#software)",
     "- GET " + CANON_ORIGIN + "/cite.json",
     "- GET " + CANON_ORIGIN + "/llms.txt",
     "- GET " + CANON_ORIGIN + "/ai.txt",
@@ -339,6 +342,8 @@ export function aiTxt() {
     "",
     "User-agent: *",
     "Allow: /",
+    "Allow: /software",
+    "Allow: /software/",
     "Allow: /cite.json",
     "Allow: /llms.txt",
     "Allow: /ai.txt",
