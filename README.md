@@ -30,6 +30,7 @@ Cloudflare Worker `azieleliab-com` serves the literary landing, crawl files, and
 | `POST /v1/view` | Increment pageviews |
 | `GET /v1/software` | Resolved Software doors (live catalog at request time) |
 | `GET /v1/update` · `/v1/update/check` | Quiet installer pointer at runtime `/v1/update/check` |
+| `GET /v1/mesh/status` · `/v1/mesh/nodes` | Suite node mesh (default off until runtime enables it) |
 
 JSON-LD: `Person` + `WebSite` + local Runtime `SoftwareApplication` / `WebAPI` + Software `ItemList`. Canonical is always `https://www.azieleliab.com/`.
 
@@ -47,6 +48,10 @@ Discovery:
 - MCP: `POST https://www.azieleliab.com/runtime/mcp`
 - Skill: https://www.azieleliab.com/runtime/v1/skill
 - Uses (this host): https://www.azieleliab.com/runtime/v1/uses
+- Mesh status: https://www.azieleliab.com/runtime/v1/mesh/status
+- Mesh nodes: https://www.azieleliab.com/runtime/v1/mesh/nodes
+
+Same JSON also lives at same-origin `/v1/mesh/status` and `/v1/mesh/nodes` (Software door). Both fetch `https://aziel-runtime.vibelock.workers.dev/v1/mesh/status` and `/v1/mesh/nodes` via service binding `AZIEL_RUNTIME` (HTTPS origin fallback). **Mesh is default off** until runtime enables it — a 404 or missing origin becomes `{ enabled: false, mesh: "off", nodes: [] }` with identity Aziel Eliab. VPN/hop mesh is not claimed. The landing footer shows a quiet `mesh off` / `mesh on` link; OpenAPI / cite / llms list the paths.
 
 Outbound proxy requests are stamped `X-Aziel-Runtime-Via: azieleliab.com` and `X-Aziel-Runtime-Host: www.azieleliab.com` so origin can attribute the hop if it has a uses store.
 
@@ -55,7 +60,7 @@ Outbound proxy requests are stamped `X-Aziel-Runtime-Via: azieleliab.com` and `X
 Host-local tracker so uses through `www.azieleliab.com/runtime` are logged here even before/alongside origin. **Reuses the existing `VIEWS` KV** with key prefix `runtime_uses|` (`total`, `by_path`, `recent`) — no new `RUNTIME_USES` namespace.
 
 - Tracked: `/runtime/v1/*` mutations, plus `fraggate` / `mcp` / `session` / `pull`.
-- Skipped: robots, sitemap, llms, ai, cite, static; `GET /runtime/v1/uses`; `GET` health/ready.
+- Skipped: robots, sitemap, llms, ai, cite, static; `GET /runtime/v1/uses`; `GET` health/ready; `GET` mesh status/nodes.
 - Ring log: last 80 events (`path`, `method`, `status`, `at`). No bodies or tokens.
 - `GET /runtime/v1/uses` is intercepted locally and returns `{ ok, host: "www.azieleliab.com", via: "azieleliab.com", uses, by_path, recent, author: "Aziel Eliab" }`. Origin `/v1/uses` is attached as `origin` when the service binding answers (best-effort).
 
@@ -142,6 +147,8 @@ Fallback snapshot (used only when live catalog is unreachable):
 EmbryoLock has no public repo or download-tracker. The name stays visible and points at the on-site stub (`/embryolock`), which states it is local-not-hosted and not a FragGate engine. A live stub entry is accepted; this site does not invent a Worker URL or send the name to the Digital Library catalog index.
 
 Quiet installer meta: `GET /v1/update/check` (alias `/v1/update`) points at runtime `GET /v1/update/check`. The landing also ships `<meta name="aziel-update-check">`.
+
+Quiet mesh meta: `GET /v1/mesh/status` and `GET /v1/mesh/nodes` (also `/runtime/v1/mesh/status` · `/runtime/v1/mesh/nodes`) point at runtime mesh authority. The landing ships `<meta name="aziel-mesh-status">` and a muted footer status. `/v1/software` includes a `mesh` snapshot.
 
 ## Doors
 

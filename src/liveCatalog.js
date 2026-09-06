@@ -132,7 +132,7 @@ async function cancelBody(res) {
   }
 }
 
-export async function fetchRuntimeJson(path, env) {
+export async function fetchRuntimeJson(path, env, opts) {
   const dest = new URL(path, RUNTIME + "/");
   const signal =
     typeof AbortSignal !== "undefined" && typeof AbortSignal.timeout === "function"
@@ -163,6 +163,7 @@ export async function fetchRuntimeJson(path, env) {
   try {
     const doc = await res.json();
     if (!doc || typeof doc !== "object") return null;
+    if (opts && opts.loose) return doc;
     if (doc.error && !firstArray(doc.products) && !firstArray(doc.entries) && !firstArray(doc.software)) {
       return null;
     }
@@ -190,7 +191,7 @@ export async function loadLiveSoftware(env) {
   return { software: SOFTWARE, source: "fallback", via: null };
 }
 
-export function softwareIndexBody(live) {
+export function softwareIndexBody(live, mesh) {
   const software = (live && live.software) || SOFTWARE;
   return {
     ok: true,
@@ -200,6 +201,7 @@ export function softwareIndexBody(live) {
     via: (live && live.via) || null,
     catalog: RUNTIME + SOFTWARE_CATALOG_PATH,
     catalog_fallback: RUNTIME + FRAGGATE_LIST_PATH,
+    mesh: mesh && typeof mesh === "object" ? mesh : undefined,
     software: software.map((item) => {
       const row = { name: item.name, url: item.href };
       if (item.slug) row.slug = item.slug;
