@@ -29,10 +29,9 @@ export const DESCRIPTION =
   "Aziel Eliab. You don’t get to know me. You get to understand the work. Public identity Aziel Eliab only.";
 
 /**
- * Documented aziel-runtime catalog slugs (1.6.4 PRODUCTS_RAW).
- * Includes peacelock. AZMail joins only after it is in this catalog.
- * Door: worker_home when the tracker is ready, else GitHub, else library hub.
- * Display names are catalog `name`. Lumen is not listed.
+ * Documented aziel-runtime catalog slugs (1.6.5 PRODUCTS_RAW).
+ * Includes peacelock and azmail. Door: worker_home when the tracker is ready,
+ * else GitHub, else library hub. Display names are catalog `name`. Lumen is not listed.
  * EmbryoLock stays as a catalog-only name on the library software hub.
  */
 export const CATALOG_SLUGS = [
@@ -42,6 +41,7 @@ export const CATALOG_SLUGS = [
   "azclce",
   "aziel-corpus",
   "azieltether",
+  "azmail",
   "azos",
   "chronolock",
   "codelock",
@@ -74,6 +74,7 @@ export const CATALOG_NAMES = {
   azclce: "AZ-CLCE",
   "aziel-corpus": "Aziel Digital Library",
   azieltether: "AzielTether",
+  azmail: "AZMail",
   azos: "AZ-OS",
   chronolock: "ChronoLock",
   codelock: "CodeLock",
@@ -99,8 +100,9 @@ export const CATALOG_NAMES = {
 };
 
 /** Not in the documented catalog yet. Do not invent a landing door. */
-export const CATALOG_LATER_SLUGS = ["azmail"];
+export const CATALOG_LATER_SLUGS = [];
 
+export const AZMAIL_WORKER = "https://azmail-download-tracker.vibelock.workers.dev/";
 export const PEACELOCK_WORKER = "https://peacelock-download-tracker.vibelock.workers.dev/";
 export const PEACELOCK_GITHUB = "https://github.com/AzielEliab/peacelock";
 
@@ -113,6 +115,7 @@ export function catalogGithub(slug) {
 
 export function catalogWorkerHome(slug) {
   if (slug === "aziel-corpus") return LIBRARY + "/";
+  if (slug === "azmail") return AZMAIL_WORKER;
   if (slug === "peacelock") return PEACELOCK_WORKER;
   return "https://" + slug + "-download-tracker.vibelock.workers.dev/";
 }

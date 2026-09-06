@@ -19,6 +19,7 @@ import {
   LIBRARY,
   LIBRARY_AZIEL,
   LIBRARY_SOFTWARE,
+  AZMAIL_WORKER,
   PEACELOCK_WORKER,
   PROSE,
   RUNTIME_LOCAL,
@@ -96,8 +97,8 @@ describe("landing copy", () => {
 describe("software doors", () => {
   it("hyperlinks every SOFTWARE name to a verified URL", () => {
     const html = pageHtml();
-    assert.equal(CATALOG_SOFTWARE.length, 28);
-    assert.equal(SOFTWARE.length, 31);
+    assert.equal(CATALOG_SOFTWARE.length, 29);
+    assert.equal(SOFTWARE.length, 32);
     for (const item of SOFTWARE) {
       const needle = 'href="' + item.href + '"';
       assert.ok(html.includes(needle), "missing href for " + item.name);
@@ -106,9 +107,11 @@ describe("software doors", () => {
     assert.ok(html.includes("Run them without me."));
   });
 
-  it("syncs CATALOG_SOFTWARE from documented catalog slugs including peacelock", () => {
+  it("syncs CATALOG_SOFTWARE from documented catalog slugs including peacelock and azmail", () => {
     assert.ok(CATALOG_SLUGS.includes("peacelock"));
+    assert.ok(CATALOG_SLUGS.includes("azmail"));
     assert.equal(CATALOG_NAMES.peacelock, "PeaceLock");
+    assert.equal(CATALOG_NAMES.azmail, "AZMail");
     assert.deepEqual(
       CATALOG_SOFTWARE.map((s) => s.slug).sort(),
       [...CATALOG_SLUGS].sort(),
@@ -119,13 +122,12 @@ describe("software doors", () => {
     );
     const names = SOFTWARE.map((s) => s.name);
     assert.ok(names.includes("PeaceLock"));
+    assert.ok(names.includes("AZMail"));
     assert.ok(names.includes("EmbryoLock"));
     assert.ok(names.includes("aziel-runtime"));
     assert.ok(names.includes("FragGate"));
     assert.ok(!names.includes("Lumen"));
-    assert.ok(!names.includes("AZMail"));
-    assert.deepEqual(CATALOG_LATER_SLUGS, ["azmail"]);
-    assert.ok(!CATALOG_SLUGS.includes("azmail"));
+    assert.deepEqual(CATALOG_LATER_SLUGS, []);
   });
 
   it("lists PeaceLock in Lock and uses PEACELOCK_WORKER now that the tracker is live", () => {
@@ -145,17 +147,21 @@ describe("software doors", () => {
     assert.ok(citeDoc().software_names.some((s) => s.name === "PeaceLock" && s.url === PEACELOCK_WORKER));
   });
 
-  it("adds AZMail only when a live catalog product is present", () => {
-    const without = catalogSoftwareFromSlugs();
-    assert.ok(!without.some((s) => s.slug === "azmail" || s.name === "AZMail"));
-    const withLive = catalogSoftwareFromSlugs(CATALOG_SLUGS, [
-      { slug: "azmail", name: "AZMail", worker_home: "https://azmail-download-tracker.vibelock.workers.dev/" },
-    ]);
-    const azmail = withLive.find((s) => s.slug === "azmail");
+  it("lists AZMail in Plain and uses AZMAIL_WORKER now that it is in the catalog", () => {
+    const html = pageHtml();
+    const azmail = SOFTWARE.find((s) => s.name === "AZMail");
     assert.ok(azmail);
-    assert.equal(azmail.name, "AZMail");
-    assert.ok(!CATALOG_SOFTWARE.some((s) => s.slug === "azmail"));
-    assert.ok(!SOFTWARE.some((s) => s.name === "AZMail"));
+    assert.equal(azmail.slug, "azmail");
+    assert.equal(softwareBucket("AZMail"), 0);
+    assert.equal(catalogHref("azmail"), AZMAIL_WORKER);
+    assert.equal(azmail.href, AZMAIL_WORKER);
+    assert.ok(!CATALOG_GITHUB_FALLBACK.has("azmail"));
+    assert.equal(AZMAIL_WORKER, "https://azmail-download-tracker.vibelock.workers.dev/");
+    assert.ok(html.includes('href="' + AZMAIL_WORKER + '"'));
+    assert.ok(html.includes(">AZMail<"));
+    assert.match(html, /azmail-download-tracker/i);
+    assert.ok(citeDoc().software_names.some((s) => s.name === "AZMail" && s.url === AZMAIL_WORKER));
+    assert.ok(CATALOG_SOFTWARE.some((s) => s.slug === "azmail"));
   });
 
   it("keeps EmbryoLock on the library hub and does not invent Lumen", () => {
@@ -217,9 +223,11 @@ describe("software doors", () => {
     assert.equal(softwareBucket("TemporalLock"), 2);
     assert.equal(softwareBucket("M.I.A.Lock"), 2);
     assert.equal(softwareBucket("AZAI"), 0);
+    assert.equal(softwareBucket("AZMail"), 0);
     const names = SOFTWARE.map((s) => s.name);
     assert.equal(softwareBucket("StaticClock"), 0);
     assert.ok(names.includes("StaticClock"));
+    assert.ok(names.includes("AZMail"));
     const lastPlain = names.findLastIndex((n) => softwareBucket(n) === 0);
     const firstGate = names.findIndex((n) => softwareBucket(n) === 1);
     const lastGate = names.findLastIndex((n) => softwareBucket(n) === 1);
@@ -235,13 +243,18 @@ describe("software doors", () => {
     assert.deepEqual(names, [...plains, ...gates, ...locks]);
     assert.ok(names.includes("EmbryoLock"));
     assert.ok(names.includes("PeaceLock"));
+    assert.ok(names.includes("AZMail"));
     assert.ok(!names.includes("Lumen"));
-    assert.ok(!names.includes("AZMail"));
     const html = pageHtml();
     const idx = (name) => html.indexOf(">" + name + "<");
     assert.ok(idx("AZAI") < idx("StaticClock"));
+    assert.ok(idx("AZBot") < idx("AZMail"));
+    assert.ok(idx("AzielTether") < idx("AZMail"));
+    assert.ok(idx("AZMail") < idx("ForgeReceipts"));
+    assert.ok(idx("AZMail") < idx("StaticClock"));
     assert.ok(idx("StaticClock") < idx("FragGate"));
     assert.ok(idx("AZAI") < idx("FragGate"));
+    assert.ok(idx("AZMail") < idx("FragGate"));
     assert.ok(idx("FragGate") < idx("CodeLock"));
     assert.ok(idx("EmbryoLock") > idx("FragGate"));
     assert.ok(idx("PeaceLock") > idx("FragGate"));
@@ -327,8 +340,9 @@ describe("SEO routes", () => {
     assert.ok(llmsBody.includes("EmbryoLock"));
     assert.ok(llmsBody.includes("PeaceLock"));
     assert.ok(llmsBody.includes(PEACELOCK_WORKER));
+    assert.ok(llmsBody.includes("AZMail"));
+    assert.ok(llmsBody.includes(AZMAIL_WORKER));
     assert.ok(!llmsBody.includes("Lumen"));
-    assert.ok(!llmsBody.includes("AZMail"));
     assert.ok(aiBody.includes("Allow: /"));
     assert.ok(aiBody.includes("Allow: /runtime"));
     assert.ok(aiBody.includes("Allow: /runtime/v1/uses"));
@@ -342,7 +356,7 @@ describe("SEO routes", () => {
     assert.equal(citeBody.runtime_uses, RUNTIME_LOCAL + "/v1/uses");
     assert.equal(citeBody.research, LIBRARY + "/");
     assert.ok(!citeBody.software_names.some((s) => s.name === "Lumen"));
-    assert.ok(!citeBody.software_names.some((s) => s.name === "AZMail"));
+    assert.ok(citeBody.software_names.some((s) => s.name === "AZMail" && s.url === AZMAIL_WORKER));
     assert.ok(citeBody.software_names.some((s) => s.name === "EmbryoLock"));
     assert.ok(citeBody.software_names.some((s) => s.name === "PeaceLock"));
     assert.ok(mapBody.includes("<loc>" + CANON_ORIGIN + "/</loc>"));
