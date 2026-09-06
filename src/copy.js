@@ -29,42 +29,127 @@ export const DESCRIPTION =
   "Aziel Eliab. You don’t get to know me. You get to understand the work. Public identity Aziel Eliab only.";
 
 /**
- * Live aziel-runtime catalog (27), September 2026.
- * Door: worker_home when set, else github, else library software hub.
- * Display names are catalog `name`. Lumen and PeaceLock are not listed.
+ * Documented aziel-runtime catalog slugs (1.6.4 PRODUCTS_RAW).
+ * Includes peacelock. AZMail joins only after it is in this catalog.
+ * Door: worker_home when the tracker is ready, else GitHub, else library hub.
+ * Display names are catalog `name`. Lumen is not listed.
  * EmbryoLock stays as a catalog-only name on the library software hub.
  */
-export const CATALOG_SOFTWARE = [
-  { slug: "vibelock", name: "VibeLock", href: "https://vibelock-download-tracker.vibelock.workers.dev/" },
-  { slug: "veillock", name: "VeilLock", href: "https://veillock-download-tracker.vibelock.workers.dev/" },
-  { slug: "codelock", name: "CodeLock", href: "https://codelock-download-tracker.vibelock.workers.dev/" },
-  { slug: "godlock", name: "GodLock", href: "https://godlock-download-tracker.vibelock.workers.dev/" },
-  { slug: "shadowlock", name: "ShadowLock", href: "https://shadowlock-download-tracker.vibelock.workers.dev/" },
-  { slug: "temporallock", name: "TemporalLock", href: "https://temporallock-download-tracker.vibelock.workers.dev/" },
-  { slug: "forgereceipts", name: "ForgeReceipts", href: "https://forgereceipts-download-tracker.vibelock.workers.dev/" },
-  { slug: "decisiongate", name: "DecisionGATE", href: "https://decisiongate-download-tracker.vibelock.workers.dev/" },
-  { slug: "zsolver", name: "ZionPattern Solver", href: "https://zsolver-download-tracker.vibelock.workers.dev/" },
-  { slug: "azos", name: "AZ-OS", href: "https://azos-download-tracker.vibelock.workers.dev/" },
-  { slug: "glossafilter", name: "Glossa Filter", href: "https://glossafilter-download-tracker.vibelock.workers.dev/" },
-  { slug: "miragegrid", name: "MirageGrid", href: "https://miragegrid-download-tracker.vibelock.workers.dev/" },
-  { slug: "staticclock", name: "StaticClock", href: "https://staticclock-download-tracker.vibelock.workers.dev/" },
-  { slug: "chronolock", name: "ChronoLock", href: "https://chronolock-download-tracker.vibelock.workers.dev/" },
-  { slug: "postking", name: "Post-King Chess", href: "https://postking-download-tracker.vibelock.workers.dev/" },
-  { slug: "azclce", name: "AZ-CLCE", href: "https://azclce-download-tracker.vibelock.workers.dev/" },
-  { slug: "ark", name: "The ARK", href: "https://ark-download-tracker.vibelock.workers.dev/" },
-  { slug: "azai", name: "AZAI", href: "https://azai-download-tracker.vibelock.workers.dev/" },
-  { slug: "spectrallock", name: "SpectralLock", href: "https://spectrallock-download-tracker.vibelock.workers.dev/" },
-  { slug: "azbot", name: "AZBot", href: "https://azbot-download-tracker.vibelock.workers.dev/" },
-  { slug: "employeelock", name: "EmployeeLock", href: "https://employeelock-download-tracker.vibelock.workers.dev/" },
-  { slug: "foldlock", name: "FoldLock", href: "https://foldlock-download-tracker.vibelock.workers.dev/" },
-  { slug: "whistlelock", name: "WhistleLock", href: "https://whistlelock-download-tracker.vibelock.workers.dev/" },
-  { slug: "trajectorylock", name: "TrajectoryLock", href: "https://trajectorylock-download-tracker.vibelock.workers.dev/" },
-  { slug: "mialock", name: "M.I.A.Lock", href: "https://mialock-download-tracker.vibelock.workers.dev/" },
-  { slug: "azieltether", name: "AzielTether", href: "https://azieltether-download-tracker.vibelock.workers.dev/" },
-  { slug: "aziel-corpus", name: "Aziel Digital Library", href: LIBRARY + "/" },
+export const CATALOG_SLUGS = [
+  "ark",
+  "azai",
+  "azbot",
+  "azclce",
+  "aziel-corpus",
+  "azieltether",
+  "azos",
+  "chronolock",
+  "codelock",
+  "decisiongate",
+  "employeelock",
+  "foldlock",
+  "forgereceipts",
+  "glossafilter",
+  "godlock",
+  "mialock",
+  "miragegrid",
+  "peacelock",
+  "postking",
+  "shadowlock",
+  "spectrallock",
+  "staticclock",
+  "temporallock",
+  "trajectorylock",
+  "veillock",
+  "vibelock",
+  "whistlelock",
+  "zsolver",
 ];
 
-/** Kept on the landing though not in the live 27-product catalog. */
+/** Catalog `name` for each documented slug. */
+export const CATALOG_NAMES = {
+  ark: "The ARK",
+  azai: "AZAI",
+  azbot: "AZBot",
+  azclce: "AZ-CLCE",
+  "aziel-corpus": "Aziel Digital Library",
+  azieltether: "AzielTether",
+  azos: "AZ-OS",
+  chronolock: "ChronoLock",
+  codelock: "CodeLock",
+  decisiongate: "DecisionGATE",
+  employeelock: "EmployeeLock",
+  foldlock: "FoldLock",
+  forgereceipts: "ForgeReceipts",
+  glossafilter: "Glossa Filter",
+  godlock: "GodLock",
+  mialock: "M.I.A.Lock",
+  miragegrid: "MirageGrid",
+  peacelock: "PeaceLock",
+  postking: "Post-King Chess",
+  shadowlock: "ShadowLock",
+  spectrallock: "SpectralLock",
+  staticclock: "StaticClock",
+  temporallock: "TemporalLock",
+  trajectorylock: "TrajectoryLock",
+  veillock: "VeilLock",
+  vibelock: "VibeLock",
+  whistlelock: "WhistleLock",
+  zsolver: "ZionPattern Solver",
+};
+
+/** Not in the documented catalog yet. Do not invent a landing door. */
+export const CATALOG_LATER_SLUGS = ["azmail"];
+
+export const PEACELOCK_WORKER = "https://peacelock-download-tracker.vibelock.workers.dev/";
+export const PEACELOCK_GITHUB = "https://github.com/AzielEliab/peacelock";
+
+/** Slugs whose download-tracker Worker is not ready — use GitHub. */
+export const CATALOG_GITHUB_FALLBACK = new Set(["peacelock"]);
+
+export function catalogGithub(slug) {
+  return "https://github.com/AzielEliab/" + slug;
+}
+
+export function catalogWorkerHome(slug) {
+  if (slug === "aziel-corpus") return LIBRARY + "/";
+  if (slug === "peacelock") return PEACELOCK_WORKER;
+  return "https://" + slug + "-download-tracker.vibelock.workers.dev/";
+}
+
+/** Prefer worker_home; GitHub if the tracker is not ready; library hub last. */
+export function catalogHref(slug) {
+  if (slug === "aziel-corpus") return LIBRARY + "/";
+  if (CATALOG_GITHUB_FALLBACK.has(slug)) return catalogGithub(slug);
+  return catalogWorkerHome(slug);
+}
+
+export function catalogSoftwareFromSlugs(slugs = CATALOG_SLUGS, liveProducts = []) {
+  const liveBySlug = new Map((liveProducts || []).map((p) => [p && p.slug, p]));
+  const seen = new Set();
+  const out = [];
+  const add = (slug) => {
+    if (!slug || seen.has(slug)) return;
+    seen.add(slug);
+    const live = liveBySlug.get(slug) || {};
+    const name = CATALOG_NAMES[slug] || live.name;
+    if (!name) return;
+    out.push({
+      slug,
+      name,
+      href: catalogHref(slug) || live.worker_home || live.github || LIBRARY_SOFTWARE,
+    });
+  };
+  for (const slug of slugs || []) add(slug);
+  for (const later of CATALOG_LATER_SLUGS) {
+    if (liveBySlug.has(later)) add(later);
+  }
+  return out;
+}
+
+export const CATALOG_SOFTWARE = catalogSoftwareFromSlugs();
+
+/** Kept on the landing though not in the documented catalog. */
 export const EMBRYOLOCK = { name: "EmbryoLock", href: LIBRARY_SOFTWARE };
 export const CATALOG_ONLY = ["EmbryoLock"];
 
@@ -94,36 +179,6 @@ export function sortSoftware(items) {
 }
 
 export const SOFTWARE = sortSoftware(CATALOG_SOFTWARE.concat(EXTRA_SOFTWARE));
-
-export const CATALOG_SLUGS = [
-  "ark",
-  "azai",
-  "azbot",
-  "azclce",
-  "aziel-corpus",
-  "azieltether",
-  "azos",
-  "chronolock",
-  "codelock",
-  "decisiongate",
-  "employeelock",
-  "foldlock",
-  "forgereceipts",
-  "glossafilter",
-  "godlock",
-  "mialock",
-  "miragegrid",
-  "postking",
-  "shadowlock",
-  "spectrallock",
-  "staticclock",
-  "temporallock",
-  "trajectorylock",
-  "veillock",
-  "vibelock",
-  "whistlelock",
-  "zsolver",
-];
 
 export const DOORS = [
   { label: "GitHub", href: GITHUB },

@@ -7,13 +7,20 @@ import { aiTxt, citeDoc, jsonLd, llmsTxt, robotsTxt, sitemapXml } from "../src/s
 import {
   AUTHOR,
   CANON_ORIGIN,
+  CATALOG_GITHUB_FALLBACK,
+  CATALOG_LATER_SLUGS,
+  CATALOG_NAMES,
   CATALOG_ONLY,
   CATALOG_SLUGS,
   CATALOG_SOFTWARE,
+  catalogHref,
+  catalogSoftwareFromSlugs,
   DOORS,
   LIBRARY,
   LIBRARY_AZIEL,
   LIBRARY_SOFTWARE,
+  PEACELOCK_GITHUB,
+  PEACELOCK_WORKER,
   PROSE,
   RUNTIME_LOCAL,
   SOFTWARE,
@@ -90,8 +97,8 @@ describe("landing copy", () => {
 describe("software doors", () => {
   it("hyperlinks every SOFTWARE name to a verified URL", () => {
     const html = pageHtml();
-    assert.equal(CATALOG_SOFTWARE.length, 27);
-    assert.equal(SOFTWARE.length, 30);
+    assert.equal(CATALOG_SOFTWARE.length, 28);
+    assert.equal(SOFTWARE.length, 31);
     for (const item of SOFTWARE) {
       const needle = 'href="' + item.href + '"';
       assert.ok(html.includes(needle), "missing href for " + item.name);
@@ -100,18 +107,58 @@ describe("software doors", () => {
     assert.ok(html.includes("Run them without me."));
   });
 
-  it("covers every live catalog slug plus EmbryoLock, aziel-runtime, and FragGate", () => {
-    const slugs = CATALOG_SOFTWARE.map((s) => s.slug).sort();
-    assert.deepEqual(slugs, [...CATALOG_SLUGS].sort());
+  it("syncs CATALOG_SOFTWARE from documented catalog slugs including peacelock", () => {
+    assert.ok(CATALOG_SLUGS.includes("peacelock"));
+    assert.equal(CATALOG_NAMES.peacelock, "PeaceLock");
+    assert.deepEqual(
+      CATALOG_SOFTWARE.map((s) => s.slug).sort(),
+      [...CATALOG_SLUGS].sort(),
+    );
+    assert.deepEqual(
+      catalogSoftwareFromSlugs().map((s) => s.slug).sort(),
+      [...CATALOG_SLUGS].sort(),
+    );
     const names = SOFTWARE.map((s) => s.name);
+    assert.ok(names.includes("PeaceLock"));
     assert.ok(names.includes("EmbryoLock"));
     assert.ok(names.includes("aziel-runtime"));
     assert.ok(names.includes("FragGate"));
     assert.ok(!names.includes("Lumen"));
-    assert.ok(!names.includes("PeaceLock"));
+    assert.ok(!names.includes("AZMail"));
+    assert.deepEqual(CATALOG_LATER_SLUGS, ["azmail"]);
+    assert.ok(!CATALOG_SLUGS.includes("azmail"));
   });
 
-  it("keeps EmbryoLock on the library hub and does not invent Lumen or PeaceLock doors", () => {
+  it("lists PeaceLock in Lock and falls back to GitHub while the tracker is down", () => {
+    const html = pageHtml();
+    const peace = SOFTWARE.find((s) => s.name === "PeaceLock");
+    assert.ok(peace);
+    assert.equal(peace.slug, "peacelock");
+    assert.equal(softwareBucket("PeaceLock"), 2);
+    assert.equal(catalogHref("peacelock"), PEACELOCK_GITHUB);
+    assert.equal(peace.href, PEACELOCK_GITHUB);
+    assert.ok(CATALOG_GITHUB_FALLBACK.has("peacelock"));
+    assert.equal(PEACELOCK_WORKER, "https://peacelock-download-tracker.vibelock.workers.dev/");
+    assert.ok(html.includes('href="' + PEACELOCK_GITHUB + '"'));
+    assert.ok(html.includes(">PeaceLock<"));
+    assert.doesNotMatch(html, /peacelock-download-tracker/i);
+    assert.ok(citeDoc().software_names.some((s) => s.name === "PeaceLock" && s.url === PEACELOCK_GITHUB));
+  });
+
+  it("adds AZMail only when a live catalog product is present", () => {
+    const without = catalogSoftwareFromSlugs();
+    assert.ok(!without.some((s) => s.slug === "azmail" || s.name === "AZMail"));
+    const withLive = catalogSoftwareFromSlugs(CATALOG_SLUGS, [
+      { slug: "azmail", name: "AZMail", worker_home: "https://azmail-download-tracker.vibelock.workers.dev/" },
+    ]);
+    const azmail = withLive.find((s) => s.slug === "azmail");
+    assert.ok(azmail);
+    assert.equal(azmail.name, "AZMail");
+    assert.ok(!CATALOG_SOFTWARE.some((s) => s.slug === "azmail"));
+    assert.ok(!SOFTWARE.some((s) => s.name === "AZMail"));
+  });
+
+  it("keeps EmbryoLock on the library hub and does not invent Lumen", () => {
     const html = pageHtml();
     assert.deepEqual(CATALOG_ONLY, ["EmbryoLock"]);
     const embryo = SOFTWARE.find((s) => s.name === "EmbryoLock");
@@ -119,8 +166,9 @@ describe("software doors", () => {
     assert.ok(html.includes(">EmbryoLock<"));
     assert.doesNotMatch(html, /embryolock-download-tracker/i);
     assert.doesNotMatch(html, />Lumen</);
-    assert.doesNotMatch(html, />PeaceLock</);
-    assert.ok(!citeDoc().software_names.some((s) => s.name === "Lumen" || s.name === "PeaceLock"));
+    assert.ok(!citeDoc().software_names.some((s) => s.name === "Lumen"));
+    assert.ok(citeDoc().software_names.some((s) => s.name === "EmbryoLock"));
+    assert.ok(citeDoc().software_names.some((s) => s.name === "PeaceLock"));
   });
 
   it("prefers known GodLock / runtime / FragGate doors", () => {
@@ -165,6 +213,7 @@ describe("software doors", () => {
     assert.equal(softwareBucket("CodeLock"), 2);
     assert.equal(softwareBucket("GodLock"), 2);
     assert.equal(softwareBucket("EmbryoLock"), 2);
+    assert.equal(softwareBucket("PeaceLock"), 2);
     assert.equal(softwareBucket("TemporalLock"), 2);
     assert.equal(softwareBucket("M.I.A.Lock"), 2);
     assert.equal(softwareBucket("AZAI"), 0);
@@ -185,7 +234,9 @@ describe("software doors", () => {
     assert.deepEqual(locks, [...locks].sort(az));
     assert.deepEqual(names, [...plains, ...gates, ...locks]);
     assert.ok(names.includes("EmbryoLock"));
+    assert.ok(names.includes("PeaceLock"));
     assert.ok(!names.includes("Lumen"));
+    assert.ok(!names.includes("AZMail"));
     const html = pageHtml();
     const idx = (name) => html.indexOf(">" + name + "<");
     assert.ok(idx("AZAI") < idx("StaticClock"));
@@ -193,6 +244,9 @@ describe("software doors", () => {
     assert.ok(idx("AZAI") < idx("FragGate"));
     assert.ok(idx("FragGate") < idx("CodeLock"));
     assert.ok(idx("EmbryoLock") > idx("FragGate"));
+    assert.ok(idx("PeaceLock") > idx("FragGate"));
+    assert.ok(idx("M.I.A.Lock") < idx("PeaceLock"));
+    assert.ok(idx("PeaceLock") < idx("ShadowLock"));
   });
 });
 
@@ -271,8 +325,10 @@ describe("SEO routes", () => {
     assert.ok(llmsBody.includes("DuckAssist"));
     assert.ok(llmsBody.includes("You.com"));
     assert.ok(llmsBody.includes("EmbryoLock"));
+    assert.ok(llmsBody.includes("PeaceLock"));
+    assert.ok(llmsBody.includes(PEACELOCK_GITHUB));
     assert.ok(!llmsBody.includes("Lumen"));
-    assert.ok(!llmsBody.includes("PeaceLock"));
+    assert.ok(!llmsBody.includes("AZMail"));
     assert.ok(aiBody.includes("Allow: /"));
     assert.ok(aiBody.includes("Allow: /runtime"));
     assert.ok(aiBody.includes("Allow: /runtime/v1/uses"));
@@ -286,7 +342,9 @@ describe("SEO routes", () => {
     assert.equal(citeBody.runtime_uses, RUNTIME_LOCAL + "/v1/uses");
     assert.equal(citeBody.research, LIBRARY + "/");
     assert.ok(!citeBody.software_names.some((s) => s.name === "Lumen"));
+    assert.ok(!citeBody.software_names.some((s) => s.name === "AZMail"));
     assert.ok(citeBody.software_names.some((s) => s.name === "EmbryoLock"));
+    assert.ok(citeBody.software_names.some((s) => s.name === "PeaceLock"));
     assert.ok(mapBody.includes("<loc>" + CANON_ORIGIN + "/</loc>"));
     assert.ok(mapBody.includes("<loc>" + RUNTIME_LOCAL + "</loc>"));
     assert.ok(mapBody.includes("<loc>" + CANON_ORIGIN + "/cite.json</loc>"));
