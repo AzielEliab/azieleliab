@@ -16,6 +16,7 @@ Cloudflare Worker `azieleliab-com` serves the literary landing, crawl files, and
 | Path | What |
 |------|------|
 | `/` | Landing (black / gold / white) |
+| `/software` · `/software/` | 301 to [`/#software`](https://www.azieleliab.com/#software) (homepage Software strip) |
 | `/robots.txt` | `Allow: /` plus AI crawlers and `/runtime` |
 | `/llms.txt` | Door index for models |
 | `/ai.txt` | Crawl policy |

@@ -22,6 +22,8 @@ export const GODLOCK_AZIEL = GODLOCK + "/AzielEliab";
 export const RUNTIME = "https://aziel-runtime.vibelock.workers.dev";
 export const RUNTIME_PATH = "/runtime";
 export const RUNTIME_LOCAL = CANON_ORIGIN + RUNTIME_PATH;
+/** Soft-name strip on the landing. GET /software 301s here. */
+export const SOFTWARE_SECTION = CANON_ORIGIN + "/#software";
 export const FRAGGATE_WORKER = "https://fraggate-download-tracker.vibelock.workers.dev/";
 export const FRAGGATE_GITHUB = "https://github.com/AzielEliab/fraggate";
 /** Primary FragGate door is the Worker UI. GitHub remains the source repo. */
