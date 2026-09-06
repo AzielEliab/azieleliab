@@ -55,13 +55,26 @@ import {
   USES_VIA,
 } from "../src/runtimeUses.js";
 
+function isolatedEnv(extra) {
+  return {
+    AZIEL_RUNTIME: {
+      fetch: async () =>
+        new Response(JSON.stringify({ error: "not found" }), {
+          status: 404,
+          headers: { "Content-Type": "application/json" },
+        }),
+    },
+    ...(extra || {}),
+  };
+}
+
 function envWithViews(seed = 0) {
-  return { VIEWS: memoryKv(seed) };
+  return isolatedEnv({ VIEWS: memoryKv(seed) });
 }
 
 async function fetchPath(path, init = {}, env) {
   const request = new Request("https://www.azieleliab.com" + path, init);
-  return worker.fetch(request, env || {});
+  return worker.fetch(request, env ? isolatedEnv(env) : isolatedEnv());
 }
 
 function runtimeEnv(handler) {
@@ -457,6 +470,9 @@ describe("SEO routes", () => {
     assert.ok(body.includes("Allow: /runtime"));
     assert.ok(body.includes("Allow: /runtime/"));
     assert.ok(body.includes("Allow: /runtime/v1/uses"));
+    assert.ok(body.includes("Allow: /v1/software"));
+    assert.ok(body.includes("Allow: /v1/update"));
+    assert.ok(body.includes("Allow: /v1/update/check"));
     assert.ok(body.includes("Sitemap: " + CANON_ORIGIN + "/sitemap.xml"));
     assert.ok(body.includes("User-agent: GPTBot"));
     assert.ok(body.includes("User-agent: NeevaBot"));
@@ -484,6 +500,10 @@ describe("SEO routes", () => {
     assert.ok(llmsBody.includes("local-not-hosted stub on this host"));
     assert.ok(llmsBody.includes("/runtime"));
     assert.ok(llmsBody.includes("/runtime/v1/uses"));
+    assert.ok(llmsBody.includes("/v1/software"));
+    assert.ok(llmsBody.includes("fallback"));
+    assert.ok(llmsBody.includes("/v1/fraggate/list"));
+    assert.ok(llmsBody.includes("/v1/update/check"));
     assert.ok(llmsBody.includes("Research door"));
     assert.ok(llmsBody.includes(LIBRARY + "/"));
     assert.ok(llmsBody.includes("ChatGPT (GPT Actions / OpenAI)"));
@@ -521,6 +541,9 @@ describe("SEO routes", () => {
     assert.ok(aiBody.includes("Allow: /software/"));
     assert.ok(aiBody.includes("Allow: /embryolock"));
     assert.ok(aiBody.includes("Allow: /embryolock/"));
+    assert.ok(aiBody.includes("Allow: /v1/software"));
+    assert.ok(aiBody.includes("Allow: /v1/update"));
+    assert.ok(aiBody.includes("Allow: /v1/update/check"));
     assert.ok(aiBody.includes("Allow: /runtime"));
     assert.ok(aiBody.includes("Allow: /runtime/v1/uses"));
     assert.ok(aiBody.includes("Content-Signal"));
@@ -531,6 +554,8 @@ describe("SEO routes", () => {
     assert.equal(citeBody.identity, AUTHOR);
     assert.equal(citeBody.runtime_local, RUNTIME_LOCAL);
     assert.equal(citeBody.runtime_uses, RUNTIME_LOCAL + "/v1/uses");
+    assert.equal(citeBody.software_catalog, CANON_ORIGIN + "/v1/software");
+    assert.equal(citeBody.update_check, CANON_ORIGIN + "/v1/update/check");
     assert.equal(citeBody.research, LIBRARY + "/");
     assert.ok(!citeBody.software_names.some((s) => s.name === "Lumen"));
     assert.ok(citeBody.software_names.some((s) => s.name === "AZMail" && s.url === AZMAIL_WORKER));
@@ -546,6 +571,8 @@ describe("SEO routes", () => {
     assert.ok(mapBody.includes("<loc>" + RUNTIME_LOCAL + "</loc>"));
     assert.ok(mapBody.includes("<loc>" + CANON_ORIGIN + "/cite.json</loc>"));
     assert.ok(mapBody.includes("<loc>" + CANON_ORIGIN + "/llms.txt</loc>"));
+    assert.ok(mapBody.includes("<loc>" + CANON_ORIGIN + "/v1/software</loc>"));
+    assert.ok(mapBody.includes("<loc>" + CANON_ORIGIN + "/v1/update/check</loc>"));
     assert.equal(llmsTxt().trim(), llmsBody.trim());
     assert.equal(aiTxt().trim(), aiBody.trim());
     assert.deepEqual(citeBody, citeDoc());
@@ -566,10 +593,16 @@ describe("SEO routes", () => {
     assert.equal(ld["@graph"][2]["@type"], "SoftwareApplication");
     assert.equal(ld["@graph"][2].url, RUNTIME_LOCAL);
     assert.equal(ld["@graph"][3]["@type"], "WebAPI");
+    assert.equal(ld["@graph"][4]["@type"], "ItemList");
+    assert.equal(ld["@graph"][4].name, "Software");
+    assert.ok(ld["@graph"][4].itemListElement.some((item) => item.name === "EmbryoLock"));
     assert.ok(html.includes('"@type":"Person"'));
     assert.ok(html.includes('"@type":"WebSite"'));
     assert.ok(html.includes('"@type":"SoftwareApplication"'));
     assert.ok(html.includes('"@type":"WebAPI"'));
+    assert.ok(html.includes('"@type":"ItemList"'));
+    assert.ok(html.includes('href="/v1/update/check"'));
+    assert.ok(html.includes('name="aziel-update-check"'));
   });
 });
 
@@ -941,5 +974,153 @@ describe("pageviews", () => {
     const opt = await fetchPath("/v1/view", { method: "OPTIONS" }, env);
     assert.equal(opt.status, 204);
     assert.equal(opt.headers.get("access-control-allow-origin"), "*");
+  });
+});
+
+describe("live software catalog", () => {
+  function catalogEnv(handler) {
+    return {
+      AZIEL_RUNTIME: { fetch: handler },
+    };
+  }
+
+  it("prefers /v1/software at request time and keeps Plain→Gate→Lock plus EmbryoLock stub", async () => {
+    const env = catalogEnv(async (req) => {
+      const path = new URL(req.url).pathname;
+      if (path === "/v1/software") {
+        return new Response(
+          JSON.stringify({
+            ok: true,
+            author: "Aziel Eliab",
+            products: [
+              { slug: "newlock", name: "NewLock", worker_home: "https://newlock-download-tracker.vibelock.workers.dev/" },
+              { slug: "azai", name: "AZAI", worker_home: "https://azai-download-tracker.vibelock.workers.dev/" },
+              { slug: "decisiongate", name: "DecisionGATE" },
+              {
+                slug: "embryolock",
+                name: "EmbryoLock",
+                status: "stub",
+                local_not_hosted: true,
+                worker_home: "https://embryolock-download-tracker.vibelock.workers.dev/",
+              },
+            ],
+            extras: [{ slug: "fraggate", name: "FragGate", worker_home: FRAGGATE_WORKER }],
+          }),
+          { status: 200, headers: { "Content-Type": "application/json" } },
+        );
+      }
+      return new Response(JSON.stringify({ error: "not found" }), { status: 404 });
+    });
+
+    const landing = await fetchPath("/", { headers: { "user-agent": "Mozilla/5.0" } }, env);
+    const html = await landing.text();
+    assert.ok(html.includes(">NewLock<"));
+    assert.ok(html.includes('href="https://newlock-download-tracker.vibelock.workers.dev/"'));
+    assert.ok(html.includes(">AZAI<"));
+    assert.ok(html.includes(">DecisionGATE<"));
+    assert.ok(html.includes(">FragGate<"));
+    assert.ok(html.includes(">EmbryoLock<"));
+    assert.ok(html.includes('href="' + EMBRYOLOCK_HREF + '"'));
+    assert.doesNotMatch(html, /embryolock-download-tracker/i);
+    const idx = (name) => html.indexOf(">" + name + "<");
+    assert.ok(idx("AZAI") < idx("DecisionGATE"));
+    assert.ok(idx("DecisionGATE") < idx("NewLock"));
+    assert.ok(idx("FragGate") < idx("NewLock"));
+
+    const index = await fetchPath("/v1/software", {}, env);
+    assert.equal(index.status, 200);
+    const doc = await index.json();
+    assert.equal(doc.ok, true);
+    assert.equal(doc.author, AUTHOR);
+    assert.equal(doc.source, "live");
+    assert.equal(doc.via, "/v1/software");
+    assert.ok(doc.software.some((s) => s.name === "NewLock" && s.slug === "newlock"));
+    assert.ok(doc.software.some((s) => s.name === "EmbryoLock" && s.url === EMBRYOLOCK_HREF));
+    const names = doc.software.map((s) => s.name);
+    const lastPlain = names.findLastIndex((n) => softwareBucket(n) === 0);
+    const firstGate = names.findIndex((n) => softwareBucket(n) === 1);
+    const lastGate = names.findLastIndex((n) => softwareBucket(n) === 1);
+    const firstLock = names.findIndex((n) => softwareBucket(n) === 2);
+    assert.ok(lastPlain < firstGate && lastGate < firstLock);
+  });
+
+  it("falls back to /v1/fraggate/list when /v1/software is missing", async () => {
+    const env = catalogEnv(async (req) => {
+      const path = new URL(req.url).pathname;
+      if (path === "/v1/software") {
+        return new Response(JSON.stringify({ error: "not found" }), { status: 404 });
+      }
+      if (path === "/v1/fraggate/list") {
+        return new Response(
+          JSON.stringify({
+            ok: true,
+            entries: [
+              { name: "AZBot", slug: "azbot", status: "live" },
+              { name: "EmbryoLock", slug: "embryolock", status: "stub", local_not_hosted: true, digest: null, ops: [] },
+            ],
+          }),
+          { status: 200, headers: { "Content-Type": "application/json" } },
+        );
+      }
+      return new Response(JSON.stringify({ error: "not found" }), { status: 404 });
+    });
+
+    const index = await fetchPath("/v1/software", {}, env);
+    const doc = await index.json();
+    assert.equal(doc.source, "fraggate-list");
+    assert.equal(doc.via, "/v1/fraggate/list");
+    assert.ok(doc.software.some((s) => s.name === "AZBot"));
+    assert.ok(doc.software.some((s) => s.name === "EmbryoLock" && s.url === EMBRYOLOCK_HREF));
+    assert.ok(doc.software.some((s) => s.name === "aziel-runtime"));
+    assert.ok(doc.software.some((s) => s.name === "FragGate"));
+
+    const cite = await fetchPath("/cite.json", {}, env);
+    const citeBody = await cite.json();
+    assert.ok(citeBody.software_names.some((s) => s.name === "AZBot"));
+    assert.ok(citeBody.software_names.some((s) => s.name === "EmbryoLock" && s.url === EMBRYOLOCK_HREF));
+  });
+
+  it("uses the static SOFTWARE fallback when live catalog calls fail", async () => {
+    const index = await fetchPath("/v1/software");
+    const doc = await index.json();
+    assert.equal(doc.source, "fallback");
+    assert.equal(doc.via, null);
+    assert.ok(doc.software.some((s) => s.name === "PeaceLock"));
+    assert.ok(doc.software.some((s) => s.name === "EmbryoLock" && s.url === EMBRYOLOCK_HREF));
+    assert.equal(doc.software.length, SOFTWARE.length);
+  });
+
+  it("serves a quiet /v1/update/check pointer at the runtime authority", async () => {
+    const env = catalogEnv(async (req) => {
+      const path = new URL(req.url).pathname;
+      if (path === "/v1/update/check") {
+        return new Response(
+          JSON.stringify({ ok: true, product: "aziel-runtime", version: "1.6.11" }),
+          { status: 200, headers: { "Content-Type": "application/json" } },
+        );
+      }
+      return new Response(JSON.stringify({ error: "not found" }), { status: 404 });
+    });
+
+    const res = await fetchPath("/v1/update/check", {}, env);
+    assert.equal(res.status, 200);
+    const doc = await res.json();
+    assert.equal(doc.ok, true);
+    assert.equal(doc.author, AUTHOR);
+    assert.equal(doc.update_check, "https://aziel-runtime.vibelock.workers.dev/v1/update/check");
+    assert.equal(doc.update_check_local, CANON_ORIGIN + "/v1/update/check");
+    assert.equal(doc.origin.version, "1.6.11");
+
+    const alias = await fetchPath("/v1/update", {}, env);
+    assert.deepEqual(await alias.json(), doc);
+
+    const missing = await fetchPath("/v1/update/check");
+    const pointer = await missing.json();
+    assert.equal(pointer.ok, true);
+    assert.equal(pointer.update_check, "https://aziel-runtime.vibelock.workers.dev/v1/update/check");
+    assert.equal(pointer.origin, undefined);
+
+    const opt = await fetchPath("/v1/update/check", { method: "OPTIONS" });
+    assert.equal(opt.status, 204);
   });
 });

@@ -134,6 +134,9 @@ const PUBLIC_ALLOW = [
   "/robots.txt",
   "/v1/stats",
   "/v1/view",
+  "/v1/software",
+  "/v1/update",
+  "/v1/update/check",
   "/runtime",
   "/runtime/",
   "/runtime/v1/uses",
@@ -145,8 +148,9 @@ export function robotsTxt() {
   return star.concat(bots).concat(["", "Sitemap: " + CANON_ORIGIN + "/sitemap.xml", ""]).join("\n");
 }
 
-export function sitemapXml(now = new Date()) {
+export function sitemapXml(now = new Date(), software = SOFTWARE) {
   const lastmod = now.toISOString().slice(0, 10);
+  const doors = software && software.length ? software : SOFTWARE;
   const locs = [
     CANON_ORIGIN + "/",
     RUNTIME_LOCAL,
@@ -157,6 +161,9 @@ export function sitemapXml(now = new Date()) {
     CANON_ORIGIN + "/sitemap.xml",
     CANON_ORIGIN + "/v1/stats",
     CANON_ORIGIN + "/v1/view",
+    CANON_ORIGIN + "/v1/software",
+    CANON_ORIGIN + "/v1/update",
+    CANON_ORIGIN + "/v1/update/check",
     RUNTIME_LOCAL + "/v1/uses",
     GITHUB,
     GITHUB_SECONDARY,
@@ -170,7 +177,7 @@ export function sitemapXml(now = new Date()) {
     GODLOCK_AZIEL,
     RUNTIME + "/",
     X_URL,
-    ...SOFTWARE.map((s) => s.href),
+    ...doors.map((s) => s.href),
   ];
   const seen = new Set();
   const unique = [];
@@ -186,7 +193,8 @@ export function sitemapXml(now = new Date()) {
   );
 }
 
-export function citeDoc() {
+export function citeDoc(software = SOFTWARE) {
+  const doorsSoftware = software && software.length ? software : SOFTWARE;
   return {
     author: AUTHOR,
     identity: AUTHOR,
@@ -212,11 +220,16 @@ export function citeDoc() {
     x: X_URL,
     views: CANON_ORIGIN + "/v1/stats",
     view_increment: CANON_ORIGIN + "/v1/view",
+    software_catalog: CANON_ORIGIN + "/v1/software",
+    software_catalog_origin: RUNTIME + "/v1/software",
+    software_catalog_fallback: RUNTIME + "/v1/fraggate/list",
+    update_check: CANON_ORIGIN + "/v1/update/check",
+    update_check_origin: RUNTIME + "/v1/update/check",
     runtime_uses: RUNTIME_LOCAL + "/v1/uses",
     sigil: SIGIL,
     license: LICENSE,
     doi: null,
-    software_names: SOFTWARE.map((s) => ({ name: s.name, url: s.href })),
+    software_names: doorsSoftware.map((s) => ({ name: s.name, url: s.href })),
     doors: DOORS.map((d) => {
       const row = { label: d.label, url: d.href };
       if (d.also) row.also = { label: d.also.label, url: d.also.href };
@@ -239,8 +252,9 @@ export function citeDoc() {
   };
 }
 
-export function llmsTxt() {
-  const softwareLines = SOFTWARE.map((s) => "- " + s.name + ": " + s.href).join("\n");
+export function llmsTxt(software = SOFTWARE) {
+  const doorsSoftware = software && software.length ? software : SOFTWARE;
+  const softwareLines = doorsSoftware.map((s) => "- " + s.name + ": " + s.href).join("\n");
   const doorLines = DOORS.map((d) => {
     const extra = d.also ? " · live " + d.also.href : "";
     return "- " + d.label + ": " + d.href + extra;
@@ -285,6 +299,7 @@ export function llmsTxt() {
     "",
     softwareLines,
     "- Hub: " + LIBRARY_SOFTWARE,
+    "- Live catalog: " + RUNTIME + "/v1/software (fallback " + RUNTIME + "/v1/fraggate/list)",
     "- Catalog origin: " + RUNTIME + "/",
     "- Same-origin runtime (FragGate / aziel-runtime): " + RUNTIME_LOCAL,
     "- Uses (this host): " + RUNTIME_LOCAL + "/v1/uses",
@@ -316,6 +331,8 @@ export function llmsTxt() {
     "- GET " + CANON_ORIGIN + "/",
     "- GET " + CANON_ORIGIN + "/software  (301 to /#software)",
     "- GET " + EMBRYOLOCK_HREF + "  (EmbryoLock local-not-hosted stub)",
+    "- GET " + CANON_ORIGIN + "/v1/software  (resolved live doors)",
+    "- GET " + CANON_ORIGIN + "/v1/update/check  (quiet installer pointer)",
     "- GET " + CANON_ORIGIN + "/cite.json",
     "- GET " + CANON_ORIGIN + "/llms.txt",
     "- GET " + CANON_ORIGIN + "/ai.txt",
@@ -357,6 +374,9 @@ export function aiTxt() {
     "Allow: /sitemap.xml",
     "Allow: /v1/stats",
     "Allow: /v1/view",
+    "Allow: /v1/software",
+    "Allow: /v1/update",
+    "Allow: /v1/update/check",
     "Allow: /runtime",
     "Allow: /runtime/",
     "Allow: /runtime/v1/uses",
@@ -400,11 +420,13 @@ export function aiTxt() {
   ].join("\n");
 }
 
-export function jsonLd() {
+export function jsonLd(software = SOFTWARE) {
+  const doorsSoftware = software && software.length ? software : SOFTWARE;
   const personId = CANON_ORIGIN + "/#aziel-eliab";
   const siteId = CANON_ORIGIN + "/#website";
   const runtimeId = RUNTIME_LOCAL + "#runtime";
   const apiId = RUNTIME_LOCAL + "#webapi";
+  const softwareId = CANON_ORIGIN + "/#software";
   const person = { "@id": personId };
   return {
     "@context": "https://schema.org",
@@ -466,6 +488,19 @@ export function jsonLd() {
         documentation: RUNTIME_LOCAL + "/openapi.json",
         provider: person,
         description: "FragGate door. OpenAPI " + RUNTIME_LOCAL + "/openapi.json. MCP POST " + RUNTIME_LOCAL + "/mcp.",
+      },
+      {
+        "@type": "ItemList",
+        "@id": softwareId,
+        name: "Software",
+        url: CANON_ORIGIN + "/#software",
+        numberOfItems: doorsSoftware.length,
+        itemListElement: doorsSoftware.map((item, i) => ({
+          "@type": "ListItem",
+          position: i + 1,
+          name: item.name,
+          url: item.href,
+        })),
       },
     ],
   };
