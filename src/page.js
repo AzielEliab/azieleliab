@@ -1,0 +1,210 @@
+/** Literary landing HTML. Black / gold / white. Author: Aziel Eliab. */
+import { AUTHOR, CANON_ORIGIN, DESCRIPTION, DOORS, PROSE, SIGIL, SOFTWARE } from "./copy.js";
+import { jsonLd } from "./seo.js";
+
+function esc(s) {
+  return String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+}
+
+function attr(s) {
+  return esc(s);
+}
+
+function a(href, text, extraClass) {
+  const cls = extraClass ? ' class="' + extraClass + '"' : "";
+  return '<a href="' + attr(href) + '"' + cls + ' rel="noopener noreferrer">' + esc(text) + "</a>";
+}
+
+function paragraphs(lines) {
+  return lines.map((line) => "<p>" + esc(line) + "</p>").join("");
+}
+
+function softwareLine() {
+  return SOFTWARE.map((item, i) => {
+    const mark = i === SOFTWARE.length - 1 ? "." : ".";
+    return a(item.href, item.name, "soft-name") + mark;
+  }).join(" ");
+}
+
+function doorRow(door) {
+  const label = a(door.href, door.label, "door-label");
+  const url = a(door.href, door.href, "door-url");
+  if (door.also) {
+    const live = a(door.also.href, door.also.label, "door-url");
+    return (
+      "<li>" +
+      label +
+      ' <span class="arrow" aria-hidden="true">→</span> ' +
+      url +
+      ' <span class="also">also ' +
+      live +
+      "</span></li>"
+    );
+  }
+  return "<li>" + label + ' <span class="arrow" aria-hidden="true">→</span> ' + url + "</li>";
+}
+
+const CSS = `
+:root{
+  --bg:#0e0c09;
+  --bg-lift:#12100c;
+  --card:#19150f;
+  --ink:#ffffff;
+  --ink-soft:#f4f1ea;
+  --muted:#a89880;
+  --line:#3a3228;
+  --gold:#c9a227;
+  --gold-dim:#8a7018;
+}
+*{box-sizing:border-box}
+html,body{background:var(--bg);color:var(--ink);margin:0;min-height:100%;overflow:auto;height:auto}
+html{color-scheme:dark}
+body{
+  font-family:Georgia,"Iowan Old Style","Palatino Linotype",Palatino,"Times New Roman",serif;
+  font-size:18px;
+  line-height:1.7;
+  background:
+    radial-gradient(1200px 600px at 50% -10%, #1a160f 0%, transparent 55%),
+    linear-gradient(180deg, var(--bg-lift) 0%, var(--bg) 42%, #0b0907 100%);
+}
+.wrap{max-width:40rem;margin:0 auto;padding:36px 22px 96px}
+.brandrow{display:flex;align-items:center;gap:12px;margin:0 0 28px}
+.brandmark{
+  width:44px;height:44px;border-radius:12px;object-fit:cover;flex:0 0 44px;
+  box-shadow:0 0 0 1px var(--gold);
+}
+.host{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;font-size:13px;letter-spacing:.12em;text-transform:lowercase;color:var(--gold);text-decoration:none}
+.host:hover{color:var(--ink)}
+h1{font-size:clamp(2rem,6vw,2.75rem);font-weight:600;letter-spacing:-.03em;line-height:1.15;margin:0 0 22px;color:var(--ink)}
+h2{
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--gold);margin:0 0 12px;
+}
+p{margin:0 0 1em;color:var(--ink-soft)}
+p:last-child{margin-bottom:0}
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:22px 22px 20px;
+  margin:0 0 16px;
+  box-shadow:0 1px 0 #00000040;
+}
+.card.lead{border-color:#4a3d24}
+.card.close{border-color:var(--gold)}
+a{color:var(--ink);text-decoration:underline;text-decoration-color:var(--gold-dim);text-underline-offset:3px}
+a:hover{color:var(--gold);text-decoration-color:var(--gold)}
+.soft-line{color:var(--ink-soft);line-height:1.95}
+.soft-name{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;font-size:16px;font-weight:650;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--gold);padding-bottom:1px}
+.soft-name:hover{color:var(--gold)}
+.soft-close{margin-top:1.1em;color:var(--ink)}
+.doors{list-style:none;margin:0;padding:0}
+.doors li{margin:0 0 12px;padding:0;word-break:break-word}
+.door-label{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;font-weight:700;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--gold)}
+.door-url{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;font-size:15px;color:var(--ink-soft)}
+.door-label:hover,.door-url:hover{color:var(--gold)}
+.arrow{color:var(--gold);padding:0 4px}
+.also{display:inline;color:var(--muted);font-size:15px}
+.also .door-url{font-size:14px}
+.sign{margin-top:18px;color:var(--muted);font-style:italic}
+footer{margin-top:28px;color:var(--muted);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;font-size:13px}
+footer a{color:var(--muted)}
+footer a:hover{color:var(--gold)}
+@media (max-width:720px){
+  .wrap{padding:22px 16px 80px}
+  body{font-size:17px}
+  .card{padding:18px 16px}
+  .soft-name{font-size:15px}
+}
+`;
+
+export function pageHtml() {
+  const ld = JSON.stringify(jsonLd());
+  const software = softwareLine();
+  const doors = DOORS.map(doorRow).join("");
+  return `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>${esc(AUTHOR)}</title>
+<meta name="description" content="${esc(DESCRIPTION)}">
+<meta name="author" content="${esc(AUTHOR)}">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<link rel="canonical" href="${esc(CANON_ORIGIN)}/">
+<link rel="icon" href="${esc(SIGIL)}" type="image/png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="${esc(AUTHOR)}">
+<meta property="og:title" content="${esc(AUTHOR)}">
+<meta property="og:description" content="${esc(DESCRIPTION)}">
+<meta property="og:url" content="${esc(CANON_ORIGIN)}/">
+<meta property="og:image" content="${esc(SIGIL)}">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="${esc(AUTHOR)}">
+<meta name="twitter:description" content="${esc(DESCRIPTION)}">
+<meta name="twitter:image" content="${esc(SIGIL)}">
+<link rel="alternate" type="application/json" href="/cite.json" title="cite.json">
+<link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt">
+<link rel="alternate" type="text/plain" href="/ai.txt" title="ai.txt">
+<script type="application/ld+json">${ld}</script>
+<style>${CSS}</style>
+</head>
+<body>
+<main class="wrap">
+  <header class="brandrow">
+    <img class="brandmark" src="${esc(SIGIL)}" width="44" height="44" alt="">
+    <a class="host" href="${esc(CANON_ORIGIN)}/">${esc(PROSE.host)}</a>
+  </header>
+  <h1>${esc(PROSE.title)}</h1>
+  <article class="card lead">${paragraphs(PROSE.open)}</article>
+  <section class="card" id="why">
+    <h2>Why</h2>
+    ${paragraphs(PROSE.why)}
+  </section>
+  <section class="card" id="software">
+    <h2>Software</h2>
+    <p class="soft-line">${software}</p>
+    <p class="soft-close">${esc(PROSE.softwareClose)}</p>
+  </section>
+  <section class="card" id="research">
+    <h2>Research</h2>
+    ${paragraphs(PROSE.research)}
+  </section>
+  <section class="card" id="doors">
+    <h2>Doors</h2>
+    <ul class="doors">${doors}</ul>
+  </section>
+  <section class="card close">
+    <p>${esc(PROSE.close)}</p>
+    <p class="sign">${esc(PROSE.sign)}</p>
+  </section>
+  <footer>
+    <p>${esc(AUTHOR)} · ${a(CANON_ORIGIN + "/cite.json", "cite.json")} · ${a(CANON_ORIGIN + "/llms.txt", "llms.txt")} · Apache-2.0</p>
+  </footer>
+</main>
+</body>
+</html>`;
+}
+
+export function notFoundHtml() {
+  return `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Not found — ${esc(AUTHOR)}</title>
+<link rel="canonical" href="${esc(CANON_ORIGIN)}/">
+<style>${CSS}</style>
+</head>
+<body>
+<main class="wrap">
+  <h1>Not found</h1>
+  <article class="card">
+    <p>This path is not a door.</p>
+    <p>${a(CANON_ORIGIN + "/", AUTHOR)}</p>
+  </article>
+</main>
+</body>
+</html>`;
+}

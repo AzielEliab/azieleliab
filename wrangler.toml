@@ -1,0 +1,27 @@
+# azieleliab.com landing Worker.
+# Author: Aziel Eliab. Identity is Aziel Eliab only. Apache-2.0.
+name = "azieleliab-com"
+main = "src/index.js"
+compatibility_date = "2026-09-05"
+compatibility_flags = ["nodejs_compat"]
+workers_dev = true
+
+[observability]
+enabled = true
+head_sampling_rate = 1
+
+# Custom domains are attached by the parent on deploy (zone may live
+# in a different Cloudflare account than this Worker).
+# Expected hostnames after attach:
+#   https://azieleliab.com        (apex — Worker 301s HTML to www)
+#   https://www.azieleliab.com    (canonical)
+#
+# [[routes]]
+# pattern = "azieleliab.com"
+# custom_domain = true
+# [[routes]]
+# pattern = "www.azieleliab.com"
+# custom_domain = true
+#
+# If the zone is already in this account, uncomment the routes above
+# and run: npx wrangler deploy
