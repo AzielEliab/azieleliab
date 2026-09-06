@@ -28,6 +28,7 @@ import {
   PROSE,
   RUNTIME_LOCAL,
   SOFTWARE,
+  SOFTWARE_SECTION,
   softwareBucket,
   sortSoftware,
 } from "../src/copy.js";
@@ -360,6 +361,8 @@ describe("SEO routes", () => {
     const body = await res.text();
     assert.ok(body.includes("User-agent: *"));
     assert.ok(body.includes("Allow: /"));
+    assert.ok(body.includes("Allow: /software"));
+    assert.ok(body.includes("Allow: /software/"));
     assert.ok(body.includes("Allow: /runtime"));
     assert.ok(body.includes("Allow: /runtime/"));
     assert.ok(body.includes("Allow: /runtime/v1/uses"));
@@ -385,6 +388,7 @@ describe("SEO routes", () => {
     const mapBody = await map.text();
     assert.ok(llmsBody.includes("Author: " + AUTHOR));
     assert.ok(llmsBody.includes("Canonical: " + CANON_ORIGIN + "/"));
+    assert.ok(llmsBody.includes(CANON_ORIGIN + "/software  (301 to /#software)"));
     assert.ok(llmsBody.includes("/runtime"));
     assert.ok(llmsBody.includes("/runtime/v1/uses"));
     assert.ok(llmsBody.includes("Research door"));
@@ -415,6 +419,8 @@ describe("SEO routes", () => {
     assert.ok(llmsBody.includes(FRAGGATE_WORKER));
     assert.ok(!llmsBody.includes("Lumen"));
     assert.ok(aiBody.includes("Allow: /"));
+    assert.ok(aiBody.includes("Allow: /software"));
+    assert.ok(aiBody.includes("Allow: /software/"));
     assert.ok(aiBody.includes("Allow: /runtime"));
     assert.ok(aiBody.includes("Allow: /runtime/v1/uses"));
     assert.ok(aiBody.includes("Content-Signal"));
@@ -734,6 +740,30 @@ describe("worker routing", () => {
     assert.equal(res.status, 404);
     const body = await res.text();
     assert.ok(body.includes("This path is not a door."));
+  });
+
+  it("301s /software and /software/ to the homepage Software strip", async () => {
+    assert.equal(SOFTWARE_SECTION, CANON_ORIGIN + "/#software");
+    const html = await fetchPath("/");
+    assert.ok((await html.text()).includes('id="software"'));
+
+    for (const path of ["/software", "/software/"]) {
+      const res = await fetchPath(path);
+      assert.equal(res.status, 301);
+      assert.equal(res.headers.get("location"), SOFTWARE_SECTION);
+    }
+
+    const head = await fetchPath("/software", { method: "HEAD" });
+    assert.equal(head.status, 301);
+    assert.equal(head.headers.get("location"), SOFTWARE_SECTION);
+    assert.equal(await head.text(), "");
+
+    const post = await fetchPath("/software", { method: "POST" });
+    assert.equal(post.status, 405);
+
+    const apex = await handleRequest(new Request("https://azieleliab.com/software"));
+    assert.equal(apex.status, 301);
+    assert.equal(apex.headers.get("location"), CANON_ORIGIN + "/software");
   });
 });
 
