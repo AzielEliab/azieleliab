@@ -30,16 +30,22 @@ export const FRAGGATE_GITHUB = "https://github.com/AzielEliab/fraggate";
 export const FRAGGATE = FRAGGATE_WORKER;
 export const AZBROWSER_WORKER = "https://azbrowser-download-tracker.vibelock.workers.dev/";
 export const AZNET_WORKER = "https://aznet-download-tracker.vibelock.workers.dev/";
+export const AZHUB_WORKER = "https://azhub-download-tracker.vibelock.workers.dev/";
+export const AZHUB_GITHUB = "https://github.com/AzielEliab/azhub";
+export const AZINTERFACE_WORKER = "https://azinterface-download-tracker.vibelock.workers.dev/";
+export const AZINTERFACE_GITHUB = "https://github.com/AzielEliab/azinterface";
 export const X_URL = "https://x.com/azieleliab";
 
 export const DESCRIPTION =
   "Aziel Eliab. You don’t get to know me. You get to understand the work. Public identity Aziel Eliab only.";
 
 /**
- * Documented aziel-runtime catalog slugs (1.6.5 PRODUCTS_RAW).
- * Includes peacelock and azmail. Door: worker_home when the tracker is ready,
+ * Documented aziel-runtime catalog slugs (1.6.8 PRODUCTS_RAW extras stay
+ * as EXTRA_SOFTWARE: AZBrowser, AZNet, AZHub, AZInterface). Includes
+ * peacelock and azmail. Door: worker_home when the tracker is ready,
  * else GitHub, else library hub. Display names are catalog `name`. Lumen is not listed.
  * EmbryoLock stays as a catalog-only name on the library software hub.
+ * AZHub and AZInterface are separate Plain doors — never one combined engine.
  */
 export const CATALOG_SLUGS = [
   "ark",
@@ -168,6 +174,8 @@ export const EXTRA_SOFTWARE = [
   EMBRYOLOCK,
   { name: "AZBrowser", href: AZBROWSER_WORKER },
   { name: "AZNet", href: AZNET_WORKER },
+  { name: "AZHub", href: AZHUB_WORKER },
+  { name: "AZInterface", href: AZINTERFACE_WORKER },
   { name: "aziel-runtime", href: RUNTIME_LOCAL },
   { name: "FragGate", href: FRAGGATE_WORKER },
 ];

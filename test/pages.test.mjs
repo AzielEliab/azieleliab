@@ -20,6 +20,10 @@ import {
   LIBRARY_AZIEL,
   LIBRARY_SOFTWARE,
   AZBROWSER_WORKER,
+  AZHUB_GITHUB,
+  AZHUB_WORKER,
+  AZINTERFACE_GITHUB,
+  AZINTERFACE_WORKER,
   AZMAIL_WORKER,
   AZNET_WORKER,
   FRAGGATE_GITHUB,
@@ -103,7 +107,7 @@ describe("software doors", () => {
   it("hyperlinks every SOFTWARE name to a verified URL", () => {
     const html = pageHtml();
     assert.equal(CATALOG_SOFTWARE.length, 29);
-    assert.equal(SOFTWARE.length, 34);
+    assert.equal(SOFTWARE.length, 36);
     for (const item of SOFTWARE) {
       const needle = 'href="' + item.href + '"';
       assert.ok(html.includes(needle), "missing href for " + item.name);
@@ -129,6 +133,8 @@ describe("software doors", () => {
     assert.ok(names.includes("PeaceLock"));
     assert.ok(names.includes("AZMail"));
     assert.ok(names.includes("AZBrowser"));
+    assert.ok(names.includes("AZHub"));
+    assert.ok(names.includes("AZInterface"));
     assert.ok(names.includes("AZNet"));
     assert.ok(names.includes("EmbryoLock"));
     assert.ok(names.includes("aziel-runtime"));
@@ -223,6 +229,61 @@ describe("software doors", () => {
     assert.ok(!html.includes("Lumen"));
   });
 
+  it("lists AZHub in Plain as its own Worker UI, not nested with AZInterface", () => {
+    const html = pageHtml();
+    const azhub = SOFTWARE.find((s) => s.name === "AZHub");
+    const azinterface = SOFTWARE.find((s) => s.name === "AZInterface");
+    const azbrowser = SOFTWARE.find((s) => s.name === "AZBrowser");
+    const aznet = SOFTWARE.find((s) => s.name === "AZNet");
+    const fraggate = SOFTWARE.find((s) => s.name === "FragGate");
+    assert.ok(azhub);
+    assert.ok(azinterface);
+    assert.ok(azbrowser);
+    assert.ok(aznet);
+    assert.ok(fraggate);
+    assert.equal(softwareBucket("AZHub"), 0);
+    assert.equal(AZHUB_WORKER, "https://azhub-download-tracker.vibelock.workers.dev/");
+    assert.equal(AZHUB_GITHUB, "https://github.com/AzielEliab/azhub");
+    assert.equal(azhub.href, AZHUB_WORKER);
+    assert.notEqual(azhub.href, azinterface.href);
+    assert.notEqual(azhub.href, azbrowser.href);
+    assert.notEqual(azhub.href, aznet.href);
+    assert.notEqual(azhub.href, fraggate.href);
+    assert.ok(html.includes('href="' + AZHUB_WORKER + '"'));
+    assert.ok(html.includes(">AZHub<"));
+    assert.match(html, /azhub-download-tracker/i);
+    assert.ok(!html.includes('href="' + AZHUB_GITHUB + '" class="soft-name"'));
+    assert.ok(citeDoc().software_names.some((s) => s.name === "AZHub" && s.url === AZHUB_WORKER));
+  });
+
+  it("lists AZInterface in Plain as its own Worker UI, not nested under AZHub", () => {
+    const html = pageHtml();
+    const azinterface = SOFTWARE.find((s) => s.name === "AZInterface");
+    const azhub = SOFTWARE.find((s) => s.name === "AZHub");
+    const azbrowser = SOFTWARE.find((s) => s.name === "AZBrowser");
+    const aznet = SOFTWARE.find((s) => s.name === "AZNet");
+    const fraggate = SOFTWARE.find((s) => s.name === "FragGate");
+    assert.ok(azinterface);
+    assert.ok(azhub);
+    assert.ok(azbrowser);
+    assert.ok(aznet);
+    assert.ok(fraggate);
+    assert.equal(softwareBucket("AZInterface"), 0);
+    assert.equal(AZINTERFACE_WORKER, "https://azinterface-download-tracker.vibelock.workers.dev/");
+    assert.equal(AZINTERFACE_GITHUB, "https://github.com/AzielEliab/azinterface");
+    assert.equal(azinterface.href, AZINTERFACE_WORKER);
+    assert.notEqual(azinterface.href, azhub.href);
+    assert.notEqual(azinterface.href, azbrowser.href);
+    assert.notEqual(azinterface.href, aznet.href);
+    assert.notEqual(azinterface.href, fraggate.href);
+    assert.ok(html.includes('href="' + AZINTERFACE_WORKER + '"'));
+    assert.ok(html.includes(">AZInterface<"));
+    assert.match(html, /azinterface-download-tracker/i);
+    assert.ok(!html.includes('href="' + AZINTERFACE_GITHUB + '" class="soft-name"'));
+    assert.ok(citeDoc().software_names.some((s) => s.name === "AZInterface" && s.url === AZINTERFACE_WORKER));
+    assert.ok(!html.includes("Lumen"));
+  });
+
   it("prefers known GodLock / runtime / FragGate Worker doors", () => {
     const html = pageHtml();
     const byName = Object.fromEntries(SOFTWARE.map((s) => [s.name, s.href]));
@@ -281,6 +342,8 @@ describe("software doors", () => {
     assert.equal(softwareBucket("M.I.A.Lock"), 2);
     assert.equal(softwareBucket("AZAI"), 0);
     assert.equal(softwareBucket("AZBrowser"), 0);
+    assert.equal(softwareBucket("AZHub"), 0);
+    assert.equal(softwareBucket("AZInterface"), 0);
     assert.equal(softwareBucket("AZMail"), 0);
     assert.equal(softwareBucket("AZNet"), 0);
     const names = SOFTWARE.map((s) => s.name);
@@ -288,6 +351,8 @@ describe("software doors", () => {
     assert.ok(names.includes("StaticClock"));
     assert.ok(names.includes("AZMail"));
     assert.ok(names.includes("AZBrowser"));
+    assert.ok(names.includes("AZHub"));
+    assert.ok(names.includes("AZInterface"));
     assert.ok(names.includes("AZNet"));
     const lastPlain = names.findLastIndex((n) => softwareBucket(n) === 0);
     const firstGate = names.findIndex((n) => softwareBucket(n) === 1);
@@ -310,7 +375,12 @@ describe("software doors", () => {
     const idx = (name) => html.indexOf(">" + name + "<");
     assert.ok(idx("AZAI") < idx("StaticClock"));
     assert.ok(idx("AZBot") < idx("AZBrowser"));
+    assert.ok(idx("AZBrowser") < idx("AZHub"));
+    assert.ok(idx("AZHub") < idx("Aziel Digital Library"));
     assert.ok(idx("AZBrowser") < idx("Aziel Digital Library"));
+    assert.ok(idx("AzielTether") < idx("AZInterface"));
+    assert.ok(idx("AZInterface") < idx("AZMail"));
+    assert.ok(idx("AZHub") < idx("AZInterface"));
     assert.ok(idx("AZBot") < idx("AZMail"));
     assert.ok(idx("AZBrowser") < idx("AZMail"));
     assert.ok(idx("AzielTether") < idx("AZMail"));
@@ -413,6 +483,10 @@ describe("SEO routes", () => {
     assert.ok(llmsBody.includes(AZMAIL_WORKER));
     assert.ok(llmsBody.includes("AZBrowser"));
     assert.ok(llmsBody.includes(AZBROWSER_WORKER));
+    assert.ok(llmsBody.includes("AZHub"));
+    assert.ok(llmsBody.includes(AZHUB_WORKER));
+    assert.ok(llmsBody.includes("AZInterface"));
+    assert.ok(llmsBody.includes(AZINTERFACE_WORKER));
     assert.ok(llmsBody.includes("AZNet"));
     assert.ok(llmsBody.includes(AZNET_WORKER));
     assert.ok(llmsBody.includes("FragGate"));
@@ -435,6 +509,8 @@ describe("SEO routes", () => {
     assert.ok(!citeBody.software_names.some((s) => s.name === "Lumen"));
     assert.ok(citeBody.software_names.some((s) => s.name === "AZMail" && s.url === AZMAIL_WORKER));
     assert.ok(citeBody.software_names.some((s) => s.name === "AZBrowser" && s.url === AZBROWSER_WORKER));
+    assert.ok(citeBody.software_names.some((s) => s.name === "AZHub" && s.url === AZHUB_WORKER));
+    assert.ok(citeBody.software_names.some((s) => s.name === "AZInterface" && s.url === AZINTERFACE_WORKER));
     assert.ok(citeBody.software_names.some((s) => s.name === "AZNet" && s.url === AZNET_WORKER));
     assert.ok(citeBody.software_names.some((s) => s.name === "FragGate" && s.url === FRAGGATE_WORKER));
     assert.ok(citeBody.software_names.some((s) => s.name === "EmbryoLock"));
