@@ -88,7 +88,7 @@ Parent attaches custom domains on deploy. Expected hostnames:
 
 ## Software doors
 
-SOFTWARE is synced from documented aziel-runtime catalog slugs (29 products, including **PeaceLock** and **AZMail**) plus EmbryoLock (library hub), same-origin `aziel-runtime`, and FragGate. Preference: catalog `worker_home` when the tracker is ready, else GitHub, else the Digital Library software hub. PeaceLock and AZMail download-trackers are live, so those doors are the Workers. Lumen is not listed. Display order is Plain (name has neither lock nor gate as a product token) A–Z, then Gate A–Z, then Lock A–Z. Clock is not Lock. A name that matches both Gate and Lock sits in Gate. AZMail is Plain. PeaceLock is Lock.
+SOFTWARE is synced from documented aziel-runtime catalog slugs (29 products, including **PeaceLock** and **AZMail**) plus EmbryoLock (library hub), same-origin `aziel-runtime`, **AZBrowser**, and FragGate. Preference: catalog `worker_home` when the tracker is ready, else GitHub, else the Digital Library software hub. PeaceLock, AZMail, AZBrowser, and FragGate download-trackers are live, so those doors are the Workers. AZBrowser and FragGate are separate apps (separate Worker UIs). AZNet is a separate app and is omitted until it is live. Lumen is not listed. Display order is Plain (name has neither lock nor gate as a product token) A–Z, then Gate A–Z, then Lock A–Z. Clock is not Lock. A name that matches both Gate and Lock sits in Gate. AZBrowser and AZMail are Plain. FragGate is Gate. PeaceLock is Lock.
 
 | Name | URL |
 |------|-----|
@@ -96,6 +96,7 @@ SOFTWARE is synced from documented aziel-runtime catalog slugs (29 products, inc
 | AZ-OS | https://azos-download-tracker.vibelock.workers.dev/ |
 | AZAI | https://azai-download-tracker.vibelock.workers.dev/ |
 | AZBot | https://azbot-download-tracker.vibelock.workers.dev/ |
+| AZBrowser | https://azbrowser-download-tracker.vibelock.workers.dev/ |
 | Aziel Digital Library | https://www.azielcorpuslibrary.net/ |
 | aziel-runtime | https://www.azieleliab.com/runtime |
 | AzielTether | https://azieltether-download-tracker.vibelock.workers.dev/ |
@@ -108,7 +109,7 @@ SOFTWARE is synced from documented aziel-runtime catalog slugs (29 products, inc
 | The ARK | https://ark-download-tracker.vibelock.workers.dev/ |
 | ZionPattern Solver | https://zsolver-download-tracker.vibelock.workers.dev/ |
 | DecisionGATE | https://decisiongate-download-tracker.vibelock.workers.dev/ |
-| FragGate | https://github.com/AzielEliab/fraggate |
+| FragGate | https://fraggate-download-tracker.vibelock.workers.dev/ |
 | ChronoLock | https://chronolock-download-tracker.vibelock.workers.dev/ |
 | CodeLock | https://codelock-download-tracker.vibelock.workers.dev/ |
 | EmbryoLock | https://www.azielcorpuslibrary.net/software |

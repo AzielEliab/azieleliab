@@ -19,7 +19,10 @@ import {
   LIBRARY,
   LIBRARY_AZIEL,
   LIBRARY_SOFTWARE,
+  AZBROWSER_WORKER,
   AZMAIL_WORKER,
+  FRAGGATE_GITHUB,
+  FRAGGATE_WORKER,
   PEACELOCK_WORKER,
   PROSE,
   RUNTIME_LOCAL,
@@ -98,7 +101,7 @@ describe("software doors", () => {
   it("hyperlinks every SOFTWARE name to a verified URL", () => {
     const html = pageHtml();
     assert.equal(CATALOG_SOFTWARE.length, 29);
-    assert.equal(SOFTWARE.length, 32);
+    assert.equal(SOFTWARE.length, 33);
     for (const item of SOFTWARE) {
       const needle = 'href="' + item.href + '"';
       assert.ok(html.includes(needle), "missing href for " + item.name);
@@ -123,10 +126,12 @@ describe("software doors", () => {
     const names = SOFTWARE.map((s) => s.name);
     assert.ok(names.includes("PeaceLock"));
     assert.ok(names.includes("AZMail"));
+    assert.ok(names.includes("AZBrowser"));
     assert.ok(names.includes("EmbryoLock"));
     assert.ok(names.includes("aziel-runtime"));
     assert.ok(names.includes("FragGate"));
     assert.ok(!names.includes("Lumen"));
+    assert.ok(!names.includes("AZNet"));
     assert.deepEqual(CATALOG_LATER_SLUGS, []);
   });
 
@@ -177,11 +182,40 @@ describe("software doors", () => {
     assert.ok(citeDoc().software_names.some((s) => s.name === "PeaceLock"));
   });
 
-  it("prefers known GodLock / runtime / FragGate doors", () => {
+  it("lists AZBrowser in Plain as its own Worker UI, not nested with FragGate or AZNet", () => {
+    const html = pageHtml();
+    const azbrowser = SOFTWARE.find((s) => s.name === "AZBrowser");
+    const fraggate = SOFTWARE.find((s) => s.name === "FragGate");
+    assert.ok(azbrowser);
+    assert.ok(fraggate);
+    assert.equal(softwareBucket("AZBrowser"), 0);
+    assert.equal(AZBROWSER_WORKER, "https://azbrowser-download-tracker.vibelock.workers.dev/");
+    assert.equal(azbrowser.href, AZBROWSER_WORKER);
+    assert.notEqual(azbrowser.href, fraggate.href);
+    assert.ok(html.includes('href="' + AZBROWSER_WORKER + '"'));
+    assert.ok(html.includes(">AZBrowser<"));
+    assert.match(html, /azbrowser-download-tracker/i);
+    assert.doesNotMatch(html, /AZNet/);
+    assert.ok(!SOFTWARE.some((s) => s.name === "AZNet"));
+    assert.ok(citeDoc().software_names.some((s) => s.name === "AZBrowser" && s.url === AZBROWSER_WORKER));
+  });
+
+  it("prefers known GodLock / runtime / FragGate Worker doors", () => {
+    const html = pageHtml();
     const byName = Object.fromEntries(SOFTWARE.map((s) => [s.name, s.href]));
+    const fraggate = SOFTWARE.find((s) => s.name === "FragGate");
     assert.equal(byName.GodLock, "https://godlock-download-tracker.vibelock.workers.dev/");
     assert.equal(byName["aziel-runtime"], RUNTIME_LOCAL);
-    assert.equal(byName.FragGate, "https://github.com/AzielEliab/fraggate");
+    assert.equal(softwareBucket("FragGate"), 1);
+    assert.equal(FRAGGATE_WORKER, "https://fraggate-download-tracker.vibelock.workers.dev/");
+    assert.equal(FRAGGATE_GITHUB, "https://github.com/AzielEliab/fraggate");
+    assert.equal(byName.FragGate, FRAGGATE_WORKER);
+    assert.equal(fraggate.href, FRAGGATE_WORKER);
+    assert.ok(html.includes('href="' + FRAGGATE_WORKER + '"'));
+    assert.ok(html.includes(">FragGate<"));
+    assert.match(html, /fraggate-download-tracker/i);
+    assert.ok(!html.includes('href="' + FRAGGATE_GITHUB + '" class="soft-name"'));
+    assert.ok(citeDoc().software_names.some((s) => s.name === "FragGate" && s.url === FRAGGATE_WORKER));
   });
 
   it("sortSoftware buckets Plain, then Gate, then Lock (gate before lock)", () => {
@@ -223,11 +257,14 @@ describe("software doors", () => {
     assert.equal(softwareBucket("TemporalLock"), 2);
     assert.equal(softwareBucket("M.I.A.Lock"), 2);
     assert.equal(softwareBucket("AZAI"), 0);
+    assert.equal(softwareBucket("AZBrowser"), 0);
     assert.equal(softwareBucket("AZMail"), 0);
     const names = SOFTWARE.map((s) => s.name);
     assert.equal(softwareBucket("StaticClock"), 0);
     assert.ok(names.includes("StaticClock"));
     assert.ok(names.includes("AZMail"));
+    assert.ok(names.includes("AZBrowser"));
+    assert.ok(!names.includes("AZNet"));
     const lastPlain = names.findLastIndex((n) => softwareBucket(n) === 0);
     const firstGate = names.findIndex((n) => softwareBucket(n) === 1);
     const lastGate = names.findLastIndex((n) => softwareBucket(n) === 1);
@@ -248,7 +285,10 @@ describe("software doors", () => {
     const html = pageHtml();
     const idx = (name) => html.indexOf(">" + name + "<");
     assert.ok(idx("AZAI") < idx("StaticClock"));
+    assert.ok(idx("AZBot") < idx("AZBrowser"));
+    assert.ok(idx("AZBrowser") < idx("Aziel Digital Library"));
     assert.ok(idx("AZBot") < idx("AZMail"));
+    assert.ok(idx("AZBrowser") < idx("AZMail"));
     assert.ok(idx("AzielTether") < idx("AZMail"));
     assert.ok(idx("AZMail") < idx("ForgeReceipts"));
     assert.ok(idx("AZMail") < idx("StaticClock"));
@@ -342,6 +382,11 @@ describe("SEO routes", () => {
     assert.ok(llmsBody.includes(PEACELOCK_WORKER));
     assert.ok(llmsBody.includes("AZMail"));
     assert.ok(llmsBody.includes(AZMAIL_WORKER));
+    assert.ok(llmsBody.includes("AZBrowser"));
+    assert.ok(llmsBody.includes(AZBROWSER_WORKER));
+    assert.ok(llmsBody.includes("FragGate"));
+    assert.ok(llmsBody.includes(FRAGGATE_WORKER));
+    assert.ok(!llmsBody.includes("AZNet"));
     assert.ok(!llmsBody.includes("Lumen"));
     assert.ok(aiBody.includes("Allow: /"));
     assert.ok(aiBody.includes("Allow: /runtime"));
@@ -357,8 +402,11 @@ describe("SEO routes", () => {
     assert.equal(citeBody.research, LIBRARY + "/");
     assert.ok(!citeBody.software_names.some((s) => s.name === "Lumen"));
     assert.ok(citeBody.software_names.some((s) => s.name === "AZMail" && s.url === AZMAIL_WORKER));
+    assert.ok(citeBody.software_names.some((s) => s.name === "AZBrowser" && s.url === AZBROWSER_WORKER));
+    assert.ok(citeBody.software_names.some((s) => s.name === "FragGate" && s.url === FRAGGATE_WORKER));
     assert.ok(citeBody.software_names.some((s) => s.name === "EmbryoLock"));
     assert.ok(citeBody.software_names.some((s) => s.name === "PeaceLock"));
+    assert.ok(!citeBody.software_names.some((s) => s.name === "AZNet"));
     assert.ok(mapBody.includes("<loc>" + CANON_ORIGIN + "/</loc>"));
     assert.ok(mapBody.includes("<loc>" + RUNTIME_LOCAL + "</loc>"));
     assert.ok(mapBody.includes("<loc>" + CANON_ORIGIN + "/cite.json</loc>"));

@@ -22,7 +22,11 @@ export const GODLOCK_AZIEL = GODLOCK + "/AzielEliab";
 export const RUNTIME = "https://aziel-runtime.vibelock.workers.dev";
 export const RUNTIME_PATH = "/runtime";
 export const RUNTIME_LOCAL = CANON_ORIGIN + RUNTIME_PATH;
-export const FRAGGATE = "https://github.com/AzielEliab/fraggate";
+export const FRAGGATE_WORKER = "https://fraggate-download-tracker.vibelock.workers.dev/";
+export const FRAGGATE_GITHUB = "https://github.com/AzielEliab/fraggate";
+/** Primary FragGate door is the Worker UI. GitHub remains the source repo. */
+export const FRAGGATE = FRAGGATE_WORKER;
+export const AZBROWSER_WORKER = "https://azbrowser-download-tracker.vibelock.workers.dev/";
 export const X_URL = "https://x.com/azieleliab";
 
 export const DESCRIPTION =
@@ -159,8 +163,9 @@ export const CATALOG_ONLY = ["EmbryoLock"];
 /** Catalog does not list these; they remain extra landing doors. */
 export const EXTRA_SOFTWARE = [
   EMBRYOLOCK,
+  { name: "AZBrowser", href: AZBROWSER_WORKER },
   { name: "aziel-runtime", href: RUNTIME_LOCAL },
-  { name: "FragGate", href: FRAGGATE },
+  { name: "FragGate", href: FRAGGATE_WORKER },
 ];
 
 /** Gate before Lock when a name matches both. Clock is not Lock. */
