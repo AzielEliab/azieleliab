@@ -19,7 +19,6 @@ import {
   LIBRARY,
   LIBRARY_AZIEL,
   LIBRARY_SOFTWARE,
-  PEACELOCK_GITHUB,
   PEACELOCK_WORKER,
   PROSE,
   RUNTIME_LOCAL,
@@ -129,20 +128,21 @@ describe("software doors", () => {
     assert.ok(!CATALOG_SLUGS.includes("azmail"));
   });
 
-  it("lists PeaceLock in Lock and falls back to GitHub while the tracker is down", () => {
+  it("lists PeaceLock in Lock and uses PEACELOCK_WORKER now that the tracker is live", () => {
     const html = pageHtml();
     const peace = SOFTWARE.find((s) => s.name === "PeaceLock");
     assert.ok(peace);
     assert.equal(peace.slug, "peacelock");
     assert.equal(softwareBucket("PeaceLock"), 2);
-    assert.equal(catalogHref("peacelock"), PEACELOCK_GITHUB);
-    assert.equal(peace.href, PEACELOCK_GITHUB);
-    assert.ok(CATALOG_GITHUB_FALLBACK.has("peacelock"));
+    assert.equal(catalogHref("peacelock"), PEACELOCK_WORKER);
+    assert.equal(peace.href, PEACELOCK_WORKER);
+    assert.ok(!CATALOG_GITHUB_FALLBACK.has("peacelock"));
+    assert.equal(CATALOG_GITHUB_FALLBACK.size, 0);
     assert.equal(PEACELOCK_WORKER, "https://peacelock-download-tracker.vibelock.workers.dev/");
-    assert.ok(html.includes('href="' + PEACELOCK_GITHUB + '"'));
+    assert.ok(html.includes('href="' + PEACELOCK_WORKER + '"'));
     assert.ok(html.includes(">PeaceLock<"));
-    assert.doesNotMatch(html, /peacelock-download-tracker/i);
-    assert.ok(citeDoc().software_names.some((s) => s.name === "PeaceLock" && s.url === PEACELOCK_GITHUB));
+    assert.match(html, /peacelock-download-tracker/i);
+    assert.ok(citeDoc().software_names.some((s) => s.name === "PeaceLock" && s.url === PEACELOCK_WORKER));
   });
 
   it("adds AZMail only when a live catalog product is present", () => {
@@ -326,7 +326,7 @@ describe("SEO routes", () => {
     assert.ok(llmsBody.includes("You.com"));
     assert.ok(llmsBody.includes("EmbryoLock"));
     assert.ok(llmsBody.includes("PeaceLock"));
-    assert.ok(llmsBody.includes(PEACELOCK_GITHUB));
+    assert.ok(llmsBody.includes(PEACELOCK_WORKER));
     assert.ok(!llmsBody.includes("Lumen"));
     assert.ok(!llmsBody.includes("AZMail"));
     assert.ok(aiBody.includes("Allow: /"));
