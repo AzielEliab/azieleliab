@@ -1,5 +1,17 @@
 /** Literary landing HTML. Black / gold / white. Author: Aziel Eliab. */
-import { AUTHOR, CANON_ORIGIN, DESCRIPTION, DOORS, LIBRARY, PROSE, SIGIL, SOFTWARE } from "./copy.js";
+import {
+  AUTHOR,
+  CANON_ORIGIN,
+  DESCRIPTION,
+  DOORS,
+  EMBRYOLOCK_COPY,
+  EMBRYOLOCK_HREF,
+  LIBRARY,
+  PROSE,
+  SIGIL,
+  SOFTWARE,
+  SOFTWARE_SECTION,
+} from "./copy.js";
 import { jsonLd } from "./seo.js";
 
 function esc(s) {
@@ -217,6 +229,42 @@ export function pageHtml(views = 0) {
   <footer>
     <p>${esc(AUTHOR)} · ${a(CANON_ORIGIN + "/cite.json", "cite.json")} · ${a(CANON_ORIGIN + "/llms.txt", "llms.txt")} · Apache-2.0</p>
   </footer>
+</main>
+</body>
+</html>`;
+}
+
+export function embryoLockHtml() {
+  return `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>${esc(EMBRYOLOCK_COPY.title)} — ${esc(AUTHOR)}</title>
+<meta name="description" content="${esc(EMBRYOLOCK_COPY.open[0])}">
+<meta name="author" content="${esc(AUTHOR)}">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="${esc(EMBRYOLOCK_HREF)}">
+<link rel="icon" href="${esc(SIGIL)}" type="image/png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="${esc(AUTHOR)}">
+<meta property="og:title" content="${esc(EMBRYOLOCK_COPY.title)}">
+<meta property="og:description" content="${esc(EMBRYOLOCK_COPY.open[0])}">
+<meta property="og:url" content="${esc(EMBRYOLOCK_HREF)}">
+<meta property="og:image" content="${esc(SIGIL)}">
+<style>${CSS}</style>
+</head>
+<body>
+<main class="wrap">
+  <header class="brandrow">
+    <img class="brandmark" src="${esc(SIGIL)}" width="44" height="44" alt="">
+    <div class="brand-meta">
+      <a class="host" href="${esc(CANON_ORIGIN)}/">${esc(PROSE.host)}</a>
+    </div>
+  </header>
+  <h1>${esc(EMBRYOLOCK_COPY.title)}</h1>
+  <article class="card lead">${paragraphs(EMBRYOLOCK_COPY.open)}</article>
+  <p>${a(SOFTWARE_SECTION, "Software")} · ${a(CANON_ORIGIN + "/", AUTHOR)}</p>
 </main>
 </body>
 </html>`;
