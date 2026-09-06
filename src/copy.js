@@ -24,6 +24,9 @@ export const RUNTIME_PATH = "/runtime";
 export const RUNTIME_LOCAL = CANON_ORIGIN + RUNTIME_PATH;
 /** Soft-name strip on the landing. GET /software 301s here. */
 export const SOFTWARE_SECTION = CANON_ORIGIN + "/#software";
+/** Same-site stub card. FragGate does not expose embryolock yet. */
+export const EMBRYOLOCK_PATH = "/embryolock";
+export const EMBRYOLOCK_HREF = CANON_ORIGIN + EMBRYOLOCK_PATH;
 export const FRAGGATE_WORKER = "https://fraggate-download-tracker.vibelock.workers.dev/";
 export const FRAGGATE_GITHUB = "https://github.com/AzielEliab/fraggate";
 /** Primary FragGate door is the Worker UI. GitHub remains the source repo. */
@@ -44,7 +47,7 @@ export const DESCRIPTION =
  * as EXTRA_SOFTWARE: AZBrowser, AZNet, AZHub, AZInterface). Includes
  * peacelock and azmail. Door: worker_home when the tracker is ready,
  * else GitHub, else library hub. Display names are catalog `name`. Lumen is not listed.
- * EmbryoLock stays as a catalog-only name on the library software hub.
+ * EmbryoLock stays as a name-only local-not-hosted stub on this host.
  * AZHub and AZInterface are separate Plain doors — never one combined engine.
  */
 export const CATALOG_SLUGS = [
@@ -166,8 +169,19 @@ export function catalogSoftwareFromSlugs(slugs = CATALOG_SLUGS, liveProducts = [
 export const CATALOG_SOFTWARE = catalogSoftwareFromSlugs();
 
 /** Kept on the landing though not in the documented catalog. */
-export const EMBRYOLOCK = { name: "EmbryoLock", href: LIBRARY_SOFTWARE };
+export const EMBRYOLOCK = { name: "EmbryoLock", href: EMBRYOLOCK_HREF };
 export const CATALOG_ONLY = ["EmbryoLock"];
+
+/** Honest stub copy. Not a Worker. Not the corpus catalog. */
+export const EMBRYOLOCK_COPY = {
+  title: "EmbryoLock",
+  open: [
+    "Name only. Local-not-hosted. Not a public Worker.",
+    "There is no public download-tracker and no public GitHub repository.",
+    "FragGate does not expose this name as a stub yet. The work stays local.",
+    "This page is the door. It is not the Digital Library catalog.",
+  ],
+};
 
 /** Catalog does not list these; they remain extra landing doors. */
 export const EXTRA_SOFTWARE = [
