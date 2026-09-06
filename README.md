@@ -88,7 +88,7 @@ Parent attaches custom domains on deploy. Expected hostnames:
 
 ## Software doors
 
-SOFTWARE is the live aziel-runtime catalog (27 products) plus EmbryoLock (library hub), same-origin `aziel-runtime`, and FragGate. Preference: catalog `worker_home`, else GitHub, else the Digital Library software hub. Lumen and PeaceLock are not listed. Display order is Plain (name has neither lock nor gate) A–Z, then Gate A–Z, then Lock A–Z. A name that matches both sits in Gate.
+SOFTWARE is the live aziel-runtime catalog (27 products) plus EmbryoLock (library hub), same-origin `aziel-runtime`, and FragGate. Preference: catalog `worker_home`, else GitHub, else the Digital Library software hub. Lumen and PeaceLock are not listed. Display order is Plain (name has neither lock nor gate as a product token) A–Z, then Gate A–Z, then Lock A–Z. Clock is not Lock. A name that matches both Gate and Lock sits in Gate.
 
 | Name | URL |
 |------|-----|
@@ -103,6 +103,7 @@ SOFTWARE is the live aziel-runtime catalog (27 products) plus EmbryoLock (librar
 | Glossa Filter | https://glossafilter-download-tracker.vibelock.workers.dev/ |
 | MirageGrid | https://miragegrid-download-tracker.vibelock.workers.dev/ |
 | Post-King Chess | https://postking-download-tracker.vibelock.workers.dev/ |
+| StaticClock | https://staticclock-download-tracker.vibelock.workers.dev/ |
 | The ARK | https://ark-download-tracker.vibelock.workers.dev/ |
 | ZionPattern Solver | https://zsolver-download-tracker.vibelock.workers.dev/ |
 | DecisionGATE | https://decisiongate-download-tracker.vibelock.workers.dev/ |
@@ -116,7 +117,6 @@ SOFTWARE is the live aziel-runtime catalog (27 products) plus EmbryoLock (librar
 | M.I.A.Lock | https://mialock-download-tracker.vibelock.workers.dev/ |
 | ShadowLock | https://shadowlock-download-tracker.vibelock.workers.dev/ |
 | SpectralLock | https://spectrallock-download-tracker.vibelock.workers.dev/ |
-| StaticClock | https://staticclock-download-tracker.vibelock.workers.dev/ |
 | TemporalLock | https://temporallock-download-tracker.vibelock.workers.dev/ |
 | TrajectoryLock | https://trajectorylock-download-tracker.vibelock.workers.dev/ |
 | VeilLock | https://veillock-download-tracker.vibelock.workers.dev/ |

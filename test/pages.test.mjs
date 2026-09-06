@@ -141,6 +141,7 @@ describe("software doors", () => {
       { name: "CodeLock" },
       { name: "ForgeReceipts" },
       { name: "GateLock" },
+      { name: "StaticClock" },
     ];
     assert.deepEqual(
       sortSoftware(mixed).map((s) => s.name),
@@ -148,6 +149,7 @@ describe("software doors", () => {
         "AZAI",
         "aziel-runtime",
         "ForgeReceipts",
+        "StaticClock",
         "DecisionGATE",
         "FragGate",
         "GateLock",
@@ -156,20 +158,38 @@ describe("software doors", () => {
         "VeilLock",
       ],
     );
+    assert.equal(softwareBucket("StaticClock"), 0);
     assert.equal(softwareBucket("GateLock"), 1);
     assert.equal(softwareBucket("DecisionGATE"), 1);
+    assert.equal(softwareBucket("FragGate"), 1);
+    assert.equal(softwareBucket("CodeLock"), 2);
+    assert.equal(softwareBucket("GodLock"), 2);
     assert.equal(softwareBucket("EmbryoLock"), 2);
+    assert.equal(softwareBucket("TemporalLock"), 2);
+    assert.equal(softwareBucket("M.I.A.Lock"), 2);
     assert.equal(softwareBucket("AZAI"), 0);
     const names = SOFTWARE.map((s) => s.name);
+    assert.equal(softwareBucket("StaticClock"), 0);
+    assert.ok(names.includes("StaticClock"));
     const lastPlain = names.findLastIndex((n) => softwareBucket(n) === 0);
     const firstGate = names.findIndex((n) => softwareBucket(n) === 1);
     const lastGate = names.findLastIndex((n) => softwareBucket(n) === 1);
     const firstLock = names.findIndex((n) => softwareBucket(n) === 2);
     assert.ok(lastPlain < firstGate && lastGate < firstLock);
+    const plains = names.filter((n) => softwareBucket(n) === 0);
+    const gates = names.filter((n) => softwareBucket(n) === 1);
+    const locks = names.filter((n) => softwareBucket(n) === 2);
+    const az = (a, b) => a.localeCompare(b, "en", { sensitivity: "base" });
+    assert.deepEqual(plains, [...plains].sort(az));
+    assert.deepEqual(gates, [...gates].sort(az));
+    assert.deepEqual(locks, [...locks].sort(az));
+    assert.deepEqual(names, [...plains, ...gates, ...locks]);
     assert.ok(names.includes("EmbryoLock"));
     assert.ok(!names.includes("Lumen"));
     const html = pageHtml();
     const idx = (name) => html.indexOf(">" + name + "<");
+    assert.ok(idx("AZAI") < idx("StaticClock"));
+    assert.ok(idx("StaticClock") < idx("FragGate"));
     assert.ok(idx("AZAI") < idx("FragGate"));
     assert.ok(idx("FragGate") < idx("CodeLock"));
     assert.ok(idx("EmbryoLock") > idx("FragGate"));
