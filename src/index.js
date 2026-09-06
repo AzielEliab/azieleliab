@@ -7,6 +7,14 @@ import {
   UPDATE_CHECK_PATH,
   UPDATE_PATH,
 } from "./liveCatalog.js";
+import {
+  isMeshPath,
+  loadMeshNodes,
+  loadMeshStatus,
+  MESH_NODES_PATH,
+  MESH_STATUS_PATH,
+  meshSnapshot,
+} from "./mesh.js";
 import { embryoLockHtml, notFoundHtml, pageHtml } from "./page.js";
 import { handleRuntimeRoot, isRuntimeRequest } from "./runtimeRoot.js";
 import { aiTxt, citeDoc, CONTENT_SIGNAL, llmsTxt, robotsTxt, sitemapXml } from "./seo.js";
@@ -88,7 +96,15 @@ export async function handleRequest(request, env = {}, ctx) {
   }
 
   const path = routePath(url.pathname);
-  const jsonGet = new Set(["/v1/view", "/v1/stats", "/v1/software", UPDATE_PATH, UPDATE_CHECK_PATH]);
+  const jsonGet = new Set([
+    "/v1/view",
+    "/v1/stats",
+    "/v1/software",
+    UPDATE_PATH,
+    UPDATE_CHECK_PATH,
+    MESH_STATUS_PATH,
+    MESH_NODES_PATH,
+  ]);
   if (request.method === "OPTIONS" && jsonGet.has(path)) {
     return new Response(null, { status: 204, headers: { ...SECURITY, ...CORS } });
   }
@@ -107,11 +123,16 @@ export async function handleRequest(request, env = {}, ctx) {
     path === "/cite.json" ||
     path === "/sitemap.xml" ||
     path === "/v1/software";
-  const live = needsLive ? await loadLiveSoftware(env) : null;
+  const needsMesh = path === "/" || path === "/v1/software" || isMeshPath(path);
+  const [live, meshStatus] = await Promise.all([
+    needsLive ? loadLiveSoftware(env) : Promise.resolve(null),
+    needsMesh ? loadMeshStatus(env) : Promise.resolve(null),
+  ]);
   const doors = live && live.software;
+  const mesh = meshStatus ? meshSnapshot(meshStatus.origin) : null;
 
   let res;
-  if (path === "/") res = html(pageHtml(await pageViews(request, env), doors));
+  if (path === "/") res = html(pageHtml(await pageViews(request, env), doors, meshStatus));
   else if (path === "/software") res = Response.redirect(SOFTWARE_SECTION, 301);
   else if (path === "/embryolock") res = html(embryoLockHtml());
   else if (path === "/robots.txt") res = text(robotsTxt(), "text/plain", { cache: "public, max-age=3600" });
@@ -122,7 +143,11 @@ export async function handleRequest(request, env = {}, ctx) {
   } else if (path === "/sitemap.xml") {
     res = text(sitemapXml(new Date(), doors), "application/xml", { cache: "public, max-age=3600" });
   } else if (path === "/v1/software") {
-    res = json(softwareIndexBody(live));
+    res = json(softwareIndexBody(live, mesh));
+  } else if (path === MESH_STATUS_PATH) {
+    res = json(meshStatus || (await loadMeshStatus(env)));
+  } else if (path === MESH_NODES_PATH) {
+    res = json(await loadMeshNodes(env));
   } else if (path === UPDATE_PATH || path === UPDATE_CHECK_PATH) {
     res = json(await loadUpdateCheck(env));
   } else if (path === "/v1/stats" || (path === "/v1/view" && request.method !== "POST")) {
