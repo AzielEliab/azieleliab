@@ -89,7 +89,7 @@ Parent attaches custom domains on deploy. Expected hostnames:
 
 ## Software doors
 
-SOFTWARE is synced from documented aziel-runtime catalog slugs (29 products, including **PeaceLock** and **AZMail**) plus EmbryoLock (library hub), same-origin `aziel-runtime`, **AZBrowser**, **AZNet**, and FragGate. Preference: catalog `worker_home` when the tracker is ready, else GitHub, else the Digital Library software hub. PeaceLock, AZMail, AZBrowser, AZNet, and FragGate download-trackers are live, so those doors are the Workers. AZBrowser, AZNet, and FragGate are separate apps (separate Worker UIs). AZNet + AZBrowser are a functional pair only — AZNet is not nested under AZBrowser. Lumen is not listed. Display order is Plain (name has neither lock nor gate as a product token) A–Z, then Gate A–Z, then Lock A–Z. Clock is not Lock. A name that matches both Gate and Lock sits in Gate. AZBrowser, AZMail, and AZNet are Plain. FragGate is Gate. PeaceLock is Lock.
+SOFTWARE is synced from documented aziel-runtime catalog slugs (29 products, including **PeaceLock** and **AZMail**) plus EmbryoLock (library hub), same-origin `aziel-runtime`, **AZBrowser**, **AZHub**, **AZInterface**, **AZNet**, and FragGate. Preference: catalog `worker_home` when the tracker is ready, else GitHub, else the Digital Library software hub. PeaceLock, AZMail, AZBrowser, AZHub, AZInterface, AZNet, and FragGate download-trackers are live, so those doors are the Workers. AZBrowser, AZHub, AZInterface, AZNet, and FragGate are separate apps (separate Worker UIs). Never nest. AZHub (Blank Key, AIH-WP-1.0) and AZInterface (custodial page cycles, AIH-WP-1.0) are two engines — never one combined engine. AZNet + AZBrowser are a functional pair only — AZNet is not nested under AZBrowser. Lumen is not listed. Display order is Plain (name has neither lock nor gate as a product token) A–Z, then Gate A–Z, then Lock A–Z. Clock is not Lock. A name that matches both Gate and Lock sits in Gate. AZBrowser, AZHub, AZInterface, AZMail, and AZNet are Plain. FragGate is Gate. PeaceLock is Lock.
 
 | Name | URL |
 |------|-----|
@@ -98,9 +98,11 @@ SOFTWARE is synced from documented aziel-runtime catalog slugs (29 products, inc
 | AZAI | https://azai-download-tracker.vibelock.workers.dev/ |
 | AZBot | https://azbot-download-tracker.vibelock.workers.dev/ |
 | AZBrowser | https://azbrowser-download-tracker.vibelock.workers.dev/ |
+| AZHub | https://azhub-download-tracker.vibelock.workers.dev/ |
 | Aziel Digital Library | https://www.azielcorpuslibrary.net/ |
 | aziel-runtime | https://www.azieleliab.com/runtime |
 | AzielTether | https://azieltether-download-tracker.vibelock.workers.dev/ |
+| AZInterface | https://azinterface-download-tracker.vibelock.workers.dev/ |
 | AZMail | https://azmail-download-tracker.vibelock.workers.dev/ |
 | AZNet | https://aznet-download-tracker.vibelock.workers.dev/ |
 | ForgeReceipts | https://forgereceipts-download-tracker.vibelock.workers.dev/ |
