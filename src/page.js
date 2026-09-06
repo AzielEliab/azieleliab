@@ -41,9 +41,9 @@ function researchParagraphs() {
     .join("");
 }
 
-function softwareLine() {
-  return SOFTWARE.map((item, i) => {
-    const mark = i === SOFTWARE.length - 1 ? "." : ".";
+function softwareLine(items = SOFTWARE) {
+  return (items || SOFTWARE).map((item, i, list) => {
+    const mark = i === list.length - 1 ? "." : ".";
     return a(item.href, item.name, "soft-name") + mark;
   }).join(" ");
 }
@@ -162,9 +162,10 @@ export function viewsPill(views) {
   );
 }
 
-export function pageHtml(views = 0) {
-  const ld = JSON.stringify(jsonLd());
-  const software = softwareLine();
+export function pageHtml(views = 0, softwareItems = SOFTWARE) {
+  const doorsSoftware = softwareItems && softwareItems.length ? softwareItems : SOFTWARE;
+  const ld = JSON.stringify(jsonLd(doorsSoftware));
+  const software = softwareLine(doorsSoftware);
   const doors = DOORS.map(doorRow).join("");
   return `<!doctype html>
 <html lang="en">
@@ -190,7 +191,10 @@ export function pageHtml(views = 0) {
 <link rel="alternate" type="application/json" href="/cite.json" title="cite.json">
 <link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt">
 <link rel="alternate" type="text/plain" href="/ai.txt" title="ai.txt">
+<link rel="alternate" type="application/json" href="/v1/software" title="software catalog">
+<link rel="alternate" type="application/json" href="/v1/update/check" title="update check">
 <link rel="alternate" type="application/json" href="/runtime/openapi.json" title="OpenAPI">
+<meta name="aziel-update-check" content="${esc(CANON_ORIGIN)}/v1/update/check">
 <script type="application/ld+json">${ld}</script>
 <style>${CSS}</style>
 </head>

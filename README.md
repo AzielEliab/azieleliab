@@ -28,8 +28,10 @@ Cloudflare Worker `azieleliab-com` serves the literary landing, crawl files, and
 | `GET /v1/stats` | Pageviews (no increment) |
 | `GET /v1/view` | Same as stats |
 | `POST /v1/view` | Increment pageviews |
+| `GET /v1/software` | Resolved Software doors (live catalog at request time) |
+| `GET /v1/update` · `/v1/update/check` | Quiet installer pointer at runtime `/v1/update/check` |
 
-JSON-LD: `Person` + `WebSite` + local Runtime `SoftwareApplication` / `WebAPI`. Canonical is always `https://www.azieleliab.com/`.
+JSON-LD: `Person` + `WebSite` + local Runtime `SoftwareApplication` / `WebAPI` + Software `ItemList`. Canonical is always `https://www.azieleliab.com/`.
 
 ### Research
 
@@ -71,6 +73,8 @@ Local `wrangler dev` uses a simulated KV. The count is monotonic and not atomic 
 
 ### Deploy
 
+Push to `main` runs `.github/workflows/deploy.yml`: `npm ci`, `npm test`, then `wrangler deploy` using the `CLOUDFLARE_API_TOKEN` Actions secret and account `ac575a9b822bea2bed97d0ab73aed238`. No tokens live in the repo.
+
 ```bash
 npm install
 npm test
@@ -90,7 +94,11 @@ Parent attaches custom domains on deploy. Expected hostnames:
 
 ## Software doors
 
-SOFTWARE is synced from documented aziel-runtime catalog slugs (29 products, including **PeaceLock** and **AZMail**) plus EmbryoLock (local-not-hosted stub), same-origin `aziel-runtime`, **AZBrowser**, **AZHub**, **AZInterface**, **AZNet**, and FragGate. Preference: catalog `worker_home` when the tracker is ready, else GitHub, else the Digital Library software hub. PeaceLock, AZMail, AZBrowser, AZHub, AZInterface, AZNet, and FragGate download-trackers are live, so those doors are the Workers. AZBrowser, AZHub, AZInterface, AZNet, and FragGate are separate apps (separate Worker UIs). Never nest. AZHub (Blank Key, AIH-WP-1.0) and AZInterface (custodial page cycles, AIH-WP-1.0) are two engines — never one combined engine. AZNet + AZBrowser are a functional pair only — AZNet is not nested under AZBrowser. Lumen is not listed. Display order is Plain (name has neither lock nor gate as a product token) A–Z, then Gate A–Z, then Lock A–Z. Clock is not Lock. A name that matches both Gate and Lock sits in Gate. AZBrowser, AZHub, AZInterface, AZMail, and AZNet are Plain. FragGate is Gate. PeaceLock is Lock.
+The Software strip (and `/v1/software`, cite, llms, sitemap) prefers the **live** aziel-runtime catalog at request time: `GET https://aziel-runtime.vibelock.workers.dev/v1/software`, then `GET /v1/fraggate/list`. Same-account service binding `AZIEL_RUNTIME` is tried first. A static slug list remains only as last-resort fallback so the page still renders if runtime is down. New catalog products appear on the next request — no hand edit of this repo.
+
+Preference for each door: live `worker_home` when present, else the download-tracker Worker, else GitHub, else the Digital Library software hub. EmbryoLock stays an honest stub (`/embryolock` or the live stub entry) — never a invented tracker. same-origin `aziel-runtime` and FragGate stay on the strip. AZBrowser, AZHub, AZInterface, AZNet, and FragGate are separate apps (separate Worker UIs). Never nest. AZHub (Blank Key, AIH-WP-1.0) and AZInterface (custodial page cycles, AIH-WP-1.0) are two engines — never one combined engine. AZNet + AZBrowser are a functional pair only — AZNet is not nested under AZBrowser. Display order is Plain (name has neither lock nor gate as a product token) A–Z, then Gate A–Z, then Lock A–Z. Clock is not Lock. A name that matches both Gate and Lock sits in Gate. AZBrowser, AZHub, AZInterface, AZMail, and AZNet are Plain. FragGate is Gate. PeaceLock is Lock.
+
+Fallback snapshot (used only when live catalog is unreachable):
 
 | Name | URL |
 |------|-----|
@@ -131,7 +139,9 @@ SOFTWARE is synced from documented aziel-runtime catalog slugs (29 products, inc
 | VibeLock | https://vibelock-download-tracker.vibelock.workers.dev/ |
 | WhistleLock | https://whistlelock-download-tracker.vibelock.workers.dev/ |
 
-EmbryoLock has no public repo or download-tracker. The name stays visible and points at the on-site stub (`/embryolock`), which states it is local-not-hosted and not a public Worker. FragGate does not expose `embryolock` as a stub yet, so this site does not invent a Worker URL or send the name to the Digital Library catalog index.
+EmbryoLock has no public repo or download-tracker. The name stays visible and points at the on-site stub (`/embryolock`), which states it is local-not-hosted and not a FragGate engine. A live stub entry is accepted; this site does not invent a Worker URL or send the name to the Digital Library catalog index.
+
+Quiet installer meta: `GET /v1/update/check` (alias `/v1/update`) points at runtime `GET /v1/update/check`. The landing also ships `<meta name="aziel-update-check">`.
 
 ## Doors
 
