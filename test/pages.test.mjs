@@ -2,6 +2,7 @@ import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import worker, { apexRedirect, handleRequest } from "../src/index.js";
 import { pageHtml } from "../src/page.js";
+import { memoryKv } from "../src/views.js";
 import { aiTxt, citeDoc, jsonLd, llmsTxt, robotsTxt, sitemapXml } from "../src/seo.js";
 import {
   AUTHOR,
@@ -13,9 +14,13 @@ import {
   SOFTWARE,
 } from "../src/copy.js";
 
-async function fetchPath(path, init = {}) {
+function envWithViews(seed = 0) {
+  return { VIEWS: memoryKv(seed) };
+}
+
+async function fetchPath(path, init = {}, env) {
   const request = new Request("https://www.azieleliab.com" + path, init);
-  return worker.fetch(request);
+  return worker.fetch(request, env || {});
 }
 
 describe("landing copy", () => {
@@ -169,5 +174,52 @@ describe("worker routing", () => {
     assert.equal(res.status, 404);
     const body = await res.text();
     assert.ok(body.includes("This path is not a door."));
+  });
+});
+
+describe("pageviews", () => {
+  it("increments on human HTML GET / and not on bots or stats", async () => {
+    const env = envWithViews(4);
+    const human = await fetchPath("/", { headers: { "user-agent": "Mozilla/5.0" } }, env);
+    assert.equal(human.status, 200);
+    const html = await human.text();
+    assert.ok(html.includes("id=\"views\""));
+    assert.ok(html.includes(">5<span>views</span>"));
+    assert.ok(html.includes("You don’t get to know me."));
+
+    const bot = await fetchPath("/", { headers: { "user-agent": "GPTBot/1.0" } }, env);
+    const botHtml = await bot.text();
+    assert.ok(botHtml.includes(">5<span>views</span>"));
+
+    const stats = await fetchPath("/v1/stats", {}, env);
+    assert.equal(stats.status, 200);
+    assert.equal(stats.headers.get("access-control-allow-origin"), "*");
+    assert.deepEqual(await stats.json(), {
+      ok: true,
+      views: 5,
+      product: "azieleliab",
+      author: "Aziel Eliab",
+    });
+  });
+
+  it("POST /v1/view increments; GET /v1/view does not", async () => {
+    const env = envWithViews(10);
+    const read = await fetchPath("/v1/view", { headers: { "user-agent": "Mozilla/5.0" } }, env);
+    assert.deepEqual(await read.json(), {
+      ok: true,
+      views: 10,
+      product: "azieleliab",
+      author: "Aziel Eliab",
+    });
+    const inc = await fetchPath("/v1/view", { method: "POST", headers: { "user-agent": "Mozilla/5.0" } }, env);
+    assert.deepEqual(await inc.json(), {
+      ok: true,
+      views: 11,
+      product: "azieleliab",
+      author: "Aziel Eliab",
+    });
+    const opt = await fetchPath("/v1/view", { method: "OPTIONS" }, env);
+    assert.equal(opt.status, 204);
+    assert.equal(opt.headers.get("access-control-allow-origin"), "*");
   });
 });

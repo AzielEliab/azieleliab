@@ -75,6 +75,15 @@ body{
 }
 .host{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;font-size:13px;letter-spacing:.12em;text-transform:lowercase;color:var(--gold);text-decoration:none}
 .host:hover{color:var(--ink)}
+.brand-meta{display:flex;flex-wrap:wrap;align-items:center;gap:10px;flex:1 1 auto}
+.pill{
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  border-radius:999px;padding:6px 12px;font-size:12px;font-weight:700;
+  background:#2a241c;color:var(--ink);border:1px solid var(--gold);
+  letter-spacing:.04em;text-decoration:none;
+}
+.pill:hover{color:var(--gold)}
+.pill span{color:var(--muted);font-weight:650;margin-left:6px}
 h1{font-size:clamp(2rem,6vw,2.75rem);font-weight:600;letter-spacing:-.03em;line-height:1.15;margin:0 0 22px;color:var(--ink)}
 h2{
   font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
@@ -119,7 +128,19 @@ footer a:hover{color:var(--gold)}
 }
 `;
 
-export function pageHtml() {
+export function viewsPill(views) {
+  const n = Number.isFinite(views) ? views : 0;
+  const label = n === 1 ? "view" : "views";
+  return (
+    '<a class="pill" href="/v1/stats" id="views">' +
+    esc(String(n)) +
+    "<span>" +
+    esc(label) +
+    "</span></a>"
+  );
+}
+
+export function pageHtml(views = 0) {
   const ld = JSON.stringify(jsonLd());
   const software = softwareLine();
   const doors = DOORS.map(doorRow).join("");
@@ -154,7 +175,10 @@ export function pageHtml() {
 <main class="wrap">
   <header class="brandrow">
     <img class="brandmark" src="${esc(SIGIL)}" width="44" height="44" alt="">
-    <a class="host" href="${esc(CANON_ORIGIN)}/">${esc(PROSE.host)}</a>
+    <div class="brand-meta">
+      <a class="host" href="${esc(CANON_ORIGIN)}/">${esc(PROSE.host)}</a>
+      ${viewsPill(views)}
+    </div>
   </header>
   <h1>${esc(PROSE.title)}</h1>
   <article class="card lead">${paragraphs(PROSE.open)}</article>

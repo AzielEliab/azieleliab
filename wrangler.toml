@@ -10,6 +10,13 @@ workers_dev = true
 enabled = true
 head_sampling_rate = 1
 
+# Pageview counter. Local `wrangler dev` simulates this namespace.
+# Production: npx wrangler kv namespace create VIEWS
+# then replace id with the returned namespace id.
+[[kv_namespaces]]
+binding = "VIEWS"
+id = "azieleliab-views"
+
 # Custom domains are attached by the parent on deploy (zone may live
 # in a different Cloudflare account than this Worker).
 # Expected hostnames after attach:

@@ -21,8 +21,29 @@ Cloudflare Worker `azieleliab-com` serves the literary landing and crawl files:
 | `/ai.txt` | Crawl policy |
 | `/cite.json` | Citation record |
 | `/sitemap.xml` | Canonical urlset |
+| `GET /v1/stats` | Pageviews (no increment) |
+| `GET /v1/view` | Same as stats |
+| `POST /v1/view` | Increment pageviews |
 
 JSON-LD: `Person` + `WebSite`. Canonical is always `https://www.azieleliab.com/`.
+
+### Pageviews
+
+Counted in Cloudflare KV (`VIEWS`, key `views`). Same spirit as the GitBaby counted `/download` Workers.
+
+- Serving `GET /` increments **once** for a non-bot `User-Agent` and prints the new count in a gold pill.
+- Known crawlers (empty UA, GPTBot, Googlebot-family, curl, etc.) are read-only.
+- `GET /v1/stats` and `GET /v1/view` return `{ ok, views, product: "azieleliab", author: "Aziel Eliab" }` without incrementing.
+- `POST /v1/view` increments and returns the same JSON.
+- JSON APIs send `Access-Control-Allow-Origin: *`.
+
+Create the production namespace, then put the id in `wrangler.toml`:
+
+```bash
+npx wrangler kv namespace create VIEWS
+```
+
+Local `wrangler dev` uses a simulated KV. The count is monotonic and not atomic under heavy concurrent writes — honest enough for a landing.
 
 ### Deploy
 
