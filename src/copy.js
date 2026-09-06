@@ -75,11 +75,12 @@ export const EXTRA_SOFTWARE = [
   { name: "FragGate", href: FRAGGATE },
 ];
 
-/** Gate before Lock when a name matches both. */
+/** Gate before Lock when a name matches both. Clock is not Lock. */
 export function softwareBucket(name) {
-  const n = String(name || "").toLowerCase();
-  if (n.includes("gate")) return 1;
-  if (n.includes("lock")) return 2;
+  const n = String(name || "");
+  const cleaned = n.replace(/clock/gi, "");
+  if (/gate/i.test(n)) return 1;
+  if (/lock/i.test(cleaned)) return 2;
   return 0;
 }
 
