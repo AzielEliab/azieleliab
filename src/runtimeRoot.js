@@ -4,8 +4,10 @@
  * No human site chrome is injected. Author: Aziel Eliab.
  */
 import { AUTHOR, LIBRARY_RUNTIME, RUNTIME, RUNTIME_LOCAL, RUNTIME_PATH } from "./copy.js";
+import { injectMeshDiscovery, loadMeshNodes, loadMeshStatus, MESH_NODES_PATH } from "./mesh.js";
 import {
   fetchOriginUses,
+  isLocalMeshPath,
   isLocalUsesPath,
   readUsesDoc,
   recordRuntimeUse,
@@ -178,7 +180,7 @@ function decorateHeaders(res, via) {
   return headers;
 }
 
-async function finishProxy(request, res, via) {
+async function finishProxy(request, res, via, destPathAndQuery) {
   const headers = decorateHeaders(res, via);
   const ct = headers.get("Content-Type") || "";
   if (request.method === "HEAD") {
@@ -189,7 +191,8 @@ async function finishProxy(request, res, via) {
     return new Response(res.body, { status: res.status, statusText: res.statusText, headers });
   }
   const text = await res.text();
-  const rewritten = rewriteRuntimeBody(text, ct);
+  const destPath = String(destPathAndQuery || "").split("?")[0];
+  const rewritten = injectMeshDiscovery(rewriteRuntimeBody(text, ct), ct, destPath);
   headers.delete("content-length");
   return new Response(rewritten, { status: res.status, statusText: res.statusText, headers });
 }
@@ -234,6 +237,11 @@ export async function handleRuntimeRoot(request, url, env, ctx) {
     if (origin) doc.origin = origin;
     return usesResponse(doc, request.method);
   }
+  if (isLocalMeshPath(url.pathname) && (request.method === "GET" || request.method === "HEAD")) {
+    const dest = runtimeDestPath(url.pathname);
+    const doc = dest === MESH_NODES_PATH ? await loadMeshNodes(env) : await loadMeshStatus(env);
+    return usesResponse(doc, request.method);
+  }
   const dest = destFromRuntimePath(url.pathname, url.search);
   if (dest == null) return null;
   const via = env && env.AZIEL_RUNTIME ? "service-binding" : "origin-fetch";
@@ -255,7 +263,7 @@ export async function handleRuntimeRoot(request, url, env, ctx) {
       502,
     );
   }
-  const out = await finishProxy(request, res, via);
+  const out = await finishProxy(request, res, via, dest);
   await noteUse(request, url, env, ctx, out.status);
   return out;
 }

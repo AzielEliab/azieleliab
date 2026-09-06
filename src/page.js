@@ -12,6 +12,7 @@ import {
   SOFTWARE,
   SOFTWARE_SECTION,
 } from "./copy.js";
+import { MESH_STATUS_LOCAL, meshQuietLabel } from "./mesh.js";
 import { jsonLd } from "./seo.js";
 
 function esc(s) {
@@ -142,6 +143,7 @@ a:hover{color:var(--gold);text-decoration-color:var(--gold)}
 footer{margin-top:28px;color:var(--muted);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;font-size:13px}
 footer a{color:var(--muted)}
 footer a:hover{color:var(--gold)}
+.mesh-quiet{margin:0;font-size:12px;letter-spacing:.04em}
 @media (max-width:720px){
   .wrap{padding:22px 16px 80px}
   body{font-size:17px}
@@ -162,11 +164,12 @@ export function viewsPill(views) {
   );
 }
 
-export function pageHtml(views = 0, softwareItems = SOFTWARE) {
+export function pageHtml(views = 0, softwareItems = SOFTWARE, mesh = null) {
   const doorsSoftware = softwareItems && softwareItems.length ? softwareItems : SOFTWARE;
   const ld = JSON.stringify(jsonLd(doorsSoftware));
   const software = softwareLine(doorsSoftware);
   const doors = DOORS.map(doorRow).join("");
+  const meshLabel = meshQuietLabel(mesh);
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -193,8 +196,11 @@ export function pageHtml(views = 0, softwareItems = SOFTWARE) {
 <link rel="alternate" type="text/plain" href="/ai.txt" title="ai.txt">
 <link rel="alternate" type="application/json" href="/v1/software" title="software catalog">
 <link rel="alternate" type="application/json" href="/v1/update/check" title="update check">
+<link rel="alternate" type="application/json" href="/v1/mesh/status" title="mesh status">
+<link rel="alternate" type="application/json" href="/v1/mesh/nodes" title="mesh nodes">
 <link rel="alternate" type="application/json" href="/runtime/openapi.json" title="OpenAPI">
 <meta name="aziel-update-check" content="${esc(CANON_ORIGIN)}/v1/update/check">
+<meta name="aziel-mesh-status" content="${esc(MESH_STATUS_LOCAL)}">
 <script type="application/ld+json">${ld}</script>
 <style>${CSS}</style>
 </head>
@@ -232,6 +238,7 @@ export function pageHtml(views = 0, softwareItems = SOFTWARE) {
   </section>
   <footer>
     <p>${esc(AUTHOR)} · ${a(CANON_ORIGIN + "/cite.json", "cite.json")} · ${a(CANON_ORIGIN + "/llms.txt", "llms.txt")} · Apache-2.0</p>
+    <p class="mesh-quiet">${a("/v1/mesh/status", meshLabel)}</p>
   </footer>
 </main>
 </body>

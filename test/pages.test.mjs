@@ -49,6 +49,18 @@ import {
   RUNTIME_ORIGIN,
 } from "../src/runtimeRoot.js";
 import {
+  injectMeshDiscovery,
+  injectMeshOpenApi,
+  MESH_NODES_PATH,
+  MESH_STATUS_PATH,
+  meshEnabled,
+  meshNodesBody,
+  meshQuietLabel,
+  meshSnapshot,
+  meshStatusBody,
+} from "../src/mesh.js";
+import {
+  isLocalMeshPath,
   isLocalUsesPath,
   shouldTrackRuntimeUse,
   USES_HOST,
@@ -473,6 +485,10 @@ describe("SEO routes", () => {
     assert.ok(body.includes("Allow: /v1/software"));
     assert.ok(body.includes("Allow: /v1/update"));
     assert.ok(body.includes("Allow: /v1/update/check"));
+    assert.ok(body.includes("Allow: /v1/mesh/status"));
+    assert.ok(body.includes("Allow: /v1/mesh/nodes"));
+    assert.ok(body.includes("Allow: /runtime/v1/mesh/status"));
+    assert.ok(body.includes("Allow: /runtime/v1/mesh/nodes"));
     assert.ok(body.includes("Sitemap: " + CANON_ORIGIN + "/sitemap.xml"));
     assert.ok(body.includes("User-agent: GPTBot"));
     assert.ok(body.includes("User-agent: NeevaBot"));
@@ -504,6 +520,9 @@ describe("SEO routes", () => {
     assert.ok(llmsBody.includes("fallback"));
     assert.ok(llmsBody.includes("/v1/fraggate/list"));
     assert.ok(llmsBody.includes("/v1/update/check"));
+    assert.ok(llmsBody.includes("/v1/mesh/status"));
+    assert.ok(llmsBody.includes("/v1/mesh/nodes"));
+    assert.ok(llmsBody.includes("default off"));
     assert.ok(llmsBody.includes("Research door"));
     assert.ok(llmsBody.includes(LIBRARY + "/"));
     assert.ok(llmsBody.includes("ChatGPT (GPT Actions / OpenAI)"));
@@ -544,8 +563,11 @@ describe("SEO routes", () => {
     assert.ok(aiBody.includes("Allow: /v1/software"));
     assert.ok(aiBody.includes("Allow: /v1/update"));
     assert.ok(aiBody.includes("Allow: /v1/update/check"));
+    assert.ok(aiBody.includes("Allow: /v1/mesh/status"));
+    assert.ok(aiBody.includes("Allow: /v1/mesh/nodes"));
     assert.ok(aiBody.includes("Allow: /runtime"));
     assert.ok(aiBody.includes("Allow: /runtime/v1/uses"));
+    assert.ok(aiBody.includes("Allow: /runtime/v1/mesh/status"));
     assert.ok(aiBody.includes("Content-Signal"));
     assert.ok(aiBody.includes("Research / corpus"));
     assert.ok(aiBody.includes(RUNTIME_LOCAL));
@@ -556,6 +578,10 @@ describe("SEO routes", () => {
     assert.equal(citeBody.runtime_uses, RUNTIME_LOCAL + "/v1/uses");
     assert.equal(citeBody.software_catalog, CANON_ORIGIN + "/v1/software");
     assert.equal(citeBody.update_check, CANON_ORIGIN + "/v1/update/check");
+    assert.equal(citeBody.mesh_status, CANON_ORIGIN + "/v1/mesh/status");
+    assert.equal(citeBody.mesh_nodes, CANON_ORIGIN + "/v1/mesh/nodes");
+    assert.equal(citeBody.mesh_status_runtime, RUNTIME_LOCAL + "/v1/mesh/status");
+    assert.equal(citeBody.mesh_default, "off");
     assert.equal(citeBody.research, LIBRARY + "/");
     assert.ok(!citeBody.software_names.some((s) => s.name === "Lumen"));
     assert.ok(citeBody.software_names.some((s) => s.name === "AZMail" && s.url === AZMAIL_WORKER));
@@ -573,6 +599,9 @@ describe("SEO routes", () => {
     assert.ok(mapBody.includes("<loc>" + CANON_ORIGIN + "/llms.txt</loc>"));
     assert.ok(mapBody.includes("<loc>" + CANON_ORIGIN + "/v1/software</loc>"));
     assert.ok(mapBody.includes("<loc>" + CANON_ORIGIN + "/v1/update/check</loc>"));
+    assert.ok(mapBody.includes("<loc>" + CANON_ORIGIN + "/v1/mesh/status</loc>"));
+    assert.ok(mapBody.includes("<loc>" + CANON_ORIGIN + "/v1/mesh/nodes</loc>"));
+    assert.ok(mapBody.includes("<loc>" + RUNTIME_LOCAL + "/v1/mesh/status</loc>"));
     assert.equal(llmsTxt().trim(), llmsBody.trim());
     assert.equal(aiTxt().trim(), aiBody.trim());
     assert.deepEqual(citeBody, citeDoc());
@@ -603,6 +632,12 @@ describe("SEO routes", () => {
     assert.ok(html.includes('"@type":"ItemList"'));
     assert.ok(html.includes('href="/v1/update/check"'));
     assert.ok(html.includes('name="aziel-update-check"'));
+    assert.ok(html.includes('href="/v1/mesh/status"'));
+    assert.ok(html.includes('href="/v1/mesh/nodes"'));
+    assert.ok(html.includes('name="aziel-mesh-status"'));
+    assert.ok(html.includes(">mesh off<"));
+    assert.ok(ld["@graph"][2].description.includes("/v1/mesh/status"));
+    assert.ok(ld["@graph"][3].description.includes("/v1/mesh/status"));
   });
 });
 
@@ -611,12 +646,15 @@ describe("runtime path mapping", () => {
     assert.equal(isRuntimeRequest("/runtime"), true);
     assert.equal(isRuntimeRequest("/runtime/"), true);
     assert.equal(isRuntimeRequest("/runtime/v1/skill"), true);
+    assert.equal(isRuntimeRequest("/runtime/v1/mesh/status"), true);
+    assert.equal(isRuntimeRequest("/runtime/v1/mesh/nodes"), true);
     assert.equal(isRuntimeRequest("/runtime/openapi.json"), true);
     assert.equal(isRuntimeRequest("/"), false);
     assert.equal(isRuntimeRequest("/v1/stats"), false);
     assert.equal(destFromRuntimePath("/runtime", ""), "/");
     assert.equal(destFromRuntimePath("/runtime/", ""), "/");
     assert.equal(destFromRuntimePath("/runtime/v1/health", ""), "/v1/health");
+    assert.equal(destFromRuntimePath("/runtime/v1/mesh/status", ""), "/v1/mesh/status");
     assert.equal(destFromRuntimePath("/runtime/openapi.json", ""), "/openapi.json");
     assert.equal(destFromRuntimePath("/runtime/mcp", ""), "/mcp");
     assert.equal(destFromRuntimePath("/software", ""), null);
@@ -661,6 +699,8 @@ describe("runtime use tracker", () => {
     assert.equal(shouldTrackRuntimeUse("/runtime/v1/health", "GET"), false);
     assert.equal(shouldTrackRuntimeUse("/runtime/v1/ready", "GET"), false);
     assert.equal(shouldTrackRuntimeUse("/runtime/v1/uses", "GET"), false);
+    assert.equal(shouldTrackRuntimeUse("/runtime/v1/mesh/status", "GET"), false);
+    assert.equal(shouldTrackRuntimeUse("/runtime/v1/mesh/nodes", "GET"), false);
     assert.equal(shouldTrackRuntimeUse("/runtime/robots.txt", "GET"), false);
     assert.equal(shouldTrackRuntimeUse("/runtime/sitemap.xml", "GET"), false);
     assert.equal(shouldTrackRuntimeUse("/runtime/llms.txt", "GET"), false);
@@ -674,6 +714,9 @@ describe("runtime use tracker", () => {
     assert.equal(isLocalUsesPath("/runtime/v1/uses"), true);
     assert.equal(isLocalUsesPath("/runtime/v1/uses/"), true);
     assert.equal(isLocalUsesPath("/runtime/v1/health"), false);
+    assert.equal(isLocalMeshPath("/runtime/v1/mesh/status"), true);
+    assert.equal(isLocalMeshPath("/runtime/v1/mesh/nodes/"), true);
+    assert.equal(isLocalMeshPath("/runtime/v1/health"), false);
   });
 
   it("serves GET /runtime/v1/uses locally and records tracked proxy hops", async () => {
@@ -831,6 +874,8 @@ describe("runtime proxy", () => {
     const spec = await fetchPath("/runtime/openapi.json", {}, env);
     const oj = await spec.json();
     assert.equal(oj.servers[0].url, RUNTIME_LOCAL);
+    assert.ok(oj.paths["/runtime/v1/mesh/status"]);
+    assert.ok(oj.paths["/runtime/v1/mesh/nodes"]);
 
     const opt = await fetchPath("/runtime/mcp", { method: "OPTIONS" }, env);
     assert.equal(opt.status, 204);
@@ -1088,6 +1133,11 @@ describe("live software catalog", () => {
     assert.ok(doc.software.some((s) => s.name === "PeaceLock"));
     assert.ok(doc.software.some((s) => s.name === "EmbryoLock" && s.url === EMBRYOLOCK_HREF));
     assert.equal(doc.software.length, SOFTWARE.length);
+    assert.equal(doc.mesh.enabled, false);
+    assert.equal(doc.mesh.default, "off");
+    assert.equal(doc.mesh.mesh, "off");
+    assert.equal(doc.mesh.status, CANON_ORIGIN + "/v1/mesh/status");
+    assert.equal(doc.mesh.nodes, CANON_ORIGIN + "/v1/mesh/nodes");
   });
 
   it("serves a quiet /v1/update/check pointer at the runtime authority", async () => {
@@ -1122,5 +1172,145 @@ describe("live software catalog", () => {
 
     const opt = await fetchPath("/v1/update/check", { method: "OPTIONS" });
     assert.equal(opt.status, 204);
+  });
+});
+
+describe("suite node mesh", () => {
+  it("defaults off and never claims a hop mesh", () => {
+    assert.equal(MESH_STATUS_PATH, "/v1/mesh/status");
+    assert.equal(MESH_NODES_PATH, "/v1/mesh/nodes");
+    assert.equal(meshEnabled(null), false);
+    assert.equal(meshEnabled({ error: "not found" }), false);
+    assert.equal(meshEnabled({ enabled: false, mesh: "off" }), false);
+    assert.equal(meshEnabled({ enabled: true, mesh: "on" }), true);
+    assert.equal(meshQuietLabel(null), "mesh off");
+    assert.equal(meshQuietLabel({ origin: { enabled: true } }), "mesh on");
+    const off = meshStatusBody(null);
+    assert.equal(off.ok, true);
+    assert.equal(off.author, AUTHOR);
+    assert.equal(off.identity, AUTHOR);
+    assert.equal(off.enabled, false);
+    assert.equal(off.mesh, "off");
+    assert.equal(off.default, "off");
+    assert.match(off.note, /Default off/);
+    assert.match(off.note, /VPN\/hop mesh is not claimed/);
+    assert.equal(off.origin, undefined);
+    const nodes = meshNodesBody(null);
+    assert.deepEqual(nodes.nodes, []);
+    const snap = meshSnapshot(null);
+    assert.equal(snap.enabled, false);
+    assert.equal(snap.status, CANON_ORIGIN + "/v1/mesh/status");
+    assert.equal(snap.runtime, RUNTIME_LOCAL + "/v1/mesh/status");
+    assert.equal(snap.origin, "https://aziel-runtime.vibelock.workers.dev/v1/mesh/status");
+  });
+
+  it("serves default-off /v1/mesh/status and /v1/mesh/nodes when runtime 404s", async () => {
+    const status = await fetchPath("/v1/mesh/status");
+    assert.equal(status.status, 200);
+    const doc = await status.json();
+    assert.equal(doc.ok, true);
+    assert.equal(doc.author, AUTHOR);
+    assert.equal(doc.identity, AUTHOR);
+    assert.equal(doc.enabled, false);
+    assert.equal(doc.mesh, "off");
+    assert.equal(doc.default, "off");
+    assert.equal(doc.mesh_status, "https://aziel-runtime.vibelock.workers.dev/v1/mesh/status");
+    assert.equal(doc.mesh_status_local, CANON_ORIGIN + "/v1/mesh/status");
+    assert.equal(doc.mesh_status_runtime, RUNTIME_LOCAL + "/v1/mesh/status");
+    assert.equal(doc.origin, undefined);
+
+    const nodes = await fetchPath("/v1/mesh/nodes");
+    const nodeDoc = await nodes.json();
+    assert.equal(nodeDoc.enabled, false);
+    assert.deepEqual(nodeDoc.nodes, []);
+    assert.equal(nodeDoc.identity, AUTHOR);
+
+    const opt = await fetchPath("/v1/mesh/status", { method: "OPTIONS" });
+    assert.equal(opt.status, 204);
+    const head = await fetchPath("/v1/mesh/nodes", { method: "HEAD" });
+    assert.equal(head.status, 200);
+    assert.equal(await head.text(), "");
+  });
+
+  it("attaches origin mesh when the runtime binding answers", async () => {
+    const env = {
+      AZIEL_RUNTIME: {
+        fetch: async (req) => {
+          const path = new URL(req.url).pathname;
+          if (path === "/v1/mesh/status") {
+            return new Response(JSON.stringify({ ok: true, enabled: true, mesh: "on", node_count: 2 }), {
+              status: 200,
+              headers: { "Content-Type": "application/json" },
+            });
+          }
+          if (path === "/v1/mesh/nodes") {
+            return new Response(
+              JSON.stringify({
+                ok: true,
+                enabled: true,
+                nodes: [{ id: "a" }, { id: "b" }],
+              }),
+              { status: 200, headers: { "Content-Type": "application/json" } },
+            );
+          }
+          return new Response(JSON.stringify({ error: "not found" }), { status: 404 });
+        },
+      },
+    };
+
+    const status = await fetchPath("/v1/mesh/status", {}, env);
+    const doc = await status.json();
+    assert.equal(doc.enabled, true);
+    assert.equal(doc.mesh, "on");
+    assert.equal(doc.origin.node_count, 2);
+
+    const nodes = await fetchPath("/v1/mesh/nodes", {}, env);
+    const nodeDoc = await nodes.json();
+    assert.equal(nodeDoc.enabled, true);
+    assert.equal(nodeDoc.nodes.length, 2);
+
+    const software = await fetchPath("/v1/software", {}, env);
+    const index = await software.json();
+    assert.equal(index.mesh.enabled, true);
+    assert.equal(index.mesh.mesh, "on");
+
+    const landing = await fetchPath("/", { headers: { "user-agent": "Mozilla/5.0" } }, env);
+    const html = await landing.text();
+    assert.ok(html.includes(">mesh on<"));
+    assert.ok(html.includes('name="aziel-mesh-status"'));
+
+    const runtimeStatus = await fetchPath("/runtime/v1/mesh/status", {}, env);
+    assert.equal(runtimeStatus.status, 200);
+    const runtimeDoc = await runtimeStatus.json();
+    assert.equal(runtimeDoc.enabled, true);
+    assert.equal(runtimeDoc.author, AUTHOR);
+  });
+
+  it("injects mesh paths into proxied OpenAPI, cite, and llms", () => {
+    const spec = injectMeshOpenApi({ openapi: "3.1.0", paths: { "/v1/health": {} } });
+    assert.ok(spec.paths["/runtime/v1/mesh/status"].get);
+    assert.ok(spec.paths["/runtime/v1/mesh/nodes"].get);
+    assert.ok(spec.paths["/v1/health"]);
+
+    const already = injectMeshOpenApi({
+      openapi: "3.1.0",
+      paths: { "/v1/mesh/status": { get: { summary: "origin" } } },
+    });
+    assert.equal(already.paths["/v1/mesh/status"].get.summary, "origin");
+    assert.equal(already.paths["/runtime/v1/mesh/status"], undefined);
+
+    const cited = JSON.parse(injectMeshDiscovery(JSON.stringify({ author: AUTHOR }), "application/json", "/cite.json"));
+    assert.equal(cited.mesh_status, RUNTIME_LOCAL + "/v1/mesh/status");
+    assert.equal(cited.mesh_default, "off");
+
+    const llms = injectMeshDiscovery("# Aziel Eliab Runtime\n", "text/plain", "/llms.txt");
+    assert.match(llms, /\/v1\/mesh\/status/);
+    assert.match(llms, /default off/);
+
+    const robots = injectMeshDiscovery("User-agent: *\nAllow: /\n", "text/plain", "/robots.txt");
+    assert.doesNotMatch(robots, /mesh/);
+
+    const health = injectMeshDiscovery(JSON.stringify({ ok: true, author: AUTHOR }), "application/json", "/v1/health");
+    assert.equal(JSON.parse(health).mesh_status, undefined);
   });
 });
