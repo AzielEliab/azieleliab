@@ -88,7 +88,7 @@ Parent attaches custom domains on deploy. Expected hostnames:
 
 ## Software doors
 
-SOFTWARE is the live aziel-runtime catalog (27 products) plus EmbryoLock (library hub), same-origin `aziel-runtime`, and FragGate. Preference: catalog `worker_home`, else GitHub, else the Digital Library software hub. Lumen and PeaceLock are not listed. Display order is Plain (name has neither lock nor gate as a product token) A–Z, then Gate A–Z, then Lock A–Z. Clock is not Lock. A name that matches both Gate and Lock sits in Gate.
+SOFTWARE is synced from documented aziel-runtime catalog slugs (28 products, including **PeaceLock**) plus EmbryoLock (library hub), same-origin `aziel-runtime`, and FragGate. Preference: catalog `worker_home` when the tracker is ready, else GitHub, else the Digital Library software hub. PeaceLock’s tracker is not ready, so the door is GitHub. Lumen is not listed. AZMail joins only after it appears in the catalog. Display order is Plain (name has neither lock nor gate as a product token) A–Z, then Gate A–Z, then Lock A–Z. Clock is not Lock. A name that matches both Gate and Lock sits in Gate. PeaceLock is Lock.
 
 | Name | URL |
 |------|-----|
@@ -115,6 +115,7 @@ SOFTWARE is the live aziel-runtime catalog (27 products) plus EmbryoLock (librar
 | FoldLock | https://foldlock-download-tracker.vibelock.workers.dev/ |
 | GodLock | https://godlock-download-tracker.vibelock.workers.dev/ |
 | M.I.A.Lock | https://mialock-download-tracker.vibelock.workers.dev/ |
+| PeaceLock | https://github.com/AzielEliab/peacelock |
 | ShadowLock | https://shadowlock-download-tracker.vibelock.workers.dev/ |
 | SpectralLock | https://spectrallock-download-tracker.vibelock.workers.dev/ |
 | TemporalLock | https://temporallock-download-tracker.vibelock.workers.dev/ |
