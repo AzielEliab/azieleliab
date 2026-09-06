@@ -4,6 +4,15 @@
  * No human site chrome is injected. Author: Aziel Eliab.
  */
 import { AUTHOR, LIBRARY_RUNTIME, RUNTIME, RUNTIME_LOCAL, RUNTIME_PATH } from "./copy.js";
+import {
+  fetchOriginUses,
+  isLocalUsesPath,
+  readUsesDoc,
+  recordRuntimeUse,
+  runtimeDestPath,
+  shouldTrackRuntimeUse,
+  stampRuntimeAttribution,
+} from "./runtimeUses.js";
 
 export const RUNTIME_ORIGIN = RUNTIME;
 const UA = "Mozilla/5.0";
@@ -128,7 +137,7 @@ function dropHopHeaders(headers) {
     out.set(k, v);
   }
   if (!out.get("User-Agent")) out.set("User-Agent", UA);
-  return out;
+  return stampRuntimeAttribution(out);
 }
 
 async function cancelBody(res) {
@@ -146,7 +155,10 @@ export async function proxyOrigin(request, destPathAndQuery, env) {
     headers: dropHopHeaders(request.headers),
     redirect: "manual",
   };
-  if (init.method !== "GET" && init.method !== "HEAD") init.body = request.body;
+  if (init.method !== "GET" && init.method !== "HEAD") {
+    init.body = request.body;
+    if (init.body) init.duplex = "half";
+  }
   if (env && env.AZIEL_RUNTIME && typeof env.AZIEL_RUNTIME.fetch === "function") {
     return env.AZIEL_RUNTIME.fetch(new Request(dest.toString(), init));
   }
@@ -189,10 +201,38 @@ function jsonError(body, status) {
   });
 }
 
-export async function handleRuntimeRoot(request, url, env) {
+function usesResponse(doc, method) {
+  const headers = {
+    "Content-Type": "application/json; charset=utf-8",
+    "Cache-Control": "no-store",
+    ...runtimeCors(),
+  };
+  if (method === "HEAD") return new Response(null, { status: 200, headers });
+  return new Response(JSON.stringify(doc, null, 2) + "\n", { status: 200, headers });
+}
+
+async function noteUse(request, url, env, ctx, status) {
+  if (!shouldTrackRuntimeUse(url.pathname, request.method)) return;
+  const job = recordRuntimeUse(env, {
+    path: runtimeDestPath(url.pathname),
+    method: request.method,
+    status,
+    at: new Date().toISOString(),
+  });
+  if (ctx && typeof ctx.waitUntil === "function") ctx.waitUntil(job);
+  else await job;
+}
+
+export async function handleRuntimeRoot(request, url, env, ctx) {
   if (!isRuntimeRequest(url.pathname)) return null;
   if (request.method === "OPTIONS") {
     return new Response(null, { status: 204, headers: runtimeCors() });
+  }
+  if (isLocalUsesPath(url.pathname) && (request.method === "GET" || request.method === "HEAD")) {
+    const doc = await readUsesDoc(env);
+    const origin = await fetchOriginUses(env);
+    if (origin) doc.origin = origin;
+    return usesResponse(doc, request.method);
   }
   const dest = destFromRuntimePath(url.pathname, url.search);
   if (dest == null) return null;
@@ -201,6 +241,7 @@ export async function handleRuntimeRoot(request, url, env) {
   try {
     res = await proxyOrigin(request, dest, env);
   } catch (err) {
+    await noteUse(request, url, env, ctx, 502);
     return jsonError(
       {
         ok: false,
@@ -214,5 +255,7 @@ export async function handleRuntimeRoot(request, url, env) {
       502,
     );
   }
-  return finishProxy(request, res, via);
+  const out = await finishProxy(request, res, via);
+  await noteUse(request, url, env, ctx, out.status);
+  return out;
 }

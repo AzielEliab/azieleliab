@@ -10,7 +10,8 @@ workers_dev = true
 enabled = true
 head_sampling_rate = 1
 
-# Pageview counter. Production namespace already in use.
+# Pageview counter. Also stores host-local /runtime API uses under
+# key prefix `runtime_uses|` (no separate RUNTIME_USES namespace).
 [[kv_namespaces]]
 binding = "VIEWS"
 id = "61eedc98e4244a2b85f1cdd8b52beee1"
