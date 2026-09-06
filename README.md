@@ -11,21 +11,36 @@ Apex `https://azieleliab.com/` 301s to www.
 
 ## Worker
 
-Cloudflare Worker `azieleliab-com` serves the literary landing and crawl files:
+Cloudflare Worker `azieleliab-com` serves the literary landing, crawl files, and a quiet same-origin `/runtime` door for AI clients:
 
 | Path | What |
 |------|------|
 | `/` | Landing (black / gold / white) |
-| `/robots.txt` | `Allow: /` plus AI crawlers |
+| `/robots.txt` | `Allow: /` plus AI crawlers and `/runtime` |
 | `/llms.txt` | Door index for models |
 | `/ai.txt` | Crawl policy |
 | `/cite.json` | Citation record |
 | `/sitemap.xml` | Canonical urlset |
+| `/runtime` · `/runtime/*` | Same-origin aziel-runtime / FragGate proxy (AI background) |
 | `GET /v1/stats` | Pageviews (no increment) |
 | `GET /v1/view` | Same as stats |
 | `POST /v1/view` | Increment pageviews |
 
-JSON-LD: `Person` + `WebSite`. Canonical is always `https://www.azieleliab.com/`.
+JSON-LD: `Person` + `WebSite` + local Runtime `SoftwareApplication` / `WebAPI`. Canonical is always `https://www.azieleliab.com/`.
+
+### Research
+
+First-class Research door → [https://www.azielcorpuslibrary.net/](https://www.azielcorpuslibrary.net/) (also the AzielEliab library page). The research corpus lives there.
+
+### Same-origin `/runtime`
+
+Background / AI-facing only. Proxies aziel-runtime (service binding `AZIEL_RUNTIME`, else `https://aziel-runtime.vibelock.workers.dev`) for GET/HEAD/POST/OPTIONS. Rewrites origin URLs under `https://www.azieleliab.com/runtime/...`. Does **not** inject human site chrome into proxied HTML.
+
+Discovery:
+
+- OpenAPI: https://www.azieleliab.com/runtime/openapi.json
+- MCP: `POST https://www.azieleliab.com/runtime/mcp`
+- Skill: https://www.azieleliab.com/runtime/v1/skill
 
 ### Pageviews
 
@@ -36,12 +51,6 @@ Counted in Cloudflare KV (`VIEWS`, key `views`). Same spirit as the GitBaby coun
 - `GET /v1/stats` and `GET /v1/view` return `{ ok, views, product: "azieleliab", author: "Aziel Eliab" }` without incrementing.
 - `POST /v1/view` increments and returns the same JSON.
 - JSON APIs send `Access-Control-Allow-Origin: *`.
-
-Create the production namespace, then put the id in `wrangler.toml`:
-
-```bash
-npx wrangler kv namespace create VIEWS
-```
 
 Local `wrangler dev` uses a simulated KV. The count is monotonic and not atomic under heavy concurrent writes — honest enough for a landing.
 
@@ -64,36 +73,44 @@ Parent attaches custom domains on deploy. Expected hostnames:
 - `azieleliab.com`
 - `www.azieleliab.com`
 
-Routes are documented (commented) in `wrangler.toml`. Uncomment `[[routes]]` with `custom_domain = true` only when the zone lives in the same Cloudflare account as this Worker.
-
 ## Software doors
 
-Each SOFTWARE name on the page is a hyperlink. Preference: counted download-tracker homepage, else GitHub, else the Digital Library software hub.
+SOFTWARE is the live aziel-runtime catalog (27 products) plus EmbryoLock (library hub), same-origin `aziel-runtime`, and FragGate. Preference: catalog `worker_home`, else GitHub, else the Digital Library software hub. Lumen and PeaceLock are not listed.
 
 | Name | URL |
 |------|-----|
-| ForgeReceipts | https://forgereceipts-download-tracker.vibelock.workers.dev/ |
+| VibeLock | https://vibelock-download-tracker.vibelock.workers.dev/ |
+| VeilLock | https://veillock-download-tracker.vibelock.workers.dev/ |
+| CodeLock | https://codelock-download-tracker.vibelock.workers.dev/ |
+| GodLock | https://godlock-download-tracker.vibelock.workers.dev/ |
+| ShadowLock | https://shadowlock-download-tracker.vibelock.workers.dev/ |
 | TemporalLock | https://temporallock-download-tracker.vibelock.workers.dev/ |
-| EmbryoLock | https://www.azielcorpuslibrary.net/software |
-| ARK | https://ark-download-tracker.vibelock.workers.dev/ |
-| AZ-OS | https://azos-download-tracker.vibelock.workers.dev/ |
-| AZAI | https://azai-download-tracker.vibelock.workers.dev/ |
-| Lumen | https://www.azielcorpuslibrary.net/software |
-| GodLock | https://godlock.uk/ |
-| aziel-runtime | https://aziel-runtime.vibelock.workers.dev/ |
-| FragGate | https://github.com/AzielEliab/fraggate |
+| ForgeReceipts | https://forgereceipts-download-tracker.vibelock.workers.dev/ |
 | DecisionGATE | https://decisiongate-download-tracker.vibelock.workers.dev/ |
+| ZionPattern Solver | https://zsolver-download-tracker.vibelock.workers.dev/ |
+| AZ-OS | https://azos-download-tracker.vibelock.workers.dev/ |
+| Glossa Filter | https://glossafilter-download-tracker.vibelock.workers.dev/ |
+| MirageGrid | https://miragegrid-download-tracker.vibelock.workers.dev/ |
+| StaticClock | https://staticclock-download-tracker.vibelock.workers.dev/ |
+| ChronoLock | https://chronolock-download-tracker.vibelock.workers.dev/ |
+| Post-King Chess | https://postking-download-tracker.vibelock.workers.dev/ |
+| AZ-CLCE | https://azclce-download-tracker.vibelock.workers.dev/ |
+| The ARK | https://ark-download-tracker.vibelock.workers.dev/ |
+| AZAI | https://azai-download-tracker.vibelock.workers.dev/ |
+| SpectralLock | https://spectrallock-download-tracker.vibelock.workers.dev/ |
+| AZBot | https://azbot-download-tracker.vibelock.workers.dev/ |
+| EmployeeLock | https://employeelock-download-tracker.vibelock.workers.dev/ |
 | FoldLock | https://foldlock-download-tracker.vibelock.workers.dev/ |
 | WhistleLock | https://whistlelock-download-tracker.vibelock.workers.dev/ |
-| CodeLock | https://codelock-download-tracker.vibelock.workers.dev/ |
-| VeilLock | https://veillock-download-tracker.vibelock.workers.dev/ |
-| VibeLock | https://vibelock-download-tracker.vibelock.workers.dev/ |
-| ShadowLock | https://shadowlock-download-tracker.vibelock.workers.dev/ |
-| StaticClock | https://staticclock-download-tracker.vibelock.workers.dev/ |
-| PeaceLock | https://www.azielcorpuslibrary.net/software |
-| EmployeeLock | https://employeelock-download-tracker.vibelock.workers.dev/ |
+| TrajectoryLock | https://trajectorylock-download-tracker.vibelock.workers.dev/ |
+| M.I.A.Lock | https://mialock-download-tracker.vibelock.workers.dev/ |
+| AzielTether | https://azieltether-download-tracker.vibelock.workers.dev/ |
+| Aziel Digital Library | https://www.azielcorpuslibrary.net/ |
+| EmbryoLock | https://www.azielcorpuslibrary.net/software |
+| aziel-runtime | https://www.azieleliab.com/runtime |
+| FragGate | https://github.com/AzielEliab/fraggate |
 
-EmbryoLock, Lumen, and PeaceLock have no public repo or download-tracker. The names stay visible and point at the corpus software hub.
+EmbryoLock has no public repo or download-tracker. The name stays visible and points at the corpus software hub.
 
 ## Doors
 
@@ -102,8 +119,9 @@ Every label and URL is hyperlinked.
 - GitHub → https://github.com/AzielEliab
 - Secondary source → https://github.com/azieltherevealerofthesealed-arch
 - Corpus → https://www.azielcorpuslibrary.net/
+- Research → https://www.azielcorpuslibrary.net/ · also https://www.azielcorpuslibrary.net/AzielEliab
 - GodLock → https://godlock.uk/
-- Runtime → https://github.com/AzielEliab/aziel-runtime · live https://www.azielcorpuslibrary.net/runtime
+- Runtime → https://www.azieleliab.com/runtime · also https://aziel-runtime.vibelock.workers.dev/
 - X → https://x.com/azieleliab
 
 ## Visual
