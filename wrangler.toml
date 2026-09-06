@@ -10,25 +10,20 @@ workers_dev = true
 enabled = true
 head_sampling_rate = 1
 
-# Pageview counter. Local `wrangler dev` simulates this namespace.
-# Production: npx wrangler kv namespace create VIEWS
-# then replace id with the returned namespace id.
+# Pageview counter. Production namespace already in use.
 [[kv_namespaces]]
 binding = "VIEWS"
-id = "azieleliab-views"
+id = "61eedc98e4244a2b85f1cdd8b52beee1"
 
-# Custom domains are attached by the parent on deploy (zone may live
-# in a different Cloudflare account than this Worker).
-# Expected hostnames after attach:
-#   https://azieleliab.com        (apex — Worker 301s HTML to www)
-#   https://www.azieleliab.com    (canonical)
-#
-# [[routes]]
-# pattern = "azieleliab.com"
-# custom_domain = true
-# [[routes]]
-# pattern = "www.azieleliab.com"
-# custom_domain = true
-#
-# If the zone is already in this account, uncomment the routes above
-# and run: npx wrangler deploy
+# Same-account FragGate door. HTTPS origin is the fallback.
+[[services]]
+binding = "AZIEL_RUNTIME"
+service = "aziel-runtime"
+
+[[routes]]
+pattern = "azieleliab.com"
+custom_domain = true
+
+[[routes]]
+pattern = "www.azieleliab.com"
+custom_domain = true

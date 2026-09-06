@@ -1,5 +1,5 @@
 /** Literary landing HTML. Black / gold / white. Author: Aziel Eliab. */
-import { AUTHOR, CANON_ORIGIN, DESCRIPTION, DOORS, PROSE, SIGIL, SOFTWARE } from "./copy.js";
+import { AUTHOR, CANON_ORIGIN, DESCRIPTION, DOORS, LIBRARY, PROSE, SIGIL, SOFTWARE } from "./copy.js";
 import { jsonLd } from "./seo.js";
 
 function esc(s) {
@@ -17,6 +17,16 @@ function a(href, text, extraClass) {
 
 function paragraphs(lines) {
   return lines.map((line) => "<p>" + esc(line) + "</p>").join("");
+}
+
+function researchParagraphs() {
+  const needle = LIBRARY + "/";
+  return PROSE.research
+    .map((line) => {
+      if (!line.includes(needle)) return "<p>" + esc(line) + "</p>";
+      return "<p>" + line.split(needle).map(esc).join(a(needle, needle)) + "</p>";
+    })
+    .join("");
 }
 
 function softwareLine() {
@@ -168,6 +178,7 @@ export function pageHtml(views = 0) {
 <link rel="alternate" type="application/json" href="/cite.json" title="cite.json">
 <link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt">
 <link rel="alternate" type="text/plain" href="/ai.txt" title="ai.txt">
+<link rel="alternate" type="application/json" href="/runtime/openapi.json" title="OpenAPI">
 <script type="application/ld+json">${ld}</script>
 <style>${CSS}</style>
 </head>
@@ -193,7 +204,7 @@ export function pageHtml(views = 0) {
   </section>
   <section class="card" id="research">
     <h2>Research</h2>
-    ${paragraphs(PROSE.research)}
+    ${researchParagraphs()}
   </section>
   <section class="card" id="doors">
     <h2>Doors</h2>
