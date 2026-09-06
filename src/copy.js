@@ -104,8 +104,8 @@ export const CATALOG_LATER_SLUGS = ["azmail"];
 export const PEACELOCK_WORKER = "https://peacelock-download-tracker.vibelock.workers.dev/";
 export const PEACELOCK_GITHUB = "https://github.com/AzielEliab/peacelock";
 
-/** Slugs whose download-tracker Worker is not ready — use GitHub. */
-export const CATALOG_GITHUB_FALLBACK = new Set(["peacelock"]);
+/** Slugs whose download-tracker Worker is not ready — use GitHub. Empty: trackers live. */
+export const CATALOG_GITHUB_FALLBACK = new Set();
 
 export function catalogGithub(slug) {
   return "https://github.com/AzielEliab/" + slug;
