@@ -88,7 +88,7 @@ Parent attaches custom domains on deploy. Expected hostnames:
 
 ## Software doors
 
-SOFTWARE is synced from documented aziel-runtime catalog slugs (28 products, including **PeaceLock**) plus EmbryoLock (library hub), same-origin `aziel-runtime`, and FragGate. Preference: catalog `worker_home` when the tracker is ready, else GitHub, else the Digital Library software hub. PeaceLock’s download-tracker is live, so the door is the Worker. Lumen is not listed. AZMail joins only after it appears in the catalog. Display order is Plain (name has neither lock nor gate as a product token) A–Z, then Gate A–Z, then Lock A–Z. Clock is not Lock. A name that matches both Gate and Lock sits in Gate. PeaceLock is Lock.
+SOFTWARE is synced from documented aziel-runtime catalog slugs (29 products, including **PeaceLock** and **AZMail**) plus EmbryoLock (library hub), same-origin `aziel-runtime`, and FragGate. Preference: catalog `worker_home` when the tracker is ready, else GitHub, else the Digital Library software hub. PeaceLock and AZMail download-trackers are live, so those doors are the Workers. Lumen is not listed. Display order is Plain (name has neither lock nor gate as a product token) A–Z, then Gate A–Z, then Lock A–Z. Clock is not Lock. A name that matches both Gate and Lock sits in Gate. AZMail is Plain. PeaceLock is Lock.
 
 | Name | URL |
 |------|-----|
@@ -99,6 +99,7 @@ SOFTWARE is synced from documented aziel-runtime catalog slugs (28 products, inc
 | Aziel Digital Library | https://www.azielcorpuslibrary.net/ |
 | aziel-runtime | https://www.azieleliab.com/runtime |
 | AzielTether | https://azieltether-download-tracker.vibelock.workers.dev/ |
+| AZMail | https://azmail-download-tracker.vibelock.workers.dev/ |
 | ForgeReceipts | https://forgereceipts-download-tracker.vibelock.workers.dev/ |
 | Glossa Filter | https://glossafilter-download-tracker.vibelock.workers.dev/ |
 | MirageGrid | https://miragegrid-download-tracker.vibelock.workers.dev/ |
