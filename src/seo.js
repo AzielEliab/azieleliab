@@ -6,6 +6,7 @@ import {
   CATALOG_ONLY,
   DESCRIPTION,
   DOORS,
+  EMBRYOLOCK_HREF,
   GITHUB,
   GITHUB_RUNTIME,
   GITHUB_SECONDARY,
@@ -124,6 +125,8 @@ const PUBLIC_ALLOW = [
   "/",
   "/software",
   "/software/",
+  "/embryolock",
+  "/embryolock/",
   "/cite.json",
   "/llms.txt",
   "/ai.txt",
@@ -247,7 +250,7 @@ export function llmsTxt() {
       ? "- " +
         CATALOG_ONLY.join(", ") +
         (CATALOG_ONLY.length === 1 ? " has" : " have") +
-        " no public repo or download-tracker; the name stays visible and links to the software hub."
+        " no public repo or download-tracker; the name stays visible as a local-not-hosted stub on this host."
       : "";
   return [
     "# Aziel Eliab",
@@ -312,6 +315,7 @@ export function llmsTxt() {
     "",
     "- GET " + CANON_ORIGIN + "/",
     "- GET " + CANON_ORIGIN + "/software  (301 to /#software)",
+    "- GET " + EMBRYOLOCK_HREF + "  (EmbryoLock local-not-hosted stub)",
     "- GET " + CANON_ORIGIN + "/cite.json",
     "- GET " + CANON_ORIGIN + "/llms.txt",
     "- GET " + CANON_ORIGIN + "/ai.txt",
@@ -344,6 +348,8 @@ export function aiTxt() {
     "Allow: /",
     "Allow: /software",
     "Allow: /software/",
+    "Allow: /embryolock",
+    "Allow: /embryolock/",
     "Allow: /cite.json",
     "Allow: /llms.txt",
     "Allow: /ai.txt",
