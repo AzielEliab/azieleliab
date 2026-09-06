@@ -17,6 +17,7 @@ Cloudflare Worker `azieleliab-com` serves the literary landing, crawl files, and
 |------|------|
 | `/` | Landing (black / gold / white) |
 | `/software` · `/software/` | 301 to [`/#software`](https://www.azieleliab.com/#software) (homepage Software strip) |
+| `/embryolock` · `/embryolock/` | EmbryoLock stub card — local-not-hosted, not a public Worker |
 | `/robots.txt` | `Allow: /` plus AI crawlers and `/runtime` |
 | `/llms.txt` | Door index for models |
 | `/ai.txt` | Crawl policy |
@@ -89,7 +90,7 @@ Parent attaches custom domains on deploy. Expected hostnames:
 
 ## Software doors
 
-SOFTWARE is synced from documented aziel-runtime catalog slugs (29 products, including **PeaceLock** and **AZMail**) plus EmbryoLock (library hub), same-origin `aziel-runtime`, **AZBrowser**, **AZHub**, **AZInterface**, **AZNet**, and FragGate. Preference: catalog `worker_home` when the tracker is ready, else GitHub, else the Digital Library software hub. PeaceLock, AZMail, AZBrowser, AZHub, AZInterface, AZNet, and FragGate download-trackers are live, so those doors are the Workers. AZBrowser, AZHub, AZInterface, AZNet, and FragGate are separate apps (separate Worker UIs). Never nest. AZHub (Blank Key, AIH-WP-1.0) and AZInterface (custodial page cycles, AIH-WP-1.0) are two engines — never one combined engine. AZNet + AZBrowser are a functional pair only — AZNet is not nested under AZBrowser. Lumen is not listed. Display order is Plain (name has neither lock nor gate as a product token) A–Z, then Gate A–Z, then Lock A–Z. Clock is not Lock. A name that matches both Gate and Lock sits in Gate. AZBrowser, AZHub, AZInterface, AZMail, and AZNet are Plain. FragGate is Gate. PeaceLock is Lock.
+SOFTWARE is synced from documented aziel-runtime catalog slugs (29 products, including **PeaceLock** and **AZMail**) plus EmbryoLock (local-not-hosted stub), same-origin `aziel-runtime`, **AZBrowser**, **AZHub**, **AZInterface**, **AZNet**, and FragGate. Preference: catalog `worker_home` when the tracker is ready, else GitHub, else the Digital Library software hub. PeaceLock, AZMail, AZBrowser, AZHub, AZInterface, AZNet, and FragGate download-trackers are live, so those doors are the Workers. AZBrowser, AZHub, AZInterface, AZNet, and FragGate are separate apps (separate Worker UIs). Never nest. AZHub (Blank Key, AIH-WP-1.0) and AZInterface (custodial page cycles, AIH-WP-1.0) are two engines — never one combined engine. AZNet + AZBrowser are a functional pair only — AZNet is not nested under AZBrowser. Lumen is not listed. Display order is Plain (name has neither lock nor gate as a product token) A–Z, then Gate A–Z, then Lock A–Z. Clock is not Lock. A name that matches both Gate and Lock sits in Gate. AZBrowser, AZHub, AZInterface, AZMail, and AZNet are Plain. FragGate is Gate. PeaceLock is Lock.
 
 | Name | URL |
 |------|-----|
@@ -116,7 +117,7 @@ SOFTWARE is synced from documented aziel-runtime catalog slugs (29 products, inc
 | FragGate | https://fraggate-download-tracker.vibelock.workers.dev/ |
 | ChronoLock | https://chronolock-download-tracker.vibelock.workers.dev/ |
 | CodeLock | https://codelock-download-tracker.vibelock.workers.dev/ |
-| EmbryoLock | https://www.azielcorpuslibrary.net/software |
+| EmbryoLock | https://www.azieleliab.com/embryolock |
 | EmployeeLock | https://employeelock-download-tracker.vibelock.workers.dev/ |
 | FoldLock | https://foldlock-download-tracker.vibelock.workers.dev/ |
 | GodLock | https://godlock-download-tracker.vibelock.workers.dev/ |
@@ -130,7 +131,7 @@ SOFTWARE is synced from documented aziel-runtime catalog slugs (29 products, inc
 | VibeLock | https://vibelock-download-tracker.vibelock.workers.dev/ |
 | WhistleLock | https://whistlelock-download-tracker.vibelock.workers.dev/ |
 
-EmbryoLock has no public repo or download-tracker. The name stays visible and points at the corpus software hub.
+EmbryoLock has no public repo or download-tracker. The name stays visible and points at the on-site stub (`/embryolock`), which states it is local-not-hosted and not a public Worker. FragGate does not expose `embryolock` as a stub yet, so this site does not invent a Worker URL or send the name to the Digital Library catalog index.
 
 ## Doors
 

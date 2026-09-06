@@ -1,7 +1,7 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import worker, { apexRedirect, handleRequest } from "../src/index.js";
-import { pageHtml } from "../src/page.js";
+import { embryoLockHtml, pageHtml } from "../src/page.js";
 import { memoryKv } from "../src/views.js";
 import { aiTxt, citeDoc, jsonLd, llmsTxt, robotsTxt, sitemapXml } from "../src/seo.js";
 import {
@@ -26,6 +26,9 @@ import {
   AZINTERFACE_WORKER,
   AZMAIL_WORKER,
   AZNET_WORKER,
+  EMBRYOLOCK_COPY,
+  EMBRYOLOCK_HREF,
+  EMBRYOLOCK_PATH,
   FRAGGATE_GITHUB,
   FRAGGATE_WORKER,
   PEACELOCK_WORKER,
@@ -177,17 +180,33 @@ describe("software doors", () => {
     assert.ok(CATALOG_SOFTWARE.some((s) => s.slug === "azmail"));
   });
 
-  it("keeps EmbryoLock on the library hub and does not invent Lumen", () => {
+  it("keeps EmbryoLock as an on-site local-not-hosted stub and does not invent Lumen", () => {
     const html = pageHtml();
     assert.deepEqual(CATALOG_ONLY, ["EmbryoLock"]);
     const embryo = SOFTWARE.find((s) => s.name === "EmbryoLock");
-    assert.equal(embryo.href, LIBRARY_SOFTWARE);
+    assert.equal(EMBRYOLOCK_PATH, "/embryolock");
+    assert.equal(EMBRYOLOCK_HREF, CANON_ORIGIN + "/embryolock");
+    assert.equal(embryo.href, EMBRYOLOCK_HREF);
+    assert.notEqual(embryo.href, LIBRARY_SOFTWARE);
+    assert.doesNotMatch(embryo.href, /azielcorpuslibrary\.net\/software/i);
+    assert.doesNotMatch(embryo.href, /embryolock-download-tracker/i);
+    assert.ok(html.includes('href="' + EMBRYOLOCK_HREF + '"'));
     assert.ok(html.includes(">EmbryoLock<"));
+    assert.doesNotMatch(html, /href="https:\/\/www\.azielcorpuslibrary\.net\/software" class="soft-name"/);
     assert.doesNotMatch(html, /embryolock-download-tracker/i);
     assert.doesNotMatch(html, />Lumen</);
     assert.ok(!citeDoc().software_names.some((s) => s.name === "Lumen"));
-    assert.ok(citeDoc().software_names.some((s) => s.name === "EmbryoLock"));
+    assert.ok(citeDoc().software_names.some((s) => s.name === "EmbryoLock" && s.url === EMBRYOLOCK_HREF));
     assert.ok(citeDoc().software_names.some((s) => s.name === "PeaceLock"));
+    const stub = embryoLockHtml();
+    assert.ok(stub.includes('rel="canonical" href="' + EMBRYOLOCK_HREF + '"'));
+    assert.ok(stub.includes("https://www.azielcorpuslibrary.net/sigil.png"));
+    for (const line of EMBRYOLOCK_COPY.open) {
+      assert.ok(stub.includes(line), "missing stub copy: " + line);
+    }
+    assert.ok(stub.includes("local-not-hosted"));
+    assert.ok(stub.includes("Not a public Worker"));
+    assert.doesNotMatch(stub, /embryolock-download-tracker/i);
   });
 
   it("lists AZBrowser in Plain as its own Worker UI, not nested with FragGate or AZNet", () => {
@@ -433,6 +452,8 @@ describe("SEO routes", () => {
     assert.ok(body.includes("Allow: /"));
     assert.ok(body.includes("Allow: /software"));
     assert.ok(body.includes("Allow: /software/"));
+    assert.ok(body.includes("Allow: /embryolock"));
+    assert.ok(body.includes("Allow: /embryolock/"));
     assert.ok(body.includes("Allow: /runtime"));
     assert.ok(body.includes("Allow: /runtime/"));
     assert.ok(body.includes("Allow: /runtime/v1/uses"));
@@ -459,6 +480,8 @@ describe("SEO routes", () => {
     assert.ok(llmsBody.includes("Author: " + AUTHOR));
     assert.ok(llmsBody.includes("Canonical: " + CANON_ORIGIN + "/"));
     assert.ok(llmsBody.includes(CANON_ORIGIN + "/software  (301 to /#software)"));
+    assert.ok(llmsBody.includes(EMBRYOLOCK_HREF + "  (EmbryoLock local-not-hosted stub)"));
+    assert.ok(llmsBody.includes("local-not-hosted stub on this host"));
     assert.ok(llmsBody.includes("/runtime"));
     assert.ok(llmsBody.includes("/runtime/v1/uses"));
     assert.ok(llmsBody.includes("Research door"));
@@ -477,6 +500,7 @@ describe("SEO routes", () => {
     assert.ok(llmsBody.includes("DuckAssist"));
     assert.ok(llmsBody.includes("You.com"));
     assert.ok(llmsBody.includes("EmbryoLock"));
+    assert.ok(llmsBody.includes(EMBRYOLOCK_HREF));
     assert.ok(llmsBody.includes("PeaceLock"));
     assert.ok(llmsBody.includes(PEACELOCK_WORKER));
     assert.ok(llmsBody.includes("AZMail"));
@@ -495,6 +519,8 @@ describe("SEO routes", () => {
     assert.ok(aiBody.includes("Allow: /"));
     assert.ok(aiBody.includes("Allow: /software"));
     assert.ok(aiBody.includes("Allow: /software/"));
+    assert.ok(aiBody.includes("Allow: /embryolock"));
+    assert.ok(aiBody.includes("Allow: /embryolock/"));
     assert.ok(aiBody.includes("Allow: /runtime"));
     assert.ok(aiBody.includes("Allow: /runtime/v1/uses"));
     assert.ok(aiBody.includes("Content-Signal"));
@@ -513,7 +539,8 @@ describe("SEO routes", () => {
     assert.ok(citeBody.software_names.some((s) => s.name === "AZInterface" && s.url === AZINTERFACE_WORKER));
     assert.ok(citeBody.software_names.some((s) => s.name === "AZNet" && s.url === AZNET_WORKER));
     assert.ok(citeBody.software_names.some((s) => s.name === "FragGate" && s.url === FRAGGATE_WORKER));
-    assert.ok(citeBody.software_names.some((s) => s.name === "EmbryoLock"));
+    assert.ok(citeBody.software_names.some((s) => s.name === "EmbryoLock" && s.url === EMBRYOLOCK_HREF));
+    assert.ok(mapBody.includes("<loc>" + EMBRYOLOCK_HREF + "</loc>"));
     assert.ok(citeBody.software_names.some((s) => s.name === "PeaceLock"));
     assert.ok(mapBody.includes("<loc>" + CANON_ORIGIN + "/</loc>"));
     assert.ok(mapBody.includes("<loc>" + RUNTIME_LOCAL + "</loc>"));
@@ -560,6 +587,7 @@ describe("runtime path mapping", () => {
     assert.equal(destFromRuntimePath("/runtime/openapi.json", ""), "/openapi.json");
     assert.equal(destFromRuntimePath("/runtime/mcp", ""), "/mcp");
     assert.equal(destFromRuntimePath("/software", ""), null);
+    assert.equal(destFromRuntimePath("/embryolock", ""), null);
   });
 
   it("rewrites origin locs under www.azieleliab.com/runtime", () => {
@@ -840,6 +868,32 @@ describe("worker routing", () => {
     const apex = await handleRequest(new Request("https://azieleliab.com/software"));
     assert.equal(apex.status, 301);
     assert.equal(apex.headers.get("location"), CANON_ORIGIN + "/software");
+  });
+
+  it("serves GET /embryolock as a local-not-hosted stub, not the corpus catalog", async () => {
+    for (const path of ["/embryolock", "/embryolock/"]) {
+      const res = await fetchPath(path);
+      assert.equal(res.status, 200);
+      assert.match(res.headers.get("content-type"), /text\/html/);
+      const body = await res.text();
+      assert.ok(body.includes("<h1>EmbryoLock</h1>"));
+      assert.ok(body.includes("local-not-hosted"));
+      assert.ok(body.includes("Not a public Worker"));
+      assert.ok(body.includes("It is not the Digital Library catalog"));
+      assert.doesNotMatch(body, /embryolock-download-tracker/i);
+      assert.doesNotMatch(body, /href="https:\/\/www\.azielcorpuslibrary\.net\/software"/);
+    }
+
+    const head = await fetchPath("/embryolock", { method: "HEAD" });
+    assert.equal(head.status, 200);
+    assert.equal(await head.text(), "");
+
+    const post = await fetchPath("/embryolock", { method: "POST" });
+    assert.equal(post.status, 405);
+
+    const apex = await handleRequest(new Request("https://azieleliab.com/embryolock"));
+    assert.equal(apex.status, 301);
+    assert.equal(apex.headers.get("location"), CANON_ORIGIN + "/embryolock");
   });
 });
 
