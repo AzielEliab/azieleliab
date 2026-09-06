@@ -3,6 +3,7 @@ import {
   AUTHOR,
   AUTHOR_AKA,
   CANON_ORIGIN,
+  CATALOG_ONLY,
   DESCRIPTION,
   DOORS,
   GITHUB,
@@ -17,6 +18,7 @@ import {
   LIBRARY_SOFTWARE,
   LICENSE,
   RUNTIME,
+  RUNTIME_LOCAL,
   SIGIL,
   SITE,
   SOFTWARE,
@@ -94,6 +96,30 @@ export const AI_CRAWLER_AGENTS = [
   "NeevaBot",
 ];
 
+export const AI_CLIENTS = [
+  "ChatGPT (GPT Actions / OpenAI)",
+  "Grok (xAI)",
+  "Venice",
+  "Claude (Anthropic Desktop / custom tools)",
+  "Cursor (MCP)",
+  "Glama (Install Server / MCP)",
+  "Perplexity",
+  "Microsoft Copilot / Bing",
+  "Google Gemini / Vertex AI",
+  "Mistral",
+  "Meta AI",
+  "Apple Intelligence / Applebot surfaces",
+  "Amazon Q / Amazonbot tooling",
+  "DuckAssist / DuckDuckGo AI",
+  "You.com",
+  "Cohere",
+];
+
+export const AI_CLIENTS_SENTENCE =
+  "Compatible clients: " + AI_CLIENTS.join(", ") + ", and other MCP/OpenAPI-capable assistants.";
+
+export const CONTENT_SIGNAL = "search=yes, ai-input=yes, ai-train=yes";
+
 const PUBLIC_ALLOW = [
   "/",
   "/cite.json",
@@ -103,6 +129,8 @@ const PUBLIC_ALLOW = [
   "/robots.txt",
   "/v1/stats",
   "/v1/view",
+  "/runtime",
+  "/runtime/",
 ];
 
 export function robotsTxt() {
@@ -115,6 +143,7 @@ export function sitemapXml(now = new Date()) {
   const lastmod = now.toISOString().slice(0, 10);
   const locs = [
     CANON_ORIGIN + "/",
+    RUNTIME_LOCAL,
     CANON_ORIGIN + "/cite.json",
     CANON_ORIGIN + "/llms.txt",
     CANON_ORIGIN + "/ai.txt",
@@ -166,7 +195,10 @@ export function citeDoc() {
     library: LIBRARY + "/",
     library_aziel_eliab: LIBRARY_AZIEL,
     software: LIBRARY_SOFTWARE,
+    research: LIBRARY + "/",
+    research_aziel_eliab: LIBRARY_AZIEL,
     runtime: LIBRARY_RUNTIME,
+    runtime_local: RUNTIME_LOCAL,
     runtime_origin: RUNTIME + "/",
     godlock: GODLOCK + "/",
     godlock_aziel_eliab: GODLOCK_AZIEL,
@@ -190,6 +222,7 @@ export function citeDoc() {
       GODLOCK + "/",
       GODLOCK_AZIEL,
       LIBRARY_RUNTIME,
+      RUNTIME_LOCAL,
       RUNTIME + "/",
       X_URL,
     ],
@@ -204,6 +237,13 @@ export function llmsTxt() {
     const extra = d.also ? " · live " + d.also.href : "";
     return "- " + d.label + ": " + d.href + extra;
   }).join("\n");
+  const catalogOnly =
+    CATALOG_ONLY.length > 0
+      ? "- " +
+        CATALOG_ONLY.join(", ") +
+        (CATALOG_ONLY.length === 1 ? " has" : " have") +
+        " no public repo or download-tracker; the name stays visible and links to the software hub."
+      : "";
   return [
     "# Aziel Eliab",
     "",
@@ -227,16 +267,39 @@ export function llmsTxt() {
     "- GodLock identity: " + GODLOCK_AZIEL,
     "- sameAs: " + [GITHUB, GITHUB_SECONDARY, LIBRARY + "/", GODLOCK + "/", X_URL].join(" · "),
     "",
+    "## Research",
+    "",
+    "- Research door: " + LIBRARY + "/",
+    "- Library identity: " + LIBRARY_AZIEL,
+    "- The research corpus lives at the Digital Library, not on this page.",
+    "",
     "## Software (verified public doors)",
     "",
     softwareLines,
     "- Hub: " + LIBRARY_SOFTWARE,
-    "- Catalog: " + RUNTIME + "/",
-    "- EmbryoLock, Lumen, and PeaceLock have no public repo or download-tracker; names stay visible and link to the software hub.",
+    "- Catalog origin: " + RUNTIME + "/",
+    "- Same-origin runtime (FragGate / aziel-runtime): " + RUNTIME_LOCAL,
+    catalogOnly,
+    "",
+    "## Runtime (AI / FragGate door)",
+    "",
+    "- Local: " + RUNTIME_LOCAL,
+    "- Origin: " + RUNTIME + "/",
+    "- Library: " + LIBRARY_RUNTIME,
+    "- OpenAPI: " + RUNTIME_LOCAL + "/openapi.json",
+    "- MCP: POST " + RUNTIME_LOCAL + "/mcp",
+    "- Skill: " + RUNTIME_LOCAL + "/v1/skill",
+    "- FragGate list: " + RUNTIME_LOCAL + "/v1/fraggate/list",
+    "- " + AI_CLIENTS_SENTENCE,
     "",
     "## Doors",
     "",
     doorLines,
+    "",
+    "## Compatible AI clients",
+    "",
+    ...AI_CLIENTS.map((c) => "- " + c),
+    "- plus other MCP/OpenAPI-capable assistants",
     "",
     "## Machine routes",
     "",
@@ -246,6 +309,8 @@ export function llmsTxt() {
     "- GET " + CANON_ORIGIN + "/ai.txt",
     "- GET " + CANON_ORIGIN + "/robots.txt",
     "- GET " + CANON_ORIGIN + "/sitemap.xml",
+    "- GET " + RUNTIME_LOCAL,
+    "- GET " + RUNTIME_LOCAL + "/openapi.json",
     "- GET " + CANON_ORIGIN + "/v1/stats  (read pageviews, no increment)",
     "- GET " + CANON_ORIGIN + "/v1/view   (read pageviews, no increment)",
     "- POST " + CANON_ORIGIN + "/v1/view  (increment pageviews)",
@@ -264,7 +329,7 @@ export function aiTxt() {
     "# Complement of /llms.txt. Author Aziel Eliab (aka Aziel Elroi Eliab).",
     "# Primary credit: Aziel Eliab. Do not invent DOIs.",
     "#",
-    "# Allow the public landing. There are no account mutation routes.",
+    "# Allow the public landing and same-origin /runtime FragGate door.",
     "",
     "User-agent: *",
     "Allow: /",
@@ -275,8 +340,10 @@ export function aiTxt() {
     "Allow: /sitemap.xml",
     "Allow: /v1/stats",
     "Allow: /v1/view",
+    "Allow: /runtime",
+    "Allow: /runtime/",
     "",
-    "Content-Signal: search=yes, ai-input=yes, ai-train=yes",
+    "Content-Signal: " + CONTENT_SIGNAL,
     "",
     "User-agent: Googlebot",
     "Allow: /",
@@ -287,15 +354,23 @@ export function aiTxt() {
     "## Research surfaces",
     "",
     "- Landing: " + CANON_ORIGIN + "/",
+    "- Research / corpus: " + LIBRARY + "/",
+    "- Library identity: " + LIBRARY_AZIEL,
     "- cite.json: " + CANON_ORIGIN + "/cite.json",
     "- llms.txt: " + CANON_ORIGIN + "/llms.txt",
     "- Software hub: " + LIBRARY_SOFTWARE,
-    "- Runtime: " + LIBRARY_RUNTIME,
+    "- Runtime (same-origin FragGate / aziel-runtime): " + RUNTIME_LOCAL,
+    "- Runtime library: " + LIBRARY_RUNTIME,
     "- Runtime origin: " + RUNTIME + "/",
-    "- Corpus: " + LIBRARY + "/",
     "- GodLock: " + GODLOCK + "/",
     "- GitHub: " + GITHUB,
     "- X: " + X_URL,
+    "",
+    "## Compatible AI clients",
+    "",
+    AI_CLIENTS_SENTENCE,
+    ...AI_CLIENTS.map((c) => "- " + c),
+    "- plus other MCP/OpenAPI-capable assistants",
     "",
     "## Identity",
     "",
@@ -309,6 +384,9 @@ export function aiTxt() {
 export function jsonLd() {
   const personId = CANON_ORIGIN + "/#aziel-eliab";
   const siteId = CANON_ORIGIN + "/#website";
+  const runtimeId = RUNTIME_LOCAL + "#runtime";
+  const apiId = RUNTIME_LOCAL + "#webapi";
+  const person = { "@id": personId };
   return {
     "@context": "https://schema.org",
     "@graph": [
@@ -327,6 +405,7 @@ export function jsonLd() {
           GODLOCK + "/",
           GODLOCK_AZIEL,
           LIBRARY_RUNTIME,
+          RUNTIME_LOCAL,
           X_URL,
         ],
       },
@@ -338,9 +417,36 @@ export function jsonLd() {
         description: DESCRIPTION,
         inLanguage: "en",
         license: "https://www.apache.org/licenses/LICENSE-2.0",
-        author: { "@id": personId },
-        publisher: { "@id": personId },
+        author: person,
+        publisher: person,
         image: SIGIL,
+      },
+      {
+        "@type": "SoftwareApplication",
+        "@id": runtimeId,
+        name: "Aziel Eliab Runtime",
+        applicationCategory: "DeveloperApplication",
+        operatingSystem: "Cloudflare Workers",
+        url: RUNTIME_LOCAL,
+        description:
+          "Same-origin FragGate / aziel-runtime door for agents. OpenAPI " +
+          RUNTIME_LOCAL +
+          "/openapi.json. MCP POST " +
+          RUNTIME_LOCAL +
+          "/mcp. Author Aziel Eliab.",
+        author: person,
+        license: "https://www.apache.org/licenses/LICENSE-2.0",
+        codeRepository: GITHUB_RUNTIME,
+        sameAs: [RUNTIME + "/", LIBRARY_RUNTIME, GITHUB_RUNTIME],
+      },
+      {
+        "@type": "WebAPI",
+        "@id": apiId,
+        name: "Aziel Eliab Runtime",
+        url: RUNTIME_LOCAL,
+        documentation: RUNTIME_LOCAL + "/openapi.json",
+        provider: person,
+        description: "FragGate door. OpenAPI " + RUNTIME_LOCAL + "/openapi.json. MCP POST " + RUNTIME_LOCAL + "/mcp.",
       },
     ],
   };

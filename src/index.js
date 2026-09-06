@@ -1,7 +1,8 @@
 /** azieleliab.com landing Worker. Author: Aziel Eliab. */
 import { APEX_HOST, CANON_ORIGIN } from "./copy.js";
 import { notFoundHtml, pageHtml } from "./page.js";
-import { aiTxt, citeDoc, llmsTxt, robotsTxt, sitemapXml } from "./seo.js";
+import { handleRuntimeRoot, isRuntimeRequest } from "./runtimeRoot.js";
+import { aiTxt, citeDoc, CONTENT_SIGNAL, llmsTxt, robotsTxt, sitemapXml } from "./seo.js";
 import { incrementViews, isBot, readViews, viewsBody } from "./views.js";
 
 const SECURITY = {
@@ -23,6 +24,7 @@ function text(body, type, extra) {
     headers: {
       "content-type": type + "; charset=utf-8",
       "cache-control": extra?.cache || "public, max-age=300",
+      "Content-Signal": CONTENT_SIGNAL,
       ...SECURITY,
       ...(extra?.cors ? CORS : {}),
     },
@@ -35,6 +37,7 @@ function html(body, status = 200) {
     headers: {
       "content-type": "text/html; charset=utf-8",
       "cache-control": status === 200 ? "no-store" : "public, max-age=60",
+      "Content-Signal": CONTENT_SIGNAL,
       ...SECURITY,
     },
   });
@@ -70,6 +73,11 @@ export async function handleRequest(request, env = {}) {
   const toWww = apexRedirect(url);
   if (toWww) {
     return Response.redirect(toWww, 301);
+  }
+
+  if (isRuntimeRequest(url.pathname)) {
+    const runtime = await handleRuntimeRoot(request, url, env);
+    if (runtime) return runtime;
   }
 
   const path = routePath(url.pathname);

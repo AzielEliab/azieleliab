@@ -20,44 +20,100 @@ export const LIBRARY_AZIEL = LIBRARY + "/AzielEliab";
 export const GODLOCK = "https://godlock.uk";
 export const GODLOCK_AZIEL = GODLOCK + "/AzielEliab";
 export const RUNTIME = "https://aziel-runtime.vibelock.workers.dev";
+export const RUNTIME_PATH = "/runtime";
+export const RUNTIME_LOCAL = CANON_ORIGIN + RUNTIME_PATH;
 export const FRAGGATE = "https://github.com/AzielEliab/fraggate";
 export const X_URL = "https://x.com/azieleliab";
 
 export const DESCRIPTION =
   "Aziel Eliab. You don’t get to know me. You get to understand the work. Public identity Aziel Eliab only.";
 
-/** Verified September 2026: download-tracker homepage, else GitHub, else catalog/software hub. */
-export const SOFTWARE = [
-  { name: "ForgeReceipts", href: "https://forgereceipts-download-tracker.vibelock.workers.dev/" },
-  { name: "TemporalLock", href: "https://temporallock-download-tracker.vibelock.workers.dev/" },
-  { name: "EmbryoLock", href: LIBRARY_SOFTWARE },
-  { name: "ARK", href: "https://ark-download-tracker.vibelock.workers.dev/" },
-  { name: "AZ-OS", href: "https://azos-download-tracker.vibelock.workers.dev/" },
-  { name: "AZAI", href: "https://azai-download-tracker.vibelock.workers.dev/" },
-  { name: "Lumen", href: LIBRARY_SOFTWARE },
-  { name: "GodLock", href: GODLOCK + "/" },
-  { name: "aziel-runtime", href: RUNTIME + "/" },
-  { name: "FragGate", href: FRAGGATE },
-  { name: "DecisionGATE", href: "https://decisiongate-download-tracker.vibelock.workers.dev/" },
-  { name: "FoldLock", href: "https://foldlock-download-tracker.vibelock.workers.dev/" },
-  { name: "WhistleLock", href: "https://whistlelock-download-tracker.vibelock.workers.dev/" },
-  { name: "CodeLock", href: "https://codelock-download-tracker.vibelock.workers.dev/" },
-  { name: "VeilLock", href: "https://veillock-download-tracker.vibelock.workers.dev/" },
-  { name: "VibeLock", href: "https://vibelock-download-tracker.vibelock.workers.dev/" },
-  { name: "ShadowLock", href: "https://shadowlock-download-tracker.vibelock.workers.dev/" },
-  { name: "StaticClock", href: "https://staticclock-download-tracker.vibelock.workers.dev/" },
-  { name: "PeaceLock", href: LIBRARY_SOFTWARE },
-  { name: "EmployeeLock", href: "https://employeelock-download-tracker.vibelock.workers.dev/" },
+/**
+ * Live aziel-runtime catalog (27), September 2026.
+ * Door: worker_home when set, else github, else library software hub.
+ * Display names are catalog `name`. Lumen and PeaceLock are not listed.
+ * EmbryoLock stays as a catalog-only name on the library software hub.
+ */
+export const CATALOG_SOFTWARE = [
+  { slug: "vibelock", name: "VibeLock", href: "https://vibelock-download-tracker.vibelock.workers.dev/" },
+  { slug: "veillock", name: "VeilLock", href: "https://veillock-download-tracker.vibelock.workers.dev/" },
+  { slug: "codelock", name: "CodeLock", href: "https://codelock-download-tracker.vibelock.workers.dev/" },
+  { slug: "godlock", name: "GodLock", href: "https://godlock-download-tracker.vibelock.workers.dev/" },
+  { slug: "shadowlock", name: "ShadowLock", href: "https://shadowlock-download-tracker.vibelock.workers.dev/" },
+  { slug: "temporallock", name: "TemporalLock", href: "https://temporallock-download-tracker.vibelock.workers.dev/" },
+  { slug: "forgereceipts", name: "ForgeReceipts", href: "https://forgereceipts-download-tracker.vibelock.workers.dev/" },
+  { slug: "decisiongate", name: "DecisionGATE", href: "https://decisiongate-download-tracker.vibelock.workers.dev/" },
+  { slug: "zsolver", name: "ZionPattern Solver", href: "https://zsolver-download-tracker.vibelock.workers.dev/" },
+  { slug: "azos", name: "AZ-OS", href: "https://azos-download-tracker.vibelock.workers.dev/" },
+  { slug: "glossafilter", name: "Glossa Filter", href: "https://glossafilter-download-tracker.vibelock.workers.dev/" },
+  { slug: "miragegrid", name: "MirageGrid", href: "https://miragegrid-download-tracker.vibelock.workers.dev/" },
+  { slug: "staticclock", name: "StaticClock", href: "https://staticclock-download-tracker.vibelock.workers.dev/" },
+  { slug: "chronolock", name: "ChronoLock", href: "https://chronolock-download-tracker.vibelock.workers.dev/" },
+  { slug: "postking", name: "Post-King Chess", href: "https://postking-download-tracker.vibelock.workers.dev/" },
+  { slug: "azclce", name: "AZ-CLCE", href: "https://azclce-download-tracker.vibelock.workers.dev/" },
+  { slug: "ark", name: "The ARK", href: "https://ark-download-tracker.vibelock.workers.dev/" },
+  { slug: "azai", name: "AZAI", href: "https://azai-download-tracker.vibelock.workers.dev/" },
+  { slug: "spectrallock", name: "SpectralLock", href: "https://spectrallock-download-tracker.vibelock.workers.dev/" },
+  { slug: "azbot", name: "AZBot", href: "https://azbot-download-tracker.vibelock.workers.dev/" },
+  { slug: "employeelock", name: "EmployeeLock", href: "https://employeelock-download-tracker.vibelock.workers.dev/" },
+  { slug: "foldlock", name: "FoldLock", href: "https://foldlock-download-tracker.vibelock.workers.dev/" },
+  { slug: "whistlelock", name: "WhistleLock", href: "https://whistlelock-download-tracker.vibelock.workers.dev/" },
+  { slug: "trajectorylock", name: "TrajectoryLock", href: "https://trajectorylock-download-tracker.vibelock.workers.dev/" },
+  { slug: "mialock", name: "M.I.A.Lock", href: "https://mialock-download-tracker.vibelock.workers.dev/" },
+  { slug: "azieltether", name: "AzielTether", href: "https://azieltether-download-tracker.vibelock.workers.dev/" },
+  { slug: "aziel-corpus", name: "Aziel Digital Library", href: LIBRARY + "/" },
 ];
 
-export const CATALOG_ONLY = ["EmbryoLock", "Lumen", "PeaceLock"];
+/** Kept on the landing though not in the live 27-product catalog. */
+export const EMBRYOLOCK = { name: "EmbryoLock", href: LIBRARY_SOFTWARE };
+export const CATALOG_ONLY = ["EmbryoLock"];
+
+/** Catalog does not list these; they remain extra landing doors. */
+export const EXTRA_SOFTWARE = [
+  EMBRYOLOCK,
+  { name: "aziel-runtime", href: RUNTIME_LOCAL },
+  { name: "FragGate", href: FRAGGATE },
+];
+
+export const SOFTWARE = CATALOG_SOFTWARE.concat(EXTRA_SOFTWARE);
+
+export const CATALOG_SLUGS = [
+  "ark",
+  "azai",
+  "azbot",
+  "azclce",
+  "aziel-corpus",
+  "azieltether",
+  "azos",
+  "chronolock",
+  "codelock",
+  "decisiongate",
+  "employeelock",
+  "foldlock",
+  "forgereceipts",
+  "glossafilter",
+  "godlock",
+  "mialock",
+  "miragegrid",
+  "postking",
+  "shadowlock",
+  "spectrallock",
+  "staticclock",
+  "temporallock",
+  "trajectorylock",
+  "veillock",
+  "vibelock",
+  "whistlelock",
+  "zsolver",
+];
 
 export const DOORS = [
   { label: "GitHub", href: GITHUB },
   { label: "Secondary source", href: GITHUB_SECONDARY },
   { label: "Corpus", href: LIBRARY + "/" },
+  { label: "Research", href: LIBRARY + "/", also: { label: LIBRARY_AZIEL, href: LIBRARY_AZIEL } },
   { label: "GodLock", href: GODLOCK + "/" },
-  { label: "Runtime", href: GITHUB_RUNTIME, also: { label: LIBRARY_RUNTIME, href: LIBRARY_RUNTIME } },
+  { label: "Runtime", href: RUNTIME_LOCAL, also: { label: RUNTIME + "/", href: RUNTIME + "/" } },
   { label: "X", href: X_URL },
 ];
 
@@ -91,6 +147,7 @@ export const PROSE = {
     "Programs that sell belief as a feature.",
     "Devices that should answer to the wearer and answer instead to the room.",
     "One problem under every heading: the first ending is treated as the true one.",
+    "The research corpus lives at " + LIBRARY + "/.",
   ],
   close: "If the work holds, the name was only a handle on the door.",
   sign: "— Aziel Eliab",
