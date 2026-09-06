@@ -88,7 +88,7 @@ Parent attaches custom domains on deploy. Expected hostnames:
 
 ## Software doors
 
-SOFTWARE is synced from documented aziel-runtime catalog slugs (29 products, including **PeaceLock** and **AZMail**) plus EmbryoLock (library hub), same-origin `aziel-runtime`, **AZBrowser**, and FragGate. Preference: catalog `worker_home` when the tracker is ready, else GitHub, else the Digital Library software hub. PeaceLock, AZMail, AZBrowser, and FragGate download-trackers are live, so those doors are the Workers. AZBrowser and FragGate are separate apps (separate Worker UIs). AZNet is a separate app and is omitted until it is live. Lumen is not listed. Display order is Plain (name has neither lock nor gate as a product token) A–Z, then Gate A–Z, then Lock A–Z. Clock is not Lock. A name that matches both Gate and Lock sits in Gate. AZBrowser and AZMail are Plain. FragGate is Gate. PeaceLock is Lock.
+SOFTWARE is synced from documented aziel-runtime catalog slugs (29 products, including **PeaceLock** and **AZMail**) plus EmbryoLock (library hub), same-origin `aziel-runtime`, **AZBrowser**, **AZNet**, and FragGate. Preference: catalog `worker_home` when the tracker is ready, else GitHub, else the Digital Library software hub. PeaceLock, AZMail, AZBrowser, AZNet, and FragGate download-trackers are live, so those doors are the Workers. AZBrowser, AZNet, and FragGate are separate apps (separate Worker UIs). AZNet + AZBrowser are a functional pair only — AZNet is not nested under AZBrowser. Lumen is not listed. Display order is Plain (name has neither lock nor gate as a product token) A–Z, then Gate A–Z, then Lock A–Z. Clock is not Lock. A name that matches both Gate and Lock sits in Gate. AZBrowser, AZMail, and AZNet are Plain. FragGate is Gate. PeaceLock is Lock.
 
 | Name | URL |
 |------|-----|
@@ -101,6 +101,7 @@ SOFTWARE is synced from documented aziel-runtime catalog slugs (29 products, inc
 | aziel-runtime | https://www.azieleliab.com/runtime |
 | AzielTether | https://azieltether-download-tracker.vibelock.workers.dev/ |
 | AZMail | https://azmail-download-tracker.vibelock.workers.dev/ |
+| AZNet | https://aznet-download-tracker.vibelock.workers.dev/ |
 | ForgeReceipts | https://forgereceipts-download-tracker.vibelock.workers.dev/ |
 | Glossa Filter | https://glossafilter-download-tracker.vibelock.workers.dev/ |
 | MirageGrid | https://miragegrid-download-tracker.vibelock.workers.dev/ |
