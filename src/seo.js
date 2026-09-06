@@ -137,9 +137,13 @@ const PUBLIC_ALLOW = [
   "/v1/software",
   "/v1/update",
   "/v1/update/check",
+  "/v1/mesh/status",
+  "/v1/mesh/nodes",
   "/runtime",
   "/runtime/",
   "/runtime/v1/uses",
+  "/runtime/v1/mesh/status",
+  "/runtime/v1/mesh/nodes",
 ];
 
 export function robotsTxt() {
@@ -164,7 +168,11 @@ export function sitemapXml(now = new Date(), software = SOFTWARE) {
     CANON_ORIGIN + "/v1/software",
     CANON_ORIGIN + "/v1/update",
     CANON_ORIGIN + "/v1/update/check",
+    CANON_ORIGIN + "/v1/mesh/status",
+    CANON_ORIGIN + "/v1/mesh/nodes",
     RUNTIME_LOCAL + "/v1/uses",
+    RUNTIME_LOCAL + "/v1/mesh/status",
+    RUNTIME_LOCAL + "/v1/mesh/nodes",
     GITHUB,
     GITHUB_SECONDARY,
     GITHUB_SITE,
@@ -225,6 +233,15 @@ export function citeDoc(software = SOFTWARE) {
     software_catalog_fallback: RUNTIME + "/v1/fraggate/list",
     update_check: CANON_ORIGIN + "/v1/update/check",
     update_check_origin: RUNTIME + "/v1/update/check",
+    mesh_status: CANON_ORIGIN + "/v1/mesh/status",
+    mesh_nodes: CANON_ORIGIN + "/v1/mesh/nodes",
+    mesh_status_runtime: RUNTIME_LOCAL + "/v1/mesh/status",
+    mesh_nodes_runtime: RUNTIME_LOCAL + "/v1/mesh/nodes",
+    mesh_status_origin: RUNTIME + "/v1/mesh/status",
+    mesh_nodes_origin: RUNTIME + "/v1/mesh/nodes",
+    mesh_default: "off",
+    mesh_note:
+      "Suite decentralized node mesh. Default off until enabled on runtime. VPN/hop mesh is not claimed on this public surface.",
     runtime_uses: RUNTIME_LOCAL + "/v1/uses",
     sigil: SIGIL,
     license: LICENSE,
@@ -303,6 +320,8 @@ export function llmsTxt(software = SOFTWARE) {
     "- Catalog origin: " + RUNTIME + "/",
     "- Same-origin runtime (FragGate / aziel-runtime): " + RUNTIME_LOCAL,
     "- Uses (this host): " + RUNTIME_LOCAL + "/v1/uses",
+    "- Mesh status: " + CANON_ORIGIN + "/v1/mesh/status (default off; origin " + RUNTIME + "/v1/mesh/status)",
+    "- Mesh nodes: " + CANON_ORIGIN + "/v1/mesh/nodes",
     catalogOnly,
     "",
     "## Runtime (AI / FragGate door)",
@@ -315,6 +334,8 @@ export function llmsTxt(software = SOFTWARE) {
     "- Skill: " + RUNTIME_LOCAL + "/v1/skill",
     "- FragGate list: " + RUNTIME_LOCAL + "/v1/fraggate/list",
     "- Uses (this host's /runtime API stats): " + RUNTIME_LOCAL + "/v1/uses",
+    "- Mesh status: " + RUNTIME_LOCAL + "/v1/mesh/status (default off until enabled on runtime)",
+    "- Mesh nodes: " + RUNTIME_LOCAL + "/v1/mesh/nodes",
     "- " + AI_CLIENTS_SENTENCE,
     "",
     "## Doors",
@@ -333,6 +354,8 @@ export function llmsTxt(software = SOFTWARE) {
     "- GET " + EMBRYOLOCK_HREF + "  (EmbryoLock local-not-hosted stub)",
     "- GET " + CANON_ORIGIN + "/v1/software  (resolved live doors)",
     "- GET " + CANON_ORIGIN + "/v1/update/check  (quiet installer pointer)",
+    "- GET " + CANON_ORIGIN + "/v1/mesh/status  (suite node mesh; default off)",
+    "- GET " + CANON_ORIGIN + "/v1/mesh/nodes",
     "- GET " + CANON_ORIGIN + "/cite.json",
     "- GET " + CANON_ORIGIN + "/llms.txt",
     "- GET " + CANON_ORIGIN + "/ai.txt",
@@ -341,6 +364,8 @@ export function llmsTxt(software = SOFTWARE) {
     "- GET " + RUNTIME_LOCAL,
     "- GET " + RUNTIME_LOCAL + "/openapi.json",
     "- GET " + RUNTIME_LOCAL + "/v1/uses  (this host's /runtime API use stats)",
+    "- GET " + RUNTIME_LOCAL + "/v1/mesh/status  (suite node mesh; default off)",
+    "- GET " + RUNTIME_LOCAL + "/v1/mesh/nodes",
     "- GET " + CANON_ORIGIN + "/v1/stats  (read pageviews, no increment)",
     "- GET " + CANON_ORIGIN + "/v1/view   (read pageviews, no increment)",
     "- POST " + CANON_ORIGIN + "/v1/view  (increment pageviews)",
@@ -377,9 +402,13 @@ export function aiTxt() {
     "Allow: /v1/software",
     "Allow: /v1/update",
     "Allow: /v1/update/check",
+    "Allow: /v1/mesh/status",
+    "Allow: /v1/mesh/nodes",
     "Allow: /runtime",
     "Allow: /runtime/",
     "Allow: /runtime/v1/uses",
+    "Allow: /runtime/v1/mesh/status",
+    "Allow: /runtime/v1/mesh/nodes",
     "",
     "Content-Signal: " + CONTENT_SIGNAL,
     "",
@@ -399,6 +428,9 @@ export function aiTxt() {
     "- Software hub: " + LIBRARY_SOFTWARE,
     "- Runtime (same-origin FragGate / aziel-runtime): " + RUNTIME_LOCAL,
     "- Runtime uses (this host): " + RUNTIME_LOCAL + "/v1/uses",
+    "- Mesh status: " + CANON_ORIGIN + "/v1/mesh/status (default off)",
+    "- Mesh nodes: " + CANON_ORIGIN + "/v1/mesh/nodes",
+    "- Runtime mesh: " + RUNTIME_LOCAL + "/v1/mesh/status",
     "- Runtime library: " + LIBRARY_RUNTIME,
     "- Runtime origin: " + RUNTIME + "/",
     "- GodLock: " + GODLOCK + "/",
@@ -474,7 +506,9 @@ export function jsonLd(software = SOFTWARE) {
           RUNTIME_LOCAL +
           "/openapi.json. MCP POST " +
           RUNTIME_LOCAL +
-          "/mcp. Author Aziel Eliab.",
+          "/mcp. Mesh status " +
+          RUNTIME_LOCAL +
+          "/v1/mesh/status (default off). Author Aziel Eliab.",
         author: person,
         license: "https://www.apache.org/licenses/LICENSE-2.0",
         codeRepository: GITHUB_RUNTIME,
@@ -487,7 +521,14 @@ export function jsonLd(software = SOFTWARE) {
         url: RUNTIME_LOCAL,
         documentation: RUNTIME_LOCAL + "/openapi.json",
         provider: person,
-        description: "FragGate door. OpenAPI " + RUNTIME_LOCAL + "/openapi.json. MCP POST " + RUNTIME_LOCAL + "/mcp.",
+        description:
+          "FragGate door. OpenAPI " +
+          RUNTIME_LOCAL +
+          "/openapi.json. MCP POST " +
+          RUNTIME_LOCAL +
+          "/mcp. Mesh " +
+          RUNTIME_LOCAL +
+          "/v1/mesh/status (default off).",
       },
       {
         "@type": "ItemList",
