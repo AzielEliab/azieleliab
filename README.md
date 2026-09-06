@@ -88,7 +88,7 @@ Parent attaches custom domains on deploy. Expected hostnames:
 
 ## Software doors
 
-SOFTWARE is synced from documented aziel-runtime catalog slugs (28 products, including **PeaceLock**) plus EmbryoLock (library hub), same-origin `aziel-runtime`, and FragGate. Preference: catalog `worker_home` when the tracker is ready, else GitHub, else the Digital Library software hub. PeaceLock’s tracker is not ready, so the door is GitHub. Lumen is not listed. AZMail joins only after it appears in the catalog. Display order is Plain (name has neither lock nor gate as a product token) A–Z, then Gate A–Z, then Lock A–Z. Clock is not Lock. A name that matches both Gate and Lock sits in Gate. PeaceLock is Lock.
+SOFTWARE is synced from documented aziel-runtime catalog slugs (28 products, including **PeaceLock**) plus EmbryoLock (library hub), same-origin `aziel-runtime`, and FragGate. Preference: catalog `worker_home` when the tracker is ready, else GitHub, else the Digital Library software hub. PeaceLock’s download-tracker is live, so the door is the Worker. Lumen is not listed. AZMail joins only after it appears in the catalog. Display order is Plain (name has neither lock nor gate as a product token) A–Z, then Gate A–Z, then Lock A–Z. Clock is not Lock. A name that matches both Gate and Lock sits in Gate. PeaceLock is Lock.
 
 | Name | URL |
 |------|-----|
@@ -115,7 +115,7 @@ SOFTWARE is synced from documented aziel-runtime catalog slugs (28 products, inc
 | FoldLock | https://foldlock-download-tracker.vibelock.workers.dev/ |
 | GodLock | https://godlock-download-tracker.vibelock.workers.dev/ |
 | M.I.A.Lock | https://mialock-download-tracker.vibelock.workers.dev/ |
-| PeaceLock | https://github.com/AzielEliab/peacelock |
+| PeaceLock | https://peacelock-download-tracker.vibelock.workers.dev/ |
 | ShadowLock | https://shadowlock-download-tracker.vibelock.workers.dev/ |
 | SpectralLock | https://spectrallock-download-tracker.vibelock.workers.dev/ |
 | TemporalLock | https://temporallock-download-tracker.vibelock.workers.dev/ |
