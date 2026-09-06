@@ -1,5 +1,5 @@
 /** azieleliab.com landing Worker. Author: Aziel Eliab. */
-import { APEX_HOST, CANON_ORIGIN, WWW_HOST } from "./copy.js";
+import { APEX_HOST, CANON_ORIGIN } from "./copy.js";
 import { notFoundHtml, pageHtml } from "./page.js";
 import { aiTxt, citeDoc, llmsTxt, robotsTxt, sitemapXml } from "./seo.js";
 import { incrementViews, isBot, readViews, viewsBody } from "./views.js";
@@ -113,5 +113,3 @@ export default {
     return handleRequest(request, env);
   },
 };
-
-export { WWW_HOST };
