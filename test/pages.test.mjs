@@ -204,7 +204,7 @@ describe("software doors", () => {
     for (const line of EMBRYOLOCK_COPY.open) {
       assert.ok(stub.includes(line), "missing stub copy: " + line);
     }
-    assert.ok(stub.includes("local-not-hosted"));
+    assert.ok(stub.includes("Local-not-hosted"));
     assert.ok(stub.includes("Not a public Worker"));
     assert.doesNotMatch(stub, /embryolock-download-tracker/i);
   });
@@ -877,7 +877,7 @@ describe("worker routing", () => {
       assert.match(res.headers.get("content-type"), /text\/html/);
       const body = await res.text();
       assert.ok(body.includes("<h1>EmbryoLock</h1>"));
-      assert.ok(body.includes("local-not-hosted"));
+      assert.ok(body.includes("Local-not-hosted"));
       assert.ok(body.includes("Not a public Worker"));
       assert.ok(body.includes("It is not the Digital Library catalog"));
       assert.doesNotMatch(body, /embryolock-download-tracker/i);
