@@ -68,7 +68,7 @@ async function pageViews(request, env) {
   return incrementViews(env);
 }
 
-export async function handleRequest(request, env = {}) {
+export async function handleRequest(request, env = {}, ctx) {
   const url = new URL(request.url);
   const toWww = apexRedirect(url);
   if (toWww) {
@@ -76,7 +76,7 @@ export async function handleRequest(request, env = {}) {
   }
 
   if (isRuntimeRequest(url.pathname)) {
-    const runtime = await handleRuntimeRoot(request, url, env);
+    const runtime = await handleRuntimeRoot(request, url, env, ctx);
     if (runtime) return runtime;
   }
 
@@ -117,7 +117,7 @@ export async function handleRequest(request, env = {}) {
 }
 
 export default {
-  async fetch(request, env) {
-    return handleRequest(request, env);
+  async fetch(request, env, ctx) {
+    return handleRequest(request, env, ctx);
   },
 };

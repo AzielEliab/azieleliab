@@ -17,6 +17,8 @@ import {
   PROSE,
   RUNTIME_LOCAL,
   SOFTWARE,
+  softwareBucket,
+  sortSoftware,
 } from "../src/copy.js";
 import {
   destFromRuntimePath,
@@ -27,6 +29,12 @@ import {
   rewriteRuntimeBody,
   RUNTIME_ORIGIN,
 } from "../src/runtimeRoot.js";
+import {
+  isLocalUsesPath,
+  shouldTrackRuntimeUse,
+  USES_HOST,
+  USES_VIA,
+} from "../src/runtimeUses.js";
 
 function envWithViews(seed = 0) {
   return { VIEWS: memoryKv(seed) };
@@ -121,6 +129,51 @@ describe("software doors", () => {
     assert.equal(byName["aziel-runtime"], RUNTIME_LOCAL);
     assert.equal(byName.FragGate, "https://github.com/AzielEliab/fraggate");
   });
+
+  it("sortSoftware buckets Plain, then Gate, then Lock (gate before lock)", () => {
+    const mixed = [
+      { name: "VeilLock" },
+      { name: "FragGate" },
+      { name: "AZAI" },
+      { name: "DecisionGATE" },
+      { name: "EmbryoLock" },
+      { name: "aziel-runtime" },
+      { name: "CodeLock" },
+      { name: "ForgeReceipts" },
+      { name: "GateLock" },
+    ];
+    assert.deepEqual(
+      sortSoftware(mixed).map((s) => s.name),
+      [
+        "AZAI",
+        "aziel-runtime",
+        "ForgeReceipts",
+        "DecisionGATE",
+        "FragGate",
+        "GateLock",
+        "CodeLock",
+        "EmbryoLock",
+        "VeilLock",
+      ],
+    );
+    assert.equal(softwareBucket("GateLock"), 1);
+    assert.equal(softwareBucket("DecisionGATE"), 1);
+    assert.equal(softwareBucket("EmbryoLock"), 2);
+    assert.equal(softwareBucket("AZAI"), 0);
+    const names = SOFTWARE.map((s) => s.name);
+    const lastPlain = names.findLastIndex((n) => softwareBucket(n) === 0);
+    const firstGate = names.findIndex((n) => softwareBucket(n) === 1);
+    const lastGate = names.findLastIndex((n) => softwareBucket(n) === 1);
+    const firstLock = names.findIndex((n) => softwareBucket(n) === 2);
+    assert.ok(lastPlain < firstGate && lastGate < firstLock);
+    assert.ok(names.includes("EmbryoLock"));
+    assert.ok(!names.includes("Lumen"));
+    const html = pageHtml();
+    const idx = (name) => html.indexOf(">" + name + "<");
+    assert.ok(idx("AZAI") < idx("FragGate"));
+    assert.ok(idx("FragGate") < idx("CodeLock"));
+    assert.ok(idx("EmbryoLock") > idx("FragGate"));
+  });
 });
 
 describe("doors", () => {
@@ -157,6 +210,7 @@ describe("SEO routes", () => {
     assert.ok(body.includes("Allow: /"));
     assert.ok(body.includes("Allow: /runtime"));
     assert.ok(body.includes("Allow: /runtime/"));
+    assert.ok(body.includes("Allow: /runtime/v1/uses"));
     assert.ok(body.includes("Sitemap: " + CANON_ORIGIN + "/sitemap.xml"));
     assert.ok(body.includes("User-agent: GPTBot"));
     assert.ok(body.includes("User-agent: NeevaBot"));
@@ -180,6 +234,7 @@ describe("SEO routes", () => {
     assert.ok(llmsBody.includes("Author: " + AUTHOR));
     assert.ok(llmsBody.includes("Canonical: " + CANON_ORIGIN + "/"));
     assert.ok(llmsBody.includes("/runtime"));
+    assert.ok(llmsBody.includes("/runtime/v1/uses"));
     assert.ok(llmsBody.includes("Research door"));
     assert.ok(llmsBody.includes(LIBRARY + "/"));
     assert.ok(llmsBody.includes("ChatGPT (GPT Actions / OpenAI)"));
@@ -200,6 +255,7 @@ describe("SEO routes", () => {
     assert.ok(!llmsBody.includes("PeaceLock"));
     assert.ok(aiBody.includes("Allow: /"));
     assert.ok(aiBody.includes("Allow: /runtime"));
+    assert.ok(aiBody.includes("Allow: /runtime/v1/uses"));
     assert.ok(aiBody.includes("Content-Signal"));
     assert.ok(aiBody.includes("Research / corpus"));
     assert.ok(aiBody.includes(RUNTIME_LOCAL));
@@ -207,6 +263,7 @@ describe("SEO routes", () => {
     assert.equal(citeBody.canonical, CANON_ORIGIN + "/");
     assert.equal(citeBody.identity, AUTHOR);
     assert.equal(citeBody.runtime_local, RUNTIME_LOCAL);
+    assert.equal(citeBody.runtime_uses, RUNTIME_LOCAL + "/v1/uses");
     assert.equal(citeBody.research, LIBRARY + "/");
     assert.ok(!citeBody.software_names.some((s) => s.name === "Lumen"));
     assert.ok(citeBody.software_names.some((s) => s.name === "EmbryoLock"));
@@ -275,6 +332,148 @@ describe("runtime path mapping", () => {
     assert.match(html, /href="\/runtime\/v1\/health"/);
     assert.doesNotMatch(html, /godlock-runtime-chrome|azieleliab-runtime-chrome/);
     assert.doesNotMatch(html, /<nav /i);
+  });
+});
+
+describe("runtime use tracker", () => {
+  it("tracks v1 mutations and named fraggate/mcp/session/pull; skips crawl/static/uses/health", () => {
+    assert.equal(shouldTrackRuntimeUse("/runtime/v1/fraggate/call", "POST"), true);
+    assert.equal(shouldTrackRuntimeUse("/runtime/v1/fraggate/list", "GET"), true);
+    assert.equal(shouldTrackRuntimeUse("/runtime/mcp", "POST"), true);
+    assert.equal(shouldTrackRuntimeUse("/runtime/mcp", "GET"), true);
+    assert.equal(shouldTrackRuntimeUse("/runtime/v1/session/open", "POST"), true);
+    assert.equal(shouldTrackRuntimeUse("/runtime/v1/session/abc/receipt", "GET"), true);
+    assert.equal(shouldTrackRuntimeUse("/runtime/v1/pull/azclce", "GET"), true);
+    assert.equal(shouldTrackRuntimeUse("/runtime/v1/skill", "POST"), true);
+    assert.equal(shouldTrackRuntimeUse("/v1/fraggate/call", "POST"), true);
+
+    assert.equal(shouldTrackRuntimeUse("/runtime/v1/skill", "GET"), false);
+    assert.equal(shouldTrackRuntimeUse("/runtime/v1/runtime.json", "GET"), false);
+    assert.equal(shouldTrackRuntimeUse("/runtime/v1/health", "GET"), false);
+    assert.equal(shouldTrackRuntimeUse("/runtime/v1/ready", "GET"), false);
+    assert.equal(shouldTrackRuntimeUse("/runtime/v1/uses", "GET"), false);
+    assert.equal(shouldTrackRuntimeUse("/runtime/robots.txt", "GET"), false);
+    assert.equal(shouldTrackRuntimeUse("/runtime/sitemap.xml", "GET"), false);
+    assert.equal(shouldTrackRuntimeUse("/runtime/llms.txt", "GET"), false);
+    assert.equal(shouldTrackRuntimeUse("/runtime/ai.txt", "GET"), false);
+    assert.equal(shouldTrackRuntimeUse("/runtime/cite.json", "GET"), false);
+    assert.equal(shouldTrackRuntimeUse("/runtime/openapi.json", "GET"), false);
+    assert.equal(shouldTrackRuntimeUse("/runtime/sigil.png", "GET"), false);
+    assert.equal(shouldTrackRuntimeUse("/runtime", "GET"), false);
+    assert.equal(shouldTrackRuntimeUse("/runtime/v1/health", "HEAD"), false);
+    assert.equal(shouldTrackRuntimeUse("/runtime/mcp", "OPTIONS"), false);
+    assert.equal(isLocalUsesPath("/runtime/v1/uses"), true);
+    assert.equal(isLocalUsesPath("/runtime/v1/uses/"), true);
+    assert.equal(isLocalUsesPath("/runtime/v1/health"), false);
+  });
+
+  it("serves GET /runtime/v1/uses locally and records tracked proxy hops", async () => {
+    const seen = [];
+    const env = {
+      ...envWithViews(0),
+      AZIEL_RUNTIME: {
+        fetch: async (req) => {
+          const u = new URL(req.url);
+          seen.push({
+            path: u.pathname,
+            via: req.headers.get("X-Aziel-Runtime-Via"),
+            host: req.headers.get("X-Aziel-Runtime-Host"),
+          });
+          if (u.pathname === "/v1/uses") {
+            return new Response(JSON.stringify({ ok: true, uses: 9, via: "origin" }), {
+              status: 200,
+              headers: { "Content-Type": "application/json; charset=utf-8" },
+            });
+          }
+          if (u.pathname === "/v1/health") {
+            return new Response(JSON.stringify({ ok: true }), {
+              status: 200,
+              headers: { "Content-Type": "application/json; charset=utf-8" },
+            });
+          }
+          if (u.pathname === "/v1/fraggate/call") {
+            return new Response(JSON.stringify({ ok: true, door: "fraggate" }), {
+              status: 200,
+              headers: { "Content-Type": "application/json; charset=utf-8" },
+            });
+          }
+          if (u.pathname === "/robots.txt") {
+            return new Response("User-agent: *\nAllow: /\n", {
+              status: 200,
+              headers: { "Content-Type": "text/plain; charset=utf-8" },
+            });
+          }
+          return new Response(JSON.stringify({ error: "not found" }), { status: 404 });
+        },
+      },
+    };
+
+    const empty = await fetchPath("/runtime/v1/uses", { headers: { "user-agent": "Mozilla/5.0" } }, env);
+    assert.equal(empty.status, 200);
+    const emptyDoc = await empty.json();
+    assert.equal(emptyDoc.ok, true);
+    assert.equal(emptyDoc.host, USES_HOST);
+    assert.equal(emptyDoc.via, USES_VIA);
+    assert.equal(emptyDoc.uses, 0);
+    assert.deepEqual(emptyDoc.by_path, {});
+    assert.deepEqual(emptyDoc.recent, []);
+    assert.equal(emptyDoc.author, AUTHOR);
+    assert.equal(emptyDoc.origin.uses, 9);
+
+    const health = await fetchPath("/runtime/v1/health", { headers: { "user-agent": "Mozilla/5.0" } }, env);
+    assert.equal(health.status, 200);
+    const robots = await fetchPath("/runtime/robots.txt", {}, env);
+    assert.equal(robots.status, 200);
+    const call = await fetchPath(
+      "/runtime/v1/fraggate/call",
+      { method: "POST", headers: { "user-agent": "Mozilla/5.0", "content-type": "application/json" }, body: "{}" },
+      env,
+    );
+    assert.equal(call.status, 200);
+
+    const uses = await fetchPath("/runtime/v1/uses", {}, env);
+    const doc = await uses.json();
+    assert.equal(doc.uses, 1);
+    assert.equal(doc.by_path["/v1/fraggate/call"], 1);
+    assert.equal(doc.recent.length, 1);
+    assert.equal(doc.recent[0].path, "/v1/fraggate/call");
+    assert.equal(doc.recent[0].method, "POST");
+    assert.equal(doc.recent[0].status, 200);
+    assert.ok(doc.recent[0].at);
+    assert.ok(!("body" in doc.recent[0]));
+    assert.ok(!("token" in doc.recent[0]));
+
+    const hop = seen.find((s) => s.path === "/v1/fraggate/call");
+    assert.ok(hop);
+    assert.equal(hop.via, "azieleliab.com");
+    assert.equal(hop.host, "www.azieleliab.com");
+    assert.ok(!seen.some((s) => s.path === "/v1/uses" && s.via == null));
+
+    const head = await fetchPath("/runtime/v1/uses", { method: "HEAD" }, env);
+    assert.equal(head.status, 200);
+    assert.equal(await head.text(), "");
+  });
+
+  it("keeps local uses when origin /v1/uses is missing", async () => {
+    const env = {
+      ...envWithViews(0),
+      AZIEL_RUNTIME: {
+        fetch: async (req) => {
+          const u = new URL(req.url);
+          if (u.pathname === "/v1/uses") return new Response("no", { status: 404 });
+          return new Response(JSON.stringify({ ok: true }), {
+            status: 200,
+            headers: { "Content-Type": "application/json" },
+          });
+        },
+      },
+    };
+    const res = await fetchPath("/runtime/v1/uses", {}, env);
+    assert.equal(res.status, 200);
+    const doc = await res.json();
+    assert.equal(doc.ok, true);
+    assert.equal(doc.uses, 0);
+    assert.equal(doc.origin, undefined);
   });
 });
 

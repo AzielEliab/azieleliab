@@ -75,7 +75,24 @@ export const EXTRA_SOFTWARE = [
   { name: "FragGate", href: FRAGGATE },
 ];
 
-export const SOFTWARE = CATALOG_SOFTWARE.concat(EXTRA_SOFTWARE);
+/** Gate before Lock when a name matches both. */
+export function softwareBucket(name) {
+  const n = String(name || "").toLowerCase();
+  if (n.includes("gate")) return 1;
+  if (n.includes("lock")) return 2;
+  return 0;
+}
+
+/** Plain (no lock/gate) A–Z, then Gate A–Z, then Lock A–Z. */
+export function sortSoftware(items) {
+  return [...(items || [])].sort((a, b) => {
+    const bucket = softwareBucket(a && a.name) - softwareBucket(b && b.name);
+    if (bucket) return bucket;
+    return String((a && a.name) || "").localeCompare(String((b && b.name) || ""), "en", { sensitivity: "base" });
+  });
+}
+
+export const SOFTWARE = sortSoftware(CATALOG_SOFTWARE.concat(EXTRA_SOFTWARE));
 
 export const CATALOG_SLUGS = [
   "ark",
