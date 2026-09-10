@@ -1,11 +1,11 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import worker, { apexRedirect, donateCacheBustLocation, handleRequest } from "../src/index.js";
-import { donateHtml, embryoLockHtml, pageHtml, softwareHtml, spineNav } from "../src/page.js";
+import { donateHtml, embryoLockHtml, pageHtml, spineNav } from "../src/page.js";
 import { incrementViews, memoryKv } from "../src/views.js";
 import { DONATE_HTML_CACHE, HTML_CACHE, SEO_CACHE, memoryCache } from "../src/edgeCache.js";
 import { FANOUT_MAX, allowOriginRefresh, isOperator } from "../src/costGuard.js";
-import { aiTxt, citeDoc, jsonLd, llmsTxt, robotsTxt, sitemapXml } from "../src/seo.js";
+import { aiTxt, citeDoc, jsonLd, llmsTxt, robotsTxt, sitemapXml, softwareNodeId } from "../src/seo.js";
 import {
   ABOUT_PATHS,
   AUTHOR,
@@ -44,7 +44,6 @@ import {
   EMBRYOLOCK_PATH,
   FRAGGATE_GITHUB,
   FRAGGATE_WORKER,
-  HOME_TITLE,
   GITHUB_QNM_NODE,
   GITHUB_RUNTIME,
   PEACELOCK_WORKER,
@@ -55,7 +54,6 @@ import {
   SOFTWARE,
   SOFTWARE_HREF,
   SOFTWARE_SECTION,
-  SOFTWARE_TITLE,
   SPINE,
   isAboutAlias,
   displaySoftwareName,
@@ -593,10 +591,10 @@ describe("SEO routes", () => {
     const mapBody = await map.text();
     assert.ok(llmsBody.includes("Author: " + AUTHOR));
     assert.ok(llmsBody.includes("Canonical: " + CANON_ORIGIN + "/"));
-    assert.ok(llmsBody.includes(SOFTWARE_HREF + "  (Softwares door; live catalog names; same list as /#software)"));
+    assert.ok(llmsBody.includes(SOFTWARE_HREF + "  (301 to /#software)"));
     assert.ok(llmsBody.includes(CANON_ORIGIN + "/about  (301 to / — About Aziel Eliab)"));
-    assert.ok(llmsBody.includes("Softwares door: " + SOFTWARE_HREF));
-    assert.ok(llmsBody.includes("Homepage strip: " + SOFTWARE_SECTION));
+    assert.ok(llmsBody.includes("Softwares list: " + SOFTWARE_SECTION));
+    assert.ok(llmsBody.includes("Softwares alias: " + SOFTWARE_HREF + " (301 to /#software)"));
     assert.ok(llmsBody.includes("FragGate Worker: " + FRAGGATE_WORKER));
     assert.ok(llmsBody.includes(DONATE_HREF + "  (AZL-DONATE-1.0 primary Donate door)"));
     assert.ok(llmsBody.includes("## Donate"));
@@ -658,7 +656,7 @@ describe("SEO routes", () => {
     assert.ok(aiBody.includes("Allow: /software/"));
     assert.ok(aiBody.includes("Allow: /about"));
     assert.ok(aiBody.includes("Allow: /AzielEliab"));
-    assert.ok(aiBody.includes("Softwares: " + SOFTWARE_HREF));
+    assert.ok(aiBody.includes("Softwares: " + SOFTWARE_SECTION));
     assert.ok(aiBody.includes("User-agent: Googlebot"));
     assert.ok(aiBody.includes("User-agent: Cloudflare-AI-Search"));
     assert.ok(aiBody.includes("User-agent: Claude"));
@@ -686,7 +684,8 @@ describe("SEO routes", () => {
     assert.equal(citeBody.runtime_local, RUNTIME_LOCAL);
     assert.equal(citeBody.runtime_uses, RUNTIME_LOCAL + "/v1/uses");
     assert.equal(citeBody.software_catalog, CANON_ORIGIN + "/v1/software");
-    assert.equal(citeBody.software_page, SOFTWARE_HREF);
+    assert.equal(citeBody.software_page, SOFTWARE_SECTION);
+    assert.equal(citeBody.software_alias, SOFTWARE_HREF);
     assert.equal(citeBody.software_section, SOFTWARE_SECTION);
     assert.equal(citeBody.about, CANON_ORIGIN + "/");
     assert.deepEqual(citeBody.about_aliases, ABOUT_PATHS.map((p) => CANON_ORIGIN + p));
@@ -751,7 +750,7 @@ describe("SEO routes", () => {
 
   it("embeds Person + WebSite + Runtime JSON-LD and a www canonical", () => {
     const html = pageHtml();
-    assert.ok(html.includes("<title>" + HOME_TITLE + "</title>"));
+    assert.ok(html.includes("<title>" + AUTHOR + "</title>"));
     assert.ok(html.includes('rel="canonical" href="' + CANON_ORIGIN + '/"'));
     assert.ok(html.includes('hreflang="en" href="' + CANON_ORIGIN + '/"'));
     assert.ok(html.includes('hreflang="x-default" href="' + CANON_ORIGIN + '/"'));
@@ -785,10 +784,15 @@ describe("SEO routes", () => {
     assert.equal(ld["@graph"][0].familyName, "Eliab");
     assert.equal(ld["@graph"][5]["@type"], "WebPage");
     assert.equal(ld["@graph"][5].url, DONATE_HREF);
+    assert.equal(ld["@graph"][5].potentialAction["@type"], "DonateAction");
     assert.equal(ld["@graph"][6]["@type"], "AboutPage");
     assert.equal(ld["@graph"][6].url, CANON_ORIGIN + "/");
     assert.equal(ld["@graph"][7]["@type"], "CollectionPage");
-    assert.equal(ld["@graph"][7].url, SOFTWARE_HREF);
+    assert.equal(ld["@graph"][7].url, SOFTWARE_SECTION);
+    const catalogApps = ld["@graph"].filter((n) => n["@type"] === "SoftwareApplication" && n.isPartOf);
+    assert.equal(catalogApps.length, SOFTWARE.length);
+    assert.ok(catalogApps.some((n) => n.name === "EmbryoLock" && n["@id"] === softwareNodeId({ name: "EmbryoLock" })));
+    assert.ok(html.includes('"@type":"DonateAction"'));
     assert.ok(html.includes('"@type":"Person"'));
     assert.ok(html.includes('"@type":"WebSite"'));
     assert.ok(html.includes('"@type":"SoftwareApplication"'));
@@ -1102,39 +1106,24 @@ describe("worker routing", () => {
     assert.ok(body.includes("This path is not a door."));
   });
 
-  it("serves GET /software as the indexable Softwares door with unique SEO chrome", async () => {
+  it("301s /software and /software/ to the homepage Software strip", async () => {
     assert.equal(SOFTWARE_SECTION, CANON_ORIGIN + "/#software");
     assert.equal(SOFTWARE_HREF, CANON_ORIGIN + "/software");
-    const home = await fetchPath("/");
-    assert.ok((await home.text()).includes('id="software"'));
+    const html = await fetchPath("/");
+    const home = await html.text();
+    assert.ok(home.includes('id="software"'));
+    assert.ok(home.includes('"@type":"SoftwareApplication"'));
+    assert.ok(home.includes('"@id":"' + softwareNodeId({ name: "AZAI" }) + '"') || home.includes("#software-azai"));
 
     for (const path of ["/software", "/software/"]) {
       const res = await fetchPath(path);
-      assert.equal(res.status, 200);
-      assert.match(res.headers.get("content-type"), /text\/html/);
-      assert.equal(res.headers.get("cache-control"), HTML_CACHE);
-      const body = await res.text();
-      assert.ok(body.includes("<title>" + SOFTWARE_TITLE + "</title>"));
-      assert.ok(body.includes('rel="canonical" href="' + SOFTWARE_HREF + '"'));
-      assert.ok(body.includes('hreflang="en" href="' + SOFTWARE_HREF + '"'));
-      assert.ok(body.includes("<h1>Software</h1>"));
-      assert.match(body, /<h1>Software<\/h1>\s*<article class="card lead">\s*<p class="soft-line">/);
-      assert.doesNotMatch(body, /Run them without me/);
-      assert.doesNotMatch(body, /soft-close/);
-      assert.ok(body.includes(">AZAI<"));
-      assert.ok(body.includes('"@type":"CollectionPage"'));
-      assert.ok(body.includes('"@type":"ItemList"'));
-    }
-
-    const rendered = softwareHtml();
-    assert.ok(rendered.includes("<title>" + SOFTWARE_TITLE + "</title>"));
-    assert.ok(rendered.includes('name="twitter:site" content="@azieleliab"'));
-    for (const item of SOFTWARE) {
-      assert.ok(rendered.includes(">" + item.name + "<"), item.name);
+      assert.equal(res.status, 301);
+      assert.equal(res.headers.get("location"), SOFTWARE_SECTION);
     }
 
     const head = await fetchPath("/software", { method: "HEAD" });
-    assert.equal(head.status, 200);
+    assert.equal(head.status, 301);
+    assert.equal(head.headers.get("location"), SOFTWARE_SECTION);
     assert.equal(await head.text(), "");
 
     const post = await fetchPath("/software", { method: "POST" });
@@ -1232,6 +1221,7 @@ describe("AZL-DONATE-1.0", () => {
     assert.ok(html.includes('href="/ai.txt"'));
     assert.ok(html.includes('href="/v1/software"'));
     assert.ok(html.includes('"@type":"WebPage"'));
+    assert.ok(html.includes('"@type":"DonateAction"'));
     assert.ok(html.includes('"@type":"Person"'));
     assert.ok(html.includes("application/ld+json"));
     assert.doesNotMatch(html, /<input|<form|mailto:|thank-you|leaderboard|confetti|Buy Me A Coffee|Support Us|Patron|solana|6BZNXx|TJXb1Y/i);
@@ -1436,11 +1426,10 @@ describe("live software catalog", () => {
     const landing = await fetchPath("/", { headers: { "user-agent": "Mozilla/5.0" } }, env);
     const html = await landing.text();
     const softwares = await fetchPath("/software", {}, env);
-    const softBody = await softwares.text();
-    assert.equal(softwares.status, 200);
-    assert.ok(softBody.includes("<title>" + SOFTWARE_TITLE + "</title>"));
-    assert.ok(softBody.includes(">NewLock<"));
+    assert.equal(softwares.status, 301);
+    assert.equal(softwares.headers.get("location"), SOFTWARE_SECTION);
     assert.ok(html.includes(">NewLock<"));
+    assert.ok(html.includes("#software-newlock"));
     assert.ok(html.includes('href="https://newlock-download-tracker.vibelock.workers.dev/"'));
     assert.ok(html.includes(">AZAI<"));
     assert.ok(html.includes(">DecisionGATE<"));

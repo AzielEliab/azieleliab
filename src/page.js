@@ -15,14 +15,11 @@ import {
   EMBRYOLOCK_COPY,
   EMBRYOLOCK_HREF,
   GITHUB,
-  HOME_TITLE,
   LIBRARY,
   PROSE,
   SIGIL,
   SOFTWARE,
-  SOFTWARE_DESCRIPTION,
-  SOFTWARE_HREF,
-  SOFTWARE_TITLE,
+  SOFTWARE_SECTION,
   SPINE,
   X_HANDLE,
   X_URL,
@@ -93,13 +90,9 @@ export function spineNav(current) {
           ? current === "home"
             ? "#donate"
             : DONATE_HREF
-          : item.id === "software"
-            ? current === "home"
-              ? "#software"
-              : SOFTWARE_HREF
-            : current === "home"
-              ? "#" + item.id
-              : "/#" + item.id;
+          : current === "home"
+            ? "#" + item.id
+            : "/#" + item.id;
       const cur = here ? ' aria-current="page"' : "";
       return '<a href="' + attr(href) + '"' + cur + ">" + esc(item.label) + "</a>";
     }).join("") +
@@ -474,7 +467,7 @@ export function pageHtml(views = 0, softwareItems = SOFTWARE, mesh = null) {
 <html lang="en">
 <head>
 ${documentHead({
-  title: HOME_TITLE,
+  title: AUTHOR,
   description: DESCRIPTION,
   canonical: CANON_ORIGIN + "/",
   software: doorsSoftware,
@@ -525,41 +518,6 @@ ${documentHead({
 </main>
 ${COPY_SCRIPT}
 ${LIVE_NODES_SCRIPT}
-</body>
-</html>`;
-}
-
-export function softwareHtml(softwareItems = SOFTWARE) {
-  const doorsSoftware = softwareItems && softwareItems.length ? softwareItems : SOFTWARE;
-  const software = softwareLine(doorsSoftware);
-  return `<!doctype html>
-<html lang="en">
-<head>
-${documentHead({
-  title: SOFTWARE_TITLE,
-  description: SOFTWARE_DESCRIPTION,
-  canonical: SOFTWARE_HREF,
-  software: doorsSoftware,
-  extraMeta: quietDiscoveryMeta(),
-})}
-</head>
-<body>
-<main class="wrap">
-  <header class="brandrow">
-    <img class="brandmark" src="${esc(SIGIL)}" width="44" height="44" alt="">
-    <div class="brand-meta">
-      <a class="host" href="${esc(CANON_ORIGIN)}/">${esc(PROSE.host)}</a>
-    </div>
-  </header>
-  ${spineNav("software")}
-  <h1>Software</h1>
-  <article class="card lead">
-    <p class="soft-line">${software}</p>
-  </article>
-  <footer>
-    <p>${esc(AUTHOR)} · ${a(CANON_ORIGIN + "/", AUTHOR)} · ${a(CANON_ORIGIN + "/cite.json", "cite.json")} · ${a(CANON_ORIGIN + "/llms.txt", "llms.txt")} · Apache-2.0</p>
-  </footer>
-</main>
 </body>
 </html>`;
 }
@@ -617,7 +575,7 @@ ${documentHead({
   </header>
   <h1>${esc(EMBRYOLOCK_COPY.title)}</h1>
   <article class="card lead">${paragraphs(EMBRYOLOCK_COPY.open)}</article>
-  <p>${a(SOFTWARE_HREF, "Software")} · ${a(CANON_ORIGIN + "/", AUTHOR)}</p>
+  <p>${a(SOFTWARE_SECTION, "Software")} · ${a(CANON_ORIGIN + "/", AUTHOR)}</p>
 </main>
 </body>
 </html>`;
