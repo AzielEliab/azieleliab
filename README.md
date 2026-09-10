@@ -19,7 +19,8 @@ Cloudflare Worker `azieleliab-com` serves the literary landing, crawl files, and
 | `/software` · `/software/` | 301 to [`/#software`](https://www.azieleliab.com/#software) (homepage Software strip; same HTML as home) |
 | `/about` · `/AzielEliab` · `/aziel-eliab` | 301 to [`/`](https://www.azieleliab.com/) (About Aziel Eliab is the homepage) |
 | `/donate` · `/donate/` | AZL-DONATE-1.0 primary Donate door (static; also homepage `#donate`). Bare `/donate` 302s to `/donate?v=png` so CF edge cannot keep the old stroke-SVG HTML. Door HTML is `no-store`. Rails use solid PNG QRs at `/donate/qr/{btc,eth,ltc,xrp,doge}.png` (payment URI, not a website). |
-| `/embryolock` · `/embryolock/` | EmbryoLock stub card — local-not-hosted, not a public Worker |
+| `/embryolock` · `/embryolock/` | EmbryoLock secondary local page (Softwares door is catalog `worker_home`) |
+| `/sigil.png` | Hosted Everblooming sigil (Donate / brandrow do not fetch the corpus) |
 | `/robots.txt` | `Allow: /` plus AI crawlers and `/runtime` |
 | `/llms.txt` | Door index for models |
 | `/ai.txt` | Crawl policy |
@@ -30,7 +31,7 @@ Cloudflare Worker `azieleliab-com` serves the literary landing, crawl files, and
 | `GET /v1/stats` | Pageviews (no increment) |
 | `GET /v1/view` | Same as stats |
 | `POST /v1/view` | Increment pageviews |
-| `GET /v1/software` | Resolved Software doors (packed live catalog; short edge TTL) |
+| `GET /v1/software` | Resolved Softwares catalog (`products` enriched from aziel-runtime; `extras` for FragGate / mesh / aziel-runtime; short edge TTL) |
 | `GET /v1/update` · `/v1/update/check` | Quiet installer pointer at runtime `/v1/update/check` |
 | `GET /v1/mesh/status` · `/v1/mesh/nodes` | Suite node mesh (default off until runtime enables it) |
 
@@ -87,7 +88,7 @@ Public HTML and crawl files used to send `Cache-Control: no-store`, so every rep
 - Landing HTML: `public` + short `s-maxage` (`max-age=0`) so title/meta/JSON-LD stay fresh for crawlers. The packed Software catalog snapshot is separate and still auto-refreshes. Body copy and Software doors stay the same.
 - Donate HTML (`/donate?v=png`): `no-store, max-age=0, must-revalidate`. Bare `/donate` 302s to `?v=png` so a stale CF HIT of stroke-SVG HTML cannot stick.
 - `/robots.txt`, `/llms.txt`, `/ai.txt`, `/cite.json`, `/sitemap.xml`: long public cache, full documents, never throttled.
-- Live Software catalog is **one packed snapshot** (Cache API + KV key `software:catalog:v1` on the existing `VIEWS` namespace). Warm HIT does not fetch runtime. Static `SOFTWARE` remains last resort.
+- Live Software catalog is **one packed snapshot** (Cache API + KV key `software:catalog:v2` on the existing `VIEWS` namespace). Warm HIT does not fetch runtime. Static `SOFTWARE` remains last resort.
 - Soft caps on `/v1/update/check` and mesh origin refresh apply only when someone hammers those fan-out doors after the snapshot is cold. They return the last full JSON (or the quiet default-off / pointer body) — not a soft-404, login wall, or thin page. **Rate limit here means cost/abuse protection, not content rationing.**
 - Optional `OPERATOR_TOKEN` (header `X-Aziel-Runtime-Token` or `Authorization: Bearer`) is uncapped. Do not add Node Gate / IP UI.
 
@@ -118,22 +119,24 @@ Parent attaches custom domains on deploy. Expected hostnames:
 
 ## Software doors
 
-The Software strip (and `/v1/software`, cite, llms, sitemap) prefers the **live** aziel-runtime catalog: packed snapshot first (Cache API / `software:catalog:v1`), then `GET https://aziel-runtime.vibelock.workers.dev/v1/software`, then `GET /v1/fraggate/list`. Same-account service binding `AZIEL_RUNTIME` is tried first. A static slug list remains only as last-resort fallback so the page still renders if runtime is down. New catalog products appear within the snapshot TTL — no hand edit of this repo. Under the Software heading the page lists only those names — no closer, blurb, or other filler. The product is **aziel-runtime** / **Aziel Runtime**; Software blurbs and meta never mash it as “runtime 1.6.x FragGate”.
+The Software strip (and `/v1/software`, cite, llms, sitemap) prefers the **live** aziel-runtime catalog: packed snapshot first (Cache API / `software:catalog:v2`), then `GET https://aziel-runtime.vibelock.workers.dev/v1/software`, then `GET /v1/fraggate/list`. Same-account service binding `AZIEL_RUNTIME` is tried first. A static slug list remains only as last-resort fallback so the page still renders if runtime is down. New catalog products appear within the snapshot TTL — no hand edit of this repo. Under the Software heading the page lists only those names — no closer, blurb, or other filler. `GET /v1/software` keeps catalog fields (`status`, `worker_home`, `version`, `one_line` at minimum) on `products[]`. FragGate and mesh are `extras` only — not Softwares product cards. The product is **aziel-runtime** / **Aziel Runtime**; Software blurbs and meta never mash it as “runtime 1.6.x FragGate”.
 
-Preference for each door: live `worker_home` when present, else the download-tracker Worker, else GitHub, else the Digital Library software hub. EmbryoLock stays an honest stub (`/embryolock` or the live stub entry) — never a invented tracker. same-origin `aziel-runtime` and FragGate stay on the strip. AZBrowser, AZHub, AZInterface, AZNet, and FragGate are separate apps (separate Worker UIs). Never nest. AZHub (Blank Key, AIH-WP-1.0) and AZInterface (custodial page cycles, AIH-WP-1.0) are two engines — never one combined engine. AZNet + AZBrowser are a functional pair only — AZNet is not nested under AZBrowser. Display order is Plain (name has neither lock nor gate as a product token) A–Z, then Gate A–Z, then Lock A–Z. Clock is not Lock. A name that matches both Gate and Lock sits in Gate. AZBrowser, AZHub, AZInterface, AZMail, and AZNet are Plain. FragGate is Gate. PeaceLock is Lock.
+Preference for each door: live `worker_home` when present, else the download-tracker Worker, else GitHub, else the Digital Library software hub. EmbryoLock Softwares link is catalog `worker_home` (`https://embryolock-download-tracker.vibelock.workers.dev/`). `/embryolock` is a clearly secondary local page. AZBrowser, AZHub, AZInterface, AZNet, and FragGate are separate apps (separate Worker UIs). Never nest. AZHub (Blank Key, AIH-WP-1.0) and AZInterface (custodial page cycles, AIH-WP-1.0) are two engines — never one combined engine. AZNet + AZBrowser are a functional pair only — AZNet is not nested under AZBrowser. Display order is Plain (name has neither lock nor gate as a product token) A–Z, then Gate A–Z, then Lock A–Z. Clock is not Lock. A name that matches both Gate and Lock sits in Gate. AZBrowser, AZHub, AZInterface, AZMail, and AZNet are Plain. DecisionGATE is Gate. PeaceLock is Lock.
 
 Fallback snapshot (used only when live catalog is unreachable):
 
 | Name | URL |
 |------|-----|
+| 4DMap | https://4dmap-download-tracker.vibelock.workers.dev/ |
 | AZ-CLCE | https://azclce-download-tracker.vibelock.workers.dev/ |
 | AZ-OS | https://azos-download-tracker.vibelock.workers.dev/ |
 | AZAI | https://azai-download-tracker.vibelock.workers.dev/ |
 | AZBot | https://azbot-download-tracker.vibelock.workers.dev/ |
 | AZBrowser | https://azbrowser-download-tracker.vibelock.workers.dev/ |
+| AZChat | https://azchat-download-tracker.vibelock.workers.dev/ |
+| AZCoherence | https://azcoherence-download-tracker.vibelock.workers.dev/ |
 | AZHub | https://azhub-download-tracker.vibelock.workers.dev/ |
 | Aziel Digital Library | https://www.azielcorpuslibrary.net/ |
-| aziel-runtime | https://www.azieleliab.com/runtime |
 | AzielTether | https://azieltether-download-tracker.vibelock.workers.dev/ |
 | AZInterface | https://azinterface-download-tracker.vibelock.workers.dev/ |
 | AZMail | https://azmail-download-tracker.vibelock.workers.dev/ |
@@ -146,10 +149,9 @@ Fallback snapshot (used only when live catalog is unreachable):
 | The ARK | https://ark-download-tracker.vibelock.workers.dev/ |
 | ZionPattern Solver | https://zsolver-download-tracker.vibelock.workers.dev/ |
 | DecisionGATE | https://decisiongate-download-tracker.vibelock.workers.dev/ |
-| FragGate | https://fraggate-download-tracker.vibelock.workers.dev/ |
 | ChronoLock | https://chronolock-download-tracker.vibelock.workers.dev/ |
 | CodeLock | https://codelock-download-tracker.vibelock.workers.dev/ |
-| EmbryoLock | https://www.azieleliab.com/embryolock |
+| EmbryoLock | https://embryolock-download-tracker.vibelock.workers.dev/ |
 | EmployeeLock | https://employeelock-download-tracker.vibelock.workers.dev/ |
 | FoldLock | https://foldlock-download-tracker.vibelock.workers.dev/ |
 | GodLock | https://godlock-download-tracker.vibelock.workers.dev/ |
@@ -163,11 +165,11 @@ Fallback snapshot (used only when live catalog is unreachable):
 | VibeLock | https://vibelock-download-tracker.vibelock.workers.dev/ |
 | WhistleLock | https://whistlelock-download-tracker.vibelock.workers.dev/ |
 
-EmbryoLock has no public repo or download-tracker. The name stays visible and points at the on-site stub (`/embryolock`), which states it is local-not-hosted and not a FragGate engine. A live stub entry is accepted; this site does not invent a Worker URL or send the name to the Digital Library catalog index.
+EmbryoLock Softwares door is catalog `worker_home` (`https://embryolock-download-tracker.vibelock.workers.dev/`). `/embryolock` remains a secondary local page. FragGate, mesh, and same-origin `aziel-runtime` are extras / doors — not Softwares `products[]` cards. Mesh stays default OFF. GET never enables.
 
 Quiet installer meta: `GET /v1/update/check` (alias `/v1/update`) points at runtime `GET /v1/update/check`. The landing also ships `<meta name="aziel-update-check">`.
 
-Quiet mesh meta: `GET /v1/mesh/status` and `GET /v1/mesh/nodes` (also `/runtime/v1/mesh/status` · `/runtime/v1/mesh/nodes`) point at runtime mesh authority. The landing ships `<meta name="aziel-mesh-status">`, `<meta name="aziel-qns-cd">`, `<meta name="aziel-qnm">` (`QNM-BUILD-1.0`), a brandrow Live Nodes pill, and a muted footer status. `/v1/software` includes a `mesh` snapshot with `live_nodes`. **Mesh is default OFF. GET never enables.** Operator enable requires a declared bearer (example: suite-presence). No Node Gate. No public qnsd proxy. Softwares list is names only.
+Quiet mesh meta: `GET /v1/mesh/status` and `GET /v1/mesh/nodes` (also `/runtime/v1/mesh/status` · `/runtime/v1/mesh/nodes`) point at runtime mesh authority. The landing ships `<meta name="aziel-mesh-status">`, `<meta name="aziel-qns-cd">`, `<meta name="aziel-qnm">` (`QNM-BUILD-1.0`), a brandrow Live Nodes pill, and a muted footer status. `/v1/software` includes a `mesh` snapshot with `live_nodes` and a `extras` mesh cite. **Mesh is default OFF. GET never enables.** Operator enable requires a declared bearer (example: suite-presence). No Node Gate. No public qnsd proxy. Softwares UI is heading → list only.
 
 ### QNS-CD-1.0 hub cite (mesh cross-map)
 
@@ -200,7 +202,7 @@ Every label and URL is hyperlinked.
 
 ## Visual
 
-Matches GodLock / Digital Library Workers: `#0e0c09` / `#12100c` ground, `#c9a227` gold trim, white body text, soft-card panels. Not royal-purple body copy. Optional sigil: https://www.azielcorpuslibrary.net/sigil.png
+Matches GodLock / Digital Library Workers: `#0e0c09` / `#12100c` ground, `#c9a227` gold trim, white body text, soft-card panels. Not royal-purple body copy. Hosted sigil: https://www.azieleliab.com/sigil.png
 
 ## License
 

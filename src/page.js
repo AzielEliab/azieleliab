@@ -14,6 +14,7 @@ import {
   DOORS,
   EMBRYOLOCK_COPY,
   EMBRYOLOCK_HREF,
+  EMBRYOLOCK_WORKER,
   GITHUB,
   LIBRARY,
   PROSE,
@@ -575,7 +576,7 @@ ${documentHead({
   </header>
   <h1>${esc(EMBRYOLOCK_COPY.title)}</h1>
   <article class="card lead">${paragraphs(EMBRYOLOCK_COPY.open)}</article>
-  <p>${a(SOFTWARE_SECTION, "Software")} · ${a(CANON_ORIGIN + "/", AUTHOR)}</p>
+  <p>${a(EMBRYOLOCK_WORKER, "worker_home")} · ${a(SOFTWARE_SECTION, "Software")} · ${a(CANON_ORIGIN + "/", AUTHOR)}</p>
 </main>
 </body>
 </html>`;

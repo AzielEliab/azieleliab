@@ -26,6 +26,7 @@ import {
 } from "./mesh.js";
 import { donateHtml, embryoLockHtml, notFoundHtml, pageHtml } from "./page.js";
 import { donateQrResponse } from "./qr.js";
+import { sigilResponse } from "./sigil.js";
 import { handleRuntimeRoot, isRuntimeRequest } from "./runtimeRoot.js";
 import { aiTxt, citeDoc, CONTENT_SIGNAL, llmsTxt, robotsTxt, sitemapXml } from "./seo.js";
 import { incrementViews, isBot, readViews, viewsBody } from "./views.js";
@@ -84,6 +85,7 @@ const PAGE_CACHE_PATHS = new Set([
   "/cite.json",
   "/sitemap.xml",
   "/v1/software",
+  "/sigil.png",
 ]);
 
 export function donateCacheBustLocation(url) {
@@ -163,6 +165,14 @@ export async function handleRequest(request, env = {}, ctx) {
       return new Response(null, { status: qrPng.status, headers: qrPng.headers });
     }
     return qrPng;
+  }
+
+  const sigilPng = sigilResponse(url.pathname, SECURITY);
+  if (sigilPng) {
+    if (request.method === "HEAD") {
+      return new Response(null, { status: sigilPng.status, headers: sigilPng.headers });
+    }
+    return sigilPng;
   }
 
   // Bare /donate is still HITing old stroke-SVG HTML at the CF edge
