@@ -13,7 +13,7 @@ head_sampling_rate = 1
 
 # Pageview counter. Also stores host-local /runtime API uses under
 # key prefix `runtime_uses|` and the packed Software snapshot
-# `software:catalog:v1` (no list/walk; no separate namespace).
+# `software:catalog:v2` (no list/walk; no separate namespace).
 # Soft fan-out caps are cost/abuse protection, not content rationing.
 [[kv_namespaces]]
 binding = "VIEWS"

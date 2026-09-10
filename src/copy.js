@@ -6,7 +6,11 @@ export const WWW_HOST = "www.azieleliab.com";
 export const AUTHOR = "Aziel Eliab";
 export const AUTHOR_AKA = "Aziel Elroi Eliab";
 export const SITE = "Aziel Eliab";
-export const SIGIL = "https://www.azielcorpuslibrary.net/sigil.png";
+/** Same-origin hosted sigil. Donate / brandrow do not fetch the corpus. */
+export const SIGIL_PATH = "/sigil.png";
+export const SIGIL = CANON_ORIGIN + SIGIL_PATH;
+/** Cite only. Flaky corpus fetch is not the page image. */
+export const SIGIL_CORPUS = "https://www.azielcorpuslibrary.net/sigil.png";
 export const LICENSE = "Apache-2.0";
 
 export const GITHUB = "https://github.com/AzielEliab";
@@ -35,9 +39,10 @@ export const SOFTWARE_HREF = CANON_ORIGIN + SOFTWARE_PATH;
 export const SOFTWARE_TITLE = "Software — Aziel Eliab";
 export const SOFTWARE_DESCRIPTION =
   "Software by Aziel Eliab. Live catalog from aziel-runtime / FragGate. Names only. Public identity Aziel Eliab only.";
-/** Same-site honest stub. Live catalog may list embryolock as stub / local-not-hosted. */
+/** Secondary local page. Softwares door is catalog worker_home. */
 export const EMBRYOLOCK_PATH = "/embryolock";
 export const EMBRYOLOCK_HREF = CANON_ORIGIN + EMBRYOLOCK_PATH;
+export const EMBRYOLOCK_WORKER = "https://embryolock-download-tracker.vibelock.workers.dev/";
 export const FRAGGATE_WORKER = "https://fraggate-download-tracker.vibelock.workers.dev/";
 export const FRAGGATE_GITHUB = "https://github.com/AzielEliab/fraggate";
 /** Primary FragGate door is the Worker UI. GitHub remains the source repo. */
@@ -64,27 +69,33 @@ export function isAboutAlias(pathname) {
 }
 
 /**
- * Documented aziel-runtime catalog slugs (1.6.8 PRODUCTS_RAW extras stay
- * as EXTRA_SOFTWARE: AZBrowser, AZNet, AZHub, AZInterface). Includes
- * peacelock and azmail. Door: worker_home when the tracker is ready,
- * else GitHub, else library hub. Display names are catalog `name`. Lumen is not listed.
- * EmbryoLock stays as a name-only local-not-hosted stub on this host
- * (`/embryolock`, or the live stub entry). Live catalog at request time
- * is preferred over this static fallback.
- * AZHub and AZInterface are separate Plain doors — never one combined engine.
+ * Documented aziel-runtime Softwares-tab slugs (fallback only).
+ * Live catalog at request time is preferred. Door: worker_home when
+ * the tracker is ready, else GitHub, else library hub. Display names
+ * are catalog `name`. Lumen is not listed. FragGate and mesh are extras
+ * — not Softwares products. AZHub and AZInterface are separate Plain
+ * doors — never one combined engine.
  */
 export const CATALOG_SLUGS = [
+  "4dmap",
   "ark",
   "azai",
   "azbot",
+  "azbrowser",
+  "azchat",
   "azclce",
+  "azcoherence",
+  "azhub",
   "aziel-corpus",
   "azieltether",
+  "azinterface",
   "azmail",
+  "aznet",
   "azos",
   "chronolock",
   "codelock",
   "decisiongate",
+  "embryolock",
   "employeelock",
   "foldlock",
   "forgereceipts",
@@ -107,17 +118,25 @@ export const CATALOG_SLUGS = [
 
 /** Catalog `name` for each documented slug. */
 export const CATALOG_NAMES = {
+  "4dmap": "4DMap",
   ark: "The ARK",
   azai: "AZAI",
   azbot: "AZBot",
+  azbrowser: "AZBrowser",
+  azchat: "AZChat",
   azclce: "AZ-CLCE",
+  azcoherence: "AZCoherence",
+  azhub: "AZHub",
   "aziel-corpus": "Aziel Digital Library",
   azieltether: "AzielTether",
+  azinterface: "AZInterface",
   azmail: "AZMail",
+  aznet: "AZNet",
   azos: "AZ-OS",
   chronolock: "ChronoLock",
   codelock: "CodeLock",
   decisiongate: "DecisionGATE",
+  embryolock: "EmbryoLock",
   employeelock: "EmployeeLock",
   foldlock: "FoldLock",
   forgereceipts: "ForgeReceipts",
@@ -200,11 +219,24 @@ export function catalogSoftwareFromSlugs(slugs = CATALOG_SLUGS, liveProducts = [
     const live = liveBySlug.get(slug) || {};
     const name = displaySoftwareName(slug, CATALOG_NAMES[slug] || live.name);
     if (!name) return;
-    out.push({
+    const href = catalogHref(slug) || live.worker_home || live.github || LIBRARY_SOFTWARE;
+    const workerHome =
+      (typeof live.worker_home === "string" && live.worker_home) || catalogWorkerHome(slug) || href;
+    const item = {
       slug: canonicalSoftwareSlug(slug, name) || slug,
       name,
-      href: catalogHref(slug) || live.worker_home || live.github || LIBRARY_SOFTWARE,
-    });
+      href,
+      url: href,
+      worker_home: workerHome,
+    };
+    if (live.status) item.status = live.status;
+    else item.status = "live";
+    if (live.version) item.version = live.version;
+    if (live.one_line) item.one_line = live.one_line;
+    if (live.github) item.github = live.github;
+    if (live.bucket) item.bucket = live.bucket;
+    if (live.surface) item.surface = live.surface;
+    out.push(item);
   };
   for (const slug of slugs || []) add(slug);
   for (const later of CATALOG_LATER_SLUGS) {
@@ -215,31 +247,77 @@ export function catalogSoftwareFromSlugs(slugs = CATALOG_SLUGS, liveProducts = [
 
 export const CATALOG_SOFTWARE = catalogSoftwareFromSlugs();
 
-/** Kept on the landing though not in the documented catalog. */
-export const EMBRYOLOCK = { name: "EmbryoLock", href: EMBRYOLOCK_HREF };
-export const CATALOG_ONLY = ["EmbryoLock"];
+/** Softwares product door. Local `/embryolock` is secondary. */
+export const EMBRYOLOCK = {
+  slug: "embryolock",
+  name: "EmbryoLock",
+  href: EMBRYOLOCK_WORKER,
+  url: EMBRYOLOCK_WORKER,
+  worker_home: EMBRYOLOCK_WORKER,
+  status: "live",
+  surface: "live-with-local-destructive-boundary",
+};
+/** No name-only local-only Softwares cards. */
+export const CATALOG_ONLY = [];
 
-/** Honest stub copy. Not a Worker. Not the corpus catalog. */
+/** Secondary local page. Softwares link is catalog worker_home. */
 export const EMBRYOLOCK_COPY = {
   title: "EmbryoLock",
   open: [
-    "Name only. Local-not-hosted. Not a public Worker.",
-    "There is no public download-tracker and no public GitHub repository.",
-    "The live catalog may list this as a stub. It is not a FragGate engine.",
-    "This page is the door. It is not the Digital Library catalog.",
+    "Secondary local page. Softwares door is the catalog worker_home.",
+    EMBRYOLOCK_WORKER,
+    "Live-with-local-destructive-boundary. Wipe/unlock stay local-only. Never execute on the public mesh.",
+    "This page is not the Softwares product card.",
   ],
 };
 
-/** Catalog does not list these; they remain extra landing doors. */
-export const EXTRA_SOFTWARE = [
-  EMBRYOLOCK,
-  { name: "AZBrowser", href: AZBROWSER_WORKER },
-  { name: "AZNet", href: AZNET_WORKER },
-  { name: "AZHub", href: AZHUB_WORKER },
-  { name: "AZInterface", href: AZINTERFACE_WORKER },
-  { slug: RUNTIME_SLUG, name: RUNTIME_NAME, href: RUNTIME_LOCAL },
-  { name: "FragGate", href: FRAGGATE_WORKER },
+const EXTRA_SLUGS = new Set(["fraggate", "mesh", "aziel-runtime", "runtime"]);
+
+export function isSoftwareExtra(slug, name) {
+  const s = String(canonicalSoftwareSlug(slug, name) || slug || "")
+    .trim()
+    .toLowerCase();
+  if (EXTRA_SLUGS.has(s)) return true;
+  const n = String(name || "").trim();
+  if (/^fraggate$/i.test(n) || /^mesh$/i.test(n)) return true;
+  return false;
+}
+
+/**
+ * FragGate / mesh / aziel-runtime — extras only.
+ * Never Softwares products[] cards.
+ */
+export const SOFTWARE_EXTRAS = [
+  {
+    slug: "fraggate",
+    name: "FragGate",
+    href: FRAGGATE_WORKER,
+    url: FRAGGATE_WORKER,
+    worker_home: FRAGGATE_WORKER,
+    kind: "extra",
+    software_tab: false,
+  },
+  {
+    slug: RUNTIME_SLUG,
+    name: RUNTIME_NAME,
+    href: RUNTIME_LOCAL,
+    url: RUNTIME_LOCAL,
+    worker_home: RUNTIME_LOCAL,
+    kind: "extra",
+    software_tab: false,
+  },
+  {
+    slug: "mesh",
+    name: "mesh",
+    kind: "extra",
+    software_tab: false,
+    enabled_default: false,
+    path: "/v1/mesh",
+    spec: "QNM-BUILD-1.0",
+    note: "Suite rollup. Not a Softwares-tab product. Default OFF. GET never enables.",
+  },
 ];
+export const EXTRA_SOFTWARE = SOFTWARE_EXTRAS;
 
 /** Gate before Lock when a name matches both. Clock is not Lock. */
 export function softwareBucket(name) {
@@ -259,7 +337,7 @@ export function sortSoftware(items) {
   });
 }
 
-export const SOFTWARE = sortSoftware(CATALOG_SOFTWARE.concat(EXTRA_SOFTWARE));
+export const SOFTWARE = sortSoftware(CATALOG_SOFTWARE);
 
 /** AZL-DONATE-1.0. Primary canonical Donate door. Not a Softwares product. */
 export const DONATE_PATH = "/donate";

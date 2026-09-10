@@ -42,6 +42,7 @@ import {
   EMBRYOLOCK_COPY,
   EMBRYOLOCK_HREF,
   EMBRYOLOCK_PATH,
+  EMBRYOLOCK_WORKER,
   FRAGGATE_GITHUB,
   FRAGGATE_WORKER,
   GITHUB_QNM_NODE,
@@ -51,7 +52,9 @@ import {
   RUNTIME_LOCAL,
   RUNTIME_NAME,
   RUNTIME_TITLE,
+  SIGIL,
   SOFTWARE,
+  SOFTWARE_EXTRAS,
   SOFTWARE_HREF,
   SOFTWARE_SECTION,
   SPINE,
@@ -156,15 +159,17 @@ describe("landing copy", () => {
   });
 
   it("includes the everblooming sigil", () => {
-    assert.ok(pageHtml().includes("https://www.azielcorpuslibrary.net/sigil.png"));
+    assert.equal(SIGIL, CANON_ORIGIN + "/sigil.png");
+    assert.ok(pageHtml().includes(SIGIL));
+    assert.ok(!pageHtml().includes("https://www.azielcorpuslibrary.net/sigil.png"));
   });
 });
 
 describe("software doors", () => {
   it("hyperlinks every SOFTWARE name to a verified URL", () => {
     const html = pageHtml();
-    assert.equal(CATALOG_SOFTWARE.length, 29);
-    assert.equal(SOFTWARE.length, 36);
+    assert.equal(CATALOG_SOFTWARE.length, 37);
+    assert.equal(SOFTWARE.length, 37);
     for (const item of SOFTWARE) {
       const needle = 'href="' + item.href + '"';
       assert.ok(html.includes(needle), "missing href for " + item.name);
@@ -185,7 +190,7 @@ describe("software doors", () => {
     assert.equal(displaySoftwareName("fraggate", "FragGate"), "FragGate");
     assert.equal(displaySoftwareName("azai", "AZAI"), "AZAI");
     const html = pageHtml();
-    assert.ok(html.includes(">" + RUNTIME_NAME + "<"));
+    assert.ok(!html.includes('class="soft-name">' + RUNTIME_NAME + "<"));
     assert.doesNotMatch(html, /runtime 1\.6\.\d+ FragGate/i);
     const ld = jsonLd();
     assert.equal(ld["@graph"][2].name, RUNTIME_TITLE);
@@ -213,8 +218,14 @@ describe("software doors", () => {
     assert.ok(names.includes("AZInterface"));
     assert.ok(names.includes("AZNet"));
     assert.ok(names.includes("EmbryoLock"));
-    assert.ok(names.includes("aziel-runtime"));
-    assert.ok(names.includes("FragGate"));
+    assert.ok(!names.includes("aziel-runtime"));
+    assert.ok(!names.includes("FragGate"));
+    assert.ok(!names.includes("mesh"));
+    assert.ok(names.includes("4DMap"));
+    assert.ok(names.includes("AZChat"));
+    assert.ok(names.includes("AZCoherence"));
+    assert.ok(SOFTWARE_EXTRAS.some((s) => s.name === "FragGate"));
+    assert.ok(SOFTWARE_EXTRAS.some((s) => s.slug === "mesh" && s.software_tab === false));
     assert.ok(!names.includes("Lumen"));
     assert.deepEqual(CATALOG_LATER_SLUGS, []);
   });
@@ -253,40 +264,41 @@ describe("software doors", () => {
     assert.ok(CATALOG_SOFTWARE.some((s) => s.slug === "azmail"));
   });
 
-  it("keeps EmbryoLock as an on-site local-not-hosted stub and does not invent Lumen", () => {
+  it("points EmbryoLock Softwares at catalog worker_home and keeps a secondary local page", () => {
     const html = pageHtml();
-    assert.deepEqual(CATALOG_ONLY, ["EmbryoLock"]);
+    assert.deepEqual(CATALOG_ONLY, []);
     const embryo = SOFTWARE.find((s) => s.name === "EmbryoLock");
     assert.equal(EMBRYOLOCK_PATH, "/embryolock");
     assert.equal(EMBRYOLOCK_HREF, CANON_ORIGIN + "/embryolock");
-    assert.equal(embryo.href, EMBRYOLOCK_HREF);
+    assert.equal(EMBRYOLOCK_WORKER, "https://embryolock-download-tracker.vibelock.workers.dev/");
+    assert.equal(embryo.href, EMBRYOLOCK_WORKER);
+    assert.equal(embryo.worker_home, EMBRYOLOCK_WORKER);
     assert.notEqual(embryo.href, LIBRARY_SOFTWARE);
     assert.doesNotMatch(embryo.href, /azielcorpuslibrary\.net\/software/i);
-    assert.doesNotMatch(embryo.href, /embryolock-download-tracker/i);
-    assert.ok(html.includes('href="' + EMBRYOLOCK_HREF + '"'));
+    assert.ok(html.includes('href="' + EMBRYOLOCK_WORKER + '"'));
     assert.ok(html.includes(">EmbryoLock<"));
     assert.doesNotMatch(html, /href="https:\/\/www\.azielcorpuslibrary\.net\/software" class="soft-name"/);
-    assert.doesNotMatch(html, /embryolock-download-tracker/i);
     assert.doesNotMatch(html, />Lumen</);
     assert.ok(!citeDoc().software_names.some((s) => s.name === "Lumen"));
-    assert.ok(citeDoc().software_names.some((s) => s.name === "EmbryoLock" && s.url === EMBRYOLOCK_HREF));
+    assert.ok(citeDoc().software_names.some((s) => s.name === "EmbryoLock" && s.url === EMBRYOLOCK_WORKER));
     assert.ok(citeDoc().software_names.some((s) => s.name === "PeaceLock"));
     const stub = embryoLockHtml();
     assert.ok(stub.includes('rel="canonical" href="' + EMBRYOLOCK_HREF + '"'));
-    assert.ok(stub.includes("https://www.azielcorpuslibrary.net/sigil.png"));
+    assert.ok(stub.includes(SIGIL));
+    assert.ok(stub.includes(EMBRYOLOCK_WORKER));
     for (const line of EMBRYOLOCK_COPY.open) {
       assert.ok(stub.includes(line), "missing stub copy: " + line);
     }
-    assert.ok(stub.includes("Local-not-hosted"));
-    assert.ok(stub.includes("Not a public Worker"));
-    assert.doesNotMatch(stub, /embryolock-download-tracker/i);
+    assert.ok(stub.includes("Secondary local page"));
+    assert.ok(stub.includes("worker_home"));
+    assert.match(stub, /embryolock-download-tracker/i);
   });
 
   it("lists AZBrowser in Plain as its own Worker UI, not nested with FragGate or AZNet", () => {
     const html = pageHtml();
     const azbrowser = SOFTWARE.find((s) => s.name === "AZBrowser");
     const aznet = SOFTWARE.find((s) => s.name === "AZNet");
-    const fraggate = SOFTWARE.find((s) => s.name === "FragGate");
+    const fraggate = SOFTWARE_EXTRAS.find((s) => s.name === "FragGate");
     assert.ok(azbrowser);
     assert.ok(aznet);
     assert.ok(fraggate);
@@ -305,7 +317,7 @@ describe("software doors", () => {
     const html = pageHtml();
     const aznet = SOFTWARE.find((s) => s.name === "AZNet");
     const azbrowser = SOFTWARE.find((s) => s.name === "AZBrowser");
-    const fraggate = SOFTWARE.find((s) => s.name === "FragGate");
+    const fraggate = SOFTWARE_EXTRAS.find((s) => s.name === "FragGate");
     assert.ok(aznet);
     assert.ok(azbrowser);
     assert.ok(fraggate);
@@ -327,7 +339,7 @@ describe("software doors", () => {
     const azinterface = SOFTWARE.find((s) => s.name === "AZInterface");
     const azbrowser = SOFTWARE.find((s) => s.name === "AZBrowser");
     const aznet = SOFTWARE.find((s) => s.name === "AZNet");
-    const fraggate = SOFTWARE.find((s) => s.name === "FragGate");
+    const fraggate = SOFTWARE_EXTRAS.find((s) => s.name === "FragGate");
     assert.ok(azhub);
     assert.ok(azinterface);
     assert.ok(azbrowser);
@@ -354,7 +366,7 @@ describe("software doors", () => {
     const azhub = SOFTWARE.find((s) => s.name === "AZHub");
     const azbrowser = SOFTWARE.find((s) => s.name === "AZBrowser");
     const aznet = SOFTWARE.find((s) => s.name === "AZNet");
-    const fraggate = SOFTWARE.find((s) => s.name === "FragGate");
+    const fraggate = SOFTWARE_EXTRAS.find((s) => s.name === "FragGate");
     assert.ok(azinterface);
     assert.ok(azhub);
     assert.ok(azbrowser);
@@ -376,22 +388,22 @@ describe("software doors", () => {
     assert.ok(!html.includes("Lumen"));
   });
 
-  it("prefers known GodLock / runtime / FragGate Worker doors", () => {
+  it("keeps GodLock on Softwares and FragGate / runtime as extras only", () => {
     const html = pageHtml();
     const byName = Object.fromEntries(SOFTWARE.map((s) => [s.name, s.href]));
-    const fraggate = SOFTWARE.find((s) => s.name === "FragGate");
+    const fraggate = SOFTWARE_EXTRAS.find((s) => s.name === "FragGate");
+    const runtime = SOFTWARE_EXTRAS.find((s) => s.slug === "aziel-runtime");
     assert.equal(byName.GodLock, "https://godlock-download-tracker.vibelock.workers.dev/");
-    assert.equal(byName["aziel-runtime"], RUNTIME_LOCAL);
+    assert.equal(byName["aziel-runtime"], undefined);
     assert.equal(softwareBucket("FragGate"), 1);
     assert.equal(FRAGGATE_WORKER, "https://fraggate-download-tracker.vibelock.workers.dev/");
     assert.equal(FRAGGATE_GITHUB, "https://github.com/AzielEliab/fraggate");
-    assert.equal(byName.FragGate, FRAGGATE_WORKER);
     assert.equal(fraggate.href, FRAGGATE_WORKER);
-    assert.ok(html.includes('href="' + FRAGGATE_WORKER + '"'));
-    assert.ok(html.includes(">FragGate<"));
-    assert.match(html, /fraggate-download-tracker/i);
+    assert.equal(runtime.href, RUNTIME_LOCAL);
+    assert.ok(!html.includes('class="soft-name">FragGate<'));
     assert.ok(!html.includes('href="' + FRAGGATE_GITHUB + '" class="soft-name"'));
-    assert.ok(citeDoc().software_names.some((s) => s.name === "FragGate" && s.url === FRAGGATE_WORKER));
+    assert.ok(!citeDoc().software_names.some((s) => s.name === "FragGate"));
+    assert.equal(citeDoc().fraggate, FRAGGATE_WORKER);
   });
 
   it("sortSoftware buckets Plain, then Gate, then Lock (gate before lock)", () => {
@@ -480,12 +492,16 @@ describe("software doors", () => {
     assert.ok(idx("AZNet") < idx("ForgeReceipts"));
     assert.ok(idx("AZMail") < idx("ForgeReceipts"));
     assert.ok(idx("AZMail") < idx("StaticClock"));
-    assert.ok(idx("StaticClock") < idx("FragGate"));
-    assert.ok(idx("AZAI") < idx("FragGate"));
-    assert.ok(idx("AZMail") < idx("FragGate"));
-    assert.ok(idx("FragGate") < idx("CodeLock"));
-    assert.ok(idx("EmbryoLock") > idx("FragGate"));
-    assert.ok(idx("PeaceLock") > idx("FragGate"));
+    assert.ok(idx("4DMap") < idx("AZAI"));
+    assert.ok(idx("AZBrowser") < idx("AZChat"));
+    assert.ok(idx("AZChat") < idx("AZCoherence"));
+    assert.ok(idx("AZCoherence") < idx("AZHub"));
+    assert.ok(idx("StaticClock") < idx("DecisionGATE"));
+    assert.ok(idx("AZAI") < idx("DecisionGATE"));
+    assert.ok(idx("AZMail") < idx("DecisionGATE"));
+    assert.ok(idx("DecisionGATE") < idx("CodeLock"));
+    assert.ok(idx("EmbryoLock") > idx("DecisionGATE"));
+    assert.ok(idx("PeaceLock") > idx("DecisionGATE"));
     assert.ok(idx("M.I.A.Lock") < idx("PeaceLock"));
     assert.ok(idx("PeaceLock") < idx("ShadowLock"));
   });
@@ -531,6 +547,7 @@ describe("SEO routes", () => {
     assert.ok(body.includes("Allow: /aziel-eliab"));
     assert.ok(body.includes("Allow: /embryolock"));
     assert.ok(body.includes("Allow: /embryolock/"));
+    assert.ok(body.includes("Allow: /sigil.png"));
     assert.ok(body.includes("Allow: /donate"));
     assert.ok(body.includes("Allow: /donate/"));
     assert.ok(body.includes("Allow: /donate/qr/"));
@@ -599,7 +616,8 @@ describe("SEO routes", () => {
     assert.ok(llmsBody.includes(DONATE_HREF + "  (AZL-DONATE-1.0 primary Donate door)"));
     assert.ok(llmsBody.includes("## Donate"));
     assert.ok(llmsBody.includes(DONATE_DISCLAIMER));
-    assert.ok(llmsBody.includes(EMBRYOLOCK_HREF + "  (EmbryoLock local-not-hosted stub)"));
+    assert.ok(llmsBody.includes(EMBRYOLOCK_HREF + "  (EmbryoLock secondary local page)"));
+    assert.ok(llmsBody.includes(CANON_ORIGIN + "/sigil.png"));
     assert.ok(llmsBody.includes("## Software\n\n- "));
     assert.ok(!llmsBody.includes("## Software (verified"));
     assert.ok(!llmsBody.includes("FragGate / aziel-runtime"));
@@ -636,6 +654,7 @@ describe("SEO routes", () => {
     assert.ok(llmsBody.includes("You.com"));
     assert.ok(llmsBody.includes("EmbryoLock"));
     assert.ok(llmsBody.includes(EMBRYOLOCK_HREF));
+    assert.ok(llmsBody.includes(EMBRYOLOCK_WORKER));
     assert.ok(llmsBody.includes("PeaceLock"));
     assert.ok(llmsBody.includes(PEACELOCK_WORKER));
     assert.ok(llmsBody.includes("AZMail"));
@@ -662,6 +681,7 @@ describe("SEO routes", () => {
     assert.ok(aiBody.includes("User-agent: Claude"));
     assert.ok(aiBody.includes("Allow: /embryolock"));
     assert.ok(aiBody.includes("Allow: /embryolock/"));
+    assert.ok(aiBody.includes("Allow: /sigil.png"));
     assert.ok(aiBody.includes("Allow: /donate"));
     assert.ok(aiBody.includes("Allow: /donate/"));
     assert.ok(aiBody.includes("Donate: " + DONATE_HREF));
@@ -722,8 +742,8 @@ describe("SEO routes", () => {
     assert.ok(citeBody.software_names.some((s) => s.name === "AZHub" && s.url === AZHUB_WORKER));
     assert.ok(citeBody.software_names.some((s) => s.name === "AZInterface" && s.url === AZINTERFACE_WORKER));
     assert.ok(citeBody.software_names.some((s) => s.name === "AZNet" && s.url === AZNET_WORKER));
-    assert.ok(citeBody.software_names.some((s) => s.name === "FragGate" && s.url === FRAGGATE_WORKER));
-    assert.ok(citeBody.software_names.some((s) => s.name === "EmbryoLock" && s.url === EMBRYOLOCK_HREF));
+    assert.ok(!citeBody.software_names.some((s) => s.name === "FragGate"));
+    assert.ok(citeBody.software_names.some((s) => s.name === "EmbryoLock" && s.url === EMBRYOLOCK_WORKER));
     assert.ok(mapBody.includes("<loc>" + EMBRYOLOCK_HREF + "</loc>"));
     assert.ok(citeBody.software_names.some((s) => s.name === "PeaceLock"));
     assert.equal(citeBody.donate, DONATE_HREF);
@@ -1099,6 +1119,23 @@ describe("worker routing", () => {
     assert.equal(post.status, 405);
   });
 
+  it("serves a hosted /sigil.png so Donate does not fetch the corpus", async () => {
+    const res = await fetchPath("/sigil.png");
+    assert.equal(res.status, 200);
+    assert.match(res.headers.get("content-type"), /image\/png/);
+    assert.equal(res.headers.get("X-Aziel-Sigil"), "Everblooming");
+    const buf = new Uint8Array(await res.arrayBuffer());
+    assert.equal(buf[0], 0x89);
+    assert.equal(String.fromCharCode(buf[1], buf[2], buf[3]), "PNG");
+    assert.ok(buf.length > 1000);
+    const head = await fetchPath("/sigil.png", { method: "HEAD" });
+    assert.equal(head.status, 200);
+    assert.equal(await head.text(), "");
+    const donate = donateHtml();
+    assert.ok(donate.includes('src="' + SIGIL + '"'));
+    assert.ok(!donate.includes("https://www.azielcorpuslibrary.net/sigil.png"));
+  });
+
   it("returns a literary 404", async () => {
     const res = await fetchPath("/no-such-door");
     assert.equal(res.status, 404);
@@ -1150,17 +1187,17 @@ describe("worker routing", () => {
     assert.equal(apex.headers.get("location"), CANON_ORIGIN + "/about");
   });
 
-  it("serves GET /embryolock as a local-not-hosted stub, not the corpus catalog", async () => {
+  it("serves GET /embryolock as a secondary local page, not the corpus catalog", async () => {
     for (const path of ["/embryolock", "/embryolock/"]) {
       const res = await fetchPath(path);
       assert.equal(res.status, 200);
       assert.match(res.headers.get("content-type"), /text\/html/);
       const body = await res.text();
       assert.ok(body.includes("<h1>EmbryoLock</h1>"));
-      assert.ok(body.includes("Local-not-hosted"));
-      assert.ok(body.includes("Not a public Worker"));
-      assert.ok(body.includes("It is not the Digital Library catalog"));
-      assert.doesNotMatch(body, /embryolock-download-tracker/i);
+      assert.ok(body.includes("Secondary local page"));
+      assert.ok(body.includes("worker_home"));
+      assert.ok(body.includes("This page is not the Softwares product card"));
+      assert.match(body, /embryolock-download-tracker/i);
       assert.doesNotMatch(body, /href="https:\/\/www\.azielcorpuslibrary\.net\/software"/);
     }
 
@@ -1395,7 +1432,7 @@ describe("live software catalog", () => {
     };
   }
 
-  it("prefers /v1/software at request time and keeps Plain→Gate→Lock plus EmbryoLock stub", async () => {
+  it("prefers /v1/software at request time and keeps Plain→Gate→Lock plus EmbryoLock worker_home", async () => {
     const env = catalogEnv(async (req) => {
       const path = new URL(req.url).pathname;
       if (path === "/v1/software") {
@@ -1403,19 +1440,37 @@ describe("live software catalog", () => {
           JSON.stringify({
             ok: true,
             author: "Aziel Eliab",
+            version: "1.9.0",
             products: [
-              { slug: "newlock", name: "NewLock", worker_home: "https://newlock-download-tracker.vibelock.workers.dev/" },
-              { slug: "azai", name: "AZAI", worker_home: "https://azai-download-tracker.vibelock.workers.dev/" },
-              { slug: "decisiongate", name: "DecisionGATE" },
+              {
+                slug: "newlock",
+                name: "NewLock",
+                status: "live",
+                version: "0.1.0",
+                one_line: "New lock door.",
+                worker_home: "https://newlock-download-tracker.vibelock.workers.dev/",
+              },
+              {
+                slug: "azai",
+                name: "AZAI",
+                status: "live",
+                version: "0.3.1",
+                one_line: "Local OpenAI-compatible runtime.",
+                worker_home: "https://azai-download-tracker.vibelock.workers.dev/",
+              },
+              { slug: "decisiongate", name: "DecisionGATE", status: "live", version: "0.1.0" },
               {
                 slug: "embryolock",
                 name: "EmbryoLock",
-                status: "stub",
-                local_not_hosted: true,
+                status: "live",
+                version: "1.1.0",
+                one_line: "Offline destructive-over-recovery vault.",
                 worker_home: "https://embryolock-download-tracker.vibelock.workers.dev/",
               },
             ],
             extras: [{ slug: "fraggate", name: "FragGate", worker_home: FRAGGATE_WORKER }],
+            fraggate: "https://aziel-runtime.vibelock.workers.dev/v1/fraggate",
+            mesh: { path: "/v1/mesh", enabled_default: false, spec: "QNM-BUILD-1.0" },
           }),
           { status: 200, headers: { "Content-Type": "application/json" } },
         );
@@ -1433,14 +1488,13 @@ describe("live software catalog", () => {
     assert.ok(html.includes('href="https://newlock-download-tracker.vibelock.workers.dev/"'));
     assert.ok(html.includes(">AZAI<"));
     assert.ok(html.includes(">DecisionGATE<"));
-    assert.ok(html.includes(">FragGate<"));
+    assert.ok(!html.includes('class="soft-name">FragGate<'));
     assert.ok(html.includes(">EmbryoLock<"));
-    assert.ok(html.includes('href="' + EMBRYOLOCK_HREF + '"'));
-    assert.doesNotMatch(html, /embryolock-download-tracker/i);
+    assert.ok(html.includes('href="' + EMBRYOLOCK_WORKER + '"'));
+    assert.match(html, /embryolock-download-tracker/i);
     const idx = (name) => html.indexOf(">" + name + "<");
     assert.ok(idx("AZAI") < idx("DecisionGATE"));
     assert.ok(idx("DecisionGATE") < idx("NewLock"));
-    assert.ok(idx("FragGate") < idx("NewLock"));
 
     const index = await fetchPath("/v1/software", {}, env);
     assert.equal(index.status, 200);
@@ -1449,8 +1503,21 @@ describe("live software catalog", () => {
     assert.equal(doc.author, AUTHOR);
     assert.equal(doc.source, "live");
     assert.equal(doc.via, "/v1/software");
+    const newlock = doc.products.find((s) => s.slug === "newlock");
+    assert.ok(newlock);
+    assert.equal(newlock.status, "live");
+    assert.equal(newlock.version, "0.1.0");
+    assert.equal(newlock.one_line, "New lock door.");
+    assert.equal(newlock.worker_home, "https://newlock-download-tracker.vibelock.workers.dev/");
     assert.ok(doc.software.some((s) => s.name === "NewLock" && s.slug === "newlock"));
-    assert.ok(doc.software.some((s) => s.name === "EmbryoLock" && s.url === EMBRYOLOCK_HREF));
+    const embryo = doc.products.find((s) => s.name === "EmbryoLock");
+    assert.equal(embryo.url, EMBRYOLOCK_WORKER);
+    assert.equal(embryo.worker_home, EMBRYOLOCK_WORKER);
+    assert.equal(embryo.status, "live");
+    assert.equal(embryo.version, "1.1.0");
+    assert.ok(!doc.products.some((s) => s.name === "FragGate" || s.slug === "mesh"));
+    assert.ok(doc.extras.some((s) => s.name === "FragGate" && s.software_tab === false));
+    assert.ok(doc.extras.some((s) => s.slug === "mesh" && s.software_tab === false && s.enabled_default === false));
     const names = doc.software.map((s) => s.name);
     const lastPlain = names.findLastIndex((n) => softwareBucket(n) === 0);
     const firstGate = names.findIndex((n) => softwareBucket(n) === 1);
@@ -1487,21 +1554,22 @@ describe("live software catalog", () => {
 
     const landing = await fetchPath("/", { headers: { "user-agent": "Mozilla/5.0" } }, env);
     const html = await landing.text();
-    assert.ok(html.includes(">" + RUNTIME_NAME + "<"));
+    assert.ok(!html.includes('class="soft-name">' + RUNTIME_NAME + "<"));
     assert.doesNotMatch(html, /runtime 1\.6\.15 FragGate/);
     assert.doesNotMatch(html, /Run them without me/);
     assert.match(html, /<h2>Software<\/h2>\s*<p class="soft-line">/);
     const idx = (name) => html.indexOf(">" + name + "<");
     assert.ok(idx("AZAI") < idx("DecisionGATE"));
     assert.ok(idx("DecisionGATE") < idx("CodeLock"));
-    assert.ok(idx(RUNTIME_NAME) < idx("DecisionGATE"));
 
     const index = await fetchPath("/v1/software", {}, env);
     const doc = await index.json();
-    const runtime = doc.software.find((s) => s.slug === "aziel-runtime" || s.name === RUNTIME_NAME);
+    assert.ok(!doc.products.some((s) => s.slug === "aziel-runtime"));
+    const runtime = doc.extras.find((s) => s.slug === "aziel-runtime" || s.name === RUNTIME_NAME);
     assert.ok(runtime);
     assert.equal(runtime.name, RUNTIME_NAME);
     assert.ok(!doc.software.some((s) => /runtime 1\.6\.15 FragGate/i.test(s.name)));
+    assert.ok(!doc.extras.some((s) => /runtime 1\.6\.15 FragGate/i.test(s.name)));
   });
 
   it("falls back to /v1/fraggate/list when /v1/software is missing", async () => {
@@ -1530,14 +1598,16 @@ describe("live software catalog", () => {
     assert.equal(doc.source, "fraggate-list");
     assert.equal(doc.via, "/v1/fraggate/list");
     assert.ok(doc.software.some((s) => s.name === "AZBot"));
-    assert.ok(doc.software.some((s) => s.name === "EmbryoLock" && s.url === EMBRYOLOCK_HREF));
-    assert.ok(doc.software.some((s) => s.name === "aziel-runtime"));
-    assert.ok(doc.software.some((s) => s.name === "FragGate"));
+    assert.ok(doc.products.some((s) => s.name === "EmbryoLock" && s.url === EMBRYOLOCK_WORKER));
+    assert.ok(!doc.products.some((s) => s.name === "aziel-runtime"));
+    assert.ok(!doc.products.some((s) => s.name === "FragGate"));
+    assert.ok(doc.extras.some((s) => s.name === "aziel-runtime"));
+    assert.ok(doc.extras.some((s) => s.name === "FragGate"));
 
     const cite = await fetchPath("/cite.json", {}, env);
     const citeBody = await cite.json();
     assert.ok(citeBody.software_names.some((s) => s.name === "AZBot"));
-    assert.ok(citeBody.software_names.some((s) => s.name === "EmbryoLock" && s.url === EMBRYOLOCK_HREF));
+    assert.ok(citeBody.software_names.some((s) => s.name === "EmbryoLock" && s.url === EMBRYOLOCK_WORKER));
   });
 
   it("uses the static SOFTWARE fallback when live catalog calls fail", async () => {
@@ -1546,8 +1616,12 @@ describe("live software catalog", () => {
     assert.equal(doc.source, "fallback");
     assert.equal(doc.via, null);
     assert.ok(doc.software.some((s) => s.name === "PeaceLock"));
-    assert.ok(doc.software.some((s) => s.name === "EmbryoLock" && s.url === EMBRYOLOCK_HREF));
+    assert.ok(doc.products.some((s) => s.name === "EmbryoLock" && s.url === EMBRYOLOCK_WORKER && s.worker_home === EMBRYOLOCK_WORKER));
+    assert.ok(!doc.products.some((s) => s.name === "FragGate" || s.slug === "mesh"));
+    assert.ok(doc.extras.some((s) => s.name === "FragGate" && s.software_tab === false));
+    assert.ok(doc.extras.some((s) => s.slug === "mesh" && s.enabled_default === false));
     assert.equal(doc.software.length, SOFTWARE.length);
+    assert.equal(doc.products.length, SOFTWARE.length);
     assert.equal(doc.mesh.enabled, false);
     assert.equal(doc.mesh.default, "off");
     assert.equal(doc.mesh.mesh, "off");

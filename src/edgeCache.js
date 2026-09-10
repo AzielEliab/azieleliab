@@ -5,8 +5,8 @@
  * Author: Aziel Eliab.
  */
 
-export const CATALOG_KV_KEY = "software:catalog:v1";
-export const CATALOG_CACHE_URL = "https://www.azieleliab.com/__cache/software-catalog-v1";
+export const CATALOG_KV_KEY = "software:catalog:v2";
+export const CATALOG_CACHE_URL = "https://www.azieleliab.com/__cache/software-catalog-v2";
 export const MESH_STATUS_CACHE_URL = "https://www.azieleliab.com/__cache/mesh-status-v1";
 export const MESH_NODES_CACHE_URL = "https://www.azieleliab.com/__cache/mesh-nodes-v1";
 export const UPDATE_CHECK_CACHE_URL = "https://www.azieleliab.com/__cache/update-check-v1";
