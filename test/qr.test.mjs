@@ -1,19 +1,31 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import { DONATE_RAILS } from "../src/copy.js";
-import { qrKnownUri, qrSvg } from "../src/qr.js";
+import { donateQrResponse, qrImg, qrKnownId, qrPngPath } from "../src/qr.js";
 
 describe("donate QR", () => {
-  it("ships a static payment-URI QR for each rail", () => {
+  it("ships a solid PNG payment-URI QR for each rail", () => {
     for (const rail of DONATE_RAILS) {
-      assert.equal(qrKnownUri(rail.uri), true, rail.id);
-      const svg = qrSvg(rail.uri, rail.coin + " payment URI");
-      assert.ok(svg.startsWith("<svg"));
-      assert.ok(svg.includes('aria-label="' + rail.coin + " payment URI" + '"'));
-      assert.ok(svg.includes('viewBox="0 0 '));
-      assert.ok(!svg.includes("https://www.azieleliab.com"));
-      assert.ok(!svg.includes("/donate"));
+      assert.equal(qrKnownId(rail.id), true, rail.id);
+      assert.equal(qrPngPath(rail.id), rail.qrSrc);
+      const img = qrImg(rail);
+      assert.ok(img.startsWith("<img "));
+      assert.ok(img.includes('src="' + rail.qrSrc + '"'));
+      assert.ok(img.includes('width="180"'));
+      assert.ok(img.includes('height="180"'));
+      assert.ok(img.includes('alt="' + rail.qrAlt + '"'));
+      assert.ok(!img.includes("<svg"));
+      assert.ok(!img.includes("https://www.azieleliab.com"));
+      const disk = readFileSync(new URL("../public" + rail.qrSrc, import.meta.url));
+      assert.equal(disk[0], 0x89);
+      assert.equal(disk.toString("ascii", 1, 4), "PNG");
+      const res = donateQrResponse(rail.qrSrc);
+      assert.ok(res);
+      assert.match(res.headers.get("content-type"), /image\/png/);
     }
-    assert.equal(qrKnownUri("https://www.azieleliab.com/donate"), false);
+    assert.equal(qrKnownId("sol"), false);
+    assert.equal(donateQrResponse("/donate"), null);
+    assert.equal(donateQrResponse("/donate/qr/sol.png"), null);
   });
 });

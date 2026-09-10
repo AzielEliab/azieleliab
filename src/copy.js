@@ -272,6 +272,8 @@ export const DONATE_RAILS = [
     network: "Bitcoin (on-chain)",
     address: "bc1q8cg7hmgmu7x9yaja8j249np0vt84d4y8duugr7",
     uri: "bitcoin:bc1q8cg7hmgmu7x9yaja8j249np0vt84d4y8duugr7",
+    qrSrc: "/donate/qr/btc.png",
+    qrAlt: "Bitcoin payment URI QR",
   },
   {
     id: "eth",
@@ -279,6 +281,8 @@ export const DONATE_RAILS = [
     network: "Ethereum mainnet",
     address: "0x29b386022e3968cf8dBFCE59569b49680184B23b",
     uri: "ethereum:0x29b386022e3968cf8dBFCE59569b49680184B23b",
+    qrSrc: "/donate/qr/eth.png",
+    qrAlt: "Ethereum payment URI QR",
   },
   {
     id: "ltc",
@@ -286,6 +290,8 @@ export const DONATE_RAILS = [
     network: "Litecoin",
     address: "LWuqPjMCFtLHvoBaQL4m8QtnxbXSDftVNs",
     uri: "litecoin:LWuqPjMCFtLHvoBaQL4m8QtnxbXSDftVNs",
+    qrSrc: "/donate/qr/ltc.png",
+    qrAlt: "Litecoin payment URI QR",
   },
   {
     id: "xrp",
@@ -294,6 +300,8 @@ export const DONATE_RAILS = [
     address: "rLc3jZJbgEU1wBGwTFtgyq8bpayQE15K7b",
     uri: "xrp:rLc3jZJbgEU1wBGwTFtgyq8bpayQE15K7b",
     extra: DONATE_XRP_TAG_NOTE,
+    qrSrc: "/donate/qr/xrp.png",
+    qrAlt: "XRP payment URI QR",
   },
   {
     id: "doge",
@@ -301,6 +309,8 @@ export const DONATE_RAILS = [
     network: "Dogecoin",
     address: "DQ4go4iLPfNXDWim4KptTh3565sFCVrCyp",
     uri: "dogecoin:DQ4go4iLPfNXDWim4KptTh3565sFCVrCyp",
+    qrSrc: "/donate/qr/doge.png",
+    qrAlt: "Dogecoin payment URI QR",
   },
 ];
 
