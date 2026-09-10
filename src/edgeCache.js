@@ -15,7 +15,8 @@ export const CATALOG_TTL_SEC = 120;
 export const CATALOG_FALLBACK_TTL_SEC = 60;
 export const MESH_TTL_SEC = 60;
 export const UPDATE_TTL_SEC = 60;
-export const HTML_CACHE = "public, max-age=60, s-maxage=180, stale-while-revalidate=600";
+/** Short HTML TTL so title/meta/JSON-LD stay indexable; catalog snapshot is separate. */
+export const HTML_CACHE = "public, max-age=0, s-maxage=60, stale-while-revalidate=300";
 export const STUB_HTML_CACHE = "public, max-age=300, s-maxage=3600, stale-while-revalidate=86400";
 /** Donate HTML must not sit in CF edge after QR asset swaps. */
 export const DONATE_HTML_CACHE = "no-store, max-age=0, must-revalidate";
