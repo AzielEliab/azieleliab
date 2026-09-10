@@ -23,6 +23,7 @@ import {
   meshSnapshot,
 } from "./mesh.js";
 import { donateHtml, embryoLockHtml, notFoundHtml, pageHtml } from "./page.js";
+import { donateQrResponse } from "./qr.js";
 import { handleRuntimeRoot, isRuntimeRequest } from "./runtimeRoot.js";
 import { aiTxt, citeDoc, CONTENT_SIGNAL, llmsTxt, robotsTxt, sitemapXml } from "./seo.js";
 import { incrementViews, isBot, readViews, viewsBody } from "./views.js";
@@ -146,6 +147,14 @@ export async function handleRequest(request, env = {}, ctx) {
       status: 405,
       headers: { allow: allowWrite ? "GET, HEAD, POST, OPTIONS" : "GET, HEAD", ...SECURITY },
     });
+  }
+
+  const qrPng = donateQrResponse(url.pathname, SECURITY);
+  if (qrPng) {
+    if (request.method === "HEAD") {
+      return new Response(null, { status: qrPng.status, headers: qrPng.headers });
+    }
+    return qrPng;
   }
 
   if (PAGE_CACHE_PATHS.has(path)) {
