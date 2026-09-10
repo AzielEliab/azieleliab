@@ -8,6 +8,7 @@ import {
   DOORS,
   EMBRYOLOCK_HREF,
   GITHUB,
+  GITHUB_QNM_NODE,
   GITHUB_RUNTIME,
   GITHUB_SECONDARY,
   GITHUB_SITE,
@@ -25,6 +26,7 @@ import {
   SOFTWARE,
   X_URL,
 } from "./copy.js";
+import { MESH_NOTE, QNS_CD, QNS_CD_SPEC } from "./mesh.js";
 
 export const AI_CRAWLER_AGENTS = [
   "GPTBot",
@@ -215,6 +217,7 @@ export function citeDoc(software = SOFTWARE) {
     github_site: GITHUB_SITE,
     github_secondary: GITHUB_SECONDARY,
     github_runtime: GITHUB_RUNTIME,
+    github_qnm_node: GITHUB_QNM_NODE,
     library: LIBRARY + "/",
     library_aziel_eliab: LIBRARY_AZIEL,
     software: LIBRARY_SOFTWARE,
@@ -240,8 +243,9 @@ export function citeDoc(software = SOFTWARE) {
     mesh_status_origin: RUNTIME + "/v1/mesh/status",
     mesh_nodes_origin: RUNTIME + "/v1/mesh/nodes",
     mesh_default: "off",
-    mesh_note:
-      "Suite decentralized node mesh. Default off until enabled on runtime. VPN/hop mesh is not claimed on this public surface.",
+    mesh_note: MESH_NOTE,
+    qns_cd_spec: QNS_CD_SPEC,
+    qns_cd: QNS_CD,
     runtime_uses: RUNTIME_LOCAL + "/v1/uses",
     sigil: SIGIL,
     license: LICENSE,
@@ -322,6 +326,11 @@ export function llmsTxt(software = SOFTWARE) {
     "- Uses (this host): " + RUNTIME_LOCAL + "/v1/uses",
     "- Mesh status: " + CANON_ORIGIN + "/v1/mesh/status (default off; origin " + RUNTIME + "/v1/mesh/status)",
     "- Mesh nodes: " + CANON_ORIGIN + "/v1/mesh/nodes",
+    "- QNS-CD-1.0 (photon QNS1 packet transfer): hub cite / mesh cross-map only. Local qnsd is " +
+      GITHUB_QNM_NODE +
+      ". Runtime cites: " +
+      GITHUB_RUNTIME +
+      ". Not a Softwares-tab product. No public qnsd proxy. No Node Gate.",
     catalogOnly,
     "",
     "## Runtime (AI / FragGate door)",
@@ -336,6 +345,7 @@ export function llmsTxt(software = SOFTWARE) {
     "- Uses (this host's /runtime API stats): " + RUNTIME_LOCAL + "/v1/uses",
     "- Mesh status: " + RUNTIME_LOCAL + "/v1/mesh/status (default off until enabled on runtime)",
     "- Mesh nodes: " + RUNTIME_LOCAL + "/v1/mesh/nodes",
+    "- QNS-CD-1.0: " + QNS_CD_SPEC + " photon QNS1 packet transfer. Local qnsd in qnm-node. Skill: " + RUNTIME_LOCAL + "/v1/skill",
     "- " + AI_CLIENTS_SENTENCE,
     "",
     "## Doors",
@@ -354,7 +364,7 @@ export function llmsTxt(software = SOFTWARE) {
     "- GET " + EMBRYOLOCK_HREF + "  (EmbryoLock local-not-hosted stub)",
     "- GET " + CANON_ORIGIN + "/v1/software  (resolved live doors)",
     "- GET " + CANON_ORIGIN + "/v1/update/check  (quiet installer pointer)",
-    "- GET " + CANON_ORIGIN + "/v1/mesh/status  (suite node mesh; default off)",
+    "- GET " + CANON_ORIGIN + "/v1/mesh/status  (suite node mesh; default off; QNS-CD-1.0 cite)",
     "- GET " + CANON_ORIGIN + "/v1/mesh/nodes",
     "- GET " + CANON_ORIGIN + "/cite.json",
     "- GET " + CANON_ORIGIN + "/llms.txt",
@@ -428,9 +438,10 @@ export function aiTxt() {
     "- Software hub: " + LIBRARY_SOFTWARE,
     "- Runtime (same-origin FragGate / aziel-runtime): " + RUNTIME_LOCAL,
     "- Runtime uses (this host): " + RUNTIME_LOCAL + "/v1/uses",
-    "- Mesh status: " + CANON_ORIGIN + "/v1/mesh/status (default off)",
+    "- Mesh status: " + CANON_ORIGIN + "/v1/mesh/status (default off; QNS-CD-1.0 cite)",
     "- Mesh nodes: " + CANON_ORIGIN + "/v1/mesh/nodes",
     "- Runtime mesh: " + RUNTIME_LOCAL + "/v1/mesh/status",
+    "- QNS-CD-1.0 (photon QNS1 packet transfer): local qnsd " + GITHUB_QNM_NODE + " · runtime " + GITHUB_RUNTIME,
     "- Runtime library: " + LIBRARY_RUNTIME,
     "- Runtime origin: " + RUNTIME + "/",
     "- GodLock: " + GODLOCK + "/",
@@ -508,7 +519,7 @@ export function jsonLd(software = SOFTWARE) {
           RUNTIME_LOCAL +
           "/mcp. Mesh status " +
           RUNTIME_LOCAL +
-          "/v1/mesh/status (default off). Author Aziel Eliab.",
+          "/v1/mesh/status (default off). QNS-CD-1.0 photon QNS1 packet transfer cite. Author Aziel Eliab.",
         author: person,
         license: "https://www.apache.org/licenses/LICENSE-2.0",
         codeRepository: GITHUB_RUNTIME,
@@ -528,7 +539,7 @@ export function jsonLd(software = SOFTWARE) {
           RUNTIME_LOCAL +
           "/mcp. Mesh " +
           RUNTIME_LOCAL +
-          "/v1/mesh/status (default off).",
+          "/v1/mesh/status (default off). QNS-CD-1.0 cite.",
       },
       {
         "@type": "ItemList",

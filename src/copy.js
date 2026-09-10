@@ -13,6 +13,7 @@ export const GITHUB = "https://github.com/AzielEliab";
 export const GITHUB_SECONDARY = "https://github.com/azieltherevealerofthesealed-arch";
 export const GITHUB_SITE = "https://github.com/AzielEliab/azieleliab";
 export const GITHUB_RUNTIME = "https://github.com/AzielEliab/aziel-runtime";
+export const GITHUB_QNM_NODE = "https://github.com/AzielEliab/qnm-node";
 export const LIBRARY = "https://www.azielcorpuslibrary.net";
 export const LIBRARY_SOFTWARE = LIBRARY + "/software";
 export const LIBRARY_RUNTIME = LIBRARY + "/runtime";
