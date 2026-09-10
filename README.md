@@ -92,7 +92,9 @@ New catalog products appear within the short snapshot TTL — no hand edit of th
 
 ### Deploy
 
-Push to `main` runs `.github/workflows/deploy.yml`: `npm ci`, `npm test`, then `wrangler deploy` using the `CLOUDFLARE_API_TOKEN` Actions secret and account `ac575a9b822bea2bed97d0ab73aed238`. No tokens live in the repo.
+Live deploys are **GitBaby / Cursor wrangler OAuth** (Aziel Eliab). That is the primary path.
+
+Push to `main` runs `.github/workflows/deploy.yml`: `npm ci` and `npm test` always. `wrangler deploy` is an optional Actions backup and runs only when `CLOUDFLARE_API_TOKEN` is set (account `ac575a9b822bea2bed97d0ab73aed238`). A missing token skips deploy and does not fail the workflow. No tokens live in the repo.
 
 ```bash
 npm install

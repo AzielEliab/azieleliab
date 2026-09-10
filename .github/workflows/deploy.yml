@@ -1,5 +1,10 @@
-# Push to main deploys azieleliab.com.
-# Token stays in GitHub Actions secrets. Account id is not a secret.
+# Push to main always runs Test.
+# Live deploys are GitBaby / Cursor wrangler OAuth (Aziel Eliab) — that is
+# the primary path. This Actions workflow is an optional backup only.
+# Do not put secrets in a job-level if: (GitHub rejects that and emails failures).
+# Job env HAS_CF_TOKEN copies the secret; step if: uses env only.
+# A missing token prints a skip notice and does not fail.
+# Do not invent or commit tokens. Account id is not a secret.
 # Author: Aziel Eliab.
 name: Deploy
 
@@ -13,6 +18,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+    env:
+      HAS_CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -29,7 +36,12 @@ jobs:
       - name: Test
         run: npm test
 
+      - name: Skip deploy notice
+        if: ${{ env.HAS_CF_TOKEN == '' }}
+        run: echo "Skipping Actions deploy — CLOUDFLARE_API_TOKEN unset. Live deploys use GitBaby / Cursor wrangler OAuth (Aziel Eliab)."
+
       - name: Deploy
+        if: ${{ env.HAS_CF_TOKEN != '' }}
         run: npx wrangler deploy
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
