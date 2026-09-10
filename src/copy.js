@@ -27,8 +27,14 @@ export const RUNTIME_LOCAL = CANON_ORIGIN + RUNTIME_PATH;
 export const RUNTIME_SLUG = "aziel-runtime";
 export const RUNTIME_NAME = "aziel-runtime";
 export const RUNTIME_TITLE = "Aziel Runtime";
-/** Soft-name strip on the landing. GET /software 301s here. */
+/** Soft-name strip on the landing. */
 export const SOFTWARE_SECTION = CANON_ORIGIN + "/#software";
+/** Indexable Softwares door. Same names as the homepage strip — no filler. */
+export const SOFTWARE_PATH = "/software";
+export const SOFTWARE_HREF = CANON_ORIGIN + SOFTWARE_PATH;
+export const SOFTWARE_TITLE = "Software — Aziel Eliab";
+export const SOFTWARE_DESCRIPTION =
+  "Software by Aziel Eliab. Live catalog from aziel-runtime / FragGate. Names only. Public identity Aziel Eliab only.";
 /** Same-site honest stub. Live catalog may list embryolock as stub / local-not-hosted. */
 export const EMBRYOLOCK_PATH = "/embryolock";
 export const EMBRYOLOCK_HREF = CANON_ORIGIN + EMBRYOLOCK_PATH;
@@ -43,9 +49,22 @@ export const AZHUB_GITHUB = "https://github.com/AzielEliab/azhub";
 export const AZINTERFACE_WORKER = "https://azinterface-download-tracker.vibelock.workers.dev/";
 export const AZINTERFACE_GITHUB = "https://github.com/AzielEliab/azinterface";
 export const X_URL = "https://x.com/azieleliab";
+export const X_HANDLE = "@azieleliab";
 
 export const DESCRIPTION =
   "Aziel Eliab. You don’t get to know me. You get to understand the work. Public identity Aziel Eliab only.";
+/** Unique document title. Visible H1 stays "Aziel Eliab". */
+export const HOME_TITLE = "Aziel Eliab — work, software, and research";
+
+/** About surfaces on this origin canonicalize to the homepage. */
+export const ABOUT_PATHS = ["/about", "/AzielEliab", "/aziel-eliab"];
+export const ABOUT_HREF = CANON_ORIGIN + "/";
+
+export function isAboutAlias(pathname) {
+  const p = String(pathname || "").replace(/\/+$/, "") || "/";
+  const lower = p.toLowerCase();
+  return lower === "/about" || lower === "/azieleliab" || lower === "/aziel-eliab";
+}
 
 /**
  * Documented aziel-runtime catalog slugs (1.6.8 PRODUCTS_RAW extras stay
@@ -249,6 +268,8 @@ export const SOFTWARE = sortSoftware(CATALOG_SOFTWARE.concat(EXTRA_SOFTWARE));
 export const DONATE_PATH = "/donate";
 export const DONATE_HREF = CANON_ORIGIN + DONATE_PATH + "?v=png";
 export const DONATE_TITLE = "Donate";
+export const DONATE_DESCRIPTION =
+  "Donate to Aziel Eliab. Nothing is free. Donations buy no privilege. Public identity Aziel Eliab only.";
 export const DONATE_DISCLAIMER = "Donations buy no privilege.";
 export const DONATE_SIGN = "— Aziel";
 export const DONATE_NETWORK_NOTE = "Send only on this network.";
@@ -318,7 +339,7 @@ export const DONATE_RAILS = [
 /** Homepage spine. Donate is also its own URL. */
 export const SPINE = [
   { id: "why", label: "Why", href: CANON_ORIGIN + "/#why" },
-  { id: "software", label: "Software", href: SOFTWARE_SECTION },
+  { id: "software", label: "Software", href: SOFTWARE_HREF },
   { id: "research", label: "Research", href: CANON_ORIGIN + "/#research" },
   { id: "doors", label: "Doors", href: CANON_ORIGIN + "/#doors" },
   { id: "donate", label: "Donate", href: DONATE_HREF },

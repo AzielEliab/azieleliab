@@ -16,7 +16,8 @@ Cloudflare Worker `azieleliab-com` serves the literary landing, crawl files, and
 | Path | What |
 |------|------|
 | `/` | Landing (black / gold / white) |
-| `/software` · `/software/` | 301 to [`/#software`](https://www.azieleliab.com/#software) (homepage Software strip) |
+| `/software` · `/software/` | Indexable Softwares door (unique title/JSON-LD). Same name list as homepage [`/#software`](https://www.azieleliab.com/#software). Fed from live aziel-runtime `/v1/software`. |
+| `/about` · `/AzielEliab` · `/aziel-eliab` | 301 to [`/`](https://www.azieleliab.com/) (About Aziel Eliab is the homepage) |
 | `/donate` · `/donate/` | AZL-DONATE-1.0 primary Donate door (static; also homepage `#donate`). Bare `/donate` 302s to `/donate?v=png` so CF edge cannot keep the old stroke-SVG HTML. Door HTML is `no-store`. Rails use solid PNG QRs at `/donate/qr/{btc,eth,ltc,xrp,doge}.png` (payment URI, not a website). |
 | `/embryolock` · `/embryolock/` | EmbryoLock stub card — local-not-hosted, not a public Worker |
 | `/robots.txt` | `Allow: /` plus AI crawlers and `/runtime` |
@@ -33,7 +34,7 @@ Cloudflare Worker `azieleliab-com` serves the literary landing, crawl files, and
 | `GET /v1/update` · `/v1/update/check` | Quiet installer pointer at runtime `/v1/update/check` |
 | `GET /v1/mesh/status` · `/v1/mesh/nodes` | Suite node mesh (default off until runtime enables it) |
 
-JSON-LD: `Person` + `WebSite` + local Runtime `SoftwareApplication` / `WebAPI` + Software `ItemList`. Canonical is always `https://www.azieleliab.com/`.
+JSON-LD: `Person` (Aziel Eliab; `alternateName` Aziel Elroi Eliab) + `WebSite` + `AboutPage` + local Runtime `SoftwareApplication` / `WebAPI` + Software `ItemList` / `CollectionPage` + Donate `WebPage`. Homepage title is unique (`Aziel Eliab — work, software, and research`); visible H1 stays **Aziel Eliab**. Canonical host is always `https://www.azieleliab.com/`. Softwares canonical is `/software`. Donate canonical is `/donate?v=png`. hreflang `en` + `x-default` point at each page’s www canonical.
 
 ### Research
 
@@ -83,7 +84,7 @@ Local `wrangler dev` uses a simulated KV. The count is monotonic and not atomic 
 
 Public HTML and crawl files used to send `Cache-Control: no-store`, so every repeat visit and crawler re-ran the Worker catalog fetch. That is the KV / subrequest bill, not “too many humans reading.”
 
-- Landing + EmbryoLock HTML: `public` + short `s-maxage` / `stale-while-revalidate` so crawlers and humans share the edge cache. Body copy and Software doors stay the same.
+- Landing + Softwares HTML: `public` + short `s-maxage` (`max-age=0`) so title/meta/JSON-LD stay fresh for crawlers. The packed Software catalog snapshot is separate and still auto-refreshes. Body copy and Software doors stay the same.
 - Donate HTML (`/donate?v=png`): `no-store, max-age=0, must-revalidate`. Bare `/donate` 302s to `?v=png` so a stale CF HIT of stroke-SVG HTML cannot stick.
 - `/robots.txt`, `/llms.txt`, `/ai.txt`, `/cite.json`, `/sitemap.xml`: long public cache, full documents, never throttled.
 - Live Software catalog is **one packed snapshot** (Cache API + KV key `software:catalog:v1` on the existing `VIEWS` namespace). Warm HIT does not fetch runtime. Static `SOFTWARE` remains last resort.

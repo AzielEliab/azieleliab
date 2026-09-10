@@ -1,5 +1,5 @@
 /** azieleliab.com landing Worker. Author: Aziel Eliab. */
-import { APEX_HOST, CANON_ORIGIN, SOFTWARE_SECTION } from "./copy.js";
+import { APEX_HOST, CANON_ORIGIN, isAboutAlias } from "./copy.js";
 import {
   DONATE_CACHE_BUST,
   DONATE_HTML_CACHE,
@@ -24,7 +24,7 @@ import {
   MESH_STATUS_PATH,
   meshSnapshot,
 } from "./mesh.js";
-import { donateHtml, embryoLockHtml, notFoundHtml, pageHtml } from "./page.js";
+import { donateHtml, embryoLockHtml, notFoundHtml, pageHtml, softwareHtml } from "./page.js";
 import { donateQrResponse } from "./qr.js";
 import { handleRuntimeRoot, isRuntimeRequest } from "./runtimeRoot.js";
 import { aiTxt, citeDoc, CONTENT_SIGNAL, llmsTxt, robotsTxt, sitemapXml } from "./seo.js";
@@ -77,6 +77,7 @@ function json(doc, cache) {
 
 const PAGE_CACHE_PATHS = new Set([
   "/",
+  "/software",
   "/embryolock",
   "/robots.txt",
   "/llms.txt",
@@ -133,6 +134,9 @@ export async function handleRequest(request, env = {}, ctx) {
   }
 
   const path = routePath(url.pathname);
+  if (isAboutAlias(path)) {
+    return Response.redirect(CANON_ORIGIN + "/", 301);
+  }
   const jsonGet = new Set([
     "/v1/view",
     "/v1/stats",
@@ -181,11 +185,12 @@ export async function handleRequest(request, env = {}, ctx) {
 
   const needsLive =
     path === "/" ||
+    path === "/software" ||
     path === "/llms.txt" ||
     path === "/cite.json" ||
     path === "/sitemap.xml" ||
     path === "/v1/software";
-  const needsMesh = path === "/" || path === "/v1/software";
+  const needsMesh = path === "/" || path === "/software" || path === "/v1/software";
   const [live, meshStatus] = await Promise.all([
     needsLive ? loadLiveSoftware(env, ctx) : Promise.resolve(null),
     needsMesh ? loadMeshStatus(env, ctx) : Promise.resolve(null),
@@ -195,7 +200,7 @@ export async function handleRequest(request, env = {}, ctx) {
 
   let res;
   if (path === "/") res = html(pageHtml(await pageViews(request, env), doors, meshStatus));
-  else if (path === "/software") res = Response.redirect(SOFTWARE_SECTION, 301);
+  else if (path === "/software") res = html(softwareHtml(doors));
   else if (path === "/donate") res = html(donateHtml(), 200, DONATE_HTML_CACHE);
   else if (path === "/embryolock") res = html(embryoLockHtml(), 200, STUB_HTML_CACHE);
   else if (path === "/robots.txt") res = text(robotsTxt(), "text/plain", { cache: SEO_CACHE });
