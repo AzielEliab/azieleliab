@@ -1174,9 +1174,10 @@ describe("AZL-DONATE-1.0", () => {
       const res = await fetchPath(rail.qrSrc);
       assert.equal(res.status, 200, rail.id);
       assert.match(res.headers.get("content-type"), /image\/png/);
-      const buf = new Uint8Array(await res.arrayBuffer());
+      const buf = Buffer.from(await res.arrayBuffer());
       assert.equal(buf[0], 0x89);
       assert.equal(String.fromCharCode(buf[1], buf[2], buf[3]), "PNG");
+      assert.ok(buf.length > 1400, rail.id + " served PNG");
       const head = await fetchPath(rail.qrSrc, { method: "HEAD" });
       assert.equal(head.status, 200);
       assert.equal(await head.text(), "");
