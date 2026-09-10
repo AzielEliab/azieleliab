@@ -162,7 +162,19 @@ EmbryoLock has no public repo or download-tracker. The name stays visible and po
 
 Quiet installer meta: `GET /v1/update/check` (alias `/v1/update`) points at runtime `GET /v1/update/check`. The landing also ships `<meta name="aziel-update-check">`.
 
-Quiet mesh meta: `GET /v1/mesh/status` and `GET /v1/mesh/nodes` (also `/runtime/v1/mesh/status` · `/runtime/v1/mesh/nodes`) point at runtime mesh authority. The landing ships `<meta name="aziel-mesh-status">` and a muted footer status. `/v1/software` includes a `mesh` snapshot.
+Quiet mesh meta: `GET /v1/mesh/status` and `GET /v1/mesh/nodes` (also `/runtime/v1/mesh/status` · `/runtime/v1/mesh/nodes`) point at runtime mesh authority. The landing ships `<meta name="aziel-mesh-status">`, `<meta name="aziel-qns-cd">`, and a muted footer status. `/v1/software` includes a `mesh` snapshot. **Mesh is default OFF.** No Node Gate. No public qnsd proxy.
+
+### QNS-CD-1.0 hub cite (mesh cross-map)
+
+This host is the **hub cite** surface for **QNS-CD-1.0** (photon QNS1 packet transfer). It is **not** a Softwares-tab product. `src/mesh.js` exports `QNS_CD_SPEC` and `QNS_CD` so peers can see the same coded cross-map on mesh status / Live Nodes / `/cite.json`:
+
+| Cite | Where |
+|------|--------|
+| Local qnsd (coded) | [AzielEliab/qnm-node](https://github.com/AzielEliab/qnm-node) · [QNM-BUILD-1.0](https://github.com/AzielEliab/qnm-node/blob/main/docs/QNM-BUILD-1.0.md) |
+| Runtime cites + catalog field | [AzielEliab/aziel-runtime](https://github.com/AzielEliab/aziel-runtime) · [docs/designs](https://github.com/AzielEliab/aziel-runtime/tree/main/docs/designs) · [QNM-WP-1.0](https://github.com/AzielEliab/aziel-runtime/blob/main/docs/designs/QNM-WP-1.0.md) · [NODE-OPS-1.0](https://github.com/AzielEliab/aziel-runtime/blob/main/docs/designs/NODE-OPS-1.0.md) · [NODE_MESH](https://github.com/AzielEliab/aziel-runtime/blob/main/docs/NODE_MESH.md) · skill [`/v1/skill`](https://aziel-runtime.vibelock.workers.dev/v1/skill) |
+| Pair custody | [AzielEliab/azinterface](https://github.com/AzielEliab/azinterface) |
+
+`MESH_NOTE` cites QNS-CD-1.0. Do **not** implement qnsd here. Do **not** add a public proxy. Agent notes: [SKILL.md](SKILL.md).
 
 ## Doors
 

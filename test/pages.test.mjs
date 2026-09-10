@@ -33,6 +33,8 @@ import {
   EMBRYOLOCK_PATH,
   FRAGGATE_GITHUB,
   FRAGGATE_WORKER,
+  GITHUB_QNM_NODE,
+  GITHUB_RUNTIME,
   PEACELOCK_WORKER,
   PROSE,
   RUNTIME_LOCAL,
@@ -54,12 +56,15 @@ import {
   injectMeshDiscovery,
   injectMeshOpenApi,
   MESH_NODES_PATH,
+  MESH_NOTE,
   MESH_STATUS_PATH,
   meshEnabled,
   meshNodesBody,
   meshQuietLabel,
   meshSnapshot,
   meshStatusBody,
+  QNS_CD,
+  QNS_CD_SPEC,
 } from "../src/mesh.js";
 import {
   isLocalMeshPath,
@@ -584,6 +589,16 @@ describe("SEO routes", () => {
     assert.equal(citeBody.mesh_nodes, CANON_ORIGIN + "/v1/mesh/nodes");
     assert.equal(citeBody.mesh_status_runtime, RUNTIME_LOCAL + "/v1/mesh/status");
     assert.equal(citeBody.mesh_default, "off");
+    assert.equal(citeBody.qns_cd_spec, "QNS-CD-1.0");
+    assert.equal(citeBody.qns_cd.spec, "QNS-CD-1.0");
+    assert.equal(citeBody.qns_cd.software_tab, false);
+    assert.equal(citeBody.qns_cd.public_proxy, false);
+    assert.equal(citeBody.qns_cd.node_gate, false);
+    assert.equal(citeBody.qns_cd.qnm_node, GITHUB_QNM_NODE);
+    assert.equal(citeBody.qns_cd.runtime, GITHUB_RUNTIME);
+    assert.match(citeBody.mesh_note, /QNS-CD-1\.0/);
+    assert.ok(llmsBody.includes("QNS-CD-1.0"));
+    assert.ok(aiBody.includes("QNS-CD-1.0"));
     assert.equal(citeBody.research, LIBRARY + "/");
     assert.ok(!citeBody.software_names.some((s) => s.name === "Lumen"));
     assert.ok(citeBody.software_names.some((s) => s.name === "AZMail" && s.url === AZMAIL_WORKER));
@@ -637,9 +652,13 @@ describe("SEO routes", () => {
     assert.ok(html.includes('href="/v1/mesh/status"'));
     assert.ok(html.includes('href="/v1/mesh/nodes"'));
     assert.ok(html.includes('name="aziel-mesh-status"'));
+    assert.ok(html.includes('name="aziel-qns-cd"'));
+    assert.ok(html.includes('content="QNS-CD-1.0"'));
     assert.ok(html.includes(">mesh off<"));
     assert.ok(ld["@graph"][2].description.includes("/v1/mesh/status"));
+    assert.ok(ld["@graph"][2].description.includes("QNS-CD-1.0"));
     assert.ok(ld["@graph"][3].description.includes("/v1/mesh/status"));
+    assert.ok(ld["@graph"][3].description.includes("QNS-CD-1.0"));
   });
 });
 
@@ -1140,6 +1159,8 @@ describe("live software catalog", () => {
     assert.equal(doc.mesh.mesh, "off");
     assert.equal(doc.mesh.status, CANON_ORIGIN + "/v1/mesh/status");
     assert.equal(doc.mesh.nodes, CANON_ORIGIN + "/v1/mesh/nodes");
+    assert.equal(doc.mesh.qns_cd_spec, "QNS-CD-1.0");
+    assert.equal(doc.mesh.qns_cd.public_proxy, false);
   });
 
   it("serves a quiet /v1/update/check pointer at the runtime authority", async () => {
@@ -1196,14 +1217,33 @@ describe("suite node mesh", () => {
     assert.equal(off.default, "off");
     assert.match(off.note, /Default off/);
     assert.match(off.note, /VPN\/hop mesh is not claimed/);
+    assert.match(off.note, /QNS-CD-1\.0/);
+    assert.match(MESH_NOTE, /QNS-CD-1\.0/);
+    assert.equal(QNS_CD_SPEC, "QNS-CD-1.0");
+    assert.equal(QNS_CD.spec, "QNS-CD-1.0");
+    assert.equal(QNS_CD.title, "photon QNS1 packet transfer");
+    assert.equal(QNS_CD.packet, "QNS1");
+    assert.equal(QNS_CD.software_tab, false);
+    assert.equal(QNS_CD.node_gate, false);
+    assert.equal(QNS_CD.public_proxy, false);
+    assert.equal(QNS_CD.qnsd, "local");
+    assert.equal(QNS_CD.mesh_default, "off");
+    assert.equal(QNS_CD.qnm_node, GITHUB_QNM_NODE);
+    assert.equal(QNS_CD.runtime, GITHUB_RUNTIME);
+    assert.equal(QNS_CD.pair_custody, AZINTERFACE_GITHUB);
+    assert.equal(off.qns_cd_spec, "QNS-CD-1.0");
+    assert.equal(off.qns_cd.spec, "QNS-CD-1.0");
     assert.equal(off.origin, undefined);
     const nodes = meshNodesBody(null);
     assert.deepEqual(nodes.nodes, []);
+    assert.equal(nodes.qns_cd_spec, "QNS-CD-1.0");
     const snap = meshSnapshot(null);
     assert.equal(snap.enabled, false);
     assert.equal(snap.status, CANON_ORIGIN + "/v1/mesh/status");
     assert.equal(snap.runtime, RUNTIME_LOCAL + "/v1/mesh/status");
     assert.equal(snap.origin, "https://aziel-runtime.vibelock.workers.dev/v1/mesh/status");
+    assert.equal(snap.qns_cd_spec, "QNS-CD-1.0");
+    assert.equal(snap.qns_cd.public_proxy, false);
   });
 
   it("serves default-off /v1/mesh/status and /v1/mesh/nodes when runtime 404s", async () => {
@@ -1219,6 +1259,10 @@ describe("suite node mesh", () => {
     assert.equal(doc.mesh_status, "https://aziel-runtime.vibelock.workers.dev/v1/mesh/status");
     assert.equal(doc.mesh_status_local, CANON_ORIGIN + "/v1/mesh/status");
     assert.equal(doc.mesh_status_runtime, RUNTIME_LOCAL + "/v1/mesh/status");
+    assert.equal(doc.qns_cd_spec, "QNS-CD-1.0");
+    assert.equal(doc.qns_cd.spec, "QNS-CD-1.0");
+    assert.equal(doc.qns_cd.software_tab, false);
+    assert.match(doc.note, /QNS-CD-1\.0/);
     assert.equal(doc.origin, undefined);
 
     const nodes = await fetchPath("/v1/mesh/nodes");
@@ -1226,6 +1270,7 @@ describe("suite node mesh", () => {
     assert.equal(nodeDoc.enabled, false);
     assert.deepEqual(nodeDoc.nodes, []);
     assert.equal(nodeDoc.identity, AUTHOR);
+    assert.equal(nodeDoc.qns_cd_spec, "QNS-CD-1.0");
 
     const opt = await fetchPath("/v1/mesh/status", { method: "OPTIONS" });
     assert.equal(opt.status, 204);
@@ -1275,6 +1320,8 @@ describe("suite node mesh", () => {
     const index = await software.json();
     assert.equal(index.mesh.enabled, true);
     assert.equal(index.mesh.mesh, "on");
+    assert.equal(index.mesh.qns_cd_spec, "QNS-CD-1.0");
+    assert.equal(index.mesh.default, "off");
 
     const landing = await fetchPath("/", { headers: { "user-agent": "Mozilla/5.0" } }, env);
     const html = await landing.text();
@@ -1304,10 +1351,18 @@ describe("suite node mesh", () => {
     const cited = JSON.parse(injectMeshDiscovery(JSON.stringify({ author: AUTHOR }), "application/json", "/cite.json"));
     assert.equal(cited.mesh_status, RUNTIME_LOCAL + "/v1/mesh/status");
     assert.equal(cited.mesh_default, "off");
+    assert.equal(cited.qns_cd_spec, "QNS-CD-1.0");
+    assert.equal(cited.qns_cd.qnm_node, GITHUB_QNM_NODE);
+
+    const alreadyCited = JSON.parse(
+      injectMeshDiscovery(JSON.stringify({ author: AUTHOR, mesh_status: "/v1/mesh/status", mesh_nodes: "/v1/mesh/nodes" }), "application/json", "/cite.json"),
+    );
+    assert.equal(alreadyCited.qns_cd_spec, "QNS-CD-1.0");
 
     const llms = injectMeshDiscovery("# Aziel Eliab Runtime\n", "text/plain", "/llms.txt");
     assert.match(llms, /\/v1\/mesh\/status/);
     assert.match(llms, /default off/);
+    assert.match(llms, /QNS-CD-1\.0/);
 
     const robots = injectMeshDiscovery("User-agent: *\nAllow: /\n", "text/plain", "/robots.txt");
     assert.doesNotMatch(robots, /mesh/);

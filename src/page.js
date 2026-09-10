@@ -12,7 +12,7 @@ import {
   SOFTWARE,
   SOFTWARE_SECTION,
 } from "./copy.js";
-import { MESH_STATUS_LOCAL, meshQuietLabel } from "./mesh.js";
+import { MESH_STATUS_LOCAL, QNS_CD_SPEC, meshQuietLabel } from "./mesh.js";
 import { jsonLd } from "./seo.js";
 
 function esc(s) {
@@ -201,6 +201,7 @@ export function pageHtml(views = 0, softwareItems = SOFTWARE, mesh = null) {
 <link rel="alternate" type="application/json" href="/runtime/openapi.json" title="OpenAPI">
 <meta name="aziel-update-check" content="${esc(CANON_ORIGIN)}/v1/update/check">
 <meta name="aziel-mesh-status" content="${esc(MESH_STATUS_LOCAL)}">
+<meta name="aziel-qns-cd" content="${esc(QNS_CD_SPEC)}">
 <script type="application/ld+json">${ld}</script>
 <style>${CSS}</style>
 </head>
