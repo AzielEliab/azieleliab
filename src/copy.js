@@ -299,6 +299,7 @@ export const DONATE_RAILS = [
     network: "XRP Ledger",
     address: "rLc3jZJbgEU1wBGwTFtgyq8bpayQE15K7b",
     uri: "xrp:rLc3jZJbgEU1wBGwTFtgyq8bpayQE15K7b",
+    uriAlt: "ripple:rLc3jZJbgEU1wBGwTFtgyq8bpayQE15K7b",
     extra: DONATE_XRP_TAG_NOTE,
     qrSrc: "/donate/qr/xrp.png",
     qrAlt: "XRP payment URI QR",
