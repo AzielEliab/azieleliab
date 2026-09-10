@@ -1,9 +1,9 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import worker, { apexRedirect, handleRequest } from "../src/index.js";
+import worker, { apexRedirect, donateCacheBustLocation, handleRequest } from "../src/index.js";
 import { donateHtml, embryoLockHtml, pageHtml, spineNav } from "../src/page.js";
 import { incrementViews, memoryKv } from "../src/views.js";
-import { HTML_CACHE, SEO_CACHE, memoryCache } from "../src/edgeCache.js";
+import { DONATE_HTML_CACHE, HTML_CACHE, SEO_CACHE, memoryCache } from "../src/edgeCache.js";
 import { FANOUT_MAX, allowOriginRefresh, isOperator } from "../src/costGuard.js";
 import { aiTxt, citeDoc, jsonLd, llmsTxt, robotsTxt, sitemapXml } from "../src/seo.js";
 import {
@@ -1088,6 +1088,7 @@ describe("AZL-DONATE-1.0", () => {
     assert.ok(html.includes(DONATE_XRP_TAG_NOTE));
     assert.match(html, /<button type="button" data-copy="/);
     assert.ok(html.includes('rel="canonical" href="' + DONATE_HREF + '"'));
+    assert.ok(html.includes("<!-- azl-donate png -->"));
     assert.ok(html.includes("<title>Donate — " + AUTHOR + "</title>"));
     assert.ok(html.includes('name="author" content="' + AUTHOR + '"'));
     assert.doesNotMatch(html, /<input|<form|mailto:|thank-you|leaderboard|confetti|Buy Me A Coffee|Support Us|Patron|solana|6BZNXx|TJXb1Y/i);
@@ -1095,20 +1096,36 @@ describe("AZL-DONATE-1.0", () => {
   });
 
   it("serves GET /donate as the primary canonical door", async () => {
+    const bust = "https://www.azieleliab.com/donate?v=png";
     for (const path of ["/donate", "/donate/"]) {
-      const res = await fetchPath(path);
-      assert.equal(res.status, 200);
-      assert.match(res.headers.get("content-type"), /text\/html/);
-      const body = await res.text();
-      assert.ok(body.includes("<h1>Donate</h1>"));
-      assert.ok(body.includes("Nothing is free."));
-      assert.ok(body.includes("— Aziel"));
-      assert.ok(body.includes("Donations buy no privilege."));
-      assert.ok(body.includes("bc1q8cg7hmgmu7x9yaja8j249np0vt84d4y8duugr7"));
-      assert.ok(body.includes('href="bitcoin:bc1q8cg7hmgmu7x9yaja8j249np0vt84d4y8duugr7"'));
+      const bounce = await fetchPath(path);
+      assert.equal(bounce.status, 302);
+      assert.equal(bounce.headers.get("location"), bust);
     }
 
-    const head = await fetchPath("/donate", { method: "HEAD" });
+    const res = await fetchPath("/donate?v=png");
+    assert.equal(res.status, 200);
+    assert.match(res.headers.get("content-type"), /text\/html/);
+    assert.equal(res.headers.get("cache-control"), DONATE_HTML_CACHE);
+    const body = await res.text();
+    assert.ok(body.includes("<!-- azl-donate png -->"));
+    assert.ok(body.includes("<h1>Donate</h1>"));
+    assert.ok(body.includes("Nothing is free."));
+    assert.ok(body.includes("— Aziel"));
+    assert.ok(body.includes("Donations buy no privilege."));
+    assert.ok(body.includes("bc1q8cg7hmgmu7x9yaja8j249np0vt84d4y8duugr7"));
+    assert.ok(body.includes('href="bitcoin:bc1q8cg7hmgmu7x9yaja8j249np0vt84d4y8duugr7"'));
+    assert.ok(body.includes('src="/donate/qr/btc.png"'));
+
+    const slash = await fetchPath("/donate/?v=png");
+    assert.equal(slash.status, 200);
+    assert.ok((await slash.text()).includes("<h1>Donate</h1>"));
+
+    const headBare = await fetchPath("/donate", { method: "HEAD" });
+    assert.equal(headBare.status, 302);
+    assert.equal(headBare.headers.get("location"), bust);
+
+    const head = await fetchPath("/donate?v=png", { method: "HEAD" });
     assert.equal(head.status, 200);
     assert.equal(await head.text(), "");
 
@@ -1118,6 +1135,10 @@ describe("AZL-DONATE-1.0", () => {
     const apex = await handleRequest(new Request("https://azieleliab.com/donate"));
     assert.equal(apex.status, 301);
     assert.equal(apex.headers.get("location"), DONATE_HREF);
+    assert.equal(
+      donateCacheBustLocation(new URL("https://azieleliab-com.vibelock.workers.dev/donate")),
+      "https://azieleliab-com.vibelock.workers.dev/donate?v=png",
+    );
   });
 
   it("puts Donate on the homepage spine and Doors list", () => {
@@ -1616,9 +1637,14 @@ describe("edge cache and cost", () => {
     assert.doesNotMatch(home.headers.get("cache-control"), /no-store/i);
     assert.ok((await home.text()).includes(">AZAI<"));
 
-    const donate = await fetchPath("/donate");
+    const donateBare = await fetchPath("/donate");
+    assert.equal(donateBare.status, 302);
+    assert.equal(donateBare.headers.get("location"), "https://www.azieleliab.com/donate?v=png");
+
+    const donate = await fetchPath("/donate?v=png");
     assert.equal(donate.status, 200);
-    assert.doesNotMatch(donate.headers.get("cache-control"), /no-store/i);
+    assert.equal(donate.headers.get("cache-control"), DONATE_HTML_CACHE);
+    assert.match(donate.headers.get("cache-control"), /no-store/i);
     assert.ok((await donate.text()).includes("Nothing is free."));
 
     const robots = await fetchPath("/robots.txt");
