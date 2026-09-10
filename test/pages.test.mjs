@@ -1,7 +1,7 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import worker, { apexRedirect, handleRequest } from "../src/index.js";
-import { embryoLockHtml, pageHtml } from "../src/page.js";
+import { donateHtml, embryoLockHtml, pageHtml, spineNav } from "../src/page.js";
 import { incrementViews, memoryKv } from "../src/views.js";
 import { HTML_CACHE, SEO_CACHE, memoryCache } from "../src/edgeCache.js";
 import { FANOUT_MAX, allowOriginRefresh, isOperator } from "../src/costGuard.js";
@@ -17,6 +17,15 @@ import {
   CATALOG_SOFTWARE,
   catalogHref,
   catalogSoftwareFromSlugs,
+  DONATE_COPY,
+  DONATE_DISCLAIMER,
+  DONATE_HREF,
+  DONATE_NETWORK_NOTE,
+  DONATE_PATH,
+  DONATE_RAILS,
+  DONATE_SIGN,
+  DONATE_TITLE,
+  DONATE_XRP_TAG_NOTE,
   DOORS,
   LIBRARY,
   LIBRARY_AZIEL,
@@ -42,6 +51,7 @@ import {
   RUNTIME_TITLE,
   SOFTWARE,
   SOFTWARE_SECTION,
+  SPINE,
   displaySoftwareName,
   isRuntimeSoftware,
   softwareBucket,
@@ -509,6 +519,8 @@ describe("SEO routes", () => {
     assert.ok(body.includes("Allow: /software/"));
     assert.ok(body.includes("Allow: /embryolock"));
     assert.ok(body.includes("Allow: /embryolock/"));
+    assert.ok(body.includes("Allow: /donate"));
+    assert.ok(body.includes("Allow: /donate/"));
     assert.ok(body.includes("Allow: /runtime"));
     assert.ok(body.includes("Allow: /runtime/"));
     assert.ok(body.includes("Allow: /runtime/v1/uses"));
@@ -542,6 +554,9 @@ describe("SEO routes", () => {
     assert.ok(llmsBody.includes("Author: " + AUTHOR));
     assert.ok(llmsBody.includes("Canonical: " + CANON_ORIGIN + "/"));
     assert.ok(llmsBody.includes(CANON_ORIGIN + "/software  (301 to /#software)"));
+    assert.ok(llmsBody.includes(DONATE_HREF + "  (AZL-DONATE-1.0 primary Donate door)"));
+    assert.ok(llmsBody.includes("## Donate"));
+    assert.ok(llmsBody.includes(DONATE_DISCLAIMER));
     assert.ok(llmsBody.includes(EMBRYOLOCK_HREF + "  (EmbryoLock local-not-hosted stub)"));
     assert.ok(llmsBody.includes("## Software\n\n- "));
     assert.ok(!llmsBody.includes("## Software (verified"));
@@ -595,6 +610,9 @@ describe("SEO routes", () => {
     assert.ok(aiBody.includes("Allow: /software/"));
     assert.ok(aiBody.includes("Allow: /embryolock"));
     assert.ok(aiBody.includes("Allow: /embryolock/"));
+    assert.ok(aiBody.includes("Allow: /donate"));
+    assert.ok(aiBody.includes("Allow: /donate/"));
+    assert.ok(aiBody.includes("Donate: " + DONATE_HREF));
     assert.ok(aiBody.includes("Allow: /v1/software"));
     assert.ok(aiBody.includes("Allow: /v1/update"));
     assert.ok(aiBody.includes("Allow: /v1/update/check"));
@@ -640,6 +658,8 @@ describe("SEO routes", () => {
     assert.ok(citeBody.software_names.some((s) => s.name === "EmbryoLock" && s.url === EMBRYOLOCK_HREF));
     assert.ok(mapBody.includes("<loc>" + EMBRYOLOCK_HREF + "</loc>"));
     assert.ok(citeBody.software_names.some((s) => s.name === "PeaceLock"));
+    assert.equal(citeBody.donate, DONATE_HREF);
+    assert.ok(mapBody.includes("<loc>" + DONATE_HREF + "</loc>"));
     assert.ok(mapBody.includes("<loc>" + CANON_ORIGIN + "/</loc>"));
     assert.ok(mapBody.includes("<loc>" + RUNTIME_LOCAL + "</loc>"));
     assert.ok(mapBody.includes("<loc>" + CANON_ORIGIN + "/cite.json</loc>"));
@@ -716,6 +736,7 @@ describe("runtime path mapping", () => {
     assert.equal(destFromRuntimePath("/runtime/mcp", ""), "/mcp");
     assert.equal(destFromRuntimePath("/software", ""), null);
     assert.equal(destFromRuntimePath("/embryolock", ""), null);
+    assert.equal(destFromRuntimePath("/donate", ""), null);
   });
 
   it("rewrites origin locs under www.azieleliab.com/runtime", () => {
@@ -1029,6 +1050,113 @@ describe("worker routing", () => {
     const apex = await handleRequest(new Request("https://azieleliab.com/embryolock"));
     assert.equal(apex.status, 301);
     assert.equal(apex.headers.get("location"), CANON_ORIGIN + "/embryolock");
+  });
+});
+
+describe("AZL-DONATE-1.0", () => {
+  it("keeps the exact donate copy, five rails, and one-line law", () => {
+    const html = donateHtml();
+    for (const line of DONATE_COPY) {
+      assert.ok(html.includes(line), "missing donate copy: " + line);
+    }
+    assert.ok(html.includes(DONATE_SIGN));
+    assert.ok(html.includes(DONATE_DISCLAIMER));
+    assert.equal(DONATE_RAILS.length, 5);
+    assert.deepEqual(
+      DONATE_RAILS.map((r) => r.id),
+      ["btc", "eth", "ltc", "xrp", "doge"],
+    );
+    let cursor = html.indexOf(DONATE_COPY[0]);
+    assert.ok(cursor >= 0);
+    for (const rail of DONATE_RAILS) {
+      const addrAt = html.indexOf(rail.address);
+      const uriAt = html.indexOf('href="' + rail.uri + '"');
+      const copyAt = html.indexOf('data-copy="' + rail.address + '"');
+      const openAt = html.indexOf("Open in wallet", addrAt);
+      assert.ok(addrAt > cursor, rail.id + " address after copy");
+      assert.ok(uriAt >= 0, rail.id + " payment URI");
+      assert.ok(copyAt >= 0, rail.id + " Copy");
+      assert.ok(openAt > addrAt, rail.id + " Open in wallet");
+      assert.ok(html.includes(rail.coin), rail.coin);
+      assert.ok(html.includes(rail.network), rail.network);
+      cursor = addrAt;
+    }
+    const lawAt = html.lastIndexOf(DONATE_DISCLAIMER);
+    assert.ok(lawAt > cursor, "disclaimer last");
+    assert.ok(html.includes(DONATE_NETWORK_NOTE));
+    assert.ok(html.includes(DONATE_XRP_TAG_NOTE));
+    assert.match(html, /<button type="button" data-copy="/);
+    assert.ok(html.includes('rel="canonical" href="' + DONATE_HREF + '"'));
+    assert.ok(html.includes("<title>Donate — " + AUTHOR + "</title>"));
+    assert.ok(html.includes('name="author" content="' + AUTHOR + '"'));
+    assert.doesNotMatch(html, /<input|<form|mailto:|thank-you|leaderboard|confetti|Buy Me A Coffee|Support Us|Patron|solana|6BZNXx|TJXb1Y/i);
+    assert.doesNotMatch(html, /VIEWS|software:catalog/);
+  });
+
+  it("serves GET /donate as the primary canonical door", async () => {
+    for (const path of ["/donate", "/donate/"]) {
+      const res = await fetchPath(path);
+      assert.equal(res.status, 200);
+      assert.match(res.headers.get("content-type"), /text\/html/);
+      const body = await res.text();
+      assert.ok(body.includes("<h1>Donate</h1>"));
+      assert.ok(body.includes("Nothing is free."));
+      assert.ok(body.includes("— Aziel"));
+      assert.ok(body.includes("Donations buy no privilege."));
+      assert.ok(body.includes("bc1q8cg7hmgmu7x9yaja8j249np0vt84d4y8duugr7"));
+      assert.ok(body.includes('href="bitcoin:bc1q8cg7hmgmu7x9yaja8j249np0vt84d4y8duugr7"'));
+    }
+
+    const head = await fetchPath("/donate", { method: "HEAD" });
+    assert.equal(head.status, 200);
+    assert.equal(await head.text(), "");
+
+    const post = await fetchPath("/donate", { method: "POST" });
+    assert.equal(post.status, 405);
+
+    const apex = await handleRequest(new Request("https://azieleliab.com/donate"));
+    assert.equal(apex.status, 301);
+    assert.equal(apex.headers.get("location"), DONATE_HREF);
+  });
+
+  it("puts Donate on the homepage spine and Doors list", () => {
+    const html = pageHtml();
+    assert.ok(html.includes('id="donate"'));
+    assert.ok(html.includes('id="why"'));
+    assert.ok(html.includes('id="software"'));
+    assert.ok(html.includes('id="research"'));
+    assert.ok(html.includes('id="doors"'));
+    assert.ok(html.includes('aria-label="Spine"'));
+    assert.ok(html.includes('href="#donate"'));
+    assert.ok(html.includes(">" + DONATE_TITLE + "<"));
+    assert.ok(html.includes("Nothing is free."));
+    assert.ok(html.includes(DONATE_SIGN));
+    assert.ok(html.includes(DONATE_DISCLAIMER));
+    const donateDoor = DOORS.find((d) => d.label === "Donate");
+    assert.ok(donateDoor);
+    assert.equal(donateDoor.href, DONATE_HREF);
+    assert.equal(DONATE_PATH, "/donate");
+    assert.equal(DONATE_HREF, CANON_ORIGIN + "/donate");
+    assert.deepEqual(
+      SPINE.map((s) => s.label),
+      ["Why", "Software", "Research", "Doors", "Donate"],
+    );
+    const nav = spineNav("donate");
+    assert.ok(nav.includes('aria-current="page"'));
+    assert.ok(nav.includes('href="' + DONATE_PATH + '"'));
+    for (const rail of DONATE_RAILS) {
+      assert.ok(html.includes(rail.address), "homepage rail " + rail.id);
+      assert.ok(html.includes('href="' + rail.uri + '"'), "homepage URI " + rail.id);
+    }
+  });
+
+  it("encodes each payment URI as a QR, not a website URL", () => {
+    const html = donateHtml();
+    for (const rail of DONATE_RAILS) {
+      assert.ok(html.includes('aria-label="' + rail.coin + " payment URI" + '"'), rail.id);
+      assert.ok(!html.includes('aria-label="' + CANON_ORIGIN), "QR is not the site URL");
+    }
+    assert.ok(html.includes('<svg xmlns="http://www.w3.org/2000/svg"'));
   });
 });
 
@@ -1460,6 +1588,11 @@ describe("edge cache and cost", () => {
     assert.equal(home.headers.get("cache-control"), HTML_CACHE);
     assert.doesNotMatch(home.headers.get("cache-control"), /no-store/i);
     assert.ok((await home.text()).includes(">AZAI<"));
+
+    const donate = await fetchPath("/donate");
+    assert.equal(donate.status, 200);
+    assert.doesNotMatch(donate.headers.get("cache-control"), /no-store/i);
+    assert.ok((await donate.text()).includes("Nothing is free."));
 
     const robots = await fetchPath("/robots.txt");
     const llms = await fetchPath("/llms.txt");

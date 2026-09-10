@@ -3,6 +3,14 @@ import {
   AUTHOR,
   CANON_ORIGIN,
   DESCRIPTION,
+  DONATE_COPY,
+  DONATE_DISCLAIMER,
+  DONATE_HREF,
+  DONATE_NETWORK_NOTE,
+  DONATE_PATH,
+  DONATE_RAILS,
+  DONATE_SIGN,
+  DONATE_TITLE,
   DOORS,
   EMBRYOLOCK_COPY,
   EMBRYOLOCK_HREF,
@@ -11,7 +19,9 @@ import {
   SIGIL,
   SOFTWARE,
   SOFTWARE_SECTION,
+  SPINE,
 } from "./copy.js";
+import { qrSvg } from "./qr.js";
 import { MESH_STATUS_LOCAL, QNS_CD_SPEC, meshQuietLabel } from "./mesh.js";
 import { jsonLd } from "./seo.js";
 
@@ -65,6 +75,72 @@ function doorRow(door) {
     );
   }
   return "<li>" + label + ' <span class="arrow" aria-hidden="true">→</span> ' + url + "</li>";
+}
+
+export function spineNav(current) {
+  return (
+    '<nav class="spine" aria-label="Spine">' +
+    SPINE.map((item) => {
+      const here = item.id === current;
+      const href =
+        item.id === "donate"
+          ? current === "home"
+            ? "#donate"
+            : DONATE_PATH
+          : current === "home"
+            ? "#" + item.id
+            : "/#" + item.id;
+      const cur = here ? ' aria-current="page"' : "";
+      return '<a href="' + attr(href) + '"' + cur + ">" + esc(item.label) + "</a>";
+    }).join("") +
+    "</nav>"
+  );
+}
+
+function railHtml(rail) {
+  const extra = rail.extra ? '<p class="rail-note">' + esc(rail.extra) + "</p>" : "";
+  return (
+    '<article class="rail" id="rail-' +
+    attr(rail.id) +
+    '">' +
+    "<h3>" +
+    esc(rail.coin) +
+    "</h3>" +
+    '<p class="rail-net">' +
+    esc(rail.network) +
+    "</p>" +
+    '<p class="addr"><code>' +
+    esc(rail.address) +
+    "</code></p>" +
+    '<p class="rail-actions">' +
+    '<button type="button" data-copy="' +
+    attr(rail.address) +
+    '">Copy</button> ' +
+    a(rail.uri, "Open in wallet") +
+    "</p>" +
+    '<div class="qr">' +
+    qrSvg(rail.uri, rail.coin + " payment URI") +
+    "</div>" +
+    '<p class="rail-note">' +
+    esc(DONATE_NETWORK_NOTE) +
+    "</p>" +
+    extra +
+    "</article>"
+  );
+}
+
+export function donateArticle() {
+  const copy = paragraphs(DONATE_COPY) + '<p class="sign">' + esc(DONATE_SIGN) + "</p>";
+  const rails = DONATE_RAILS.map(railHtml).join("");
+  return (
+    copy +
+    '<div class="rails">' +
+    rails +
+    "</div>" +
+    '<p class="donate-law">' +
+    esc(DONATE_DISCLAIMER) +
+    "</p>"
+  );
 }
 
 const CSS = `
@@ -143,6 +219,44 @@ footer{margin-top:28px;color:var(--muted);font-family:system-ui,-apple-system,Se
 footer a{color:var(--muted)}
 footer a:hover{color:var(--gold)}
 .mesh-quiet{margin:0;font-size:12px;letter-spacing:.04em}
+.spine{
+  display:flex;flex-wrap:wrap;gap:8px 14px;margin:0 0 28px;padding:0;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+}
+.spine a{color:var(--gold);text-decoration:none;border-bottom:1px solid transparent;padding-bottom:1px}
+.spine a:hover{color:var(--ink);border-bottom-color:var(--gold)}
+.spine a[aria-current="page"]{color:var(--ink);border-bottom-color:var(--gold)}
+.rail{
+  border:1px solid var(--line);border-radius:12px;padding:16px 16px 14px;margin:0 0 12px;
+  background:#14110c;
+}
+.rail:last-child{margin-bottom:0}
+.rail h3{
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  font-size:15px;font-weight:700;letter-spacing:.02em;margin:0 0 4px;color:var(--ink);
+}
+.rail-net{margin:0 0 10px;color:var(--muted);font-size:14px}
+.addr{
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:13px;line-height:1.55;word-break:break-all;color:var(--ink);
+  margin:0 0 10px;
+}
+.addr code{font:inherit;background:transparent}
+.rail-actions{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;margin:0 0 12px}
+.rail-actions button{
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  font-size:13px;font-weight:700;letter-spacing:.04em;
+  background:#2a241c;color:var(--ink);border:1px solid var(--gold);
+  border-radius:8px;padding:6px 12px;cursor:pointer;
+}
+.rail-actions button:hover{color:var(--gold)}
+.rail-actions a{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;font-size:14px}
+.qr{width:132px;height:132px;margin:0 0 10px;background:#fff;border-radius:6px;padding:0}
+.qr svg{display:block;width:132px;height:132px}
+.qr path.qrline{fill:none;stroke:#111;stroke-width:1}
+.rail-note{margin:0;color:var(--muted);font-size:13px}
+.donate-law{margin:16px 0 0;color:var(--muted);font-size:15px}
 @media (max-width:720px){
   .wrap{padding:22px 16px 80px}
   body{font-size:17px}
@@ -150,6 +264,22 @@ footer a:hover{color:var(--gold)}
   .soft-name{font-size:15px}
 }
 `;
+
+const COPY_SCRIPT = `<script>
+document.addEventListener("click",function(e){
+  var btn=e.target.closest("[data-copy]");
+  if(!btn)return;
+  var text=btn.getAttribute("data-copy")||"";
+  var done=function(){
+    var prev=btn.textContent;
+    btn.textContent="Copied";
+    setTimeout(function(){btn.textContent=prev},1600);
+  };
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(done).catch(function(){});
+  }
+});
+</script>`;
 
 export function viewsPill(views) {
   const n = Number.isFinite(views) ? views : 0;
@@ -214,6 +344,7 @@ export function pageHtml(views = 0, softwareItems = SOFTWARE, mesh = null) {
     </div>
   </header>
   <h1>${esc(PROSE.title)}</h1>
+  ${spineNav("home")}
   <article class="card lead">${paragraphs(PROSE.open)}</article>
   <section class="card" id="why">
     <h2>Why</h2>
@@ -231,15 +362,67 @@ export function pageHtml(views = 0, softwareItems = SOFTWARE, mesh = null) {
     <h2>Doors</h2>
     <ul class="doors">${doors}</ul>
   </section>
+  <section class="card" id="donate">
+    <h2>${esc(DONATE_TITLE)}</h2>
+    ${donateArticle()}
+  </section>
   <section class="card close">
     <p>${esc(PROSE.close)}</p>
     <p class="sign">${esc(PROSE.sign)}</p>
   </section>
   <footer>
-    <p>${esc(AUTHOR)} · ${a(CANON_ORIGIN + "/cite.json", "cite.json")} · ${a(CANON_ORIGIN + "/llms.txt", "llms.txt")} · Apache-2.0</p>
+    <p>${esc(AUTHOR)} · ${a(CANON_ORIGIN + "/cite.json", "cite.json")} · ${a(CANON_ORIGIN + "/llms.txt", "llms.txt")} · ${a(DONATE_HREF, DONATE_TITLE)} · Apache-2.0</p>
     <p class="mesh-quiet">${a("/v1/mesh/status", meshLabel)}</p>
   </footer>
 </main>
+${COPY_SCRIPT}
+</body>
+</html>`;
+}
+
+export function donateHtml() {
+  const desc = DONATE_COPY[0];
+  return `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>${esc(DONATE_TITLE)} — ${esc(AUTHOR)}</title>
+<meta name="description" content="${esc(desc)}">
+<meta name="author" content="${esc(AUTHOR)}">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<link rel="canonical" href="${esc(DONATE_HREF)}">
+<link rel="icon" href="${esc(SIGIL)}" type="image/png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="${esc(AUTHOR)}">
+<meta property="og:title" content="${esc(DONATE_TITLE)} — ${esc(AUTHOR)}">
+<meta property="og:description" content="${esc(desc)}">
+<meta property="og:url" content="${esc(DONATE_HREF)}">
+<meta property="og:image" content="${esc(SIGIL)}">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="${esc(DONATE_TITLE)} — ${esc(AUTHOR)}">
+<meta name="twitter:description" content="${esc(desc)}">
+<meta name="twitter:image" content="${esc(SIGIL)}">
+<link rel="alternate" type="application/json" href="/cite.json" title="cite.json">
+<link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt">
+<style>${CSS}</style>
+</head>
+<body>
+<main class="wrap">
+  <header class="brandrow">
+    <img class="brandmark" src="${esc(SIGIL)}" width="44" height="44" alt="">
+    <div class="brand-meta">
+      <a class="host" href="${esc(CANON_ORIGIN)}/">${esc(PROSE.host)}</a>
+    </div>
+  </header>
+  ${spineNav("donate")}
+  <h1>${esc(DONATE_TITLE)}</h1>
+  <article class="card lead">${donateArticle()}</article>
+  <footer>
+    <p>${esc(AUTHOR)} · ${a(CANON_ORIGIN + "/", AUTHOR)} · ${a(CANON_ORIGIN + "/cite.json", "cite.json")} · Apache-2.0</p>
+  </footer>
+</main>
+${COPY_SCRIPT}
 </body>
 </html>`;
 }
