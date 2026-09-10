@@ -4,6 +4,7 @@ import {
   CANON_ORIGIN,
   DESCRIPTION,
   DONATE_COPY,
+  DONATE_DESCRIPTION,
   DONATE_DISCLAIMER,
   DONATE_HREF,
   DONATE_NETWORK_NOTE,
@@ -13,16 +14,19 @@ import {
   DOORS,
   EMBRYOLOCK_COPY,
   EMBRYOLOCK_HREF,
+  GITHUB,
   LIBRARY,
   PROSE,
   SIGIL,
   SOFTWARE,
   SOFTWARE_SECTION,
   SPINE,
+  X_HANDLE,
+  X_URL,
 } from "./copy.js";
 import { qrImg } from "./qr.js";
 import { MESH_STATUS_LOCAL, QNM_SPEC, QNS_CD_SPEC, liveNodesLabel, meshQuietLabel } from "./mesh.js";
-import { jsonLd } from "./seo.js";
+import { jsonLd, ROBOTS_INDEX } from "./seo.js";
 
 function esc(s) {
   return String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -349,6 +353,72 @@ document.addEventListener("click",function(e){
 })();
 </script>`;
 
+function discoveryLinks() {
+  return [
+    ["application/json", "/cite.json", "cite.json"],
+    ["text/plain", "/llms.txt", "llms.txt"],
+    ["text/plain", "/ai.txt", "ai.txt"],
+    ["application/json", "/v1/software", "software catalog"],
+    ["application/json", "/v1/update/check", "update check"],
+    ["application/json", "/v1/mesh/status", "mesh status"],
+    ["application/json", "/v1/mesh/nodes", "mesh nodes"],
+    ["application/json", "/runtime/openapi.json", "OpenAPI"],
+    ["application/json", "/runtime/v1/fraggate/list", "FragGate list"],
+  ]
+    .map(
+      ([type, href, title]) =>
+        '<link rel="alternate" type="' + type + '" href="' + href + '" title="' + title + '">',
+    )
+    .join("\n");
+}
+
+function documentHead({ title, description, canonical, software, extraMeta = "" }) {
+  const ld = JSON.stringify(jsonLd(software));
+  return `<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>${esc(title)}</title>
+<meta name="description" content="${esc(description)}">
+<meta name="author" content="${esc(AUTHOR)}">
+<meta name="citation_author" content="${esc(AUTHOR)}">
+<meta name="robots" content="${esc(ROBOTS_INDEX)}">
+<link rel="canonical" href="${esc(canonical)}">
+<link rel="alternate" hreflang="en" href="${esc(canonical)}">
+<link rel="alternate" hreflang="x-default" href="${esc(canonical)}">
+<link rel="icon" href="${esc(SIGIL)}" type="image/png">
+<link rel="author" href="${esc(CANON_ORIGIN)}/">
+<link rel="me" href="${esc(GITHUB)}">
+<link rel="me" href="${esc(X_URL)}">
+<link rel="sitemap" type="application/xml" href="/sitemap.xml">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="en">
+<meta property="og:site_name" content="${esc(AUTHOR)}">
+<meta property="og:title" content="${esc(title)}">
+<meta property="og:description" content="${esc(description)}">
+<meta property="og:url" content="${esc(canonical)}">
+<meta property="og:image" content="${esc(SIGIL)}">
+<meta property="og:image:alt" content="${esc(AUTHOR)}">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:site" content="${esc(X_HANDLE)}">
+<meta name="twitter:creator" content="${esc(X_HANDLE)}">
+<meta name="twitter:title" content="${esc(title)}">
+<meta name="twitter:description" content="${esc(description)}">
+<meta name="twitter:image" content="${esc(SIGIL)}">
+<meta name="twitter:image:alt" content="${esc(AUTHOR)}">
+${discoveryLinks()}
+${extraMeta}
+<script type="application/ld+json">${ld}</script>
+<style>${CSS}</style>`;
+}
+
+function quietDiscoveryMeta() {
+  return `<meta name="aziel-update-check" content="${esc(CANON_ORIGIN)}/v1/update/check">
+<meta name="aziel-mesh-status" content="${esc(MESH_STATUS_LOCAL)}">
+<meta name="aziel-qns-cd" content="${esc(QNS_CD_SPEC)}">
+<meta name="aziel-qnm" content="${esc(QNM_SPEC)}">
+<meta name="aziel-software-catalog" content="${esc(CANON_ORIGIN)}/v1/software">
+<meta name="aziel-fraggate-list" content="${esc(CANON_ORIGIN)}/runtime/v1/fraggate/list">`;
+}
+
 export function viewsPill(views) {
   const n = Number.isFinite(views) ? views : 0;
   const label = n === 1 ? "view" : "views";
@@ -389,7 +459,6 @@ const LIVE_NODES_SCRIPT = `<script>
 
 export function pageHtml(views = 0, softwareItems = SOFTWARE, mesh = null) {
   const doorsSoftware = softwareItems && softwareItems.length ? softwareItems : SOFTWARE;
-  const ld = JSON.stringify(jsonLd(doorsSoftware));
   const software = softwareLine(doorsSoftware);
   const doors = DOORS.map(doorRow).join("");
   const meshLabel = meshQuietLabel(mesh);
@@ -397,38 +466,13 @@ export function pageHtml(views = 0, softwareItems = SOFTWARE, mesh = null) {
   return `<!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>${esc(AUTHOR)}</title>
-<meta name="description" content="${esc(DESCRIPTION)}">
-<meta name="author" content="${esc(AUTHOR)}">
-<meta name="robots" content="index,follow,max-image-preview:large">
-<link rel="canonical" href="${esc(CANON_ORIGIN)}/">
-<link rel="icon" href="${esc(SIGIL)}" type="image/png">
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="${esc(AUTHOR)}">
-<meta property="og:title" content="${esc(AUTHOR)}">
-<meta property="og:description" content="${esc(DESCRIPTION)}">
-<meta property="og:url" content="${esc(CANON_ORIGIN)}/">
-<meta property="og:image" content="${esc(SIGIL)}">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="${esc(AUTHOR)}">
-<meta name="twitter:description" content="${esc(DESCRIPTION)}">
-<meta name="twitter:image" content="${esc(SIGIL)}">
-<link rel="alternate" type="application/json" href="/cite.json" title="cite.json">
-<link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt">
-<link rel="alternate" type="text/plain" href="/ai.txt" title="ai.txt">
-<link rel="alternate" type="application/json" href="/v1/software" title="software catalog">
-<link rel="alternate" type="application/json" href="/v1/update/check" title="update check">
-<link rel="alternate" type="application/json" href="/v1/mesh/status" title="mesh status">
-<link rel="alternate" type="application/json" href="/v1/mesh/nodes" title="mesh nodes">
-<link rel="alternate" type="application/json" href="/runtime/openapi.json" title="OpenAPI">
-<meta name="aziel-update-check" content="${esc(CANON_ORIGIN)}/v1/update/check">
-<meta name="aziel-mesh-status" content="${esc(MESH_STATUS_LOCAL)}">
-<meta name="aziel-qns-cd" content="${esc(QNS_CD_SPEC)}">
-<meta name="aziel-qnm" content="${esc(QNM_SPEC)}">
-<script type="application/ld+json">${ld}</script>
-<style>${CSS}</style>
+${documentHead({
+  title: AUTHOR,
+  description: DESCRIPTION,
+  canonical: CANON_ORIGIN + "/",
+  software: doorsSoftware,
+  extraMeta: quietDiscoveryMeta(),
+})}
 </head>
 <body>
 <main class="wrap">
@@ -479,32 +523,16 @@ ${LIVE_NODES_SCRIPT}
 }
 
 export function donateHtml() {
-  const desc = DONATE_COPY[0];
   return `<!doctype html>
 <!-- azl-donate png -->
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>${esc(DONATE_TITLE)} — ${esc(AUTHOR)}</title>
-<meta name="description" content="${esc(desc)}">
-<meta name="author" content="${esc(AUTHOR)}">
-<meta name="robots" content="index,follow,max-image-preview:large">
-<link rel="canonical" href="${esc(DONATE_HREF)}">
-<link rel="icon" href="${esc(SIGIL)}" type="image/png">
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="${esc(AUTHOR)}">
-<meta property="og:title" content="${esc(DONATE_TITLE)} — ${esc(AUTHOR)}">
-<meta property="og:description" content="${esc(desc)}">
-<meta property="og:url" content="${esc(DONATE_HREF)}">
-<meta property="og:image" content="${esc(SIGIL)}">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="${esc(DONATE_TITLE)} — ${esc(AUTHOR)}">
-<meta name="twitter:description" content="${esc(desc)}">
-<meta name="twitter:image" content="${esc(SIGIL)}">
-<link rel="alternate" type="application/json" href="/cite.json" title="cite.json">
-<link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt">
-<style>${CSS}</style>
+${documentHead({
+  title: DONATE_TITLE + " — " + AUTHOR,
+  description: DONATE_DESCRIPTION,
+  canonical: DONATE_HREF,
+  extraMeta: quietDiscoveryMeta(),
+})}
 </head>
 <body>
 <main class="wrap">
@@ -530,21 +558,12 @@ export function embryoLockHtml() {
   return `<!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>${esc(EMBRYOLOCK_COPY.title)} — ${esc(AUTHOR)}</title>
-<meta name="description" content="${esc(EMBRYOLOCK_COPY.open[0])}">
-<meta name="author" content="${esc(AUTHOR)}">
-<meta name="robots" content="index,follow">
-<link rel="canonical" href="${esc(EMBRYOLOCK_HREF)}">
-<link rel="icon" href="${esc(SIGIL)}" type="image/png">
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="${esc(AUTHOR)}">
-<meta property="og:title" content="${esc(EMBRYOLOCK_COPY.title)}">
-<meta property="og:description" content="${esc(EMBRYOLOCK_COPY.open[0])}">
-<meta property="og:url" content="${esc(EMBRYOLOCK_HREF)}">
-<meta property="og:image" content="${esc(SIGIL)}">
-<style>${CSS}</style>
+${documentHead({
+  title: EMBRYOLOCK_COPY.title + " — " + AUTHOR,
+  description: EMBRYOLOCK_COPY.open[0],
+  canonical: EMBRYOLOCK_HREF,
+  extraMeta: quietDiscoveryMeta(),
+})}
 </head>
 <body>
 <main class="wrap">

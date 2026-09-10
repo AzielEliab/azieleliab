@@ -1,5 +1,5 @@
 /** azieleliab.com landing Worker. Author: Aziel Eliab. */
-import { APEX_HOST, CANON_ORIGIN, SOFTWARE_SECTION } from "./copy.js";
+import { APEX_HOST, CANON_ORIGIN, isAboutAlias, SOFTWARE_SECTION } from "./copy.js";
 import {
   DONATE_CACHE_BUST,
   DONATE_HTML_CACHE,
@@ -133,6 +133,9 @@ export async function handleRequest(request, env = {}, ctx) {
   }
 
   const path = routePath(url.pathname);
+  if (isAboutAlias(path)) {
+    return Response.redirect(CANON_ORIGIN + "/", 301);
+  }
   const jsonGet = new Set([
     "/v1/view",
     "/v1/stats",

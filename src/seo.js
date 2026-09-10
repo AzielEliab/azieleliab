@@ -4,12 +4,16 @@ import {
   AUTHOR_AKA,
   CANON_ORIGIN,
   DESCRIPTION,
-  DONATE_COPY,
+  ABOUT_HREF,
+  ABOUT_PATHS,
+  DONATE_DESCRIPTION,
   DONATE_DISCLAIMER,
   DONATE_HREF,
   DONATE_TITLE,
   DOORS,
   EMBRYOLOCK_HREF,
+  FRAGGATE,
+  FRAGGATE_GITHUB,
   GITHUB,
   GITHUB_QNM_NODE,
   GITHUB_RUNTIME,
@@ -29,6 +33,11 @@ import {
   SIGIL,
   SITE,
   SOFTWARE,
+  SOFTWARE_DESCRIPTION,
+  SOFTWARE_HREF,
+  SOFTWARE_SECTION,
+  SOFTWARE_TITLE,
+  X_HANDLE,
   X_URL,
 } from "./copy.js";
 import { MESH_NOTE, QNM_COMPANION, QNM_ENABLE_BEARER, QNM_SPEC, QNS_CD, QNS_CD_SPEC } from "./mesh.js";
@@ -45,11 +54,14 @@ export const AI_CRAWLER_AGENTS = [
   "xAI-Grok",
   "Venice",
   "Google-Extended",
+  "Googlebot",
+  "Google-InspectionTool",
   "GoogleOther",
   "Google-CloudVertexBot",
   "ClaudeBot",
   "Claude-SearchBot",
   "Claude-User",
+  "Claude",
   "anthropic-ai",
   "PerplexityBot",
   "Perplexity-User",
@@ -76,6 +88,7 @@ export const AI_CRAWLER_AGENTS = [
   "Omgili",
   "Omgilibot",
   "FirecrawlAgent",
+  "Cloudflare-AI-Search",
   "ImagesiftBot",
   "FacebookBot",
   "facebookexternalhit",
@@ -127,11 +140,19 @@ export const AI_CLIENTS_SENTENCE =
   "Compatible clients: " + AI_CLIENTS.join(", ") + ", and other MCP/OpenAPI-capable assistants.";
 
 export const CONTENT_SIGNAL = "search=yes, ai-input=yes, ai-train=yes";
+export const ROBOTS_INDEX =
+  "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1";
 
 const PUBLIC_ALLOW = [
   "/",
   "/software",
   "/software/",
+  "/about",
+  "/about/",
+  "/AzielEliab",
+  "/AzielEliab/",
+  "/aziel-eliab",
+  "/aziel-eliab/",
   "/donate",
   "/donate/",
   "/donate/qr/",
@@ -151,6 +172,11 @@ const PUBLIC_ALLOW = [
   "/v1/mesh/nodes",
   "/runtime",
   "/runtime/",
+  "/runtime/openapi.json",
+  "/runtime/mcp",
+  "/runtime/v1/skill",
+  "/runtime/v1/software",
+  "/runtime/v1/fraggate/list",
   "/runtime/v1/uses",
   "/runtime/v1/mesh/status",
   "/runtime/v1/mesh/nodes",
@@ -162,13 +188,31 @@ export function robotsTxt() {
   return star.concat(bots).concat(["", "Sitemap: " + CANON_ORIGIN + "/sitemap.xml", ""]).join("\n");
 }
 
+const SITEMAP_RANK = {
+  [CANON_ORIGIN + "/"]: { changefreq: "daily", priority: "1.0" },
+  [SOFTWARE_HREF]: { changefreq: "daily", priority: "0.9" },
+  [SOFTWARE_SECTION]: { changefreq: "daily", priority: "0.8" },
+  [DONATE_HREF]: { changefreq: "weekly", priority: "0.7" },
+  [CANON_ORIGIN + "/cite.json"]: { changefreq: "daily", priority: "0.6" },
+  [CANON_ORIGIN + "/llms.txt"]: { changefreq: "daily", priority: "0.6" },
+  [CANON_ORIGIN + "/ai.txt"]: { changefreq: "weekly", priority: "0.5" },
+  [CANON_ORIGIN + "/v1/software"]: { changefreq: "hourly", priority: "0.8" },
+  [RUNTIME_LOCAL]: { changefreq: "daily", priority: "0.7" },
+};
+
 export function sitemapXml(now = new Date(), software = SOFTWARE) {
   const lastmod = now.toISOString().slice(0, 10);
   const doors = software && software.length ? software : SOFTWARE;
   const locs = [
     CANON_ORIGIN + "/",
+    SOFTWARE_HREF,
+    SOFTWARE_SECTION,
     DONATE_HREF,
     RUNTIME_LOCAL,
+    RUNTIME_LOCAL + "/openapi.json",
+    RUNTIME_LOCAL + "/v1/skill",
+    RUNTIME_LOCAL + "/v1/software",
+    RUNTIME_LOCAL + "/v1/fraggate/list",
     CANON_ORIGIN + "/cite.json",
     CANON_ORIGIN + "/llms.txt",
     CANON_ORIGIN + "/ai.txt",
@@ -184,10 +228,13 @@ export function sitemapXml(now = new Date(), software = SOFTWARE) {
     RUNTIME_LOCAL + "/v1/uses",
     RUNTIME_LOCAL + "/v1/mesh/status",
     RUNTIME_LOCAL + "/v1/mesh/nodes",
+    FRAGGATE,
+    FRAGGATE_GITHUB,
     GITHUB,
     GITHUB_SECONDARY,
     GITHUB_SITE,
     GITHUB_RUNTIME,
+    GITHUB_QNM_NODE,
     LIBRARY + "/",
     LIBRARY_AZIEL,
     LIBRARY_SOFTWARE,
@@ -195,6 +242,8 @@ export function sitemapXml(now = new Date(), software = SOFTWARE) {
     GODLOCK + "/",
     GODLOCK_AZIEL,
     RUNTIME + "/",
+    RUNTIME + "/v1/software",
+    RUNTIME + "/v1/fraggate/list",
     X_URL,
     ...doors.map((s) => s.href),
   ];
@@ -207,7 +256,16 @@ export function sitemapXml(now = new Date(), software = SOFTWARE) {
   }
   return (
     '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
-    unique.map((u) => "  <url><loc>" + u + "</loc><lastmod>" + lastmod + "</lastmod></url>").join("\n") +
+    unique
+      .map((u) => {
+        const rank = SITEMAP_RANK[u];
+        let inner = "<loc>" + u + "</loc><lastmod>" + lastmod + "</lastmod>";
+        if (rank) {
+          inner += "<changefreq>" + rank.changefreq + "</changefreq><priority>" + rank.priority + "</priority>";
+        }
+        return "  <url>" + inner + "</url>";
+      })
+      .join("\n") +
     "\n</urlset>\n"
   );
 }
@@ -222,6 +280,22 @@ export function citeDoc(software = SOFTWARE) {
     title: SITE,
     site: CANON_ORIGIN + "/",
     canonical: CANON_ORIGIN + "/",
+    about: ABOUT_HREF,
+    about_aliases: ABOUT_PATHS.map((p) => CANON_ORIGIN + p),
+    software_page: SOFTWARE_SECTION,
+    software_alias: SOFTWARE_HREF,
+    software_section: SOFTWARE_SECTION,
+    software_title: SOFTWARE_TITLE,
+    llms: CANON_ORIGIN + "/llms.txt",
+    ai: CANON_ORIGIN + "/ai.txt",
+    sitemap: CANON_ORIGIN + "/sitemap.xml",
+    robots: CANON_ORIGIN + "/robots.txt",
+    twitter: X_URL,
+    twitter_handle: X_HANDLE,
+    fraggate: FRAGGATE,
+    fraggate_github: FRAGGATE_GITHUB,
+    fraggate_list: RUNTIME_LOCAL + "/v1/fraggate/list",
+    fraggate_list_origin: RUNTIME + "/v1/fraggate/list",
     github: GITHUB,
     github_site: GITHUB_SITE,
     github_secondary: GITHUB_SECONDARY,
@@ -242,8 +316,13 @@ export function citeDoc(software = SOFTWARE) {
     views: CANON_ORIGIN + "/v1/stats",
     view_increment: CANON_ORIGIN + "/v1/view",
     software_catalog: CANON_ORIGIN + "/v1/software",
+    software_catalog_local: RUNTIME_LOCAL + "/v1/software",
     software_catalog_origin: RUNTIME + "/v1/software",
     software_catalog_fallback: RUNTIME + "/v1/fraggate/list",
+    software_catalog_fallback_local: RUNTIME_LOCAL + "/v1/fraggate/list",
+    runtime_openapi: RUNTIME_LOCAL + "/openapi.json",
+    runtime_mcp: RUNTIME_LOCAL + "/mcp",
+    runtime_skill: RUNTIME_LOCAL + "/v1/skill",
     update_check: CANON_ORIGIN + "/v1/update/check",
     update_check_origin: RUNTIME + "/v1/update/check",
     mesh_status: CANON_ORIGIN + "/v1/mesh/status",
@@ -313,6 +392,7 @@ export function llmsTxt(software = SOFTWARE) {
     "",
     "- Primary author: " + AUTHOR,
     "- Alternate name / aka: " + AUTHOR_AKA,
+    "- About (this origin): " + ABOUT_HREF + " (aliases " + ABOUT_PATHS.map((p) => CANON_ORIGIN + p).join(", ") + " 301 here)",
     "- Profile (library): " + LIBRARY_AZIEL,
     "- GodLock identity: " + GODLOCK_AZIEL,
     "- sameAs: " + [GITHUB, GITHUB_SECONDARY, LIBRARY + "/", GODLOCK + "/", X_URL].join(" · "),
@@ -324,6 +404,14 @@ export function llmsTxt(software = SOFTWARE) {
     "- The research corpus lives at the Digital Library, not on this page.",
     "",
     "## Software",
+    "",
+    "- Softwares list: " + SOFTWARE_SECTION,
+    "- Softwares alias: " + SOFTWARE_HREF + " (301 to /#software)",
+    "- Live catalog (this host): " + CANON_ORIGIN + "/v1/software",
+    "- Live catalog (aziel-runtime): " + RUNTIME + "/v1/software",
+    "- FragGate list: " + RUNTIME_LOCAL + "/v1/fraggate/list (origin " + RUNTIME + "/v1/fraggate/list)",
+    "- FragGate Worker: " + FRAGGATE,
+    "- FragGate kernel: " + FRAGGATE_GITHUB,
     "",
     softwareLines,
     "",
@@ -362,7 +450,10 @@ export function llmsTxt(software = SOFTWARE) {
     "## Machine routes",
     "",
     "- GET " + CANON_ORIGIN + "/",
-    "- GET " + CANON_ORIGIN + "/software  (301 to /#software)",
+    "- GET " + SOFTWARE_HREF + "  (301 to /#software)",
+    "- GET " + CANON_ORIGIN + "/about  (301 to / — About Aziel Eliab)",
+    "- GET " + CANON_ORIGIN + "/AzielEliab  (301 to /)",
+    "- GET " + CANON_ORIGIN + "/aziel-eliab  (301 to /)",
     "- GET " + DONATE_HREF + "  (AZL-DONATE-1.0 primary Donate door)",
     "- GET " + EMBRYOLOCK_HREF + "  (EmbryoLock local-not-hosted stub)",
     "- GET " + CANON_ORIGIN + "/v1/software  (resolved live doors)",
@@ -376,6 +467,10 @@ export function llmsTxt(software = SOFTWARE) {
     "- GET " + CANON_ORIGIN + "/sitemap.xml",
     "- GET " + RUNTIME_LOCAL,
     "- GET " + RUNTIME_LOCAL + "/openapi.json",
+    "- GET " + RUNTIME_LOCAL + "/v1/skill",
+    "- GET " + RUNTIME_LOCAL + "/v1/software",
+    "- GET " + RUNTIME_LOCAL + "/v1/fraggate/list",
+    "- POST " + RUNTIME_LOCAL + "/mcp",
     "- GET " + RUNTIME_LOCAL + "/v1/uses  (this host's /runtime API use stats)",
     "- GET " + RUNTIME_LOCAL + "/v1/mesh/status  (QNM-BUILD-1.0 suite rollup; live_nodes; GET never enables)",
     "- GET " + RUNTIME_LOCAL + "/v1/mesh/nodes",
@@ -403,6 +498,12 @@ export function aiTxt() {
     "Allow: /",
     "Allow: /software",
     "Allow: /software/",
+    "Allow: /about",
+    "Allow: /about/",
+    "Allow: /AzielEliab",
+    "Allow: /AzielEliab/",
+    "Allow: /aziel-eliab",
+    "Allow: /aziel-eliab/",
     "Allow: /donate",
     "Allow: /donate/",
     "Allow: /donate/qr/",
@@ -422,6 +523,11 @@ export function aiTxt() {
     "Allow: /v1/mesh/nodes",
     "Allow: /runtime",
     "Allow: /runtime/",
+    "Allow: /runtime/openapi.json",
+    "Allow: /runtime/mcp",
+    "Allow: /runtime/v1/skill",
+    "Allow: /runtime/v1/software",
+    "Allow: /runtime/v1/fraggate/list",
     "Allow: /runtime/v1/uses",
     "Allow: /runtime/v1/mesh/status",
     "Allow: /runtime/v1/mesh/nodes",
@@ -437,6 +543,11 @@ export function aiTxt() {
     "## Research surfaces",
     "",
     "- Landing: " + CANON_ORIGIN + "/",
+    "- About: " + ABOUT_HREF + " (aliases /about /AzielEliab /aziel-eliab)",
+    "- Softwares: " + SOFTWARE_SECTION + " (alias " + SOFTWARE_HREF + " 301)",
+    "- Software catalog: " + CANON_ORIGIN + "/v1/software",
+    "- FragGate list: " + RUNTIME_LOCAL + "/v1/fraggate/list",
+    "- FragGate Worker: " + FRAGGATE,
     "- Donate: " + DONATE_HREF,
     "- Research / corpus: " + LIBRARY + "/",
     "- Library identity: " + LIBRARY_AZIEL,
@@ -471,6 +582,14 @@ export function aiTxt() {
   ].join("\n");
 }
 
+export function softwareNodeId(item) {
+  const raw = String((item && (item.slug || item.name)) || "item")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+  return CANON_ORIGIN + "/#software-" + (raw || "item");
+}
+
 export function jsonLd(software = SOFTWARE) {
   const doorsSoftware = software && software.length ? software : SOFTWARE;
   const personId = CANON_ORIGIN + "/#aziel-eliab";
@@ -487,8 +606,15 @@ export function jsonLd(software = SOFTWARE) {
         "@id": personId,
         name: AUTHOR,
         alternateName: AUTHOR_AKA,
+        givenName: "Aziel",
+        familyName: "Eliab",
+        description: DESCRIPTION,
+        identifier: AUTHOR,
+        jobTitle: "Author",
         url: CANON_ORIGIN + "/",
         image: SIGIL,
+        mainEntityOfPage: CANON_ORIGIN + "/",
+        knowsAbout: ["software", "research", RUNTIME_TITLE, "FragGate"],
         sameAs: [
           GITHUB,
           GITHUB_SECONDARY,
@@ -506,12 +632,14 @@ export function jsonLd(software = SOFTWARE) {
         "@id": siteId,
         url: CANON_ORIGIN + "/",
         name: SITE,
+        alternateName: AUTHOR_AKA,
         description: DESCRIPTION,
         inLanguage: "en",
         license: "https://www.apache.org/licenses/LICENSE-2.0",
         author: person,
         publisher: person,
         image: SIGIL,
+        hasPart: [{ "@id": softwareId }, { "@id": DONATE_HREF }, { "@id": softwareId + "-list" }],
       },
       {
         "@type": "SoftwareApplication",
@@ -553,24 +681,73 @@ export function jsonLd(software = SOFTWARE) {
         "@type": "ItemList",
         "@id": softwareId,
         name: "Software",
-        url: CANON_ORIGIN + "/#software",
+        url: SOFTWARE_SECTION,
         numberOfItems: doorsSoftware.length,
         itemListElement: doorsSoftware.map((item, i) => ({
           "@type": "ListItem",
           position: i + 1,
           name: item.name,
           url: item.href,
+          item: { "@id": softwareNodeId(item) },
         })),
       },
       {
         "@type": "WebPage",
         "@id": DONATE_HREF,
         url: DONATE_HREF,
-        name: DONATE_TITLE,
-        description: DONATE_COPY[0],
+        name: DONATE_TITLE + " — " + AUTHOR,
+        description: DONATE_DESCRIPTION,
         isPartOf: { "@id": siteId },
         author: person,
+        about: person,
+        inLanguage: "en",
+        potentialAction: {
+          "@type": "DonateAction",
+          name: DONATE_TITLE,
+          recipient: person,
+          target: DONATE_HREF,
+        },
       },
+      {
+        "@type": "AboutPage",
+        "@id": CANON_ORIGIN + "/#about",
+        url: CANON_ORIGIN + "/",
+        name: AUTHOR,
+        description: DESCRIPTION,
+        mainEntity: person,
+        isPartOf: { "@id": siteId },
+        author: person,
+        inLanguage: "en",
+        significantLink: ABOUT_PATHS.map((p) => CANON_ORIGIN + p),
+      },
+      {
+        "@type": "CollectionPage",
+        "@id": softwareId + "-list",
+        url: SOFTWARE_SECTION,
+        name: SOFTWARE_TITLE,
+        description: SOFTWARE_DESCRIPTION,
+        isPartOf: { "@id": siteId },
+        mainEntity: { "@id": softwareId },
+        author: person,
+        about: person,
+        inLanguage: "en",
+        relatedLink: [
+          SOFTWARE_HREF,
+          CANON_ORIGIN + "/v1/software",
+          RUNTIME + "/v1/software",
+          RUNTIME_LOCAL + "/v1/fraggate/list",
+          FRAGGATE,
+        ],
+      },
+      ...doorsSoftware.map((item) => ({
+        "@type": "SoftwareApplication",
+        "@id": softwareNodeId(item),
+        name: item.name,
+        url: item.href,
+        applicationCategory: "DeveloperApplication",
+        author: person,
+        isPartOf: { "@id": softwareId },
+      })),
     ],
   };
 }
