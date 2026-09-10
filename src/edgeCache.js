@@ -17,6 +17,9 @@ export const MESH_TTL_SEC = 60;
 export const UPDATE_TTL_SEC = 60;
 export const HTML_CACHE = "public, max-age=60, s-maxage=180, stale-while-revalidate=600";
 export const STUB_HTML_CACHE = "public, max-age=300, s-maxage=3600, stale-while-revalidate=86400";
+/** Donate HTML must not sit in CF edge after QR asset swaps. */
+export const DONATE_HTML_CACHE = "no-store, max-age=0, must-revalidate";
+export const DONATE_CACHE_BUST = "png";
 export const SEO_CACHE = "public, max-age=86400, s-maxage=86400, stale-while-revalidate=604800";
 export const JSON_SHORT_CACHE = "public, max-age=60, s-maxage=120, stale-while-revalidate=600";
 

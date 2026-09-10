@@ -1,6 +1,8 @@
 /** azieleliab.com landing Worker. Author: Aziel Eliab. */
 import { APEX_HOST, CANON_ORIGIN, SOFTWARE_SECTION } from "./copy.js";
 import {
+  DONATE_CACHE_BUST,
+  DONATE_HTML_CACHE,
   HTML_CACHE,
   JSON_SHORT_CACHE,
   SEO_CACHE,
@@ -75,7 +77,6 @@ function json(doc, cache) {
 
 const PAGE_CACHE_PATHS = new Set([
   "/",
-  "/donate",
   "/embryolock",
   "/robots.txt",
   "/llms.txt",
@@ -84,6 +85,10 @@ const PAGE_CACHE_PATHS = new Set([
   "/sitemap.xml",
   "/v1/software",
 ]);
+
+export function donateCacheBustLocation(url) {
+  return String(url.origin || CANON_ORIGIN) + "/donate?v=" + DONATE_CACHE_BUST;
+}
 
 function noteViews(request, env, ctx) {
   if (request.method !== "GET") return;
@@ -157,6 +162,12 @@ export async function handleRequest(request, env = {}, ctx) {
     return qrPng;
   }
 
+  // Bare /donate is still HITing old stroke-SVG HTML at the CF edge
+  // (s-maxage=3600). Force a new cache key so PNG <img> rails stick.
+  if (path === "/donate" && !url.searchParams.has("v")) {
+    return Response.redirect(donateCacheBustLocation(url), 302);
+  }
+
   if (PAGE_CACHE_PATHS.has(path)) {
     const hit = await matchPublicResponse(request, env);
     if (hit) {
@@ -185,7 +196,7 @@ export async function handleRequest(request, env = {}, ctx) {
   let res;
   if (path === "/") res = html(pageHtml(await pageViews(request, env), doors, meshStatus));
   else if (path === "/software") res = Response.redirect(SOFTWARE_SECTION, 301);
-  else if (path === "/donate") res = html(donateHtml(), 200, STUB_HTML_CACHE);
+  else if (path === "/donate") res = html(donateHtml(), 200, DONATE_HTML_CACHE);
   else if (path === "/embryolock") res = html(embryoLockHtml(), 200, STUB_HTML_CACHE);
   else if (path === "/robots.txt") res = text(robotsTxt(), "text/plain", { cache: SEO_CACHE });
   else if (path === "/llms.txt") res = text(llmsTxt(doors), "text/plain", { cache: SEO_CACHE });
