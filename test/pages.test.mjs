@@ -38,8 +38,12 @@ import {
   PEACELOCK_WORKER,
   PROSE,
   RUNTIME_LOCAL,
+  RUNTIME_NAME,
+  RUNTIME_TITLE,
   SOFTWARE,
   SOFTWARE_SECTION,
+  displaySoftwareName,
+  isRuntimeSoftware,
   softwareBucket,
   sortSoftware,
 } from "../src/copy.js";
@@ -107,7 +111,7 @@ function runtimeEnv(handler) {
 describe("landing copy", () => {
   it("keeps the exact opening, why, research, and close", () => {
     const html = pageHtml();
-    for (const line of [...PROSE.open, ...PROSE.why, PROSE.close, PROSE.sign, PROSE.softwareClose]) {
+    for (const line of [...PROSE.open, ...PROSE.why, PROSE.close, PROSE.sign]) {
       assert.ok(html.includes(line), "missing copy: " + line);
     }
     for (const line of PROSE.research) {
@@ -148,7 +152,26 @@ describe("software doors", () => {
       assert.ok(html.includes(needle), "missing href for " + item.name);
       assert.ok(html.includes(">" + item.name + "<"), "missing visible name " + item.name);
     }
-    assert.ok(html.includes("Run them without me."));
+    assert.doesNotMatch(html, /Run them without me/);
+    assert.match(html, /<h2>Software<\/h2>\s*<p class="soft-line">/);
+    assert.doesNotMatch(html, /soft-close/);
+    assert.doesNotMatch(html, /runtime 1\.6\.\d+ FragGate/i);
+  });
+
+  it("names aziel-runtime / Aziel Runtime and refuses version+FragGate mash", () => {
+    assert.equal(displaySoftwareName("aziel-runtime", "runtime 1.6.15 FragGate"), RUNTIME_NAME);
+    assert.equal(displaySoftwareName("runtime", "Aziel Runtime"), RUNTIME_NAME);
+    assert.equal(displaySoftwareName("aziel-runtime", "aziel-runtime"), RUNTIME_NAME);
+    assert.equal(isRuntimeSoftware("aziel-runtime", "runtime 1.6.15 FragGate"), true);
+    assert.equal(isRuntimeSoftware("fraggate", "FragGate"), false);
+    assert.equal(displaySoftwareName("fraggate", "FragGate"), "FragGate");
+    assert.equal(displaySoftwareName("azai", "AZAI"), "AZAI");
+    const html = pageHtml();
+    assert.ok(html.includes(">" + RUNTIME_NAME + "<"));
+    assert.doesNotMatch(html, /runtime 1\.6\.\d+ FragGate/i);
+    const ld = jsonLd();
+    assert.equal(ld["@graph"][2].name, RUNTIME_TITLE);
+    assert.equal(ld["@graph"][3].name, RUNTIME_TITLE);
   });
 
   it("syncs CATALOG_SOFTWARE from documented catalog slugs including peacelock and azmail", () => {
@@ -520,7 +543,12 @@ describe("SEO routes", () => {
     assert.ok(llmsBody.includes("Canonical: " + CANON_ORIGIN + "/"));
     assert.ok(llmsBody.includes(CANON_ORIGIN + "/software  (301 to /#software)"));
     assert.ok(llmsBody.includes(EMBRYOLOCK_HREF + "  (EmbryoLock local-not-hosted stub)"));
-    assert.ok(llmsBody.includes("local-not-hosted stub on this host"));
+    assert.ok(llmsBody.includes("## Software\n\n- "));
+    assert.ok(!llmsBody.includes("## Software (verified"));
+    assert.ok(!llmsBody.includes("FragGate / aziel-runtime"));
+    assert.ok(!llmsBody.includes("Runtime (AI / FragGate"));
+    assert.ok(llmsBody.includes("## Aziel Runtime"));
+    assert.ok(llmsBody.includes("aziel-runtime: " + RUNTIME_LOCAL));
     assert.ok(llmsBody.includes("/runtime"));
     assert.ok(llmsBody.includes("/runtime/v1/uses"));
     assert.ok(llmsBody.includes("/v1/software"));
@@ -578,6 +606,8 @@ describe("SEO routes", () => {
     assert.ok(aiBody.includes("Content-Signal"));
     assert.ok(aiBody.includes("Research / corpus"));
     assert.ok(aiBody.includes(RUNTIME_LOCAL));
+    assert.ok(aiBody.includes("Aziel Runtime (aziel-runtime)"));
+    assert.ok(!aiBody.includes("FragGate / aziel-runtime"));
     assert.equal(citeBody.author, AUTHOR);
     assert.equal(citeBody.canonical, CANON_ORIGIN + "/");
     assert.equal(citeBody.identity, AUTHOR);
@@ -637,7 +667,13 @@ describe("SEO routes", () => {
     assert.equal(ld["@graph"][1]["@type"], "WebSite");
     assert.equal(ld["@graph"][1].url, CANON_ORIGIN + "/");
     assert.equal(ld["@graph"][2]["@type"], "SoftwareApplication");
+    assert.equal(ld["@graph"][2].name, RUNTIME_TITLE);
     assert.equal(ld["@graph"][2].url, RUNTIME_LOCAL);
+    assert.ok(ld["@graph"][2].description.includes("aziel-runtime"));
+    assert.ok(!ld["@graph"][2].description.includes("FragGate / aziel-runtime"));
+    assert.ok(!/runtime 1\.6\.\d+ FragGate/i.test(ld["@graph"][2].description));
+    assert.equal(ld["@graph"][3].name, RUNTIME_TITLE);
+    assert.ok(!ld["@graph"][3].description.includes("FragGate door"));
     assert.equal(ld["@graph"][3]["@type"], "WebAPI");
     assert.equal(ld["@graph"][4]["@type"], "ItemList");
     assert.equal(ld["@graph"][4].name, "Software");
@@ -1108,6 +1144,51 @@ describe("live software catalog", () => {
     const lastGate = names.findLastIndex((n) => softwareBucket(n) === 1);
     const firstLock = names.findIndex((n) => softwareBucket(n) === 2);
     assert.ok(lastPlain < firstGate && lastGate < firstLock);
+  });
+
+  it("normalizes mashed live runtime names to aziel-runtime and keeps Plain→Gate→Lock", async () => {
+    const env = catalogEnv(async (req) => {
+      const path = new URL(req.url).pathname;
+      if (path === "/v1/software") {
+        return new Response(
+          JSON.stringify({
+            ok: true,
+            version: "1.6.15",
+            products: [
+              { slug: "azai", name: "AZAI", worker_home: "https://azai-download-tracker.vibelock.workers.dev/" },
+              {
+                slug: "aziel-runtime",
+                name: "runtime 1.6.15 FragGate",
+                one_line: "runtime 1.6.15 FragGate door",
+                worker_home: "https://aziel-runtime.vibelock.workers.dev/",
+              },
+              { slug: "decisiongate", name: "DecisionGATE" },
+              { slug: "codelock", name: "CodeLock" },
+            ],
+          }),
+          { status: 200, headers: { "Content-Type": "application/json" } },
+        );
+      }
+      return new Response(JSON.stringify({ error: "not found" }), { status: 404 });
+    });
+
+    const landing = await fetchPath("/", { headers: { "user-agent": "Mozilla/5.0" } }, env);
+    const html = await landing.text();
+    assert.ok(html.includes(">" + RUNTIME_NAME + "<"));
+    assert.doesNotMatch(html, /runtime 1\.6\.15 FragGate/);
+    assert.doesNotMatch(html, /Run them without me/);
+    assert.match(html, /<h2>Software<\/h2>\s*<p class="soft-line">/);
+    const idx = (name) => html.indexOf(">" + name + "<");
+    assert.ok(idx("AZAI") < idx("DecisionGATE"));
+    assert.ok(idx("DecisionGATE") < idx("CodeLock"));
+    assert.ok(idx(RUNTIME_NAME) < idx("DecisionGATE"));
+
+    const index = await fetchPath("/v1/software", {}, env);
+    const doc = await index.json();
+    const runtime = doc.software.find((s) => s.slug === "aziel-runtime" || s.name === RUNTIME_NAME);
+    assert.ok(runtime);
+    assert.equal(runtime.name, RUNTIME_NAME);
+    assert.ok(!doc.software.some((s) => /runtime 1\.6\.15 FragGate/i.test(s.name)));
   });
 
   it("falls back to /v1/fraggate/list when /v1/software is missing", async () => {
