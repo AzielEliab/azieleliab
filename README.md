@@ -52,7 +52,7 @@ Discovery:
 - Mesh status: https://www.azieleliab.com/runtime/v1/mesh/status
 - Mesh nodes: https://www.azieleliab.com/runtime/v1/mesh/nodes
 
-Same JSON also lives at same-origin `/v1/mesh/status` and `/v1/mesh/nodes` (Software door). Both fetch `https://aziel-runtime.vibelock.workers.dev/v1/mesh/status` and `/v1/mesh/nodes` via service binding `AZIEL_RUNTIME` (HTTPS origin fallback). **Mesh is default off** until runtime enables it — a 404 or missing origin becomes `{ enabled: false, mesh: "off", nodes: [] }` with identity Aziel Eliab. VPN/hop mesh is not claimed. The landing footer shows a quiet `mesh off` / `mesh on` link; OpenAPI / cite / llms list the paths.
+Same JSON also lives at same-origin `/v1/mesh/status` and `/v1/mesh/nodes` (Software door). Both fetch `https://aziel-runtime.vibelock.workers.dev/v1/mesh/status` and `/v1/mesh/nodes` via service binding `AZIEL_RUNTIME` (HTTPS origin fallback). **Mesh is default off** until runtime enables it — a 404 or missing origin becomes `{ enabled: false, mesh: "off", live_nodes: 0, nodes: [] }` with identity Aziel Eliab. VPN/hop mesh is not claimed. **GET never enables.** Operator enable on runtime requires a declared bearer (example: `suite-presence`). The landing brandrow shows a Digital Library–style `Live Nodes · N` / `Live Nodes · off` pill fed from origin `live_nodes` (QNM-BUILD-1.0 rollup). The footer keeps the quiet `mesh off` / `mesh on` link. OpenAPI / cite / llms list the paths. Not Node Gate. Softwares list rules unchanged.
 
 Outbound proxy requests are stamped `X-Aziel-Runtime-Via: azieleliab.com` and `X-Aziel-Runtime-Host: www.azieleliab.com` so origin can attribute the hop if it has a uses store.
 
@@ -166,7 +166,7 @@ EmbryoLock has no public repo or download-tracker. The name stays visible and po
 
 Quiet installer meta: `GET /v1/update/check` (alias `/v1/update`) points at runtime `GET /v1/update/check`. The landing also ships `<meta name="aziel-update-check">`.
 
-Quiet mesh meta: `GET /v1/mesh/status` and `GET /v1/mesh/nodes` (also `/runtime/v1/mesh/status` · `/runtime/v1/mesh/nodes`) point at runtime mesh authority. The landing ships `<meta name="aziel-mesh-status">`, `<meta name="aziel-qns-cd">`, and a muted footer status. `/v1/software` includes a `mesh` snapshot. **Mesh is default OFF.** No Node Gate. No public qnsd proxy.
+Quiet mesh meta: `GET /v1/mesh/status` and `GET /v1/mesh/nodes` (also `/runtime/v1/mesh/status` · `/runtime/v1/mesh/nodes`) point at runtime mesh authority. The landing ships `<meta name="aziel-mesh-status">`, `<meta name="aziel-qns-cd">`, `<meta name="aziel-qnm">` (`QNM-BUILD-1.0`), a brandrow Live Nodes pill, and a muted footer status. `/v1/software` includes a `mesh` snapshot with `live_nodes`. **Mesh is default OFF. GET never enables.** Operator enable requires a declared bearer (example: suite-presence). No Node Gate. No public qnsd proxy. Softwares list is names only.
 
 ### QNS-CD-1.0 hub cite (mesh cross-map)
 

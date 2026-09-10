@@ -30,6 +30,10 @@ export const MESH_STATUS_RUNTIME = RUNTIME_LOCAL + MESH_STATUS_PATH;
 export const MESH_NODES_RUNTIME = RUNTIME_LOCAL + MESH_NODES_PATH;
 
 export const QNS_CD_SPEC = "QNS-CD-1.0";
+export const QNM_SPEC = "QNM-BUILD-1.0";
+export const QNM_COMPANION = "AIH-WP-1.1";
+/** Example declared bearer for operator enable. GET never enables. */
+export const QNM_ENABLE_BEARER = "suite-presence";
 
 /** Hub cite / Worker mesh cross-map. Not a Softwares-tab product. No public qnsd. */
 export const QNS_CD = Object.freeze({
@@ -61,13 +65,73 @@ export const QNS_CD = Object.freeze({
 });
 
 export const MESH_NOTE =
-  "Suite decentralized node mesh. Default off until enabled on runtime. VPN/hop mesh is not claimed on this public surface. Cross-map QNS-CD-1.0 (photon QNS1 packet transfer). Local qnsd is qnm-node only — no public proxy, no Node Gate. Author Aziel Eliab only.";
+  "QNM-BUILD-1.0 suite rollup (live/locked/isolated). GET never enables. Operator enable requires a declared bearer (example: suite-presence). Default off until enabled on runtime. Display only — not Node Gate, not a Softwares-tab product. VPN/hop mesh is not claimed on this public surface. Cross-map QNS-CD-1.0 (photon QNS1 packet transfer). Local qnsd is qnm-node only — no public proxy. Author Aziel Eliab only.";
 
 function qnsCiteFields() {
   return {
     qns_cd_spec: QNS_CD_SPEC,
     qns_cd: QNS_CD,
+    qnm_spec: QNM_SPEC,
+    qnm_companion: QNM_COMPANION,
+    mesh_enable_bearer: QNM_ENABLE_BEARER,
+    mesh_get_never_enables: true,
   };
+}
+
+function meshSource(mesh) {
+  if (!mesh || typeof mesh !== "object") return null;
+  if (mesh.origin && typeof mesh.origin === "object" && !Array.isArray(mesh.origin)) {
+    return mesh.origin;
+  }
+  return mesh;
+}
+
+function finiteCount(value) {
+  const n = Number(value);
+  return Number.isFinite(n) && n >= 0 ? n : null;
+}
+
+export function liveNodesCount(mesh) {
+  const src = meshSource(mesh);
+  const top = mesh && mesh !== src && typeof mesh === "object" ? mesh : null;
+  for (const doc of [src, top]) {
+    if (!doc) continue;
+    const direct = finiteCount(doc.live_nodes);
+    if (direct != null) return direct;
+    const rollup = doc.rollup && typeof doc.rollup === "object" ? finiteCount(doc.rollup.live) : null;
+    if (rollup != null) return rollup;
+    const named = finiteCount(doc.node_count);
+    if (named != null) return named;
+    if (Array.isArray(doc.nodes)) return doc.nodes.length;
+    if (Array.isArray(doc.items)) return doc.items.length;
+  }
+  return 0;
+}
+
+function rollupCounts(origin) {
+  const src = origin && typeof origin === "object" ? origin : {};
+  const nested = src.rollup && typeof src.rollup === "object" ? src.rollup : {};
+  return {
+    live: liveNodesCount(src),
+    locked: finiteCount(src.locked_nodes) ?? finiteCount(nested.locked) ?? 0,
+    isolated: finiteCount(src.isolated_nodes) ?? finiteCount(nested.isolated) ?? 0,
+  };
+}
+
+function declaredBearers(origin) {
+  if (!origin || typeof origin !== "object" || !Array.isArray(origin.bearers)) return [];
+  return origin.bearers.map((b) => String(b));
+}
+
+export function meshIsOn(mesh) {
+  if (!mesh) return false;
+  if (mesh.origin && typeof mesh.origin === "object") return meshEnabled(mesh.origin);
+  return meshEnabled(mesh);
+}
+
+export function liveNodesLabel(mesh) {
+  if (!meshIsOn(mesh)) return "Live Nodes · off";
+  return "Live Nodes · " + liveNodesCount(mesh);
 }
 
 const MESH_OPENAPI_GET = (summary, description) => ({
@@ -87,11 +151,11 @@ const MESH_OPENAPI_GET = (summary, description) => ({
 export const MESH_OPENAPI_PATHS = {
   [MESH_STATUS_PATH]: MESH_OPENAPI_GET(
     "mesh status",
-    "Suite decentralized node mesh status. Default off until enabled on aziel-runtime. Cites QNS-CD-1.0 (photon QNS1 packet transfer). No public qnsd proxy. No Node Gate. Author Aziel Eliab.",
+    "QNM-BUILD-1.0 suite rollup status (live_nodes). GET never enables. Operator enable requires a declared bearer (example: suite-presence). Default off. Cites QNS-CD-1.0. No public qnsd proxy. No Node Gate. Author Aziel Eliab.",
   ),
   [MESH_NODES_PATH]: MESH_OPENAPI_GET(
     "mesh nodes",
-    "Suite decentralized node mesh members / Live Nodes. Empty while default off. Cross-map QNS-CD-1.0. No public qnsd proxy. Author Aziel Eliab.",
+    "QNM-BUILD-1.0 Live Nodes roster. Empty while default off. GET never enables. Cross-map QNS-CD-1.0. No public qnsd proxy. Author Aziel Eliab.",
   ),
 };
 
@@ -118,10 +182,16 @@ function originNodes(origin) {
 
 export function meshSnapshot(origin) {
   const enabled = meshEnabled(origin);
+  const rollup = rollupCounts(origin);
   return {
     enabled,
     default: "off",
     mesh: enabled ? "on" : "off",
+    live_nodes: enabled ? rollup.live : 0,
+    locked_nodes: enabled ? rollup.locked : 0,
+    isolated_nodes: enabled ? rollup.isolated : 0,
+    rollup: enabled ? rollup : { live: 0, locked: 0, isolated: 0 },
+    bearers: enabled ? declaredBearers(origin) : [],
     status: MESH_STATUS_LOCAL,
     nodes: MESH_NODES_LOCAL,
     runtime: MESH_STATUS_RUNTIME,
@@ -133,6 +203,7 @@ export function meshSnapshot(origin) {
 
 function meshBase(origin) {
   const enabled = meshEnabled(origin);
+  const rollup = rollupCounts(origin);
   return {
     ok: true,
     author: AUTHOR,
@@ -141,6 +212,11 @@ function meshBase(origin) {
     mesh: enabled ? "on" : "off",
     enabled,
     default: "off",
+    live_nodes: enabled ? rollup.live : 0,
+    locked_nodes: enabled ? rollup.locked : 0,
+    isolated_nodes: enabled ? rollup.isolated : 0,
+    rollup: enabled ? rollup : { live: 0, locked: 0, isolated: 0 },
+    bearers: enabled ? declaredBearers(origin) : [],
     note: MESH_NOTE,
     mesh_status: MESH_STATUS_ORIGIN,
     mesh_status_local: MESH_STATUS_LOCAL,
@@ -185,11 +261,7 @@ export async function loadMeshNodes(env, ctx, opts) {
 }
 
 export function meshQuietLabel(mesh) {
-  if (!mesh) return "mesh off";
-  if (mesh.origin && typeof mesh.origin === "object") {
-    return meshEnabled(mesh.origin) ? "mesh on" : "mesh off";
-  }
-  return meshEnabled(mesh) ? "mesh on" : "mesh off";
+  return meshIsOn(mesh) ? "mesh on" : "mesh off";
 }
 
 export function injectMeshOpenApi(doc) {
@@ -211,6 +283,10 @@ export function injectMeshCite(doc) {
   if (!doc.mesh_note) doc.mesh_note = MESH_NOTE;
   if (!doc.qns_cd_spec) doc.qns_cd_spec = QNS_CD_SPEC;
   if (!doc.qns_cd) doc.qns_cd = QNS_CD;
+  if (!doc.qnm_spec) doc.qnm_spec = QNM_SPEC;
+  if (!doc.qnm_companion) doc.qnm_companion = QNM_COMPANION;
+  if (!doc.mesh_enable_bearer) doc.mesh_enable_bearer = QNM_ENABLE_BEARER;
+  if (doc.mesh_get_never_enables == null) doc.mesh_get_never_enables = true;
   return doc;
 }
 
@@ -218,9 +294,10 @@ const MESH_LLMS_BLOCK = [
   "",
   "## Mesh",
   "",
-  "- GET " + MESH_STATUS_RUNTIME + "  (suite node mesh status; default off)",
+  "- GET " + MESH_STATUS_RUNTIME + "  (QNM-BUILD-1.0 suite rollup; live_nodes; GET never enables; default off)",
   "- GET " + MESH_NODES_RUNTIME + "  (suite node list / Live Nodes; empty while off)",
   "- Origin: " + MESH_STATUS_ORIGIN + " · " + MESH_NODES_ORIGIN,
+  "- Operator enable requires a declared bearer (example: suite-presence). Default radios off.",
   "- Cross-map: " + QNS_CD_SPEC + " (photon QNS1 packet transfer). Local qnsd is qnm-node only.",
   "- " + MESH_NOTE,
   "",
