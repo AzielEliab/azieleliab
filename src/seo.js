@@ -31,7 +31,7 @@ import {
   SOFTWARE,
   X_URL,
 } from "./copy.js";
-import { MESH_NOTE, QNS_CD, QNS_CD_SPEC } from "./mesh.js";
+import { MESH_NOTE, QNM_COMPANION, QNM_ENABLE_BEARER, QNM_SPEC, QNS_CD, QNS_CD_SPEC } from "./mesh.js";
 
 export const AI_CRAWLER_AGENTS = [
   "GPTBot",
@@ -254,6 +254,10 @@ export function citeDoc(software = SOFTWARE) {
     mesh_nodes_origin: RUNTIME + "/v1/mesh/nodes",
     mesh_default: "off",
     mesh_note: MESH_NOTE,
+    qnm_spec: QNM_SPEC,
+    qnm_companion: QNM_COMPANION,
+    mesh_enable_bearer: QNM_ENABLE_BEARER,
+    mesh_get_never_enables: true,
     qns_cd_spec: QNS_CD_SPEC,
     qns_cd: QNS_CD,
     runtime_uses: RUNTIME_LOCAL + "/v1/uses",
@@ -334,8 +338,9 @@ export function llmsTxt(software = SOFTWARE) {
     "- Skill: " + RUNTIME_LOCAL + "/v1/skill",
     "- FragGate list: " + RUNTIME_LOCAL + "/v1/fraggate/list",
     "- Uses (this host's /runtime API stats): " + RUNTIME_LOCAL + "/v1/uses",
-    "- Mesh status: " + RUNTIME_LOCAL + "/v1/mesh/status (default off until enabled on runtime)",
+    "- Mesh status: " + RUNTIME_LOCAL + "/v1/mesh/status (QNM-BUILD-1.0 suite rollup; live_nodes; GET never enables)",
     "- Mesh nodes: " + RUNTIME_LOCAL + "/v1/mesh/nodes",
+    "- Operator enable requires a declared bearer (example: suite-presence). Default radios off. Display only. Not Node Gate.",
     "- QNS-CD-1.0: " + QNS_CD_SPEC + " photon QNS1 packet transfer. Local qnsd in qnm-node. Skill: " + RUNTIME_LOCAL + "/v1/skill",
     "- " + AI_CLIENTS_SENTENCE,
     "",
@@ -362,7 +367,7 @@ export function llmsTxt(software = SOFTWARE) {
     "- GET " + EMBRYOLOCK_HREF + "  (EmbryoLock local-not-hosted stub)",
     "- GET " + CANON_ORIGIN + "/v1/software  (resolved live doors)",
     "- GET " + CANON_ORIGIN + "/v1/update/check  (quiet installer pointer)",
-    "- GET " + CANON_ORIGIN + "/v1/mesh/status  (suite node mesh; default off; QNS-CD-1.0 cite)",
+    "- GET " + CANON_ORIGIN + "/v1/mesh/status  (QNM-BUILD-1.0 suite rollup; live_nodes; GET never enables; suite-presence operator enable)",
     "- GET " + CANON_ORIGIN + "/v1/mesh/nodes",
     "- GET " + CANON_ORIGIN + "/cite.json",
     "- GET " + CANON_ORIGIN + "/llms.txt",
@@ -372,7 +377,7 @@ export function llmsTxt(software = SOFTWARE) {
     "- GET " + RUNTIME_LOCAL,
     "- GET " + RUNTIME_LOCAL + "/openapi.json",
     "- GET " + RUNTIME_LOCAL + "/v1/uses  (this host's /runtime API use stats)",
-    "- GET " + RUNTIME_LOCAL + "/v1/mesh/status  (suite node mesh; default off)",
+    "- GET " + RUNTIME_LOCAL + "/v1/mesh/status  (QNM-BUILD-1.0 suite rollup; live_nodes; GET never enables)",
     "- GET " + RUNTIME_LOCAL + "/v1/mesh/nodes",
     "- GET " + CANON_ORIGIN + "/v1/stats  (read pageviews, no increment)",
     "- GET " + CANON_ORIGIN + "/v1/view   (read pageviews, no increment)",
@@ -440,8 +445,9 @@ export function aiTxt() {
     "- Software hub: " + LIBRARY_SOFTWARE,
     "- Aziel Runtime (aziel-runtime): " + RUNTIME_LOCAL,
     "- Runtime uses (this host): " + RUNTIME_LOCAL + "/v1/uses",
-    "- Mesh status: " + CANON_ORIGIN + "/v1/mesh/status (default off; QNS-CD-1.0 cite)",
+    "- Mesh status: " + CANON_ORIGIN + "/v1/mesh/status (QNM-BUILD-1.0 suite rollup; live_nodes; GET never enables)",
     "- Mesh nodes: " + CANON_ORIGIN + "/v1/mesh/nodes",
+    "- Operator enable requires a declared bearer (example: suite-presence). Default radios off. Display only.",
     "- Runtime mesh: " + RUNTIME_LOCAL + "/v1/mesh/status",
     "- QNS-CD-1.0 (photon QNS1 packet transfer): local qnsd " + GITHUB_QNM_NODE + " · runtime " + GITHUB_RUNTIME,
     "- Runtime library: " + LIBRARY_RUNTIME,
@@ -521,7 +527,7 @@ export function jsonLd(software = SOFTWARE) {
           RUNTIME_LOCAL +
           "/mcp. Mesh status " +
           RUNTIME_LOCAL +
-          "/v1/mesh/status (default off). QNS-CD-1.0 photon QNS1 packet transfer cite. Author Aziel Eliab.",
+          "/v1/mesh/status (QNM-BUILD-1.0 suite rollup; live_nodes; GET never enables; suite-presence operator enable). QNS-CD-1.0 photon QNS1 packet transfer cite. Author Aziel Eliab.",
         author: person,
         license: "https://www.apache.org/licenses/LICENSE-2.0",
         codeRepository: GITHUB_RUNTIME,
@@ -541,7 +547,7 @@ export function jsonLd(software = SOFTWARE) {
           RUNTIME_LOCAL +
           "/mcp. Mesh " +
           RUNTIME_LOCAL +
-          "/v1/mesh/status (default off). QNS-CD-1.0 cite.",
+          "/v1/mesh/status (QNM-BUILD-1.0 suite rollup; live_nodes; GET never enables). QNS-CD-1.0 cite.",
       },
       {
         "@type": "ItemList",

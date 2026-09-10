@@ -19,17 +19,19 @@ Donate door (AZL-DONATE-1.0, not a Softwares product): https://www.azieleliab.co
 
 ## Mesh (default OFF)
 
-Suite node mesh doors stay **default OFF** until aziel-runtime enables them. VPN/hop mesh is not claimed. No Node Gate.
+Suite node mesh doors stay **default OFF** until aziel-runtime enables them. VPN/hop mesh is not claimed. No Node Gate. Display only.
 
 | Path | What |
 |------|------|
-| `GET /v1/mesh/status` | Same-origin mesh status (runtime via `AZIEL_RUNTIME`, else HTTPS) |
+| `GET /v1/mesh/status` | Same-origin QNM-BUILD-1.0 rollup (runtime via `AZIEL_RUNTIME`, else HTTPS). Hoists `live_nodes`. |
 | `GET /v1/mesh/nodes` | Live Nodes roster (empty while off) |
 | `GET /runtime/v1/mesh/status` | Same JSON through the quiet `/runtime` door |
 | `GET /runtime/v1/mesh/nodes` | Same |
-| `GET /cite.json` | Hub citation record, including mesh + QNS-CD |
+| `GET /cite.json` | Hub citation record, including mesh + QNM rollup + QNS-CD |
 
-`GET /v1/mesh/status` never enables radios. A 404 or missing origin is `{ enabled: false, mesh: "off", default: "off" }`.
+`GET /v1/mesh/status` never enables radios. Operator enable on runtime requires a declared bearer (example: `suite-presence`). A 404 or missing origin is `{ enabled: false, mesh: "off", default: "off", live_nodes: 0 }`.
+
+Homepage brandrow shows `Live Nodes · N` (sister-hub pill) from origin `live_nodes`. Softwares list rules unchanged.
 
 Agent skill for the runtime door: https://www.azieleliab.com/runtime/v1/skill  
 Origin skill: https://aziel-runtime.vibelock.workers.dev/v1/skill
