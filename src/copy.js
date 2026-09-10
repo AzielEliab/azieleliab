@@ -247,7 +247,7 @@ export const SOFTWARE = sortSoftware(CATALOG_SOFTWARE.concat(EXTRA_SOFTWARE));
 
 /** AZL-DONATE-1.0. Primary canonical Donate door. Not a Softwares product. */
 export const DONATE_PATH = "/donate";
-export const DONATE_HREF = CANON_ORIGIN + DONATE_PATH;
+export const DONATE_HREF = CANON_ORIGIN + DONATE_PATH + "?v=png";
 export const DONATE_TITLE = "Donate";
 export const DONATE_DISCLAIMER = "Donations buy no privilege.";
 export const DONATE_SIGN = "— Aziel";
