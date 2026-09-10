@@ -17,6 +17,7 @@ Cloudflare Worker `azieleliab-com` serves the literary landing, crawl files, and
 |------|------|
 | `/` | Landing (black / gold / white) |
 | `/software` · `/software/` | 301 to [`/#software`](https://www.azieleliab.com/#software) (homepage Software strip) |
+| `/donate` · `/donate/` | AZL-DONATE-1.0 primary Donate door (static; also homepage `#donate`) |
 | `/embryolock` · `/embryolock/` | EmbryoLock stub card — local-not-hosted, not a public Worker |
 | `/robots.txt` | `Allow: /` plus AI crawlers and `/runtime` |
 | `/llms.txt` | Door index for models |
@@ -178,6 +179,10 @@ This host is the **hub cite** surface for **QNS-CD-1.0** (photon QNS1 packet tra
 
 `MESH_NOTE` cites QNS-CD-1.0. Do **not** implement qnsd here. Do **not** add a public proxy. Agent notes: [SKILL.md](SKILL.md).
 
+## Donate
+
+Primary canonical door: [https://www.azieleliab.com/donate](https://www.azieleliab.com/donate) (AZL-DONATE-1.0). Homepage spine: Why / Software / Research / Doors / Donate (`#donate`). Label is **Donate**. Static HTML — no Worker KV, no email capture, no thank-you wall. Rails: BTC, ETH, LTC, XRP, DOGE. Disclaimer: Donations buy no privilege. Signature on this door is `— Aziel`. Site SEO identity remains Aziel Eliab.
+
 ## Doors
 
 Every label and URL is hyperlinked.
@@ -189,6 +194,7 @@ Every label and URL is hyperlinked.
 - GodLock → https://godlock.uk/
 - Runtime → https://www.azieleliab.com/runtime · also https://aziel-runtime.vibelock.workers.dev/
 - X → https://x.com/azieleliab
+- Donate → https://www.azieleliab.com/donate
 
 ## Visual
 

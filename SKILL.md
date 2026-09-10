@@ -15,6 +15,8 @@ This Worker is the **public landing** and **hub cite** surface. It is **not** a 
 
 Canonical: https://www.azieleliab.com/
 
+Donate door (AZL-DONATE-1.0, not a Softwares product): https://www.azieleliab.com/donate
+
 ## Mesh (default OFF)
 
 Suite node mesh doors stay **default OFF** until aziel-runtime enables them. VPN/hop mesh is not claimed. No Node Gate.
