@@ -15,9 +15,13 @@ import {
   LIBRARY,
   RUNTIME,
   RUNTIME_LOCAL,
+  RUNTIME_NAME,
+  RUNTIME_SLUG,
   SOFTWARE,
+  canonicalSoftwareSlug,
   catalogHref,
   catalogWorkerHome,
+  displaySoftwareName,
   sortSoftware,
 } from "./copy.js";
 import { allowOriginRefresh } from "./costGuard.js";
@@ -75,7 +79,7 @@ export function extractLiveRows(doc) {
 
 export function liveProductName(product) {
   const slug = String((product && product.slug) || "").trim();
-  return String((product && product.name) || CATALOG_NAMES[slug] || slug || "").trim();
+  return displaySoftwareName(slug, (product && product.name) || CATALOG_NAMES[slug] || slug);
 }
 
 export function liveProductHref(product) {
@@ -87,7 +91,7 @@ export function liveProductHref(product) {
     if (typeof value === "string" && /^https?:\/\//i.test(value)) return value;
   }
   if (slug === "aziel-corpus") return LIBRARY + "/";
-  if (slug === "aziel-runtime" || slug === "runtime") return RUNTIME_LOCAL;
+  if (slug === RUNTIME_SLUG || slug === "runtime") return RUNTIME_LOCAL;
   if (slug === "fraggate") return FRAGGATE_WORKER;
   if (slug && CATALOG_NAMES[slug]) return catalogHref(slug);
   if (typeof product.github === "string" && /^https?:\/\//i.test(product.github)) return product.github;
@@ -96,7 +100,8 @@ export function liveProductHref(product) {
 }
 
 function doorKey(item) {
-  return String((item && (item.slug || item.name)) || "")
+  const slug = canonicalSoftwareSlug(item && item.slug, item && item.name);
+  return String(slug || (item && item.name) || "")
     .trim()
     .toLowerCase();
 }
@@ -123,14 +128,14 @@ export function softwareFromLiveDoc(doc) {
     const href = liveProductHref(row);
     if (!name || !href) continue;
     add({
-      slug: String(row.slug || "").trim() || undefined,
+      slug: canonicalSoftwareSlug(row.slug, name) || String(row.slug || "").trim() || undefined,
       name,
       href,
     });
   }
 
   add({ slug: "embryolock", name: "EmbryoLock", href: EMBRYOLOCK_HREF });
-  add({ slug: "aziel-runtime", name: "aziel-runtime", href: RUNTIME_LOCAL });
+  add({ slug: RUNTIME_SLUG, name: RUNTIME_NAME, href: RUNTIME_LOCAL });
   add({ slug: "fraggate", name: "FragGate", href: FRAGGATE_WORKER });
   for (const extra of EXTRA_SOFTWARE) add(extra);
 

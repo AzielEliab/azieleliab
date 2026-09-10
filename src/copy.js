@@ -23,6 +23,10 @@ export const GODLOCK_AZIEL = GODLOCK + "/AzielEliab";
 export const RUNTIME = "https://aziel-runtime.vibelock.workers.dev";
 export const RUNTIME_PATH = "/runtime";
 export const RUNTIME_LOCAL = CANON_ORIGIN + RUNTIME_PATH;
+/** Software-strip slug / list name. Title form is for blurbs and meta only. */
+export const RUNTIME_SLUG = "aziel-runtime";
+export const RUNTIME_NAME = "aziel-runtime";
+export const RUNTIME_TITLE = "Aziel Runtime";
 /** Soft-name strip on the landing. GET /software 301s here. */
 export const SOFTWARE_SECTION = CANON_ORIGIN + "/#software";
 /** Same-site honest stub. Live catalog may list embryolock as stub / local-not-hosted. */
@@ -146,6 +150,30 @@ export function catalogHref(slug) {
   return catalogWorkerHome(slug);
 }
 
+/** True for aziel-runtime, including catalog mash like "runtime 1.6.15 FragGate". */
+export function isRuntimeSoftware(slug, name) {
+  const s = String(slug || "").trim().toLowerCase();
+  if (s === RUNTIME_SLUG || s === "runtime") return true;
+  const n = String(name || "").trim();
+  if (!n) return false;
+  if (/^aziel[\s-]?runtime$/i.test(n) || /^runtime$/i.test(n)) return true;
+  if (/\bruntime\b/i.test(n) && /\bfraggate\b/i.test(n)) return true;
+  if (/^runtime\s*[\d.]+/i.test(n)) return true;
+  return false;
+}
+
+/** List name: aziel-runtime. Never a version + FragGate mash. */
+export function displaySoftwareName(slug, name) {
+  if (isRuntimeSoftware(slug, name)) return RUNTIME_NAME;
+  return String(name || CATALOG_NAMES[slug] || slug || "").trim();
+}
+
+export function canonicalSoftwareSlug(slug, name) {
+  if (isRuntimeSoftware(slug, name)) return RUNTIME_SLUG;
+  const s = String(slug || "").trim();
+  return s || undefined;
+}
+
 export function catalogSoftwareFromSlugs(slugs = CATALOG_SLUGS, liveProducts = []) {
   const liveBySlug = new Map((liveProducts || []).map((p) => [p && p.slug, p]));
   const seen = new Set();
@@ -154,10 +182,10 @@ export function catalogSoftwareFromSlugs(slugs = CATALOG_SLUGS, liveProducts = [
     if (!slug || seen.has(slug)) return;
     seen.add(slug);
     const live = liveBySlug.get(slug) || {};
-    const name = CATALOG_NAMES[slug] || live.name;
+    const name = displaySoftwareName(slug, CATALOG_NAMES[slug] || live.name);
     if (!name) return;
     out.push({
-      slug,
+      slug: canonicalSoftwareSlug(slug, name) || slug,
       name,
       href: catalogHref(slug) || live.worker_home || live.github || LIBRARY_SOFTWARE,
     });
@@ -193,7 +221,7 @@ export const EXTRA_SOFTWARE = [
   { name: "AZNet", href: AZNET_WORKER },
   { name: "AZHub", href: AZHUB_WORKER },
   { name: "AZInterface", href: AZINTERFACE_WORKER },
-  { name: "aziel-runtime", href: RUNTIME_LOCAL },
+  { slug: RUNTIME_SLUG, name: RUNTIME_NAME, href: RUNTIME_LOCAL },
   { name: "FragGate", href: FRAGGATE_WORKER },
 ];
 
@@ -249,7 +277,6 @@ export const PROSE = {
     "I do not want disciples. Disciples end the question in my favor. I want the question to outlive the favor. What cannot survive disagreement was never knowledge. It was allegiance.",
     "The work is how I stay in contact with what does not need me.",
   ],
-  softwareClose: "Run them without me.",
   research: [
     "Killings closed because closure is cheaper than sight.",
     "Ages renamed so the same form can travel unnamed.",

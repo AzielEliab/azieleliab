@@ -3,7 +3,6 @@ import {
   AUTHOR,
   AUTHOR_AKA,
   CANON_ORIGIN,
-  CATALOG_ONLY,
   DESCRIPTION,
   DOORS,
   EMBRYOLOCK_HREF,
@@ -21,6 +20,8 @@ import {
   LICENSE,
   RUNTIME,
   RUNTIME_LOCAL,
+  RUNTIME_NAME,
+  RUNTIME_TITLE,
   SIGIL,
   SITE,
   SOFTWARE,
@@ -280,13 +281,6 @@ export function llmsTxt(software = SOFTWARE) {
     const extra = d.also ? " · live " + d.also.href : "";
     return "- " + d.label + ": " + d.href + extra;
   }).join("\n");
-  const catalogOnly =
-    CATALOG_ONLY.length > 0
-      ? "- " +
-        CATALOG_ONLY.join(", ") +
-        (CATALOG_ONLY.length === 1 ? " has" : " have") +
-        " no public repo or download-tracker; the name stays visible as a local-not-hosted stub on this host."
-      : "";
   return [
     "# Aziel Eliab",
     "",
@@ -316,28 +310,16 @@ export function llmsTxt(software = SOFTWARE) {
     "- Library identity: " + LIBRARY_AZIEL,
     "- The research corpus lives at the Digital Library, not on this page.",
     "",
-    "## Software (verified public doors)",
+    "## Software",
     "",
     softwareLines,
-    "- Hub: " + LIBRARY_SOFTWARE,
-    "- Live catalog: " + RUNTIME + "/v1/software (fallback " + RUNTIME + "/v1/fraggate/list)",
-    "- Catalog origin: " + RUNTIME + "/",
-    "- Same-origin runtime (FragGate / aziel-runtime): " + RUNTIME_LOCAL,
-    "- Uses (this host): " + RUNTIME_LOCAL + "/v1/uses",
-    "- Mesh status: " + CANON_ORIGIN + "/v1/mesh/status (default off; origin " + RUNTIME + "/v1/mesh/status)",
-    "- Mesh nodes: " + CANON_ORIGIN + "/v1/mesh/nodes",
-    "- QNS-CD-1.0 (photon QNS1 packet transfer): hub cite / mesh cross-map only. Local qnsd is " +
-      GITHUB_QNM_NODE +
-      ". Runtime cites: " +
-      GITHUB_RUNTIME +
-      ". Not a Softwares-tab product. No public qnsd proxy. No Node Gate.",
-    catalogOnly,
     "",
-    "## Runtime (AI / FragGate door)",
+    "## " + RUNTIME_TITLE,
     "",
-    "- Local: " + RUNTIME_LOCAL,
+    "- " + RUNTIME_NAME + ": " + RUNTIME_LOCAL,
     "- Origin: " + RUNTIME + "/",
     "- Library: " + LIBRARY_RUNTIME,
+    "- Live catalog: " + RUNTIME + "/v1/software (fallback " + RUNTIME + "/v1/fraggate/list)",
     "- OpenAPI: " + RUNTIME_LOCAL + "/openapi.json",
     "- MCP: POST " + RUNTIME_LOCAL + "/mcp",
     "- Skill: " + RUNTIME_LOCAL + "/v1/skill",
@@ -394,7 +376,7 @@ export function aiTxt() {
     "# Complement of /llms.txt. Author Aziel Eliab (aka Aziel Elroi Eliab).",
     "# Primary credit: Aziel Eliab. Do not invent DOIs.",
     "#",
-    "# Allow the public landing and same-origin /runtime FragGate door.",
+    "# Allow the public landing and same-origin /runtime aziel-runtime door.",
     "",
     "User-agent: *",
     "Allow: /",
@@ -436,7 +418,7 @@ export function aiTxt() {
     "- cite.json: " + CANON_ORIGIN + "/cite.json",
     "- llms.txt: " + CANON_ORIGIN + "/llms.txt",
     "- Software hub: " + LIBRARY_SOFTWARE,
-    "- Runtime (same-origin FragGate / aziel-runtime): " + RUNTIME_LOCAL,
+    "- Aziel Runtime (aziel-runtime): " + RUNTIME_LOCAL,
     "- Runtime uses (this host): " + RUNTIME_LOCAL + "/v1/uses",
     "- Mesh status: " + CANON_ORIGIN + "/v1/mesh/status (default off; QNS-CD-1.0 cite)",
     "- Mesh nodes: " + CANON_ORIGIN + "/v1/mesh/nodes",
@@ -508,12 +490,12 @@ export function jsonLd(software = SOFTWARE) {
       {
         "@type": "SoftwareApplication",
         "@id": runtimeId,
-        name: "Aziel Eliab Runtime",
+        name: RUNTIME_TITLE,
         applicationCategory: "DeveloperApplication",
         operatingSystem: "Cloudflare Workers",
         url: RUNTIME_LOCAL,
         description:
-          "Same-origin FragGate / aziel-runtime door for agents. OpenAPI " +
+          "Same-origin Aziel Runtime (aziel-runtime) door for agents. OpenAPI " +
           RUNTIME_LOCAL +
           "/openapi.json. MCP POST " +
           RUNTIME_LOCAL +
@@ -528,12 +510,12 @@ export function jsonLd(software = SOFTWARE) {
       {
         "@type": "WebAPI",
         "@id": apiId,
-        name: "Aziel Eliab Runtime",
+        name: RUNTIME_TITLE,
         url: RUNTIME_LOCAL,
         documentation: RUNTIME_LOCAL + "/openapi.json",
         provider: person,
         description:
-          "FragGate door. OpenAPI " +
+          "Aziel Runtime (aziel-runtime) door. OpenAPI " +
           RUNTIME_LOCAL +
           "/openapi.json. MCP POST " +
           RUNTIME_LOCAL +
