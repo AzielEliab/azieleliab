@@ -7,7 +7,6 @@ import {
   DONATE_DISCLAIMER,
   DONATE_HREF,
   DONATE_NETWORK_NOTE,
-  DONATE_PATH,
   DONATE_RAILS,
   DONATE_SIGN,
   DONATE_TITLE,
@@ -86,7 +85,7 @@ export function spineNav(current) {
         item.id === "donate"
           ? current === "home"
             ? "#donate"
-            : DONATE_PATH
+            : DONATE_HREF
           : current === "home"
             ? "#" + item.id
             : "/#" + item.id;
