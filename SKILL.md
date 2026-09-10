@@ -15,7 +15,7 @@ This Worker is the **public landing** and **hub cite** surface. It is **not** a 
 
 Canonical: https://www.azieleliab.com/
 
-Softwares door: https://www.azieleliab.com/software (homepage strip `/#software`)
+Softwares list: https://www.azieleliab.com/#software (`/software` 301s here)
 
 Donate door (AZL-DONATE-1.0, not a Softwares product): https://www.azieleliab.com/donate
 

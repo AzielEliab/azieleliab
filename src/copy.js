@@ -29,7 +29,7 @@ export const RUNTIME_NAME = "aziel-runtime";
 export const RUNTIME_TITLE = "Aziel Runtime";
 /** Soft-name strip on the landing. */
 export const SOFTWARE_SECTION = CANON_ORIGIN + "/#software";
-/** Indexable Softwares door. Same names as the homepage strip — no filler. */
+/** Thin alias. GET /software 301s to the homepage Software strip. */
 export const SOFTWARE_PATH = "/software";
 export const SOFTWARE_HREF = CANON_ORIGIN + SOFTWARE_PATH;
 export const SOFTWARE_TITLE = "Software — Aziel Eliab";
@@ -53,9 +53,6 @@ export const X_HANDLE = "@azieleliab";
 
 export const DESCRIPTION =
   "Aziel Eliab. You don’t get to know me. You get to understand the work. Public identity Aziel Eliab only.";
-/** Unique document title. Visible H1 stays "Aziel Eliab". */
-export const HOME_TITLE = "Aziel Eliab — work, software, and research";
-
 /** About surfaces on this origin canonicalize to the homepage. */
 export const ABOUT_PATHS = ["/about", "/AzielEliab", "/aziel-eliab"];
 export const ABOUT_HREF = CANON_ORIGIN + "/";
@@ -339,7 +336,7 @@ export const DONATE_RAILS = [
 /** Homepage spine. Donate is also its own URL. */
 export const SPINE = [
   { id: "why", label: "Why", href: CANON_ORIGIN + "/#why" },
-  { id: "software", label: "Software", href: SOFTWARE_HREF },
+  { id: "software", label: "Software", href: SOFTWARE_SECTION },
   { id: "research", label: "Research", href: CANON_ORIGIN + "/#research" },
   { id: "doors", label: "Doors", href: CANON_ORIGIN + "/#doors" },
   { id: "donate", label: "Donate", href: DONATE_HREF },
