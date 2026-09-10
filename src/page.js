@@ -382,6 +382,7 @@ ${COPY_SCRIPT}
 export function donateHtml() {
   const desc = DONATE_COPY[0];
   return `<!doctype html>
+<!-- azl-donate png -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
