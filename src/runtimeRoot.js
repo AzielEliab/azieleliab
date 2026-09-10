@@ -239,7 +239,10 @@ export async function handleRuntimeRoot(request, url, env, ctx) {
   }
   if (isLocalMeshPath(url.pathname) && (request.method === "GET" || request.method === "HEAD")) {
     const dest = runtimeDestPath(url.pathname);
-    const doc = dest === MESH_NODES_PATH ? await loadMeshNodes(env) : await loadMeshStatus(env);
+    const doc =
+      dest === MESH_NODES_PATH
+        ? await loadMeshNodes(env, ctx, { request })
+        : await loadMeshStatus(env, ctx, { request });
     return usesResponse(doc, request.method);
   }
   const dest = destFromRuntimePath(url.pathname, url.search);

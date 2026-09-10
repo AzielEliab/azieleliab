@@ -28,7 +28,7 @@ Cloudflare Worker `azieleliab-com` serves the literary landing, crawl files, and
 | `GET /v1/stats` | Pageviews (no increment) |
 | `GET /v1/view` | Same as stats |
 | `POST /v1/view` | Increment pageviews |
-| `GET /v1/software` | Resolved Software doors (live catalog at request time) |
+| `GET /v1/software` | Resolved Software doors (packed live catalog; short edge TTL) |
 | `GET /v1/update` · `/v1/update/check` | Quiet installer pointer at runtime `/v1/update/check` |
 | `GET /v1/mesh/status` · `/v1/mesh/nodes` | Suite node mesh (default off until runtime enables it) |
 
@@ -73,8 +73,22 @@ Counted in Cloudflare KV (`VIEWS`, key `views`). Same spirit as the GitBaby coun
 - `GET /v1/stats` and `GET /v1/view` return `{ ok, views, product: "azieleliab", author: "Aziel Eliab" }` without incrementing.
 - `POST /v1/view` increments and returns the same JSON.
 - JSON APIs send `Access-Control-Allow-Origin: *`.
+- The isolate remembers the last count so a warm increment is a single `put` (no extra `get`). Counts are never invented.
+- Cached HTML may show a slightly stale pill; humans are still counted on each Worker `GET /`.
 
 Local `wrangler dev` uses a simulated KV. The count is monotonic and not atomic under heavy concurrent writes — honest enough for a landing.
+
+### Edge cache and cost
+
+Public HTML and crawl files used to send `Cache-Control: no-store`, so every repeat visit and crawler re-ran the Worker catalog fetch. That is the KV / subrequest bill, not “too many humans reading.”
+
+- Landing + EmbryoLock HTML: `public` + short `s-maxage` / `stale-while-revalidate` so crawlers and humans share the edge cache. Body copy and Software doors stay the same.
+- `/robots.txt`, `/llms.txt`, `/ai.txt`, `/cite.json`, `/sitemap.xml`: long public cache, full documents, never throttled.
+- Live Software catalog is **one packed snapshot** (Cache API + KV key `software:catalog:v1` on the existing `VIEWS` namespace). Warm HIT does not fetch runtime. Static `SOFTWARE` remains last resort.
+- Soft caps on `/v1/update/check` and mesh origin refresh apply only when someone hammers those fan-out doors after the snapshot is cold. They return the last full JSON (or the quiet default-off / pointer body) — not a soft-404, login wall, or thin page. **Rate limit here means cost/abuse protection, not content rationing.**
+- Optional `OPERATOR_TOKEN` (header `X-Aziel-Runtime-Token` or `Authorization: Bearer`) is uncapped. Do not add Node Gate / IP UI.
+
+New catalog products appear within the short snapshot TTL — no hand edit of this repo.
 
 ### Deploy
 
@@ -99,7 +113,7 @@ Parent attaches custom domains on deploy. Expected hostnames:
 
 ## Software doors
 
-The Software strip (and `/v1/software`, cite, llms, sitemap) prefers the **live** aziel-runtime catalog at request time: `GET https://aziel-runtime.vibelock.workers.dev/v1/software`, then `GET /v1/fraggate/list`. Same-account service binding `AZIEL_RUNTIME` is tried first. A static slug list remains only as last-resort fallback so the page still renders if runtime is down. New catalog products appear on the next request — no hand edit of this repo.
+The Software strip (and `/v1/software`, cite, llms, sitemap) prefers the **live** aziel-runtime catalog: packed snapshot first (Cache API / `software:catalog:v1`), then `GET https://aziel-runtime.vibelock.workers.dev/v1/software`, then `GET /v1/fraggate/list`. Same-account service binding `AZIEL_RUNTIME` is tried first. A static slug list remains only as last-resort fallback so the page still renders if runtime is down. New catalog products appear within the snapshot TTL — no hand edit of this repo.
 
 Preference for each door: live `worker_home` when present, else the download-tracker Worker, else GitHub, else the Digital Library software hub. EmbryoLock stays an honest stub (`/embryolock` or the live stub entry) — never a invented tracker. same-origin `aziel-runtime` and FragGate stay on the strip. AZBrowser, AZHub, AZInterface, AZNet, and FragGate are separate apps (separate Worker UIs). Never nest. AZHub (Blank Key, AIH-WP-1.0) and AZInterface (custodial page cycles, AIH-WP-1.0) are two engines — never one combined engine. AZNet + AZBrowser are a functional pair only — AZNet is not nested under AZBrowser. Display order is Plain (name has neither lock nor gate as a product token) A–Z, then Gate A–Z, then Lock A–Z. Clock is not Lock. A name that matches both Gate and Lock sits in Gate. AZBrowser, AZHub, AZInterface, AZMail, and AZNet are Plain. FragGate is Gate. PeaceLock is Lock.
 

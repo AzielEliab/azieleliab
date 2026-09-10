@@ -2,7 +2,9 @@ import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import worker, { apexRedirect, handleRequest } from "../src/index.js";
 import { embryoLockHtml, pageHtml } from "../src/page.js";
-import { memoryKv } from "../src/views.js";
+import { incrementViews, memoryKv } from "../src/views.js";
+import { HTML_CACHE, SEO_CACHE, memoryCache } from "../src/edgeCache.js";
+import { FANOUT_MAX, allowOriginRefresh, isOperator } from "../src/costGuard.js";
 import { aiTxt, citeDoc, jsonLd, llmsTxt, robotsTxt, sitemapXml } from "../src/seo.js";
 import {
   AUTHOR,
@@ -1312,5 +1314,171 @@ describe("suite node mesh", () => {
 
     const health = injectMeshDiscovery(JSON.stringify({ ok: true, author: AUTHOR }), "application/json", "/v1/health");
     assert.equal(JSON.parse(health).mesh_status, undefined);
+  });
+});
+
+describe("edge cache and cost", () => {
+  it("sends public Cache-Control on HTML and long cache on SEO, not no-store", async () => {
+    const home = await fetchPath("/");
+    assert.equal(home.status, 200);
+    assert.equal(home.headers.get("cache-control"), HTML_CACHE);
+    assert.doesNotMatch(home.headers.get("cache-control"), /no-store/i);
+    assert.ok((await home.text()).includes(">AZAI<"));
+
+    const robots = await fetchPath("/robots.txt");
+    const llms = await fetchPath("/llms.txt");
+    const sitemap = await fetchPath("/sitemap.xml");
+    assert.equal(robots.headers.get("cache-control"), SEO_CACHE);
+    assert.equal(llms.headers.get("cache-control"), SEO_CACHE);
+    assert.equal(sitemap.headers.get("cache-control"), SEO_CACHE);
+    const robotsBody = await robots.text();
+    const llmsBody = await llms.text();
+    const mapBody = await sitemap.text();
+    assert.ok(robotsBody.includes("User-agent: *"));
+    assert.ok(robotsBody.includes("Allow: /"));
+    assert.ok(robotsBody.includes("User-agent: GPTBot"));
+    assert.ok(llmsBody.includes("Author: " + AUTHOR));
+    assert.ok(llmsBody.includes("PeaceLock"));
+    assert.ok(mapBody.includes("<loc>" + CANON_ORIGIN + "/</loc>"));
+  });
+
+  it("packs the Software catalog so a warm HIT does not fetch runtime twice", async () => {
+    const paths = [];
+    const env = {
+      VIEWS: memoryKv(0),
+      __CACHE: memoryCache(),
+      AZIEL_RUNTIME: {
+        fetch: async (req) => {
+          const path = new URL(req.url).pathname;
+          paths.push(path);
+          if (path === "/v1/software") {
+            return new Response(
+              JSON.stringify({
+                ok: true,
+                products: [
+                  { slug: "azai", name: "AZAI", worker_home: "https://azai-download-tracker.vibelock.workers.dev/" },
+                  { slug: "newlock", name: "NewLock", worker_home: "https://newlock-download-tracker.vibelock.workers.dev/" },
+                ],
+              }),
+              { status: 200, headers: { "Content-Type": "application/json" } },
+            );
+          }
+          return new Response(JSON.stringify({ error: "not found" }), { status: 404 });
+        },
+      },
+    };
+
+    const first = await fetchPath("/v1/software", { headers: { "user-agent": "Mozilla/5.0" } }, env);
+    const firstDoc = await first.json();
+    assert.equal(firstDoc.source, "live");
+    assert.ok(firstDoc.software.some((s) => s.name === "NewLock"));
+
+    const before = paths.filter((p) => p === "/v1/software" || p === "/v1/fraggate/list").length;
+    assert.equal(before, 1);
+
+    const second = await fetchPath("/cite.json", {}, env);
+    const cite = await second.json();
+    assert.ok(cite.software_names.some((s) => s.name === "NewLock"));
+
+    const after = paths.filter((p) => p === "/v1/software" || p === "/v1/fraggate/list").length;
+    assert.equal(after, before);
+
+    const home = await fetchPath("/", { headers: { "user-agent": "Mozilla/5.0" } }, env);
+    const html = await home.text();
+    assert.ok(html.includes(">NewLock<"));
+    assert.ok(html.includes(">AZAI<"));
+    assert.equal(paths.filter((p) => p === "/v1/software" || p === "/v1/fraggate/list").length, before);
+  });
+
+  it("keeps counting humans on cached HTML without extra KV reads", async () => {
+    const base = memoryKv(4);
+    let gets = 0;
+    const env = {
+      VIEWS: {
+        async get(key) {
+          gets += 1;
+          return base.get(key);
+        },
+        async put(key, value) {
+          return base.put(key, value);
+        },
+      },
+      __CACHE: memoryCache(),
+    };
+
+    const a = await fetchPath("/", { headers: { "user-agent": "Mozilla/5.0" } }, env);
+    assert.ok((await a.text()).includes(">5<span>views</span>"));
+    const getsAfterFirst = gets;
+
+    const b = await fetchPath("/", { headers: { "user-agent": "Mozilla/5.0" } }, env);
+    assert.equal(b.status, 200);
+    assert.ok((await b.text()).includes('id="views"'));
+
+    const stats = await fetchPath("/v1/stats", {}, env);
+    assert.deepEqual(await stats.json(), {
+      ok: true,
+      views: 6,
+      product: "azieleliab",
+      author: "Aziel Eliab",
+    });
+    assert.ok(gets <= getsAfterFirst);
+
+    const kv = memoryKv(10);
+    let incrementGets = 0;
+    const views = {
+      async get(key) {
+        incrementGets += 1;
+        return kv.get(key);
+      },
+      async put(key, value) {
+        return kv.put(key, value);
+      },
+    };
+    assert.equal(await incrementViews({ VIEWS: views }), 11);
+    assert.equal(await incrementViews({ VIEWS: views }), 12);
+    assert.equal(incrementGets, 1);
+  });
+
+  it("soft-caps update/check origin refresh and still returns the full pointer", async () => {
+    let origin = 0;
+    const env = {
+      AZIEL_RUNTIME: {
+        fetch: async (req) => {
+          if (new URL(req.url).pathname === "/v1/update/check") {
+            origin += 1;
+            return new Response(JSON.stringify({ ok: true, version: "1.6.13" }), {
+              status: 200,
+              headers: { "Content-Type": "application/json" },
+            });
+          }
+          return new Response(JSON.stringify({ error: "not found" }), { status: 404 });
+        },
+      },
+    };
+
+    for (let i = 0; i < FANOUT_MAX + 8; i++) {
+      const res = await handleRequest(
+        new Request("https://www.azieleliab.com/v1/update/check", { headers: { "user-agent": "Mozilla/5.0" } }),
+        env,
+      );
+      assert.equal(res.status, 200);
+      const doc = await res.json();
+      assert.equal(doc.ok, true);
+      assert.equal(doc.author, AUTHOR);
+      assert.ok(doc.update_check.includes("/v1/update/check"));
+    }
+    assert.equal(origin, FANOUT_MAX);
+
+    env.OPERATOR_TOKEN = "op-secret";
+    const op = await handleRequest(
+      new Request("https://www.azieleliab.com/v1/update/check", {
+        headers: { "user-agent": "Mozilla/5.0", "x-aziel-runtime-token": "op-secret" },
+      }),
+      env,
+    );
+    assert.equal(op.status, 200);
+    assert.equal(origin, FANOUT_MAX + 1);
+    assert.equal(isOperator(new Request("https://www.azieleliab.com/", { headers: { authorization: "Bearer op-secret" } }), env), true);
+    assert.equal(allowOriginRefresh(new Request("https://www.azieleliab.com/"), {}, "update"), true);
   });
 });
