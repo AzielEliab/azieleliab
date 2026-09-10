@@ -1,6 +1,7 @@
 /**
- * Request-time Software doors from the live aziel-runtime catalog.
- * Prefer GET /v1/software; fall back to GET /v1/fraggate/list.
+ * Software doors from the live aziel-runtime catalog.
+ * Prefer a packed snapshot (Cache API + KV `software:catalog:v1`).
+ * On miss: GET /v1/software once; fall back to GET /v1/fraggate/list.
  * Static SOFTWARE is last resort so the landing still renders.
  * Author: Aziel Eliab.
  */
@@ -19,6 +20,19 @@ import {
   catalogWorkerHome,
   sortSoftware,
 } from "./copy.js";
+import { allowOriginRefresh } from "./costGuard.js";
+import {
+  CATALOG_CACHE_URL,
+  CATALOG_FALLBACK_TTL_SEC,
+  CATALOG_KV_KEY,
+  CATALOG_TTL_SEC,
+  UPDATE_CHECK_CACHE_URL,
+  UPDATE_TTL_SEC,
+  readJsonSnapshot,
+  recalledCatalog,
+  rememberCatalog,
+  writeJsonSnapshot,
+} from "./edgeCache.js";
 
 export const SOFTWARE_CATALOG_PATH = "/v1/software";
 export const FRAGGATE_LIST_PATH = "/v1/fraggate/list";
@@ -173,7 +187,11 @@ export async function fetchRuntimeJson(path, env, opts) {
   }
 }
 
-export async function loadLiveSoftware(env) {
+function catalogTtlSec(live) {
+  return live && live.source && live.source !== "fallback" ? CATALOG_TTL_SEC : CATALOG_FALLBACK_TTL_SEC;
+}
+
+export async function fetchFreshSoftware(env) {
   const softwareDoc = await fetchRuntimeJson(SOFTWARE_CATALOG_PATH, env);
   if (softwareDoc) {
     const software = softwareFromLiveDoc(softwareDoc);
@@ -189,6 +207,31 @@ export async function loadLiveSoftware(env) {
     }
   }
   return { software: SOFTWARE, source: "fallback", via: null };
+}
+
+export async function loadLiveSoftware(env, ctx) {
+  const mem = recalledCatalog(env, CATALOG_TTL_SEC * 1000);
+  if (mem && mem.software && mem.software.length) return mem;
+  const packed = await readJsonSnapshot(env, {
+    cacheUrl: CATALOG_CACHE_URL,
+    kvKey: CATALOG_KV_KEY,
+    cacheTtl: CATALOG_TTL_SEC,
+  });
+  if (packed && Array.isArray(packed.software) && packed.software.length) {
+    rememberCatalog(env, packed);
+    return packed;
+  }
+
+  const live = await fetchFreshSoftware(env);
+  rememberCatalog(env, live);
+  const write = writeJsonSnapshot(
+    env,
+    ctx,
+    { cacheUrl: CATALOG_CACHE_URL, kvKey: CATALOG_KV_KEY, ttlSec: catalogTtlSec(live) },
+    live,
+  );
+  if (write && typeof write.then === "function") await write;
+  return live;
 }
 
 export function softwareIndexBody(live, mesh) {
@@ -223,6 +266,13 @@ export function updateCheckBody(originDoc) {
   return body;
 }
 
-export async function loadUpdateCheck(env) {
-  return updateCheckBody(await fetchRuntimeJson(UPDATE_CHECK_PATH, env));
+export async function loadUpdateCheck(env, ctx, opts) {
+  const packed = await readJsonSnapshot(env, { cacheUrl: UPDATE_CHECK_CACHE_URL });
+  if (packed && packed.ok) return packed;
+  const request = opts && opts.request;
+  const allowFetch = !request || allowOriginRefresh(request, env, "update");
+  const body = updateCheckBody(allowFetch ? await fetchRuntimeJson(UPDATE_CHECK_PATH, env) : null);
+  const write = writeJsonSnapshot(env, ctx, { cacheUrl: UPDATE_CHECK_CACHE_URL, ttlSec: UPDATE_TTL_SEC }, body);
+  if (write && typeof write.then === "function") await write;
+  return body;
 }

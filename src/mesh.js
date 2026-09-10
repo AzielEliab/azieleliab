@@ -5,6 +5,8 @@
  * Author: Aziel Eliab.
  */
 import { AUTHOR, CANON_ORIGIN, RUNTIME, RUNTIME_LOCAL } from "./copy.js";
+import { allowOriginRefresh } from "./costGuard.js";
+import { MESH_NODES_CACHE_URL, MESH_STATUS_CACHE_URL, MESH_TTL_SEC, readJsonSnapshot, writeJsonSnapshot } from "./edgeCache.js";
 import { fetchRuntimeJson } from "./liveCatalog.js";
 
 export const MESH_STATUS_PATH = "/v1/mesh/status";
@@ -112,12 +114,23 @@ export function meshNodesBody(origin) {
   return body;
 }
 
-export async function loadMeshStatus(env) {
-  return meshStatusBody(await fetchRuntimeJson(MESH_STATUS_PATH, env, { loose: true }));
+async function loadMeshDoc(env, ctx, opts, path, cacheUrl, wrap) {
+  const packed = await readJsonSnapshot(env, { cacheUrl });
+  if (packed && packed.ok) return packed;
+  const request = opts && opts.request;
+  const allowFetch = !request || allowOriginRefresh(request, env, "mesh");
+  const body = wrap(allowFetch ? await fetchRuntimeJson(path, env, { loose: true }) : null);
+  const write = writeJsonSnapshot(env, ctx, { cacheUrl, ttlSec: MESH_TTL_SEC }, body);
+  if (write && typeof write.then === "function") await write;
+  return body;
 }
 
-export async function loadMeshNodes(env) {
-  return meshNodesBody(await fetchRuntimeJson(MESH_NODES_PATH, env, { loose: true }));
+export async function loadMeshStatus(env, ctx, opts) {
+  return loadMeshDoc(env, ctx, opts, MESH_STATUS_PATH, MESH_STATUS_CACHE_URL, meshStatusBody);
+}
+
+export async function loadMeshNodes(env, ctx, opts) {
+  return loadMeshDoc(env, ctx, opts, MESH_NODES_PATH, MESH_NODES_CACHE_URL, meshNodesBody);
 }
 
 export function meshQuietLabel(mesh) {
