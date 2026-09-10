@@ -130,7 +130,6 @@ a:hover{color:var(--gold);text-decoration-color:var(--gold)}
 .soft-line{color:var(--ink-soft);line-height:1.95}
 .soft-name{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;font-size:16px;font-weight:650;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--gold);padding-bottom:1px}
 .soft-name:hover{color:var(--gold)}
-.soft-close{margin-top:1.1em;color:var(--ink)}
 .doors{list-style:none;margin:0;padding:0}
 .doors li{margin:0 0 12px;padding:0;word-break:break-word}
 .door-label{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;font-weight:700;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--gold)}
@@ -223,7 +222,6 @@ export function pageHtml(views = 0, softwareItems = SOFTWARE, mesh = null) {
   <section class="card" id="software">
     <h2>Software</h2>
     <p class="soft-line">${software}</p>
-    <p class="soft-close">${esc(PROSE.softwareClose)}</p>
   </section>
   <section class="card" id="research">
     <h2>Research</h2>
