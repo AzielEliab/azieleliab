@@ -1,6 +1,14 @@
 /** azieleliab.com landing Worker. Author: Aziel Eliab. */
 import { APEX_HOST, CANON_ORIGIN, SOFTWARE_SECTION } from "./copy.js";
 import {
+  HTML_CACHE,
+  JSON_SHORT_CACHE,
+  SEO_CACHE,
+  STUB_HTML_CACHE,
+  matchPublicResponse,
+  storePublicResponse,
+} from "./edgeCache.js";
+import {
   loadLiveSoftware,
   loadUpdateCheck,
   softwareIndexBody,
@@ -8,7 +16,6 @@ import {
   UPDATE_PATH,
 } from "./liveCatalog.js";
 import {
-  isMeshPath,
   loadMeshNodes,
   loadMeshStatus,
   MESH_NODES_PATH,
@@ -46,20 +53,43 @@ function text(body, type, extra) {
   });
 }
 
-function html(body, status = 200) {
+function html(body, status = 200, cache) {
   return new Response(body, {
     status,
     headers: {
       "content-type": "text/html; charset=utf-8",
-      "cache-control": status === 200 ? "no-store" : "public, max-age=60",
+      "cache-control": status === 200 ? cache || HTML_CACHE : "public, max-age=60",
       "Content-Signal": CONTENT_SIGNAL,
       ...SECURITY,
     },
   });
 }
 
-function json(doc) {
-  return text(JSON.stringify(doc) + "\n", "application/json", { cache: "no-store", cors: true });
+function json(doc, cache) {
+  return text(JSON.stringify(doc) + "\n", "application/json", {
+    cache: cache || "no-store",
+    cors: true,
+  });
+}
+
+const PAGE_CACHE_PATHS = new Set([
+  "/",
+  "/embryolock",
+  "/robots.txt",
+  "/llms.txt",
+  "/ai.txt",
+  "/cite.json",
+  "/sitemap.xml",
+  "/v1/software",
+]);
+
+function noteViews(request, env, ctx) {
+  if (request.method !== "GET") return;
+  const ua = request.headers.get("user-agent") || "";
+  if (isBot(ua)) return;
+  const job = incrementViews(env);
+  if (ctx && typeof ctx.waitUntil === "function") ctx.waitUntil(job);
+  else return job;
 }
 
 export function apexRedirect(url) {
@@ -117,16 +147,27 @@ export async function handleRequest(request, env = {}, ctx) {
     });
   }
 
+  if (PAGE_CACHE_PATHS.has(path)) {
+    const hit = await matchPublicResponse(request, env);
+    if (hit) {
+      if (path === "/") await noteViews(request, env, ctx);
+      if (request.method === "HEAD") {
+        return new Response(null, { status: hit.status, headers: hit.headers });
+      }
+      return hit;
+    }
+  }
+
   const needsLive =
     path === "/" ||
     path === "/llms.txt" ||
     path === "/cite.json" ||
     path === "/sitemap.xml" ||
     path === "/v1/software";
-  const needsMesh = path === "/" || path === "/v1/software" || isMeshPath(path);
+  const needsMesh = path === "/" || path === "/v1/software";
   const [live, meshStatus] = await Promise.all([
-    needsLive ? loadLiveSoftware(env) : Promise.resolve(null),
-    needsMesh ? loadMeshStatus(env) : Promise.resolve(null),
+    needsLive ? loadLiveSoftware(env, ctx) : Promise.resolve(null),
+    needsMesh ? loadMeshStatus(env, ctx) : Promise.resolve(null),
   ]);
   const doors = live && live.software;
   const mesh = meshStatus ? meshSnapshot(meshStatus.origin) : null;
@@ -134,22 +175,22 @@ export async function handleRequest(request, env = {}, ctx) {
   let res;
   if (path === "/") res = html(pageHtml(await pageViews(request, env), doors, meshStatus));
   else if (path === "/software") res = Response.redirect(SOFTWARE_SECTION, 301);
-  else if (path === "/embryolock") res = html(embryoLockHtml());
-  else if (path === "/robots.txt") res = text(robotsTxt(), "text/plain", { cache: "public, max-age=3600" });
-  else if (path === "/llms.txt") res = text(llmsTxt(doors), "text/plain", { cache: "public, max-age=3600" });
-  else if (path === "/ai.txt") res = text(aiTxt(), "text/plain", { cache: "public, max-age=3600" });
+  else if (path === "/embryolock") res = html(embryoLockHtml(), 200, STUB_HTML_CACHE);
+  else if (path === "/robots.txt") res = text(robotsTxt(), "text/plain", { cache: SEO_CACHE });
+  else if (path === "/llms.txt") res = text(llmsTxt(doors), "text/plain", { cache: SEO_CACHE });
+  else if (path === "/ai.txt") res = text(aiTxt(), "text/plain", { cache: SEO_CACHE });
   else if (path === "/cite.json") {
-    res = text(JSON.stringify(citeDoc(doors), null, 1) + "\n", "application/json", { cache: "public, max-age=3600" });
+    res = text(JSON.stringify(citeDoc(doors), null, 1) + "\n", "application/json", { cache: SEO_CACHE });
   } else if (path === "/sitemap.xml") {
-    res = text(sitemapXml(new Date(), doors), "application/xml", { cache: "public, max-age=3600" });
+    res = text(sitemapXml(new Date(), doors), "application/xml", { cache: SEO_CACHE });
   } else if (path === "/v1/software") {
-    res = json(softwareIndexBody(live, mesh));
+    res = json(softwareIndexBody(live, mesh), JSON_SHORT_CACHE);
   } else if (path === MESH_STATUS_PATH) {
-    res = json(meshStatus || (await loadMeshStatus(env)));
+    res = json(meshStatus || (await loadMeshStatus(env, ctx, { request })), JSON_SHORT_CACHE);
   } else if (path === MESH_NODES_PATH) {
-    res = json(await loadMeshNodes(env));
+    res = json(await loadMeshNodes(env, ctx, { request }), JSON_SHORT_CACHE);
   } else if (path === UPDATE_PATH || path === UPDATE_CHECK_PATH) {
-    res = json(await loadUpdateCheck(env));
+    res = json(await loadUpdateCheck(env, ctx, { request }), JSON_SHORT_CACHE);
   } else if (path === "/v1/stats" || (path === "/v1/view" && request.method !== "POST")) {
     res = json(viewsBody(await readViews(env)));
   } else if (path === "/v1/view" && request.method === "POST") {
@@ -157,6 +198,8 @@ export async function handleRequest(request, env = {}, ctx) {
   } else {
     res = html(notFoundHtml(), 404);
   }
+
+  await storePublicResponse(request, env, ctx, res);
 
   if (request.method === "HEAD") {
     return new Response(null, { status: res.status, headers: res.headers });
