@@ -1,6 +1,6 @@
 /**
  * Software doors from the live aziel-runtime catalog.
- * Prefer a packed snapshot (Cache API + KV `software:catalog:v1`).
+ * Prefer a packed snapshot (Cache API + KV `software:catalog:v2`).
  * On miss: GET /v1/software once; fall back to GET /v1/fraggate/list.
  * Static SOFTWARE is last resort so the landing still renders.
  * Author: Aziel Eliab.
@@ -9,19 +9,19 @@ import {
   AUTHOR,
   CANON_ORIGIN,
   CATALOG_NAMES,
-  EMBRYOLOCK_HREF,
-  EXTRA_SOFTWARE,
+  EMBRYOLOCK_WORKER,
   FRAGGATE_WORKER,
   LIBRARY,
   RUNTIME,
   RUNTIME_LOCAL,
-  RUNTIME_NAME,
   RUNTIME_SLUG,
   SOFTWARE,
+  SOFTWARE_EXTRAS,
   canonicalSoftwareSlug,
   catalogHref,
   catalogWorkerHome,
   displaySoftwareName,
+  isSoftwareExtra,
   sortSoftware,
 } from "./copy.js";
 import { allowOriginRefresh } from "./costGuard.js";
@@ -54,9 +54,9 @@ function firstArray(value) {
 
 export function isHonestStub(product) {
   if (!product || typeof product !== "object") return false;
-  const slug = String(product.slug || "").toLowerCase();
-  const name = String(product.name || "").toLowerCase();
-  return slug === "embryolock" || name === "embryolock";
+  const status = String(product.status || "").toLowerCase();
+  if (status === "stub" || product.local_not_hosted === true) return true;
+  return false;
 }
 
 export function extractLiveRows(doc) {
@@ -71,9 +71,6 @@ export function extractLiveRows(doc) {
     (nested && firstArray(nested.products)) ||
     [];
   const extras = firstArray(doc.extras) || firstArray(doc.stubs) || (nested && firstArray(nested.extras)) || [];
-  if (!extras.length && doc.fraggate && typeof doc.fraggate === "object" && !Array.isArray(doc.fraggate)) {
-    extras.push(doc.fraggate);
-  }
   return { products, extras };
 }
 
@@ -82,14 +79,21 @@ export function liveProductName(product) {
   return displaySoftwareName(slug, (product && product.name) || CATALOG_NAMES[slug] || slug);
 }
 
-export function liveProductHref(product) {
+function firstHttpUrl(product, keys) {
   if (!product || typeof product !== "object") return "";
-  if (isHonestStub(product)) return EMBRYOLOCK_HREF;
-  const slug = String(product.slug || "").trim();
-  for (const key of ["worker_home", "href", "home", "url"]) {
+  for (const key of keys) {
     const value = product[key];
     if (typeof value === "string" && /^https?:\/\//i.test(value)) return value;
   }
+  return "";
+}
+
+export function liveProductHref(product) {
+  if (!product || typeof product !== "object") return "";
+  const fromLive = firstHttpUrl(product, ["worker_home", "href", "home", "url"]);
+  if (fromLive) return fromLive;
+  const slug = String(product.slug || "").trim();
+  if (slug === "embryolock") return EMBRYOLOCK_WORKER;
   if (slug === "aziel-corpus") return LIBRARY + "/";
   if (slug === RUNTIME_SLUG || slug === "runtime") return RUNTIME_LOCAL;
   if (slug === "fraggate") return FRAGGATE_WORKER;
@@ -99,6 +103,35 @@ export function liveProductHref(product) {
   return "";
 }
 
+export function catalogDoorRow(item) {
+  if (!item || typeof item !== "object") return null;
+  const name = item.name || liveProductName(item);
+  const href = item.href || item.url || liveProductHref(item);
+  if (!name || !href) return null;
+  const slug = canonicalSoftwareSlug(item.slug, name) || String(item.slug || "").trim() || undefined;
+  const row = { name, url: href };
+  if (slug) row.slug = slug;
+  const workerHome = firstHttpUrl(item, ["worker_home"]) || href;
+  if (workerHome) row.worker_home = workerHome;
+  if (item.status) row.status = item.status;
+  if (item.version) row.version = item.version;
+  if (item.one_line) row.one_line = item.one_line;
+  if (item.github) row.github = item.github;
+  if (item.bucket) row.bucket = item.bucket;
+  if (item.download_url) row.download_url = item.download_url;
+  if (item.surface) row.surface = item.surface;
+  if (item.kind) row.kind = item.kind;
+  if (item.software_tab === false) row.software_tab = false;
+  if (item.enabled_default === false) row.enabled_default = false;
+  if (item.path) row.path = item.path;
+  if (item.spec) row.spec = item.spec;
+  if (item.note) row.note = item.note;
+  if (item.local_destructive_boundary != null) {
+    row.local_destructive_boundary = item.local_destructive_boundary;
+  }
+  return row;
+}
+
 function doorKey(item) {
   const slug = canonicalSoftwareSlug(item && item.slug, item && item.name);
   return String(slug || (item && item.name) || "")
@@ -106,41 +139,107 @@ function doorKey(item) {
     .toLowerCase();
 }
 
-export function softwareFromLiveDoc(doc) {
-  const { products, extras } = extractLiveRows(doc);
-  const rows = [...products, ...extras].filter((row) => row && typeof row === "object");
-  const seen = new Set();
+function mapLiveItem(row) {
+  if (!row || typeof row !== "object") return null;
+  const name = liveProductName(row);
+  const href = liveProductHref(row);
+  if (!name) return null;
+  const slug = canonicalSoftwareSlug(row.slug, name) || String(row.slug || "").trim() || undefined;
+  const item = {
+    slug,
+    name,
+    href: href || undefined,
+    url: href || undefined,
+  };
+  const workerHome = firstHttpUrl(row, ["worker_home"]) || href;
+  if (workerHome) item.worker_home = workerHome;
+  if (row.status) item.status = row.status;
+  if (row.version) item.version = row.version;
+  if (row.one_line) item.one_line = row.one_line;
+  if (row.github) item.github = row.github;
+  if (row.bucket) item.bucket = row.bucket;
+  if (row.download_url) item.download_url = row.download_url;
+  if (row.surface) item.surface = row.surface;
+  if (row.kind) item.kind = row.kind;
+  if (row.software_tab === false) item.software_tab = false;
+  if (row.enabled_default === false) item.enabled_default = false;
+  if (row.path) item.path = row.path;
+  if (row.spec) item.spec = row.spec;
+  if (row.note) item.note = row.note;
+  if (row.local_destructive_boundary != null) {
+    item.local_destructive_boundary = row.local_destructive_boundary;
+  }
+  return item;
+}
+
+function extrasFromLiveDoc(doc, seen) {
   const out = [];
   const add = (item) => {
-    if (!item || !item.name || !item.href) return;
-    const key = doorKey(item);
+    const mapped = mapLiveItem(item) || (item && typeof item === "object" ? { ...item } : null);
+    if (!mapped) return;
+    mapped.kind = mapped.kind || "extra";
+    mapped.software_tab = false;
+    const key = doorKey(mapped);
     if (!key || seen.has(key)) return;
     seen.add(key);
-    out.push({
-      slug: item.slug || undefined,
-      name: item.name,
-      href: item.href,
-    });
+    out.push(mapped);
   };
 
-  for (const row of rows) {
-    const name = liveProductName(row);
-    const href = liveProductHref(row);
-    if (!name || !href) continue;
+  const { extras } = extractLiveRows(doc);
+  for (const row of extras) {
+    if (!row || typeof row !== "object") continue;
+    add(row);
+  }
+
+  if (doc && typeof doc.fraggate === "string" && /^https?:\/\//i.test(doc.fraggate)) {
+    add({ slug: "fraggate", name: "FragGate", worker_home: FRAGGATE_WORKER, url: FRAGGATE_WORKER, href: FRAGGATE_WORKER });
+  } else if (doc && doc.fraggate && typeof doc.fraggate === "object" && !Array.isArray(doc.fraggate)) {
+    add({ slug: "fraggate", name: "FragGate", ...doc.fraggate, href: liveProductHref(doc.fraggate) || FRAGGATE_WORKER });
+  }
+
+  if (doc && doc.mesh && typeof doc.mesh === "object" && !Array.isArray(doc.mesh)) {
     add({
-      slug: canonicalSoftwareSlug(row.slug, name) || String(row.slug || "").trim() || undefined,
-      name,
-      href,
+      slug: "mesh",
+      name: "mesh",
+      enabled_default: doc.mesh.enabled_default === true ? true : false,
+      path: doc.mesh.path || "/v1/mesh",
+      spec: doc.mesh.spec || "QNM-BUILD-1.0",
+      note: doc.mesh.note || "Suite rollup. Not a Softwares-tab product. Default OFF. GET never enables.",
     });
   }
 
-  add({ slug: "embryolock", name: "EmbryoLock", href: EMBRYOLOCK_HREF });
-  add({ slug: RUNTIME_SLUG, name: RUNTIME_NAME, href: RUNTIME_LOCAL });
-  add({ slug: "fraggate", name: "FragGate", href: FRAGGATE_WORKER });
-  for (const extra of EXTRA_SOFTWARE) add(extra);
+  for (const extra of SOFTWARE_EXTRAS) add(extra);
+  return out;
+}
 
-  if (!out.length) return SOFTWARE;
-  return sortSoftware(out);
+export function softwareFromLiveDoc(doc) {
+  const packed = catalogFromLiveDoc(doc);
+  return packed.products;
+}
+
+export function catalogFromLiveDoc(doc) {
+  const { products } = extractLiveRows(doc);
+  const seenProducts = new Set();
+  const seenExtras = new Set();
+  const productOut = [];
+
+  const addProduct = (row) => {
+    const item = mapLiveItem(row);
+    if (!item || !item.name || !item.href) return;
+    if (isSoftwareExtra(item.slug, item.name)) return;
+    const key = doorKey(item);
+    if (!key || seenProducts.has(key)) return;
+    seenProducts.add(key);
+    productOut.push(item);
+  };
+
+  for (const row of products) addProduct(row);
+
+  const extras = extrasFromLiveDoc(doc, seenExtras);
+  if (!productOut.length) {
+    return { products: SOFTWARE, extras };
+  }
+  return { products: sortSoftware(productOut), extras };
 }
 
 async function cancelBody(res) {
@@ -196,35 +295,51 @@ function catalogTtlSec(live) {
   return live && live.source && live.source !== "fallback" ? CATALOG_TTL_SEC : CATALOG_FALLBACK_TTL_SEC;
 }
 
+function fallbackCatalog(source, via) {
+  return { software: SOFTWARE, products: SOFTWARE, extras: SOFTWARE_EXTRAS, source, via };
+}
+
+function packedCatalog(products, extras, source, via) {
+  const doors = products && products.length ? products : SOFTWARE;
+  return {
+    software: doors,
+    products: doors,
+    extras: extras && extras.length ? extras : SOFTWARE_EXTRAS,
+    source,
+    via,
+  };
+}
+
 export async function fetchFreshSoftware(env) {
   const softwareDoc = await fetchRuntimeJson(SOFTWARE_CATALOG_PATH, env);
   if (softwareDoc) {
-    const software = softwareFromLiveDoc(softwareDoc);
-    if (software.length) {
-      return { software, source: "live", via: SOFTWARE_CATALOG_PATH };
+    const packed = catalogFromLiveDoc(softwareDoc);
+    if (packed.products.length) {
+      return packedCatalog(packed.products, packed.extras, "live", SOFTWARE_CATALOG_PATH);
     }
   }
   const listDoc = await fetchRuntimeJson(FRAGGATE_LIST_PATH, env);
   if (listDoc) {
-    const software = softwareFromLiveDoc(listDoc);
-    if (software.length) {
-      return { software, source: "fraggate-list", via: FRAGGATE_LIST_PATH };
+    const packed = catalogFromLiveDoc(listDoc);
+    if (packed.products.length) {
+      return packedCatalog(packed.products, packed.extras, "fraggate-list", FRAGGATE_LIST_PATH);
     }
   }
-  return { software: SOFTWARE, source: "fallback", via: null };
+  return fallbackCatalog("fallback", null);
 }
 
 export async function loadLiveSoftware(env, ctx) {
   const mem = recalledCatalog(env, CATALOG_TTL_SEC * 1000);
-  if (mem && mem.software && mem.software.length) return mem;
+  if (mem && mem.software && mem.software.length) return normalizePacked(mem);
   const packed = await readJsonSnapshot(env, {
     cacheUrl: CATALOG_CACHE_URL,
     kvKey: CATALOG_KV_KEY,
     cacheTtl: CATALOG_TTL_SEC,
   });
   if (packed && Array.isArray(packed.software) && packed.software.length) {
-    rememberCatalog(env, packed);
-    return packed;
+    const live = normalizePacked(packed);
+    rememberCatalog(env, live);
+    return live;
   }
 
   const live = await fetchFreshSoftware(env);
@@ -239,23 +354,48 @@ export async function loadLiveSoftware(env, ctx) {
   return live;
 }
 
+function normalizePacked(packed) {
+  if (!packed || typeof packed !== "object") return fallbackCatalog("fallback", null);
+  const products = Array.isArray(packed.products)
+    ? packed.products
+    : Array.isArray(packed.software)
+      ? packed.software
+      : SOFTWARE;
+  const extras = Array.isArray(packed.extras) ? packed.extras : SOFTWARE_EXTRAS;
+  return packedCatalog(products, extras, packed.source || "fallback", packed.via || null);
+}
+
 export function softwareIndexBody(live, mesh) {
-  const software = (live && live.software) || SOFTWARE;
+  const packed = normalizePacked(live);
+  const products = packed.products.map((item) => catalogDoorRow(item)).filter(Boolean);
+  const extras = packed.extras.map((item) => catalogDoorRow(item) || extraCiteRow(item)).filter(Boolean);
   return {
     ok: true,
     author: AUTHOR,
     identity: AUTHOR,
-    source: (live && live.source) || "fallback",
-    via: (live && live.via) || null,
+    source: packed.source || "fallback",
+    via: packed.via || null,
     catalog: RUNTIME + SOFTWARE_CATALOG_PATH,
     catalog_fallback: RUNTIME + FRAGGATE_LIST_PATH,
     mesh: mesh && typeof mesh === "object" ? mesh : undefined,
-    software: software.map((item) => {
-      const row = { name: item.name, url: item.href };
-      if (item.slug) row.slug = item.slug;
-      return row;
-    }),
+    products,
+    extras,
+    software: products,
   };
+}
+
+function extraCiteRow(item) {
+  if (!item || typeof item !== "object" || !item.name) return null;
+  const row = { name: item.name, kind: item.kind || "extra", software_tab: false };
+  if (item.slug) row.slug = item.slug;
+  if (item.url || item.href) row.url = item.url || item.href;
+  if (item.worker_home) row.worker_home = item.worker_home;
+  if (item.status) row.status = item.status;
+  if (item.enabled_default === false) row.enabled_default = false;
+  if (item.path) row.path = item.path;
+  if (item.spec) row.spec = item.spec;
+  if (item.note) row.note = item.note;
+  return row;
 }
 
 export function updateCheckBody(originDoc) {
