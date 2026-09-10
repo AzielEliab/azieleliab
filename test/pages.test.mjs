@@ -1134,7 +1134,7 @@ describe("AZL-DONATE-1.0", () => {
 
     const apex = await handleRequest(new Request("https://azieleliab.com/donate"));
     assert.equal(apex.status, 301);
-    assert.equal(apex.headers.get("location"), DONATE_HREF);
+    assert.equal(apex.headers.get("location"), CANON_ORIGIN + DONATE_PATH);
     assert.equal(
       donateCacheBustLocation(new URL("https://azieleliab-com.vibelock.workers.dev/donate")),
       "https://azieleliab-com.vibelock.workers.dev/donate?v=png",
@@ -1158,14 +1158,14 @@ describe("AZL-DONATE-1.0", () => {
     assert.ok(donateDoor);
     assert.equal(donateDoor.href, DONATE_HREF);
     assert.equal(DONATE_PATH, "/donate");
-    assert.equal(DONATE_HREF, CANON_ORIGIN + "/donate");
+    assert.equal(DONATE_HREF, CANON_ORIGIN + DONATE_PATH + "?v=png");
     assert.deepEqual(
       SPINE.map((s) => s.label),
       ["Why", "Software", "Research", "Doors", "Donate"],
     );
     const nav = spineNav("donate");
     assert.ok(nav.includes('aria-current="page"'));
-    assert.ok(nav.includes('href="' + DONATE_PATH + '"'));
+    assert.ok(nav.includes('href="' + DONATE_HREF + '"'));
     for (const rail of DONATE_RAILS) {
       assert.ok(html.includes(rail.address), "homepage rail " + rail.id);
       assert.ok(html.includes('href="' + rail.uri + '"'), "homepage URI " + rail.id);
