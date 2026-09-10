@@ -521,6 +521,7 @@ describe("SEO routes", () => {
     assert.ok(body.includes("Allow: /embryolock/"));
     assert.ok(body.includes("Allow: /donate"));
     assert.ok(body.includes("Allow: /donate/"));
+    assert.ok(body.includes("Allow: /donate/qr/"));
     assert.ok(body.includes("Allow: /runtime"));
     assert.ok(body.includes("Allow: /runtime/"));
     assert.ok(body.includes("Allow: /runtime/v1/uses"));
@@ -1150,13 +1151,39 @@ describe("AZL-DONATE-1.0", () => {
     }
   });
 
-  it("encodes each payment URI as a QR, not a website URL", () => {
+  it("encodes each payment URI as a PNG QR, not a website URL", () => {
     const html = donateHtml();
+    const home = pageHtml();
     for (const rail of DONATE_RAILS) {
-      assert.ok(html.includes('aria-label="' + rail.coin + " payment URI" + '"'), rail.id);
-      assert.ok(!html.includes('aria-label="' + CANON_ORIGIN), "QR is not the site URL");
+      const img =
+        '<img src="' +
+        rail.qrSrc +
+        '" width="180" height="180" alt="' +
+        rail.qrAlt +
+        '">';
+      assert.ok(html.includes(img), rail.id);
+      assert.ok(home.includes(img), "homepage " + rail.id);
+      assert.ok(!img.includes("https://"), "QR src is a same-origin PNG, not a website URL");
     }
-    assert.ok(html.includes('<svg xmlns="http://www.w3.org/2000/svg"'));
+    assert.doesNotMatch(html, /<svg|qrline|path class="qrline"/);
+    assert.doesNotMatch(home, /<svg|qrline|path class="qrline"/);
+  });
+
+  it("serves each donate QR as a solid PNG", async () => {
+    for (const rail of DONATE_RAILS) {
+      const res = await fetchPath(rail.qrSrc);
+      assert.equal(res.status, 200, rail.id);
+      assert.match(res.headers.get("content-type"), /image\/png/);
+      const buf = new Uint8Array(await res.arrayBuffer());
+      assert.equal(buf[0], 0x89);
+      assert.equal(String.fromCharCode(buf[1], buf[2], buf[3]), "PNG");
+      const head = await fetchPath(rail.qrSrc, { method: "HEAD" });
+      assert.equal(head.status, 200);
+      assert.equal(await head.text(), "");
+    }
+    const apex = await handleRequest(new Request("https://azieleliab.com/donate/qr/btc.png"));
+    assert.equal(apex.status, 301);
+    assert.equal(apex.headers.get("location"), CANON_ORIGIN + "/donate/qr/btc.png");
   });
 });
 

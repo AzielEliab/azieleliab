@@ -21,7 +21,7 @@ import {
   SOFTWARE_SECTION,
   SPINE,
 } from "./copy.js";
-import { qrSvg } from "./qr.js";
+import { qrImg } from "./qr.js";
 import { MESH_STATUS_LOCAL, QNS_CD_SPEC, meshQuietLabel } from "./mesh.js";
 import { jsonLd } from "./seo.js";
 
@@ -119,7 +119,7 @@ function railHtml(rail) {
     a(rail.uri, "Open in wallet") +
     "</p>" +
     '<div class="qr">' +
-    qrSvg(rail.uri, rail.coin + " payment URI") +
+    qrImg(rail) +
     "</div>" +
     '<p class="rail-note">' +
     esc(DONATE_NETWORK_NOTE) +
@@ -252,9 +252,8 @@ footer a:hover{color:var(--gold)}
 }
 .rail-actions button:hover{color:var(--gold)}
 .rail-actions a{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;font-size:14px}
-.qr{width:132px;height:132px;margin:0 0 10px;background:#fff;border-radius:6px;padding:0}
-.qr svg{display:block;width:132px;height:132px}
-.qr path.qrline{fill:none;stroke:#111;stroke-width:1}
+.qr{display:inline-block;margin:0 0 10px;background:#fff;border-radius:6px;padding:10px;line-height:0}
+.qr img{display:block;width:180px;height:180px;background:#fff;image-rendering:pixelated}
 .rail-note{margin:0;color:var(--muted);font-size:13px}
 .donate-law{margin:16px 0 0;color:var(--muted);font-size:15px}
 @media (max-width:720px){

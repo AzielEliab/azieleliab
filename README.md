@@ -17,7 +17,7 @@ Cloudflare Worker `azieleliab-com` serves the literary landing, crawl files, and
 |------|------|
 | `/` | Landing (black / gold / white) |
 | `/software` · `/software/` | 301 to [`/#software`](https://www.azieleliab.com/#software) (homepage Software strip) |
-| `/donate` · `/donate/` | AZL-DONATE-1.0 primary Donate door (static; also homepage `#donate`) |
+| `/donate` · `/donate/` | AZL-DONATE-1.0 primary Donate door (static; also homepage `#donate`). Rails use solid PNG QRs at `/donate/qr/{btc,eth,ltc,xrp,doge}.png` (payment URI, not a website). |
 | `/embryolock` · `/embryolock/` | EmbryoLock stub card — local-not-hosted, not a public Worker |
 | `/robots.txt` | `Allow: /` plus AI crawlers and `/runtime` |
 | `/llms.txt` | Door index for models |
