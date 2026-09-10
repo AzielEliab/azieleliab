@@ -115,7 +115,15 @@ function railHtml(rail) {
     '<button type="button" data-copy="' +
     attr(rail.address) +
     '">Copy</button> ' +
-    a(rail.uri, "Open in wallet") +
+    '<a href="' +
+    attr(rail.uri) +
+    '" data-open-wallet data-wallet-uri="' +
+    attr(rail.uri) +
+    '" data-wallet-uri-alt="' +
+    attr(rail.uriAlt || "") +
+    '" data-copy-addr="' +
+    attr(rail.address) +
+    '" rel="noopener noreferrer">Open in wallet</a>' +
     "</p>" +
     '<div class="qr">' +
     qrImg(rail) +
@@ -136,6 +144,7 @@ export function donateArticle() {
     '<div class="rails">' +
     rails +
     "</div>" +
+    '<p class="wallet-hint">Open in wallet uses the standard payment URI your OS routes to an installed wallet (Exodus, MetaMask, Trust, Phantom, Coinbase, and peers). If Safari says the link is invalid, scan the QR inside your wallet — that path works for every wallet.</p>' +
     '<p class="donate-law">' +
     esc(DONATE_DISCLAIMER) +
     "</p>"
@@ -254,6 +263,7 @@ footer a:hover{color:var(--gold)}
 .qr{display:inline-block;margin:0 0 10px;background:#fff;border-radius:6px;padding:10px;line-height:0}
 .qr img{display:block;width:180px;height:180px;background:#fff;image-rendering:pixelated}
 .rail-note{margin:0;color:var(--muted);font-size:13px}
+.wallet-hint{margin:14px 0 0;color:var(--muted);font-size:14px;line-height:1.45}
 .donate-law{margin:16px 0 0;color:var(--muted);font-size:15px}
 @media (max-width:720px){
   .wrap{padding:22px 16px 80px}
@@ -267,6 +277,7 @@ const COPY_SCRIPT = `<script>
 document.addEventListener("click",function(e){
   var btn=e.target.closest("[data-copy]");
   if(!btn)return;
+  if(btn.hasAttribute("data-open-wallet"))return;
   var text=btn.getAttribute("data-copy")||"";
   var done=function(){
     var prev=btn.textContent;
@@ -277,6 +288,65 @@ document.addEventListener("click",function(e){
     navigator.clipboard.writeText(text).then(done).catch(function(){});
   }
 });
+(function(){
+  function copyText(t, done){
+    if(!t){ if(done)done(); return; }
+    var ok=function(){ if(done)done(); };
+    var fail=function(){
+      try{
+        var ta=document.createElement("textarea");
+        ta.value=t; ta.setAttribute("readonly","");
+        ta.style.position="fixed"; ta.style.left="-9999px";
+        document.body.appendChild(ta); ta.select();
+        document.execCommand("copy"); document.body.removeChild(ta); ok();
+      }catch(e){}
+    };
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      navigator.clipboard.writeText(t).then(ok).catch(fail);
+    } else fail();
+  }
+  function flash(el, msg){
+    var prev=el.getAttribute("data-label")||el.textContent;
+    if(!el.getAttribute("data-label")) el.setAttribute("data-label", prev);
+    el.textContent=msg;
+    setTimeout(function(){ el.textContent=el.getAttribute("data-label")||prev; }, 2400);
+  }
+  /* Safari (iOS + desktop) often has no handler for coin schemes → "link not valid". */
+  function safariLike(){
+    var ua=navigator.userAgent||"";
+    var iOS=/iPhone|iPad|iPod/.test(ua)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
+    var safari=/Safari/.test(ua)&&!/Chrome|Chromium|CriOS|FxiOS|EdgiOS|Edg\/|OPR\/|Android/.test(ua);
+    return iOS||safari;
+  }
+  document.addEventListener("click", function(e){
+    var a=e.target.closest("[data-open-wallet]");
+    if(!a) return;
+    var uri=a.getAttribute("data-wallet-uri")||a.getAttribute("href")||"";
+    var addr=a.getAttribute("data-copy-addr")||"";
+    /* Seed clipboard with bare address — every wallet Send accepts paste. */
+    copyText(addr);
+    if(safariLike()){
+      e.preventDefault();
+      flash(a, "Address copied — scan QR in your wallet");
+      return;
+    }
+    /* Optional alt scheme (e.g. ripple: alongside xrp:). */
+    var alt=a.getAttribute("data-wallet-uri-alt")||"";
+    if(alt && alt!==uri){
+      try{
+        var fr=document.createElement("iframe");
+        fr.style.display="none";
+        fr.src=alt;
+        document.body.appendChild(fr);
+        setTimeout(function(){ try{document.body.removeChild(fr);}catch(e){} }, 1500);
+      }catch(e){}
+    }
+    /* Chrome/Firefox/Android: href navigates so Trust/MetaMask/Exodus/Phantom/Coinbase/etc. can claim it. */
+    setTimeout(function(){
+      if(!document.hidden) flash(a, "Scan QR if wallet did not open");
+    }, 1600);
+  }, true);
+})();
 </script>`;
 
 export function viewsPill(views) {
