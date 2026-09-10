@@ -2,9 +2,20 @@
  * Suite decentralized node mesh doors for www.azieleliab.com.
  * Fetches runtime /v1/mesh/status and /v1/mesh/nodes via AZIEL_RUNTIME
  * (else HTTPS origin). Default off until runtime enables the mesh.
+ * QNS-CD-1.0 is hub cite / mesh.js cross-map only (photon QNS1 packet
+ * transfer). Local qnsd lives in qnm-node. No public qnsd proxy.
+ * No Node Gate. Not a Softwares-tab product.
  * Author: Aziel Eliab.
  */
-import { AUTHOR, CANON_ORIGIN, RUNTIME, RUNTIME_LOCAL } from "./copy.js";
+import {
+  AUTHOR,
+  AZINTERFACE_GITHUB,
+  CANON_ORIGIN,
+  GITHUB_QNM_NODE,
+  GITHUB_RUNTIME,
+  RUNTIME,
+  RUNTIME_LOCAL,
+} from "./copy.js";
 import { allowOriginRefresh } from "./costGuard.js";
 import { MESH_NODES_CACHE_URL, MESH_STATUS_CACHE_URL, MESH_TTL_SEC, readJsonSnapshot, writeJsonSnapshot } from "./edgeCache.js";
 import { fetchRuntimeJson } from "./liveCatalog.js";
@@ -18,8 +29,46 @@ export const MESH_NODES_LOCAL = CANON_ORIGIN + MESH_NODES_PATH;
 export const MESH_STATUS_RUNTIME = RUNTIME_LOCAL + MESH_STATUS_PATH;
 export const MESH_NODES_RUNTIME = RUNTIME_LOCAL + MESH_NODES_PATH;
 
+export const QNS_CD_SPEC = "QNS-CD-1.0";
+
+/** Hub cite / Worker mesh cross-map. Not a Softwares-tab product. No public qnsd. */
+export const QNS_CD = Object.freeze({
+  spec: QNS_CD_SPEC,
+  name: "QNS-CD-1.0",
+  title: "photon QNS1 packet transfer",
+  kind: "cite",
+  packet: "QNS1",
+  transfer: "photon",
+  software_tab: false,
+  node_gate: false,
+  public_proxy: false,
+  qnsd: "local",
+  mesh_default: "off",
+  qnm_node: GITHUB_QNM_NODE,
+  qnm_build: GITHUB_QNM_NODE + "/blob/main/docs/QNM-BUILD-1.0.md",
+  runtime: GITHUB_RUNTIME,
+  runtime_skill: RUNTIME + "/v1/skill",
+  runtime_skill_local: RUNTIME_LOCAL + "/v1/skill",
+  designs: GITHUB_RUNTIME + "/tree/main/docs/designs",
+  qnm_wp: GITHUB_RUNTIME + "/blob/main/docs/designs/QNM-WP-1.0.md",
+  node_ops: GITHUB_RUNTIME + "/blob/main/docs/designs/NODE-OPS-1.0.md",
+  node_mesh: GITHUB_RUNTIME + "/blob/main/docs/NODE_MESH.md",
+  pair_custody: AZINTERFACE_GITHUB,
+  author: AUTHOR,
+  identity: AUTHOR,
+  note:
+    "QNS-CD-1.0 photon QNS1 packet transfer. Local qnsd is coded in qnm-node. Runtime cites + catalog field live in aziel-runtime. AZInterface has pair custody. Hub cite / Worker mesh cross-map only — not a Softwares-tab product. No public qnsd proxy. No Node Gate. Mesh default OFF. Author Aziel Eliab only.",
+});
+
 export const MESH_NOTE =
-  "Suite decentralized node mesh. Default off until enabled on runtime. VPN/hop mesh is not claimed on this public surface. Author Aziel Eliab only.";
+  "Suite decentralized node mesh. Default off until enabled on runtime. VPN/hop mesh is not claimed on this public surface. Cross-map QNS-CD-1.0 (photon QNS1 packet transfer). Local qnsd is qnm-node only — no public proxy, no Node Gate. Author Aziel Eliab only.";
+
+function qnsCiteFields() {
+  return {
+    qns_cd_spec: QNS_CD_SPEC,
+    qns_cd: QNS_CD,
+  };
+}
 
 const MESH_OPENAPI_GET = (summary, description) => ({
   get: {
@@ -38,11 +87,11 @@ const MESH_OPENAPI_GET = (summary, description) => ({
 export const MESH_OPENAPI_PATHS = {
   [MESH_STATUS_PATH]: MESH_OPENAPI_GET(
     "mesh status",
-    "Suite decentralized node mesh status. Default off until enabled on aziel-runtime. Author Aziel Eliab.",
+    "Suite decentralized node mesh status. Default off until enabled on aziel-runtime. Cites QNS-CD-1.0 (photon QNS1 packet transfer). No public qnsd proxy. No Node Gate. Author Aziel Eliab.",
   ),
   [MESH_NODES_PATH]: MESH_OPENAPI_GET(
     "mesh nodes",
-    "Suite decentralized node mesh members. Empty while default off. Author Aziel Eliab.",
+    "Suite decentralized node mesh members / Live Nodes. Empty while default off. Cross-map QNS-CD-1.0. No public qnsd proxy. Author Aziel Eliab.",
   ),
 };
 
@@ -78,6 +127,7 @@ export function meshSnapshot(origin) {
     runtime: MESH_STATUS_RUNTIME,
     origin: MESH_STATUS_ORIGIN,
     note: MESH_NOTE,
+    ...qnsCiteFields(),
   };
 }
 
@@ -98,6 +148,7 @@ function meshBase(origin) {
     mesh_nodes: MESH_NODES_ORIGIN,
     mesh_nodes_local: MESH_NODES_LOCAL,
     mesh_nodes_runtime: MESH_NODES_RUNTIME,
+    ...qnsCiteFields(),
   };
 }
 
@@ -154,11 +205,12 @@ export function injectMeshOpenApi(doc) {
 
 export function injectMeshCite(doc) {
   if (!doc || typeof doc !== "object" || Array.isArray(doc)) return doc;
-  if (doc.mesh_status && doc.mesh_nodes) return doc;
   if (!doc.mesh_status) doc.mesh_status = MESH_STATUS_RUNTIME;
   if (!doc.mesh_nodes) doc.mesh_nodes = MESH_NODES_RUNTIME;
   if (!doc.mesh_default) doc.mesh_default = "off";
   if (!doc.mesh_note) doc.mesh_note = MESH_NOTE;
+  if (!doc.qns_cd_spec) doc.qns_cd_spec = QNS_CD_SPEC;
+  if (!doc.qns_cd) doc.qns_cd = QNS_CD;
   return doc;
 }
 
@@ -167,8 +219,9 @@ const MESH_LLMS_BLOCK = [
   "## Mesh",
   "",
   "- GET " + MESH_STATUS_RUNTIME + "  (suite node mesh status; default off)",
-  "- GET " + MESH_NODES_RUNTIME + "  (suite node list; empty while off)",
+  "- GET " + MESH_NODES_RUNTIME + "  (suite node list / Live Nodes; empty while off)",
   "- Origin: " + MESH_STATUS_ORIGIN + " · " + MESH_NODES_ORIGIN,
+  "- Cross-map: " + QNS_CD_SPEC + " (photon QNS1 packet transfer). Local qnsd is qnm-node only.",
   "- " + MESH_NOTE,
   "",
 ].join("\n");
