@@ -245,6 +245,74 @@ export function sortSoftware(items) {
 
 export const SOFTWARE = sortSoftware(CATALOG_SOFTWARE.concat(EXTRA_SOFTWARE));
 
+/** AZL-DONATE-1.0. Primary canonical Donate door. Not a Softwares product. */
+export const DONATE_PATH = "/donate";
+export const DONATE_HREF = CANON_ORIGIN + DONATE_PATH;
+export const DONATE_TITLE = "Donate";
+export const DONATE_DISCLAIMER = "Donations buy no privilege.";
+export const DONATE_SIGN = "— Aziel";
+export const DONATE_NETWORK_NOTE = "Send only on this network.";
+export const DONATE_XRP_TAG_NOTE =
+  "A destination tag is not required when receiving XRP on this wallet.";
+
+/** Exact donate copy. No pep, no bio, no legal name, no city, no face. */
+export const DONATE_COPY = [
+  "Nothing is free.",
+  "This work has no corporate backer. No grant. No product that unlocks when you pay. Compute, hosting, and time have a cost. If a door stays open it is because the bill was paid.",
+  "Donations keep the work in contact with what does not need a sponsor. They do not buy a vote, a feature, a name on a wall, or a quieter question.",
+  "You do not owe this. If the work is useful, you already know what to do.",
+  "Send only on the correct network. Double-check the address before you send. Wrong chain is a loss. There is no refund desk.",
+  "The software remains free to run and fork. Payment is not a key.",
+];
+
+export const DONATE_RAILS = [
+  {
+    id: "btc",
+    coin: "Bitcoin · BTC",
+    network: "Bitcoin (on-chain)",
+    address: "bc1q8cg7hmgmu7x9yaja8j249np0vt84d4y8duugr7",
+    uri: "bitcoin:bc1q8cg7hmgmu7x9yaja8j249np0vt84d4y8duugr7",
+  },
+  {
+    id: "eth",
+    coin: "Ethereum · ETH",
+    network: "Ethereum mainnet",
+    address: "0x29b386022e3968cf8dBFCE59569b49680184B23b",
+    uri: "ethereum:0x29b386022e3968cf8dBFCE59569b49680184B23b",
+  },
+  {
+    id: "ltc",
+    coin: "Litecoin · LTC",
+    network: "Litecoin",
+    address: "LWuqPjMCFtLHvoBaQL4m8QtnxbXSDftVNs",
+    uri: "litecoin:LWuqPjMCFtLHvoBaQL4m8QtnxbXSDftVNs",
+  },
+  {
+    id: "xrp",
+    coin: "XRP · XRP Ledger",
+    network: "XRP Ledger",
+    address: "rLc3jZJbgEU1wBGwTFtgyq8bpayQE15K7b",
+    uri: "xrp:rLc3jZJbgEU1wBGwTFtgyq8bpayQE15K7b",
+    extra: DONATE_XRP_TAG_NOTE,
+  },
+  {
+    id: "doge",
+    coin: "Dogecoin · DOGE",
+    network: "Dogecoin",
+    address: "DQ4go4iLPfNXDWim4KptTh3565sFCVrCyp",
+    uri: "dogecoin:DQ4go4iLPfNXDWim4KptTh3565sFCVrCyp",
+  },
+];
+
+/** Homepage spine. Donate is also its own URL. */
+export const SPINE = [
+  { id: "why", label: "Why", href: CANON_ORIGIN + "/#why" },
+  { id: "software", label: "Software", href: SOFTWARE_SECTION },
+  { id: "research", label: "Research", href: CANON_ORIGIN + "/#research" },
+  { id: "doors", label: "Doors", href: CANON_ORIGIN + "/#doors" },
+  { id: "donate", label: "Donate", href: DONATE_HREF },
+];
+
 export const DOORS = [
   { label: "GitHub", href: GITHUB },
   { label: "Secondary source", href: GITHUB_SECONDARY },
@@ -253,6 +321,7 @@ export const DOORS = [
   { label: "GodLock", href: GODLOCK + "/" },
   { label: "Runtime", href: RUNTIME_LOCAL, also: { label: RUNTIME + "/", href: RUNTIME + "/" } },
   { label: "X", href: X_URL },
+  { label: "Donate", href: DONATE_HREF },
 ];
 
 export const PROSE = {

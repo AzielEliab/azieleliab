@@ -22,7 +22,7 @@ import {
   MESH_STATUS_PATH,
   meshSnapshot,
 } from "./mesh.js";
-import { embryoLockHtml, notFoundHtml, pageHtml } from "./page.js";
+import { donateHtml, embryoLockHtml, notFoundHtml, pageHtml } from "./page.js";
 import { handleRuntimeRoot, isRuntimeRequest } from "./runtimeRoot.js";
 import { aiTxt, citeDoc, CONTENT_SIGNAL, llmsTxt, robotsTxt, sitemapXml } from "./seo.js";
 import { incrementViews, isBot, readViews, viewsBody } from "./views.js";
@@ -74,6 +74,7 @@ function json(doc, cache) {
 
 const PAGE_CACHE_PATHS = new Set([
   "/",
+  "/donate",
   "/embryolock",
   "/robots.txt",
   "/llms.txt",
@@ -175,6 +176,7 @@ export async function handleRequest(request, env = {}, ctx) {
   let res;
   if (path === "/") res = html(pageHtml(await pageViews(request, env), doors, meshStatus));
   else if (path === "/software") res = Response.redirect(SOFTWARE_SECTION, 301);
+  else if (path === "/donate") res = html(donateHtml(), 200, STUB_HTML_CACHE);
   else if (path === "/embryolock") res = html(embryoLockHtml(), 200, STUB_HTML_CACHE);
   else if (path === "/robots.txt") res = text(robotsTxt(), "text/plain", { cache: SEO_CACHE });
   else if (path === "/llms.txt") res = text(llmsTxt(doors), "text/plain", { cache: SEO_CACHE });
