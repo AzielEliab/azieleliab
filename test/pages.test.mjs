@@ -67,6 +67,10 @@ import {
   PERSON_SAME_AS,
   RUNTIME,
   RUNTIME_DOCS,
+  RUNTIME_ID,
+  RUNTIME_NAMED_LINE,
+  RUNTIME_NAMED_TOOLS,
+  runtimeToolId,
   WEBSITE_ID,
   isAboutAlias,
   displaySoftwareName,
@@ -192,7 +196,7 @@ describe("software doors", () => {
     const softwareCard = html.match(/<section class="card" id="software">[\s\S]*?<\/section>/);
     assert.ok(softwareCard);
     assert.match(softwareCard[0], /<h2>Software<\/h2>\s*<p class="soft-line">/);
-    assert.doesNotMatch(softwareCard[0], /Official Runtime|Try on Glama|Try \/ Deploy on Glama|Documentation \/ Architecture/);
+    assert.doesNotMatch(softwareCard[0], /Official Runtime|Try on Glama|Try \/ Deploy on Glama|Documentation \/ Architecture|named components|Ask Jeeves/);
     assert.doesNotMatch(softwareCard[0], /2\.0\.0-rc1/);
   });
 
@@ -222,6 +226,7 @@ describe("software doors", () => {
     assert.doesNotMatch(html, /Try \/ Deploy on Glama|Try\/Deploy on Glama/);
     const runtimeCard = html.match(/<section class="card" id="runtime">[\s\S]*?<\/section>/);
     assert.ok(runtimeCard);
+    assert.ok(runtimeCard[0].includes(RUNTIME_NAMED_LINE));
     assert.match(runtimeCard[0], /class="runtime-cta"[^>]*>Try on Glama</);
     assert.doesNotMatch(runtimeCard[0], /class="runtime-cta"[^>]*>Official Runtime</);
     assert.match(runtimeCard[0], /class="runtime-secondary"/);
@@ -282,6 +287,7 @@ describe("software doors", () => {
     assert.ok(names.includes("EmbryoLock"));
     assert.ok(!names.includes("aziel-runtime"));
     assert.ok(!names.includes("FragGate"));
+    assert.ok(!names.includes("Ask Jeeves"));
     assert.ok(!names.includes("mesh"));
     assert.ok(names.includes("4DMap"));
     assert.ok(names.includes("AZChat"));
@@ -671,6 +677,8 @@ describe("SEO routes", () => {
     assert.ok(llmsBody.includes("Author: " + AUTHOR));
     assert.ok(llmsBody.includes("Canonical: " + CANON_ORIGIN + "/"));
     assert.ok(llmsBody.includes("Person @id: " + PERSON_ID));
+    assert.ok(llmsBody.includes("Runtime parent @id: " + RUNTIME_ID));
+    assert.ok(llmsBody.includes("Named tools (not MCP ops): FragGate, ForgeReceipts"));
     assert.ok(llmsBody.includes(SOFTWARE_HREF + "  (301 to /#software)"));
     assert.ok(llmsBody.includes(CANON_ORIGIN + "/about  (301 to / — About Aziel Eliab)"));
     assert.ok(llmsBody.includes("Softwares list: " + SOFTWARE_SECTION));
@@ -768,6 +776,8 @@ describe("SEO routes", () => {
     assert.equal(citeBody.canonical, CANON_ORIGIN + "/");
     assert.equal(citeBody.identity, AUTHOR);
     assert.equal(citeBody.person_id, PERSON_ID);
+    assert.equal(citeBody.runtime_id, RUNTIME_ID);
+    assert.equal(citeBody.runtime_named_tools.length, RUNTIME_NAMED_TOOLS.length);
     assert.deepEqual(citeBody.sameAs, PERSON_SAME_AS);
     assert.equal(citeBody.runtime_local, RUNTIME_LOCAL);
     assert.equal(citeBody.runtime_uses, RUNTIME_LOCAL + "/v1/uses");
@@ -971,7 +981,7 @@ describe("public entity graph phases B–D + E audit", () => {
         node.forEach(walk);
         return;
       }
-      if (typeof node["@id"] === "string" && node["@id"].includes("#aziel")) refs.push(node["@id"]);
+      if (typeof node["@id"] === "string" && /#aziel$/.test(node["@id"])) refs.push(node["@id"]);
       Object.values(node).forEach(walk);
     };
     walk(ld);
@@ -996,6 +1006,8 @@ describe("public entity graph phases B–D + E audit", () => {
     assert.equal(runtime.codeRepository, GITHUB_RUNTIME);
     assert.equal(runtime.sourceCode.codeRepository, GITHUB_RUNTIME);
     assert.equal(runtime.relatedLink, RUNTIME + "/");
+    assert.equal(runtime["@id"], RUNTIME_ID);
+    assert.equal(runtime.hasPart.length, RUNTIME_NAMED_TOOLS.length);
     assert.equal(api.url, RUNTIME_LOCAL);
     assert.equal(api.endpoint["@type"], "EntryPoint");
     assert.equal(api.endpoint.url, RUNTIME + "/");
@@ -1029,7 +1041,7 @@ describe("public entity graph phases B–D + E audit", () => {
     assert.ok(softwareCard);
     assert.match(softwareCard[0], /<h2>Software<\/h2>\s*<p class="soft-line">/);
     assert.doesNotMatch(softwareCard[0], /Part of the Aziel Eliab ecosystem/);
-    assert.doesNotMatch(softwareCard[0], /Official site|Aziel Corpus Library|Try on Glama/);
+    assert.doesNotMatch(softwareCard[0], /Official site|Aziel Corpus Library|Try on Glama|named components/);
     const footer = html.match(/<footer>[\s\S]*?<\/footer>/);
     assert.ok(footer);
     assert.ok(footer[0].includes(ECOSYSTEM_TITLE));
@@ -1066,6 +1078,95 @@ describe("public entity graph phases B–D + E audit", () => {
       assert.equal(person["@id"], PERSON_ID);
       assert.equal(person.name, AUTHOR);
     }
+  });
+
+  it("exposes a Runtime parent with named-tool hasPart, not MCP verbs", () => {
+    assert.equal(RUNTIME_ID, "https://www.azieleliab.com/runtime#runtime");
+    assert.equal(RUNTIME_NAMED_TOOLS.length, 21);
+    assert.deepEqual(
+      RUNTIME_NAMED_TOOLS.map((t) => [t.slug, t.name]),
+      [
+        ["fraggate", "FragGate"],
+        ["forgereceipts", "ForgeReceipts"],
+        ["decisiongate", "DecisionGate"],
+        ["temporallock", "TemporalLock"],
+        ["trajectorylock", "TrajectoryLock"],
+        ["peacelock", "PeaceLock"],
+        ["godlock", "GodLock"],
+        ["azos", "AZ-OS"],
+        ["azcoherence", "AZCoherence"],
+        ["4dmap", "4DMap"],
+        ["aziel-corpus", "Aziel Corpus"],
+        ["askjeeves", "Ask Jeeves"],
+        ["azbrowser", "AZBrowser"],
+        ["azmail", "AZMail"],
+        ["azhub", "AZHub"],
+        ["azinterface", "AZInterface"],
+        ["spectrallock", "SpectralLock"],
+        ["shadowlock", "ShadowLock"],
+        ["foldlock", "FoldLock"],
+        ["codelock", "CodeLock"],
+        ["vibelock", "VibeLock"],
+      ],
+    );
+    assert.equal(runtimeToolId("fraggate"), "https://www.azieleliab.com/runtime#fraggate");
+    assert.equal(runtimeToolId("aziel-corpus"), "https://www.azieleliab.com/runtime#aziel-corpus");
+    assert.equal(RUNTIME_NAMED_LINE, "Aziel Runtime includes named components such as FragGate, ForgeReceipts, …");
+
+    const ld = jsonLd();
+    const runtime = ld["@graph"].find((n) => n["@id"] === RUNTIME_ID);
+    assert.ok(runtime);
+    assert.equal(runtime["@type"], "SoftwareApplication");
+    assert.equal(runtime.name, "Aziel Runtime");
+    assert.deepEqual(runtime.author, { "@id": PERSON_ID });
+    assert.deepEqual(runtime.sameAs, [GITHUB_RUNTIME, GLAMA_RUNTIME]);
+    assert.ok(!runtime.sameAs.includes(RUNTIME + "/"));
+    assert.equal(runtime.url, RUNTIME_LOCAL);
+    assert.equal(runtime.relatedLink, RUNTIME + "/");
+    assert.deepEqual(
+      runtime.hasPart,
+      RUNTIME_NAMED_TOOLS.map((tool) => ({ "@id": runtimeToolId(tool.slug) })),
+    );
+
+    const named = ld["@graph"].filter(
+      (n) => n["@type"] === "SoftwareApplication" && n.isPartOf && n.isPartOf["@id"] === RUNTIME_ID,
+    );
+    assert.equal(named.length, RUNTIME_NAMED_TOOLS.length);
+    for (const tool of RUNTIME_NAMED_TOOLS) {
+      const node = named.find((n) => n["@id"] === runtimeToolId(tool.slug));
+      assert.ok(node, tool.slug);
+      assert.equal(node.name, tool.name);
+      assert.deepEqual(node.author, { "@id": PERSON_ID });
+      assert.deepEqual(node.isPartOf, { "@id": RUNTIME_ID });
+    }
+
+    const blob = JSON.stringify(ld);
+    assert.doesNotMatch(blob, /\/software\/aziel-runtime/);
+    for (const verb of [
+      "fraggate_call",
+      "fraggate_list",
+      "list_modules",
+      "genesis_boot",
+      "ethical_search",
+      "lamb_lens_search",
+      "page_cycle_status",
+      "blank_key_status",
+    ]) {
+      assert.ok(!blob.includes("#" + verb), verb);
+      assert.ok(!named.some((n) => n.name === verb || String(n["@id"]).endsWith("#" + verb)), verb);
+    }
+
+    const html = pageHtml();
+    const softwareCard = html.match(/<section class="card" id="software">[\s\S]*?<\/section>/);
+    const runtimeCard = html.match(/<section class="card" id="runtime">[\s\S]*?<\/section>/);
+    assert.ok(softwareCard);
+    assert.ok(runtimeCard);
+    assert.match(softwareCard[0], /<h2>Software<\/h2>\s*<p class="soft-line">/);
+    assert.doesNotMatch(softwareCard[0], /named components|Ask Jeeves/);
+    assert.ok(runtimeCard[0].includes(RUNTIME_NAMED_LINE));
+    assert.match(runtimeCard[0], /class="runtime-cta"[^>]*>Try on Glama</);
+    assert.ok(!SOFTWARE.some((s) => s.name === "Ask Jeeves" || s.name === "DecisionGate"));
+    assert.ok(SOFTWARE.some((s) => s.name === "DecisionGATE"));
   });
 
   it("leaves Remain-OFF mesh defaults untouched", () => {

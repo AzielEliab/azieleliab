@@ -22,6 +22,7 @@ import {
   PROSE,
   RUNTIME_DOORS,
   RUNTIME_NAME,
+  RUNTIME_NAMED_LINE,
   RUNTIME_TITLE,
   RUNTIME_VERSION,
   SIGIL,
@@ -227,6 +228,7 @@ a:hover{color:var(--gold);text-decoration-color:var(--gold)}
 .soft-name{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;font-size:16px;font-weight:650;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--gold);padding-bottom:1px}
 .soft-name:hover{color:var(--gold)}
 .runtime-cite{margin:0 0 12px;color:var(--muted);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;font-size:14px;letter-spacing:.04em}
+.runtime-named{margin:0 0 12px;color:var(--muted);font-size:15px;line-height:1.55}
 .runtime-doors{margin:0 0 10px}
 .runtime-cta{
   display:inline-flex;align-items:center;justify-content:center;
@@ -586,6 +588,7 @@ ${documentHead({
   <section class="card" id="runtime">
     <h2>${esc(RUNTIME_TITLE)}</h2>
     ${runtimeCiteHtml(runtimeVersion)}
+    <p class="runtime-named">${esc(RUNTIME_NAMED_LINE)}</p>
     ${runtimeDoorsHtml()}
   </section>
   <section class="card" id="research">

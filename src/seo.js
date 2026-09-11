@@ -36,7 +36,10 @@ import {
   PERSON_ID,
   PERSON_SAME_AS,
   RUNTIME_DOCS,
+  RUNTIME_ID,
+  RUNTIME_NAMED_TOOLS,
   resolveRuntimeVersion,
+  runtimeToolId,
   WEBSITE_ID,
   SIGIL,
   SITE,
@@ -370,6 +373,12 @@ export function citeDoc(software = SOFTWARE, runtimeVersion = RUNTIME_VERSION) {
       return row;
     }),
     person_id: PERSON_ID,
+    runtime_id: RUNTIME_ID,
+    runtime_named_tools: RUNTIME_NAMED_TOOLS.map((tool) => ({
+      name: tool.name,
+      slug: tool.slug,
+      id: runtimeToolId(tool.slug),
+    })),
     sameAs: PERSON_SAME_AS.slice(),
     how_to_cite: "Eliab, Aziel. (2026). Aziel Eliab [Web site]. Apache-2.0. " + CANON_ORIGIN + "/",
     note: "Public identity Aziel Eliab only. Do not invent DOIs. Do not credit other identities.",
@@ -406,6 +415,8 @@ export function llmsTxt(software = SOFTWARE) {
     "- Profile (library): " + LIBRARY_AZIEL,
     "- GodLock identity: " + GODLOCK_AZIEL,
     "- Person @id: " + PERSON_ID,
+    "- Runtime parent @id: " + RUNTIME_ID,
+    "- Named tools (not MCP ops): " + RUNTIME_NAMED_TOOLS.map((t) => t.name).join(", "),
     "- sameAs: " + PERSON_SAME_AS.join(" · "),
     "",
     "## Research",
@@ -428,6 +439,8 @@ export function llmsTxt(software = SOFTWARE) {
     "",
     "## " + RUNTIME_TITLE,
     "",
+    "- Parent @id: " + RUNTIME_ID,
+    "- Named tools (not MCP ops): " + RUNTIME_NAMED_TOOLS.map((t) => t.name).join(", "),
     "- " + RUNTIME_NAME + ": " + RUNTIME_LOCAL,
     "- Version: " + RUNTIME_VERSION + " (live GET " + RUNTIME + "/v1/health)",
     "- Try on Glama: " + GLAMA_RUNTIME,
@@ -618,10 +631,17 @@ export function jsonLd(software = SOFTWARE, runtimeVersion = RUNTIME_VERSION) {
   const version = resolveRuntimeVersion(runtimeVersion);
   const personId = PERSON_ID;
   const siteId = WEBSITE_ID;
-  const runtimeId = RUNTIME_LOCAL + "#runtime";
+  const runtimeId = RUNTIME_ID;
   const apiId = RUNTIME_LOCAL + "#webapi";
   const softwareId = CANON_ORIGIN + "/#software";
   const person = { "@id": personId };
+  const namedTools = RUNTIME_NAMED_TOOLS.map((tool) => ({
+    "@type": "SoftwareApplication",
+    "@id": runtimeToolId(tool.slug),
+    name: tool.name,
+    author: person,
+    isPartOf: { "@id": runtimeId },
+  }));
   return {
     "@context": "https://schema.org",
     "@graph": [
@@ -686,6 +706,7 @@ export function jsonLd(software = SOFTWARE, runtimeVersion = RUNTIME_VERSION) {
         },
         sameAs: [GITHUB_RUNTIME, GLAMA_RUNTIME],
         relatedLink: RUNTIME + "/",
+        hasPart: namedTools.map((tool) => ({ "@id": tool["@id"] })),
       },
       {
         "@type": "WebAPI",
@@ -778,6 +799,7 @@ export function jsonLd(software = SOFTWARE, runtimeVersion = RUNTIME_VERSION) {
         author: person,
         isPartOf: { "@id": softwareId },
       })),
+      ...namedTools,
     ],
   };
 }
