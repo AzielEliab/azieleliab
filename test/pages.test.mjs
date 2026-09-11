@@ -196,8 +196,12 @@ describe("software doors", () => {
     assert.equal(RUNTIME_DOCS, "https://github.com/AzielEliab/aziel-runtime/tree/main/docs/2.0");
     assert.deepEqual(
       RUNTIME_DOORS.map((d) => d.label),
-      ["Official Runtime", "Source on GitHub", "Try on Glama", "Documentation / Architecture"],
+      ["Try on Glama", "Official Runtime", "Source on GitHub", "Documentation / Architecture"],
     );
+    assert.equal(RUNTIME_DOORS[0].label, "Try on Glama");
+    assert.equal(RUNTIME_DOORS[0].href, GLAMA_RUNTIME);
+    assert.equal(RUNTIME_DOORS[0].primary, true);
+    assert.ok(RUNTIME_DOORS.slice(1).every((d) => !d.primary));
     const html = pageHtml();
     assert.match(html, /<section class="card" id="runtime">/);
     assert.match(html, /<h2>Aziel Runtime<\/h2>/);
@@ -207,10 +211,16 @@ describe("software doors", () => {
       assert.ok(html.includes('href="' + door.href + '"'), door.label);
       assert.ok(html.includes(">" + door.label + "<"), door.label + " label");
     }
-    assert.match(html, />Try on Glama</);
+    assert.match(html, /href="https:\/\/glama\.ai\/mcp\/servers\/AzielEliab\/aziel-runtime" class="runtime-cta"/);
+    assert.match(html, /class="runtime-cta"[^>]*>Try on Glama</);
     assert.doesNotMatch(html, /Try \/ Deploy on Glama|Try\/Deploy on Glama/);
-    assert.equal(RUNTIME_DOORS[2].label, "Try on Glama");
-    assert.equal(RUNTIME_DOORS[2].href, GLAMA_RUNTIME);
+    const runtimeCard = html.match(/<section class="card" id="runtime">[\s\S]*?<\/section>/);
+    assert.ok(runtimeCard);
+    assert.match(runtimeCard[0], /class="runtime-cta"[^>]*>Try on Glama</);
+    assert.doesNotMatch(runtimeCard[0], /class="runtime-cta"[^>]*>Official Runtime</);
+    assert.match(runtimeCard[0], /class="runtime-secondary"/);
+    assert.ok(runtimeCard[0].indexOf("Try on Glama") < runtimeCard[0].indexOf("Official Runtime"));
+    assert.ok(runtimeCard[0].indexOf("Official Runtime") < runtimeCard[0].indexOf("Source on GitHub"));
     assert.doesNotMatch(html, /runtime 2\.0\.0-rc1 FragGate/i);
     const ld = jsonLd();
     assert.equal(ld["@graph"][2].softwareVersion, "2.0.0-rc1");
@@ -220,8 +230,11 @@ describe("software doors", () => {
     assert.equal(cite.glama_runtime, GLAMA_RUNTIME);
     assert.equal(cite.runtime_docs, RUNTIME_DOCS);
     assert.equal(cite.runtime_doors.length, 4);
-    assert.equal(cite.runtime_doors[2].label, "Try on Glama");
-    assert.equal(cite.runtime_doors[2].url, GLAMA_RUNTIME);
+    assert.equal(cite.runtime_doors[0].label, "Try on Glama");
+    assert.equal(cite.runtime_doors[0].url, GLAMA_RUNTIME);
+    assert.equal(cite.runtime_doors[0].primary, true);
+    assert.equal(cite.runtime_doors[1].label, "Official Runtime");
+    assert.equal(cite.runtime_doors[1].primary, false);
   });
 
   it("names aziel-runtime / Aziel Runtime and refuses version+FragGate mash", () => {

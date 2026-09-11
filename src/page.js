@@ -225,14 +225,23 @@ a:hover{color:var(--gold);text-decoration-color:var(--gold)}
 .soft-name{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;font-size:16px;font-weight:650;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--gold);padding-bottom:1px}
 .soft-name:hover{color:var(--gold)}
 .runtime-cite{margin:0 0 12px;color:var(--muted);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;font-size:14px;letter-spacing:.04em}
-.runtime-doors{display:flex;flex-wrap:wrap;gap:10px;margin:0}
-.runtime-doors a{
+.runtime-doors{margin:0 0 10px}
+.runtime-cta{
+  display:inline-flex;align-items:center;justify-content:center;
   font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
-  font-size:13px;font-weight:700;letter-spacing:.04em;
-  background:#2a241c;color:var(--ink);border:1px solid var(--gold);
-  border-radius:8px;padding:7px 12px;text-decoration:none;
+  font-size:15px;font-weight:750;letter-spacing:.02em;
+  background:var(--gold);color:#14110a;border:1px solid var(--gold);
+  border-radius:10px;padding:12px 18px;text-decoration:none;min-height:44px;
 }
-.runtime-doors a:hover{color:var(--gold)}
+.runtime-cta:hover{color:#14110a;filter:brightness(1.08)}
+.runtime-secondary{display:flex;flex-wrap:wrap;gap:12px 18px;margin:0}
+.runtime-secondary a{
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  font-size:14px;font-weight:550;color:var(--ink-soft);
+  text-decoration:underline;text-decoration-color:var(--gold-dim);text-underline-offset:3px;
+  background:none;border:0;padding:0;
+}
+.runtime-secondary a:hover{color:var(--gold);text-decoration-color:var(--gold)}
 .doors{list-style:none;margin:0;padding:0}
 .doors li{margin:0 0 12px;padding:0;word-break:break-word}
 .door-label{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;font-weight:700;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--gold)}
@@ -484,9 +493,14 @@ const RUNTIME_VERSION_SCRIPT = `<script>
 </script>`;
 
 function runtimeDoorsHtml() {
+  const primary = RUNTIME_DOORS.filter((door) => door.primary);
+  const secondary = RUNTIME_DOORS.filter((door) => !door.primary);
   return (
     '<p class="runtime-doors">' +
-    RUNTIME_DOORS.map((door) => a(door.href, door.label)).join("") +
+    primary.map((door) => a(door.href, door.label, "runtime-cta")).join("") +
+    "</p>" +
+    '<p class="runtime-secondary">' +
+    secondary.map((door) => a(door.href, door.label)).join("") +
     "</p>"
   );
 }
