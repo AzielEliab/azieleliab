@@ -31,6 +31,24 @@ export const RUNTIME_LOCAL = CANON_ORIGIN + RUNTIME_PATH;
 export const RUNTIME_SLUG = "aziel-runtime";
 export const RUNTIME_NAME = "aziel-runtime";
 export const RUNTIME_TITLE = "Aziel Runtime";
+/** Certification-freeze cite. Prefer live GET /v1/health.version when it answers. */
+export const RUNTIME_VERSION = "2.0.0-rc1";
+/** Verified Glama listing (owner/repo path). Do not invent a server id. */
+export const GLAMA_RUNTIME = "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime";
+export const RUNTIME_DOCS = "https://github.com/AzielEliab/aziel-runtime/tree/main/docs/2.0";
+
+/** Human Runtime panel doors. Softwares tab stays heading → list only. */
+export const RUNTIME_DOORS = [
+  { label: "Official Runtime", href: RUNTIME + "/" },
+  { label: "Source on GitHub", href: GITHUB_RUNTIME },
+  { label: "Try / Deploy on Glama", href: GLAMA_RUNTIME },
+  { label: "Documentation / Architecture", href: RUNTIME_DOCS },
+];
+
+export function resolveRuntimeVersion(version) {
+  const ver = String(version == null ? "" : version).trim();
+  return ver || RUNTIME_VERSION;
+}
 /** Soft-name strip on the landing. */
 export const SOFTWARE_SECTION = CANON_ORIGIN + "/#software";
 /** Thin alias. GET /software 301s to the homepage Software strip. */

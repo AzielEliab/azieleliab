@@ -30,6 +30,11 @@ import {
   RUNTIME_LOCAL,
   RUNTIME_NAME,
   RUNTIME_TITLE,
+  RUNTIME_VERSION,
+  RUNTIME_DOORS,
+  GLAMA_RUNTIME,
+  RUNTIME_DOCS,
+  resolveRuntimeVersion,
   SIGIL,
   SITE,
   SOFTWARE,
@@ -273,8 +278,9 @@ export function sitemapXml(now = new Date(), software = SOFTWARE) {
   );
 }
 
-export function citeDoc(software = SOFTWARE) {
+export function citeDoc(software = SOFTWARE, runtimeVersion = RUNTIME_VERSION) {
   const doorsSoftware = software && software.length ? software : SOFTWARE;
+  const version = resolveRuntimeVersion(runtimeVersion);
   return {
     author: AUTHOR,
     identity: AUTHOR,
@@ -312,6 +318,10 @@ export function citeDoc(software = SOFTWARE) {
     runtime: LIBRARY_RUNTIME,
     runtime_local: RUNTIME_LOCAL,
     runtime_origin: RUNTIME + "/",
+    runtime_version: version,
+    glama_runtime: GLAMA_RUNTIME,
+    runtime_docs: RUNTIME_DOCS,
+    runtime_doors: RUNTIME_DOORS.map((d) => ({ label: d.label, url: d.href })),
     godlock: GODLOCK + "/",
     godlock_aziel_eliab: GODLOCK_AZIEL,
     x: X_URL,
@@ -421,6 +431,11 @@ export function llmsTxt(software = SOFTWARE) {
     "## " + RUNTIME_TITLE,
     "",
     "- " + RUNTIME_NAME + ": " + RUNTIME_LOCAL,
+    "- Version: " + RUNTIME_VERSION + " (live GET " + RUNTIME + "/v1/health)",
+    "- Official Runtime: " + RUNTIME + "/",
+    "- Source on GitHub: " + GITHUB_RUNTIME,
+    "- Try / Deploy on Glama: " + GLAMA_RUNTIME,
+    "- Documentation / Architecture: " + RUNTIME_DOCS,
     "- Origin: " + RUNTIME + "/",
     "- Library: " + LIBRARY_RUNTIME,
     "- Live catalog: " + RUNTIME + "/v1/software (fallback " + RUNTIME + "/v1/fraggate/list)",
@@ -560,6 +575,11 @@ export function aiTxt() {
     "- llms.txt: " + CANON_ORIGIN + "/llms.txt",
     "- Software hub: " + LIBRARY_SOFTWARE,
     "- Aziel Runtime (aziel-runtime): " + RUNTIME_LOCAL,
+    "- Runtime version: " + RUNTIME_VERSION + " (live GET " + RUNTIME + "/v1/health)",
+    "- Official Runtime: " + RUNTIME + "/",
+    "- Source on GitHub: " + GITHUB_RUNTIME,
+    "- Try / Deploy on Glama: " + GLAMA_RUNTIME,
+    "- Documentation / Architecture: " + RUNTIME_DOCS,
     "- Runtime uses (this host): " + RUNTIME_LOCAL + "/v1/uses",
     "- Mesh status: " + CANON_ORIGIN + "/v1/mesh/status (QNM-BUILD-1.0 suite rollup; live_nodes; GET never enables)",
     "- Mesh nodes: " + CANON_ORIGIN + "/v1/mesh/nodes",
@@ -595,8 +615,9 @@ export function softwareNodeId(item) {
   return CANON_ORIGIN + "/#software-" + (raw || "item");
 }
 
-export function jsonLd(software = SOFTWARE) {
+export function jsonLd(software = SOFTWARE, runtimeVersion = RUNTIME_VERSION) {
   const doorsSoftware = software && software.length ? software : SOFTWARE;
+  const version = resolveRuntimeVersion(runtimeVersion);
   const personId = CANON_ORIGIN + "/#aziel-eliab";
   const siteId = CANON_ORIGIN + "/#website";
   const runtimeId = RUNTIME_LOCAL + "#runtime";
@@ -652,6 +673,7 @@ export function jsonLd(software = SOFTWARE) {
         name: RUNTIME_TITLE,
         applicationCategory: "DeveloperApplication",
         operatingSystem: "Cloudflare Workers",
+        softwareVersion: version,
         url: RUNTIME_LOCAL,
         description:
           "Same-origin Aziel Runtime (aziel-runtime) door for agents. OpenAPI " +
