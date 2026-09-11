@@ -15,8 +15,10 @@ import {
   RUNTIME,
   RUNTIME_LOCAL,
   RUNTIME_SLUG,
+  RUNTIME_VERSION,
   SOFTWARE,
   SOFTWARE_EXTRAS,
+  resolveRuntimeVersion,
   canonicalSoftwareSlug,
   catalogHref,
   catalogWorkerHome,
@@ -296,10 +298,17 @@ function catalogTtlSec(live) {
 }
 
 function fallbackCatalog(source, via) {
-  return { software: SOFTWARE, products: SOFTWARE, extras: SOFTWARE_EXTRAS, source, via };
+  return {
+    software: SOFTWARE,
+    products: SOFTWARE,
+    extras: SOFTWARE_EXTRAS,
+    source,
+    via,
+    version: RUNTIME_VERSION,
+  };
 }
 
-function packedCatalog(products, extras, source, via) {
+function packedCatalog(products, extras, source, via, version) {
   const doors = products && products.length ? products : SOFTWARE;
   return {
     software: doors,
@@ -307,6 +316,7 @@ function packedCatalog(products, extras, source, via) {
     extras: extras && extras.length ? extras : SOFTWARE_EXTRAS,
     source,
     via,
+    version: resolveRuntimeVersion(version),
   };
 }
 
@@ -315,14 +325,26 @@ export async function fetchFreshSoftware(env) {
   if (softwareDoc) {
     const packed = catalogFromLiveDoc(softwareDoc);
     if (packed.products.length) {
-      return packedCatalog(packed.products, packed.extras, "live", SOFTWARE_CATALOG_PATH);
+      return packedCatalog(
+        packed.products,
+        packed.extras,
+        "live",
+        SOFTWARE_CATALOG_PATH,
+        softwareDoc.version,
+      );
     }
   }
   const listDoc = await fetchRuntimeJson(FRAGGATE_LIST_PATH, env);
   if (listDoc) {
     const packed = catalogFromLiveDoc(listDoc);
     if (packed.products.length) {
-      return packedCatalog(packed.products, packed.extras, "fraggate-list", FRAGGATE_LIST_PATH);
+      return packedCatalog(
+        packed.products,
+        packed.extras,
+        "fraggate-list",
+        FRAGGATE_LIST_PATH,
+        listDoc.version,
+      );
     }
   }
   return fallbackCatalog("fallback", null);
@@ -362,7 +384,7 @@ function normalizePacked(packed) {
       ? packed.software
       : SOFTWARE;
   const extras = Array.isArray(packed.extras) ? packed.extras : SOFTWARE_EXTRAS;
-  return packedCatalog(products, extras, packed.source || "fallback", packed.via || null);
+  return packedCatalog(products, extras, packed.source || "fallback", packed.via || null, packed.version);
 }
 
 export function softwareIndexBody(live, mesh) {
@@ -381,6 +403,7 @@ export function softwareIndexBody(live, mesh) {
     products,
     extras,
     software: products,
+    version: resolveRuntimeVersion(packed.version),
   };
 }
 

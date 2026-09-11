@@ -18,12 +18,17 @@ import {
   GITHUB,
   LIBRARY,
   PROSE,
+  RUNTIME_DOORS,
+  RUNTIME_NAME,
+  RUNTIME_TITLE,
+  RUNTIME_VERSION,
   SIGIL,
   SOFTWARE,
   SOFTWARE_SECTION,
   SPINE,
   X_HANDLE,
   X_URL,
+  resolveRuntimeVersion,
 } from "./copy.js";
 import { qrImg } from "./qr.js";
 import { MESH_STATUS_LOCAL, QNM_SPEC, QNS_CD_SPEC, liveNodesLabel, meshQuietLabel } from "./mesh.js";
@@ -219,6 +224,15 @@ a:hover{color:var(--gold);text-decoration-color:var(--gold)}
 .soft-line{color:var(--ink-soft);line-height:1.95}
 .soft-name{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;font-size:16px;font-weight:650;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--gold);padding-bottom:1px}
 .soft-name:hover{color:var(--gold)}
+.runtime-cite{margin:0 0 12px;color:var(--muted);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;font-size:14px;letter-spacing:.04em}
+.runtime-doors{display:flex;flex-wrap:wrap;gap:10px;margin:0}
+.runtime-doors a{
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  font-size:13px;font-weight:700;letter-spacing:.04em;
+  background:#2a241c;color:var(--ink);border:1px solid var(--gold);
+  border-radius:8px;padding:7px 12px;text-decoration:none;
+}
+.runtime-doors a:hover{color:var(--gold)}
 .doors{list-style:none;margin:0;padding:0}
 .doors li{margin:0 0 12px;padding:0;word-break:break-word}
 .door-label{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;font-weight:700;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--gold)}
@@ -373,8 +387,8 @@ function discoveryLinks() {
     .join("\n");
 }
 
-function documentHead({ title, description, canonical, software, extraMeta = "" }) {
-  const ld = JSON.stringify(jsonLd(software));
+function documentHead({ title, description, canonical, software, extraMeta = "", runtimeVersion }) {
+  const ld = JSON.stringify(jsonLd(software, runtimeVersion));
   return `<meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${esc(title)}</title>
@@ -458,7 +472,37 @@ const LIVE_NODES_SCRIPT = `<script>
 })();
 </script>`;
 
-export function pageHtml(views = 0, softwareItems = SOFTWARE, mesh = null) {
+const RUNTIME_VERSION_SCRIPT = `<script>
+(function(){
+  var el=document.getElementById("aziel-runtime-version");
+  if(!el)return;
+  fetch("/runtime/v1/health",{headers:{"Accept":"application/json","User-Agent":"Mozilla/5.0"}}).then(function(r){return r.json();}).then(function(d){
+    if(!d||!d.version)return;
+    el.textContent=String(d.version);
+  }).catch(function(){});
+})();
+</script>`;
+
+function runtimeDoorsHtml() {
+  return (
+    '<p class="runtime-doors">' +
+    RUNTIME_DOORS.map((door) => a(door.href, door.label)).join("") +
+    "</p>"
+  );
+}
+
+export function runtimeCiteHtml(version) {
+  const ver = resolveRuntimeVersion(version);
+  return (
+    '<p class="runtime-cite">' +
+    esc(RUNTIME_NAME) +
+    " · <span id=\"aziel-runtime-version\">" +
+    esc(ver) +
+    "</span></p>"
+  );
+}
+
+export function pageHtml(views = 0, softwareItems = SOFTWARE, mesh = null, runtimeVersion = RUNTIME_VERSION) {
   const doorsSoftware = softwareItems && softwareItems.length ? softwareItems : SOFTWARE;
   const software = softwareLine(doorsSoftware);
   const doors = DOORS.map(doorRow).join("");
@@ -473,6 +517,7 @@ ${documentHead({
   canonical: CANON_ORIGIN + "/",
   software: doorsSoftware,
   extraMeta: quietDiscoveryMeta(),
+  runtimeVersion,
 })}
 </head>
 <body>
@@ -495,6 +540,11 @@ ${documentHead({
   <section class="card" id="software">
     <h2>Software</h2>
     <p class="soft-line">${software}</p>
+  </section>
+  <section class="card" id="runtime">
+    <h2>${esc(RUNTIME_TITLE)}</h2>
+    ${runtimeCiteHtml(runtimeVersion)}
+    ${runtimeDoorsHtml()}
   </section>
   <section class="card" id="research">
     <h2>Research</h2>
@@ -519,6 +569,7 @@ ${documentHead({
 </main>
 ${COPY_SCRIPT}
 ${LIVE_NODES_SCRIPT}
+${RUNTIME_VERSION_SCRIPT}
 </body>
 </html>`;
 }
