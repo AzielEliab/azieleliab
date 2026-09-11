@@ -33,8 +33,14 @@ import {
   RUNTIME_VERSION,
   RUNTIME_DOORS,
   GLAMA_RUNTIME,
+  PERSON_ID,
+  PERSON_SAME_AS,
   RUNTIME_DOCS,
+  RUNTIME_ID,
+  RUNTIME_NAMED_TOOLS,
   resolveRuntimeVersion,
+  runtimeToolId,
+  WEBSITE_ID,
   SIGIL,
   SITE,
   SOFTWARE,
@@ -366,18 +372,14 @@ export function citeDoc(software = SOFTWARE, runtimeVersion = RUNTIME_VERSION) {
       if (d.also) row.also = { label: d.also.label, url: d.also.href };
       return row;
     }),
-    sameAs: [
-      GITHUB,
-      GITHUB_SECONDARY,
-      LIBRARY + "/",
-      LIBRARY_AZIEL,
-      GODLOCK + "/",
-      GODLOCK_AZIEL,
-      LIBRARY_RUNTIME,
-      RUNTIME_LOCAL,
-      RUNTIME + "/",
-      X_URL,
-    ],
+    person_id: PERSON_ID,
+    runtime_id: RUNTIME_ID,
+    runtime_named_tools: RUNTIME_NAMED_TOOLS.map((tool) => ({
+      name: tool.name,
+      slug: tool.slug,
+      id: runtimeToolId(tool.slug),
+    })),
+    sameAs: PERSON_SAME_AS.slice(),
     how_to_cite: "Eliab, Aziel. (2026). Aziel Eliab [Web site]. Apache-2.0. " + CANON_ORIGIN + "/",
     note: "Public identity Aziel Eliab only. Do not invent DOIs. Do not credit other identities.",
   };
@@ -412,7 +414,10 @@ export function llmsTxt(software = SOFTWARE) {
     "- About (this origin): " + ABOUT_HREF + " (aliases " + ABOUT_PATHS.map((p) => CANON_ORIGIN + p).join(", ") + " 301 here)",
     "- Profile (library): " + LIBRARY_AZIEL,
     "- GodLock identity: " + GODLOCK_AZIEL,
-    "- sameAs: " + [GITHUB, GITHUB_SECONDARY, LIBRARY + "/", GODLOCK + "/", X_URL].join(" · "),
+    "- Person @id: " + PERSON_ID,
+    "- Runtime parent @id: " + RUNTIME_ID,
+    "- Named tools (not MCP ops): " + RUNTIME_NAMED_TOOLS.map((t) => t.name).join(", "),
+    "- sameAs: " + PERSON_SAME_AS.join(" · "),
     "",
     "## Research",
     "",
@@ -434,6 +439,8 @@ export function llmsTxt(software = SOFTWARE) {
     "",
     "## " + RUNTIME_TITLE,
     "",
+    "- Parent @id: " + RUNTIME_ID,
+    "- Named tools (not MCP ops): " + RUNTIME_NAMED_TOOLS.map((t) => t.name).join(", "),
     "- " + RUNTIME_NAME + ": " + RUNTIME_LOCAL,
     "- Version: " + RUNTIME_VERSION + " (live GET " + RUNTIME + "/v1/health)",
     "- Try on Glama: " + GLAMA_RUNTIME,
@@ -622,12 +629,19 @@ export function softwareNodeId(item) {
 export function jsonLd(software = SOFTWARE, runtimeVersion = RUNTIME_VERSION) {
   const doorsSoftware = software && software.length ? software : SOFTWARE;
   const version = resolveRuntimeVersion(runtimeVersion);
-  const personId = CANON_ORIGIN + "/#aziel-eliab";
-  const siteId = CANON_ORIGIN + "/#website";
-  const runtimeId = RUNTIME_LOCAL + "#runtime";
+  const personId = PERSON_ID;
+  const siteId = WEBSITE_ID;
+  const runtimeId = RUNTIME_ID;
   const apiId = RUNTIME_LOCAL + "#webapi";
   const softwareId = CANON_ORIGIN + "/#software";
   const person = { "@id": personId };
+  const namedTools = RUNTIME_NAMED_TOOLS.map((tool) => ({
+    "@type": "SoftwareApplication",
+    "@id": runtimeToolId(tool.slug),
+    name: tool.name,
+    author: person,
+    isPartOf: { "@id": runtimeId },
+  }));
   return {
     "@context": "https://schema.org",
     "@graph": [
@@ -645,17 +659,7 @@ export function jsonLd(software = SOFTWARE, runtimeVersion = RUNTIME_VERSION) {
         image: SIGIL,
         mainEntityOfPage: CANON_ORIGIN + "/",
         knowsAbout: ["software", "research", RUNTIME_TITLE, "FragGate"],
-        sameAs: [
-          GITHUB,
-          GITHUB_SECONDARY,
-          LIBRARY + "/",
-          LIBRARY_AZIEL,
-          GODLOCK + "/",
-          GODLOCK_AZIEL,
-          LIBRARY_RUNTIME,
-          RUNTIME_LOCAL,
-          X_URL,
-        ],
+        sameAs: PERSON_SAME_AS.slice(),
       },
       {
         "@type": "WebSite",
@@ -667,6 +671,7 @@ export function jsonLd(software = SOFTWARE, runtimeVersion = RUNTIME_VERSION) {
         inLanguage: "en",
         license: "https://www.apache.org/licenses/LICENSE-2.0",
         author: person,
+        creator: person,
         publisher: person,
         image: SIGIL,
         hasPart: [{ "@id": softwareId }, { "@id": DONATE_HREF }, { "@id": softwareId + "-list" }],
@@ -688,9 +693,20 @@ export function jsonLd(software = SOFTWARE, runtimeVersion = RUNTIME_VERSION) {
           RUNTIME_LOCAL +
           "/v1/mesh/status (QNM-BUILD-1.0 suite rollup; live_nodes; GET never enables; suite-presence operator enable). QNS-CD-1.0 photon QNS1 packet transfer cite. Author Aziel Eliab.",
         author: person,
+        creator: person,
+        isPartOf: { "@id": siteId },
         license: "https://www.apache.org/licenses/LICENSE-2.0",
         codeRepository: GITHUB_RUNTIME,
-        sameAs: [RUNTIME + "/", LIBRARY_RUNTIME, GITHUB_RUNTIME],
+        sourceCode: {
+          "@type": "SoftwareSourceCode",
+          name: RUNTIME_TITLE,
+          codeRepository: GITHUB_RUNTIME,
+          url: GITHUB_RUNTIME,
+          author: person,
+        },
+        sameAs: [GITHUB_RUNTIME, GLAMA_RUNTIME],
+        relatedLink: RUNTIME + "/",
+        hasPart: namedTools.map((tool) => ({ "@id": tool["@id"] })),
       },
       {
         "@type": "WebAPI",
@@ -699,6 +715,10 @@ export function jsonLd(software = SOFTWARE, runtimeVersion = RUNTIME_VERSION) {
         url: RUNTIME_LOCAL,
         documentation: RUNTIME_LOCAL + "/openapi.json",
         provider: person,
+        endpoint: {
+          "@type": "EntryPoint",
+          url: RUNTIME + "/",
+        },
         description:
           "Aziel Runtime (aziel-runtime) door. OpenAPI " +
           RUNTIME_LOCAL +
@@ -779,6 +799,7 @@ export function jsonLd(software = SOFTWARE, runtimeVersion = RUNTIME_VERSION) {
         author: person,
         isPartOf: { "@id": softwareId },
       })),
+      ...namedTools,
     ],
   };
 }
