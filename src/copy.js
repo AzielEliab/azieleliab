@@ -41,7 +41,7 @@ export const RUNTIME_DOCS = "https://github.com/AzielEliab/aziel-runtime/tree/ma
 export const RUNTIME_DOORS = [
   { label: "Official Runtime", href: RUNTIME + "/" },
   { label: "Source on GitHub", href: GITHUB_RUNTIME },
-  { label: "Try / Deploy on Glama", href: GLAMA_RUNTIME },
+  { label: "Try on Glama", href: GLAMA_RUNTIME },
   { label: "Documentation / Architecture", href: RUNTIME_DOCS },
 ];
 

@@ -199,7 +199,7 @@ Every label and URL is hyperlinked.
 - Runtime → https://www.azieleliab.com/runtime · also https://aziel-runtime.vibelock.workers.dev/ (**2.0.0-rc1**)
 - Official Runtime → https://aziel-runtime.vibelock.workers.dev/
 - Source on GitHub → https://github.com/AzielEliab/aziel-runtime
-- Try / Deploy on Glama → https://glama.ai/mcp/servers/AzielEliab/aziel-runtime (verified Glama listing for AzielEliab/aziel-runtime — not an invented server id)
+- Try on Glama → https://glama.ai/mcp/servers/AzielEliab/aziel-runtime (verified Glama listing for AzielEliab/aziel-runtime — not an invented server id)
 - Documentation / Architecture → https://github.com/AzielEliab/aziel-runtime/tree/main/docs/2.0
 - X → https://x.com/azieleliab
 - Donate → https://www.azieleliab.com/donate
