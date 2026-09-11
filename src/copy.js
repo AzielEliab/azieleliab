@@ -37,6 +37,63 @@ export const RUNTIME_VERSION = "2.0.0-rc1";
 export const GLAMA_RUNTIME = "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime";
 export const RUNTIME_DOCS = "https://github.com/AzielEliab/aziel-runtime/tree/main/docs/2.0";
 
+/** Locked Person node. www + #aziel — never apex, never #aziel-eliab. */
+export const PERSON_ID = CANON_ORIGIN + "/#aziel";
+export const WEBSITE_ID = CANON_ORIGIN + "/#website";
+/** Person sameAs only. Project URLs belong on author/creator/sourceCode/isPartOf. */
+export const PERSON_SAME_AS = [GITHUB, GLAMA_RUNTIME, LIBRARY + "/", GODLOCK + "/"];
+
+export const ECOSYSTEM_TITLE = "Part of the Aziel Eliab ecosystem";
+export const ECOSYSTEM_LINKS = [
+  { label: "Official site", href: CANON_ORIGIN + "/" },
+  { label: "Aziel Corpus Library", href: LIBRARY + "/" },
+  { label: "Aziel Runtime on GitHub", href: GITHUB_RUNTIME },
+  { label: "Aziel Runtime", href: RUNTIME + "/", secondary: true },
+  { label: "Try on Glama", href: GLAMA_RUNTIME },
+];
+
+/** Frozen Runtime parent. Hub /runtime surface — not a Worker identity page. */
+export const RUNTIME_ID = RUNTIME_LOCAL + "#runtime";
+
+/**
+ * Named Runtime tools only. Not MCP ops/methods/verbs.
+ * @id is https://www.azieleliab.com/runtime#<slug>. Names are exact spellings.
+ */
+export const RUNTIME_NAMED_TOOLS = [
+  { slug: "fraggate", name: "FragGate" },
+  { slug: "forgereceipts", name: "ForgeReceipts" },
+  { slug: "decisiongate", name: "DecisionGate" },
+  { slug: "temporallock", name: "TemporalLock" },
+  { slug: "trajectorylock", name: "TrajectoryLock" },
+  { slug: "peacelock", name: "PeaceLock" },
+  { slug: "godlock", name: "GodLock" },
+  { slug: "azos", name: "AZ-OS" },
+  { slug: "azcoherence", name: "AZCoherence" },
+  { slug: "4dmap", name: "4DMap" },
+  { slug: "aziel-corpus", name: "Aziel Corpus" },
+  { slug: "askjeeves", name: "Ask Jeeves" },
+  { slug: "azbrowser", name: "AZBrowser" },
+  { slug: "azmail", name: "AZMail" },
+  { slug: "azhub", name: "AZHub" },
+  { slug: "azinterface", name: "AZInterface" },
+  { slug: "spectrallock", name: "SpectralLock" },
+  { slug: "shadowlock", name: "ShadowLock" },
+  { slug: "foldlock", name: "FoldLock" },
+  { slug: "codelock", name: "CodeLock" },
+  { slug: "vibelock", name: "VibeLock" },
+];
+
+export function runtimeToolId(slug) {
+  const raw = String(slug || "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+  return RUNTIME_LOCAL + "#" + (raw || "tool");
+}
+
+export const RUNTIME_NAMED_LINE =
+  "Aziel Runtime includes named components such as FragGate, ForgeReceipts, …";
+
 /** Human Runtime panel doors. Softwares tab stays heading → list only. */
 export const RUNTIME_DOORS = [
   { label: "Try on Glama", href: GLAMA_RUNTIME, primary: true },

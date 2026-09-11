@@ -14,6 +14,8 @@ description: >-
 This Worker is the **public landing** and **hub cite** surface. It is **not** a Softwares-tab product. Identity is **Aziel Eliab** only.
 
 Canonical: https://www.azieleliab.com/
+Person `@id`: https://www.azieleliab.com/#aziel (www, not apex; `#aziel` not `#aziel-eliab`)
+Runtime parent `@id`: https://www.azieleliab.com/runtime#runtime (`hasPart` named tools only; not MCP ops)
 
 Softwares list: https://www.azieleliab.com/#software (`/software` 301s here)
 

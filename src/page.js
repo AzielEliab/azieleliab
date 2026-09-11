@@ -12,6 +12,8 @@ import {
   DONATE_SIGN,
   DONATE_TITLE,
   DOORS,
+  ECOSYSTEM_LINKS,
+  ECOSYSTEM_TITLE,
   EMBRYOLOCK_COPY,
   EMBRYOLOCK_HREF,
   EMBRYOLOCK_WORKER,
@@ -20,6 +22,7 @@ import {
   PROSE,
   RUNTIME_DOORS,
   RUNTIME_NAME,
+  RUNTIME_NAMED_LINE,
   RUNTIME_TITLE,
   RUNTIME_VERSION,
   SIGIL,
@@ -225,6 +228,7 @@ a:hover{color:var(--gold);text-decoration-color:var(--gold)}
 .soft-name{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;font-size:16px;font-weight:650;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--gold);padding-bottom:1px}
 .soft-name:hover{color:var(--gold)}
 .runtime-cite{margin:0 0 12px;color:var(--muted);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;font-size:14px;letter-spacing:.04em}
+.runtime-named{margin:0 0 12px;color:var(--muted);font-size:15px;line-height:1.55}
 .runtime-doors{margin:0 0 10px}
 .runtime-cta{
   display:inline-flex;align-items:center;justify-content:center;
@@ -254,6 +258,15 @@ a:hover{color:var(--gold);text-decoration-color:var(--gold)}
 footer{margin-top:28px;color:var(--muted);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;font-size:13px}
 footer a{color:var(--muted)}
 footer a:hover{color:var(--gold)}
+.ecosystem{margin:0 0 16px;padding:0 0 16px;border-bottom:1px solid var(--line)}
+.ecosystem-title{
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  font-size:12px;font-weight:700;letter-spacing:.04em;
+  color:var(--muted);margin:0 0 8px;text-transform:none;
+}
+.ecosystem ul{list-style:none;margin:0;padding:0}
+.ecosystem li{margin:0 0 6px}
+.ecosystem-secondary{opacity:.82}
 .mesh-quiet{margin:0;font-size:12px;letter-spacing:.04em}
 .spine{
   display:flex;flex-wrap:wrap;gap:8px 14px;margin:0 0 28px;padding:0;
@@ -516,6 +529,23 @@ export function runtimeCiteHtml(version) {
   );
 }
 
+export function ecosystemHtml() {
+  return (
+    '<nav class="ecosystem" aria-label="' +
+    esc(ECOSYSTEM_TITLE) +
+    '">' +
+    '<p class="ecosystem-title">' +
+    esc(ECOSYSTEM_TITLE) +
+    "</p>" +
+    "<ul>" +
+    ECOSYSTEM_LINKS.map((link) => {
+      const cls = link.secondary ? "ecosystem-secondary" : undefined;
+      return "<li>" + a(link.href, link.label, cls) + "</li>";
+    }).join("") +
+    "</ul></nav>"
+  );
+}
+
 export function pageHtml(views = 0, softwareItems = SOFTWARE, mesh = null, runtimeVersion = RUNTIME_VERSION) {
   const doorsSoftware = softwareItems && softwareItems.length ? softwareItems : SOFTWARE;
   const software = softwareLine(doorsSoftware);
@@ -558,6 +588,7 @@ ${documentHead({
   <section class="card" id="runtime">
     <h2>${esc(RUNTIME_TITLE)}</h2>
     ${runtimeCiteHtml(runtimeVersion)}
+    <p class="runtime-named">${esc(RUNTIME_NAMED_LINE)}</p>
     ${runtimeDoorsHtml()}
   </section>
   <section class="card" id="research">
@@ -577,6 +608,7 @@ ${documentHead({
     <p class="sign">${esc(PROSE.sign)}</p>
   </section>
   <footer>
+    ${ecosystemHtml()}
     <p>${esc(AUTHOR)} · ${a(CANON_ORIGIN + "/cite.json", "cite.json")} · ${a(CANON_ORIGIN + "/llms.txt", "llms.txt")} · ${a(DONATE_HREF, DONATE_TITLE)} · Apache-2.0</p>
     <p class="mesh-quiet">${a("/v1/mesh/status", meshLabel)} · ${a("/v1/mesh/status", nodesLabel)}</p>
   </footer>
@@ -612,6 +644,7 @@ ${documentHead({
   <h1>${esc(DONATE_TITLE)}</h1>
   <article class="card lead">${donateArticle()}</article>
   <footer>
+    ${ecosystemHtml()}
     <p>${esc(AUTHOR)} · ${a(CANON_ORIGIN + "/", AUTHOR)} · ${a(CANON_ORIGIN + "/cite.json", "cite.json")} · Apache-2.0</p>
   </footer>
 </main>
@@ -642,6 +675,9 @@ ${documentHead({
   <h1>${esc(EMBRYOLOCK_COPY.title)}</h1>
   <article class="card lead">${paragraphs(EMBRYOLOCK_COPY.open)}</article>
   <p>${a(EMBRYOLOCK_WORKER, "worker_home")} · ${a(SOFTWARE_SECTION, "Software")} · ${a(CANON_ORIGIN + "/", AUTHOR)}</p>
+  <footer>
+    ${ecosystemHtml()}
+  </footer>
 </main>
 </body>
 </html>`;
