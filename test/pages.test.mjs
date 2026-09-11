@@ -1,7 +1,7 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import worker, { apexRedirect, donateCacheBustLocation, handleRequest } from "../src/index.js";
-import { donateHtml, embryoLockHtml, pageHtml, spineNav } from "../src/page.js";
+import { donateHtml, embryoLockHtml, ecosystemHtml, pageHtml, spineNav } from "../src/page.js";
 import { incrementViews, memoryKv } from "../src/views.js";
 import { DONATE_HTML_CACHE, HTML_CACHE, SEO_CACHE, memoryCache } from "../src/edgeCache.js";
 import { FANOUT_MAX, allowOriginRefresh, isOperator } from "../src/costGuard.js";
@@ -29,6 +29,8 @@ import {
   DONATE_TITLE,
   DONATE_XRP_TAG_NOTE,
   DOORS,
+  ECOSYSTEM_LINKS,
+  ECOSYSTEM_TITLE,
   LIBRARY,
   LIBRARY_AZIEL,
   LIBRARY_SOFTWARE,
@@ -61,7 +63,11 @@ import {
   RUNTIME_VERSION,
   RUNTIME_DOORS,
   GLAMA_RUNTIME,
+  PERSON_ID,
+  PERSON_SAME_AS,
+  RUNTIME,
   RUNTIME_DOCS,
+  WEBSITE_ID,
   isAboutAlias,
   displaySoftwareName,
   isRuntimeSoftware,
@@ -664,6 +670,7 @@ describe("SEO routes", () => {
     const mapBody = await map.text();
     assert.ok(llmsBody.includes("Author: " + AUTHOR));
     assert.ok(llmsBody.includes("Canonical: " + CANON_ORIGIN + "/"));
+    assert.ok(llmsBody.includes("Person @id: " + PERSON_ID));
     assert.ok(llmsBody.includes(SOFTWARE_HREF + "  (301 to /#software)"));
     assert.ok(llmsBody.includes(CANON_ORIGIN + "/about  (301 to / — About Aziel Eliab)"));
     assert.ok(llmsBody.includes("Softwares list: " + SOFTWARE_SECTION));
@@ -760,6 +767,8 @@ describe("SEO routes", () => {
     assert.equal(citeBody.author, AUTHOR);
     assert.equal(citeBody.canonical, CANON_ORIGIN + "/");
     assert.equal(citeBody.identity, AUTHOR);
+    assert.equal(citeBody.person_id, PERSON_ID);
+    assert.deepEqual(citeBody.sameAs, PERSON_SAME_AS);
     assert.equal(citeBody.runtime_local, RUNTIME_LOCAL);
     assert.equal(citeBody.runtime_uses, RUNTIME_LOCAL + "/v1/uses");
     assert.equal(citeBody.software_catalog, CANON_ORIGIN + "/v1/software");
@@ -842,13 +851,18 @@ describe("SEO routes", () => {
     assert.ok(html.includes("<h1>" + AUTHOR + "</h1>"));
     const ld = jsonLd();
     assert.equal(ld["@graph"][0]["@type"], "Person");
+    assert.equal(ld["@graph"][0]["@id"], PERSON_ID);
     assert.equal(ld["@graph"][0].name, AUTHOR);
     assert.ok(ld["@graph"][0].sameAs.includes(LIBRARY + "/"));
     assert.equal(ld["@graph"][1]["@type"], "WebSite");
+    assert.equal(ld["@graph"][1]["@id"], WEBSITE_ID);
     assert.equal(ld["@graph"][1].url, CANON_ORIGIN + "/");
+    assert.deepEqual(ld["@graph"][1].publisher, { "@id": PERSON_ID });
+    assert.deepEqual(ld["@graph"][1].creator, { "@id": PERSON_ID });
     assert.equal(ld["@graph"][2]["@type"], "SoftwareApplication");
     assert.equal(ld["@graph"][2].name, RUNTIME_TITLE);
     assert.equal(ld["@graph"][2].url, RUNTIME_LOCAL);
+    assert.deepEqual(ld["@graph"][2].author, { "@id": PERSON_ID });
     assert.ok(ld["@graph"][2].description.includes("aziel-runtime"));
     assert.ok(!ld["@graph"][2].description.includes("FragGate / aziel-runtime"));
     assert.ok(!/runtime 1\.6\.\d+ FragGate/i.test(ld["@graph"][2].description));
@@ -868,7 +882,9 @@ describe("SEO routes", () => {
     assert.equal(ld["@graph"][6].url, CANON_ORIGIN + "/");
     assert.equal(ld["@graph"][7]["@type"], "CollectionPage");
     assert.equal(ld["@graph"][7].url, SOFTWARE_SECTION);
-    const catalogApps = ld["@graph"].filter((n) => n["@type"] === "SoftwareApplication" && n.isPartOf);
+    const catalogApps = ld["@graph"].filter(
+      (n) => n["@type"] === "SoftwareApplication" && n.isPartOf && n.isPartOf["@id"] === CANON_ORIGIN + "/#software",
+    );
     assert.equal(catalogApps.length, SOFTWARE.length);
     assert.ok(catalogApps.some((n) => n.name === "EmbryoLock" && n["@id"] === softwareNodeId({ name: "EmbryoLock" })));
     assert.ok(html.includes('"@type":"DonateAction"'));
@@ -898,6 +914,170 @@ describe("SEO routes", () => {
     assert.ok(ld["@graph"][2].description.includes("QNS-CD-1.0"));
     assert.ok(ld["@graph"][3].description.includes("/v1/mesh/status"));
     assert.ok(ld["@graph"][3].description.includes("QNS-CD-1.0"));
+  });
+});
+
+function jsonLdFromHtml(html) {
+  const match = html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/);
+  assert.ok(match, "missing JSON-LD");
+  return JSON.parse(match[1]);
+}
+
+function canonicalsFromHtml(html) {
+  return [...html.matchAll(/<link rel="canonical" href="([^"]+)"/g)].map((m) => m[1]);
+}
+
+describe("public entity graph phases B–D + E audit", () => {
+  it("locks Person @id to www #aziel and slims sameAs", () => {
+    assert.equal(PERSON_ID, "https://www.azieleliab.com/#aziel");
+    assert.equal(WEBSITE_ID, "https://www.azieleliab.com/#website");
+    assert.deepEqual(PERSON_SAME_AS, [
+      "https://github.com/AzielEliab",
+      "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime",
+      "https://www.azielcorpuslibrary.net/",
+      "https://godlock.uk/",
+    ]);
+    assert.equal(GLAMA_RUNTIME, "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime");
+    assert.doesNotMatch(GLAMA_RUNTIME, /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i);
+
+    const ld = jsonLd();
+    const person = ld["@graph"].find((n) => n["@type"] === "Person");
+    const site = ld["@graph"].find((n) => n["@type"] === "WebSite");
+    assert.ok(person);
+    assert.ok(site);
+    assert.equal(person["@id"], PERSON_ID);
+    assert.equal(person.name, AUTHOR);
+    assert.equal(person.alternateName, "Aziel Elroi Eliab");
+    assert.deepEqual(person.sameAs, PERSON_SAME_AS);
+    assert.ok(!person.sameAs.includes(GITHUB_RUNTIME));
+    assert.ok(!person.sameAs.includes(RUNTIME_LOCAL));
+    assert.ok(!person.sameAs.includes(RUNTIME + "/"));
+    assert.ok(!person.sameAs.includes(LIBRARY_AZIEL));
+    assert.equal(site["@id"], WEBSITE_ID);
+    assert.deepEqual(site.publisher, { "@id": PERSON_ID });
+    assert.deepEqual(site.creator, { "@id": PERSON_ID });
+    assert.deepEqual(site.author, { "@id": PERSON_ID });
+
+    const blob = JSON.stringify(ld);
+    assert.ok(!blob.includes("#aziel-eliab"));
+    assert.ok(!blob.includes("https://azieleliab.com/#aziel"));
+    assert.doesNotMatch(blob, /glama\.ai\/mcp\/servers\/[0-9a-f]{8}-/i);
+    assert.doesNotMatch(blob, /\/software\/aziel-runtime/);
+
+    const refs = [];
+    const walk = (node) => {
+      if (!node || typeof node !== "object") return;
+      if (Array.isArray(node)) {
+        node.forEach(walk);
+        return;
+      }
+      if (typeof node["@id"] === "string" && node["@id"].includes("#aziel")) refs.push(node["@id"]);
+      Object.values(node).forEach(walk);
+    };
+    walk(ld);
+    assert.ok(refs.length > 0);
+    assert.ok(refs.every((id) => id === PERSON_ID));
+  });
+
+  it("cites Aziel Runtime on the hub /runtime surface, not the Worker as primary identity", () => {
+    const runtime = jsonLd()["@graph"].find(
+      (n) => n["@type"] === "SoftwareApplication" && n.name === RUNTIME_TITLE && n.url === RUNTIME_LOCAL,
+    );
+    const api = jsonLd()["@graph"].find((n) => n["@type"] === "WebAPI");
+    assert.ok(runtime);
+    assert.ok(api);
+    assert.equal(runtime.name, "Aziel Runtime");
+    assert.equal(runtime.url, RUNTIME_LOCAL);
+    assert.notEqual(runtime.url, RUNTIME + "/");
+    assert.deepEqual(runtime.author, { "@id": PERSON_ID });
+    assert.deepEqual(runtime.creator, { "@id": PERSON_ID });
+    assert.deepEqual(runtime.sameAs, [GITHUB_RUNTIME, GLAMA_RUNTIME]);
+    assert.ok(!runtime.sameAs.includes(RUNTIME + "/"));
+    assert.equal(runtime.codeRepository, GITHUB_RUNTIME);
+    assert.equal(runtime.sourceCode.codeRepository, GITHUB_RUNTIME);
+    assert.equal(runtime.relatedLink, RUNTIME + "/");
+    assert.equal(api.url, RUNTIME_LOCAL);
+    assert.equal(api.endpoint["@type"], "EntryPoint");
+    assert.equal(api.endpoint.url, RUNTIME + "/");
+  });
+
+  it("shows the ecosystem chrome in the footer, not between Softwares heading and list", () => {
+    assert.equal(ECOSYSTEM_TITLE, "Part of the Aziel Eliab ecosystem");
+    assert.deepEqual(
+      ECOSYSTEM_LINKS.map((d) => [d.label, d.href, Boolean(d.secondary)]),
+      [
+        ["Official site", "https://www.azieleliab.com/", false],
+        ["Aziel Corpus Library", "https://www.azielcorpuslibrary.net/", false],
+        ["Aziel Runtime on GitHub", "https://github.com/AzielEliab/aziel-runtime", false],
+        ["Aziel Runtime", "https://aziel-runtime.vibelock.workers.dev/", true],
+        ["Try on Glama", "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime", false],
+      ],
+    );
+    const block = ecosystemHtml();
+    assert.ok(block.includes('class="ecosystem"'));
+    assert.ok(block.includes(ECOSYSTEM_TITLE));
+    assert.ok(block.includes('aria-label="' + ECOSYSTEM_TITLE + '"'));
+    for (const link of ECOSYSTEM_LINKS) {
+      assert.ok(block.includes('href="' + link.href + '"'), link.label);
+      assert.ok(block.includes(">" + link.label + "<"), link.label);
+    }
+    assert.match(block, /class="ecosystem-secondary"[^>]*>Aziel Runtime</);
+    assert.doesNotMatch(block, /Try \/ Deploy on Glama|Try\/Deploy on Glama/);
+
+    const html = pageHtml();
+    const softwareCard = html.match(/<section class="card" id="software">[\s\S]*?<\/section>/);
+    assert.ok(softwareCard);
+    assert.match(softwareCard[0], /<h2>Software<\/h2>\s*<p class="soft-line">/);
+    assert.doesNotMatch(softwareCard[0], /Part of the Aziel Eliab ecosystem/);
+    assert.doesNotMatch(softwareCard[0], /Official site|Aziel Corpus Library|Try on Glama/);
+    const footer = html.match(/<footer>[\s\S]*?<\/footer>/);
+    assert.ok(footer);
+    assert.ok(footer[0].includes(ECOSYSTEM_TITLE));
+    assert.ok(footer[0].includes(">Try on Glama<"));
+    assert.ok(footer[0].includes(">mesh off<"));
+    assert.ok(html.indexOf('id="software"') < html.indexOf("Part of the Aziel Eliab ecosystem"));
+
+    const donate = donateHtml();
+    const embryo = embryoLockHtml();
+    assert.ok(donate.includes(ECOSYSTEM_TITLE));
+    assert.ok(embryo.includes(ECOSYSTEM_TITLE));
+    assert.ok(donate.includes(">Try on Glama<"));
+    assert.ok(embryo.includes(">Aziel Runtime on GitHub<"));
+  });
+
+  it("keeps self-referencing www canonicals and never canonicalizes to another domain", () => {
+    const pages = [
+      [pageHtml(), CANON_ORIGIN + "/"],
+      [donateHtml(), DONATE_HREF],
+      [embryoLockHtml(), EMBRYOLOCK_HREF],
+    ];
+    for (const [html, expected] of pages) {
+      const hrefs = canonicalsFromHtml(html);
+      assert.ok(hrefs.length >= 1, expected);
+      for (const href of hrefs) {
+        assert.equal(href, expected);
+        assert.ok(href.startsWith(CANON_ORIGIN));
+        assert.ok(!href.includes("azieleliab.com/#") || href.startsWith(CANON_ORIGIN));
+        assert.doesNotMatch(href, /azielcorpuslibrary\.net|godlock\.uk|github\.com|workers\.dev|glama\.ai/);
+        assert.doesNotMatch(href, /^https:\/\/azieleliab\.com\//);
+      }
+      const embedded = jsonLdFromHtml(html);
+      const person = embedded["@graph"].find((n) => n["@type"] === "Person");
+      assert.equal(person["@id"], PERSON_ID);
+      assert.equal(person.name, AUTHOR);
+    }
+  });
+
+  it("leaves Remain-OFF mesh defaults untouched", () => {
+    const html = pageHtml();
+    assert.ok(html.includes(">mesh off<"));
+    assert.ok(html.includes(">Live Nodes · off<"));
+    const cite = citeDoc();
+    assert.equal(cite.mesh_default, "off");
+    assert.equal(cite.mesh_get_never_enables, true);
+    assert.equal(cite.person_id, PERSON_ID);
+    assert.ok(llmsTxt().includes("Person @id: " + PERSON_ID));
+    assert.ok(llmsTxt().includes("sameAs: " + PERSON_SAME_AS.join(" · ")));
   });
 });
 
