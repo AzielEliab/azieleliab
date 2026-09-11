@@ -31,7 +31,7 @@ Cloudflare Worker `azieleliab-com` serves the literary landing, crawl files, and
 | `GET /v1/stats` | Pageviews (no increment) |
 | `GET /v1/view` | Same as stats |
 | `POST /v1/view` | Increment pageviews |
-| `GET /v1/software` | Resolved Softwares catalog (`products` enriched from aziel-runtime; `extras` for FragGate / mesh / aziel-runtime; short edge TTL) |
+| `GET /v1/software` | Resolved Softwares catalog (`products` enriched from aziel-runtime; `extras` for FragGate / mesh / aziel-runtime; short edge TTL). Runtime version cite is **2.0.0-rc1** (or live `/v1/health`) |
 | `GET /v1/update` · `/v1/update/check` | Quiet installer pointer at runtime `/v1/update/check` |
 | `GET /v1/mesh/status` · `/v1/mesh/nodes` | Suite node mesh (default off until runtime enables it) |
 
@@ -119,7 +119,7 @@ Parent attaches custom domains on deploy. Expected hostnames:
 
 ## Software doors
 
-The Software strip (and `/v1/software`, cite, llms, sitemap) prefers the **live** aziel-runtime catalog: packed snapshot first (Cache API / `software:catalog:v2`), then `GET https://aziel-runtime.vibelock.workers.dev/v1/software`, then `GET /v1/fraggate/list`. Same-account service binding `AZIEL_RUNTIME` is tried first. A static slug list remains only as last-resort fallback so the page still renders if runtime is down. New catalog products appear within the snapshot TTL — no hand edit of this repo. Under the Software heading the page lists only those names — no closer, blurb, or other filler. `GET /v1/software` keeps catalog fields (`status`, `worker_home`, `version`, `one_line` at minimum) on `products[]`. FragGate and mesh are `extras` only — not Softwares product cards. The product is **aziel-runtime** / **Aziel Runtime**; Software blurbs and meta never mash it as “runtime 1.6.x FragGate”.
+The Software strip (and `/v1/software`, cite, llms, sitemap) prefers the **live** aziel-runtime catalog: packed snapshot first (Cache API / `software:catalog:v2`), then `GET https://aziel-runtime.vibelock.workers.dev/v1/software`, then `GET /v1/fraggate/list`. Same-account service binding `AZIEL_RUNTIME` is tried first. A static slug list remains only as last-resort fallback so the page still renders if runtime is down. New catalog products appear within the snapshot TTL — no hand edit of this repo. Under the Software heading the page lists only those names — no closer, blurb, or other filler. `GET /v1/software` keeps catalog fields (`status`, `worker_home`, `version`, `one_line` at minimum) on `products[]`. FragGate and mesh are `extras` only — not Softwares product cards. The product is **aziel-runtime** / **Aziel Runtime**; Software blurbs and meta never mash it as “runtime 1.6.x FragGate”. Version cite is **2.0.0-rc1** (or live `GET /v1/health`). SEO abstract still leads. Softwares UI is heading → list only — Runtime distribution buttons live in the `#runtime` card, not under Software.
 
 Preference for each door: live `worker_home` when present, else the download-tracker Worker, else GitHub, else the Digital Library software hub. EmbryoLock Softwares link is catalog `worker_home` (`https://embryolock-download-tracker.vibelock.workers.dev/`). `/embryolock` is a clearly secondary local page. AZBrowser, AZHub, AZInterface, AZNet, and FragGate are separate apps (separate Worker UIs). Never nest. AZHub (Blank Key, AIH-WP-1.0) and AZInterface (custodial page cycles, AIH-WP-1.0) are two engines — never one combined engine. AZNet + AZBrowser are a functional pair only — AZNet is not nested under AZBrowser. Display order is Plain (name has neither lock nor gate as a product token) A–Z, then Gate A–Z, then Lock A–Z. Clock is not Lock. A name that matches both Gate and Lock sits in Gate. AZBrowser, AZHub, AZInterface, AZMail, and AZNet are Plain. DecisionGATE is Gate. PeaceLock is Lock.
 
@@ -196,7 +196,11 @@ Every label and URL is hyperlinked.
 - Corpus → https://www.azielcorpuslibrary.net/
 - Research → https://www.azielcorpuslibrary.net/ · also https://www.azielcorpuslibrary.net/AzielEliab
 - GodLock → https://godlock.uk/
-- Runtime → https://www.azieleliab.com/runtime · also https://aziel-runtime.vibelock.workers.dev/
+- Runtime → https://www.azieleliab.com/runtime · also https://aziel-runtime.vibelock.workers.dev/ (**2.0.0-rc1**)
+- Try on Glama → https://glama.ai/mcp/servers/AzielEliab/aziel-runtime (primary Runtime CTA; verified Glama listing for AzielEliab/aziel-runtime — not an invented server id)
+- Official Runtime → https://aziel-runtime.vibelock.workers.dev/ (secondary Worker link)
+- Source on GitHub → https://github.com/AzielEliab/aziel-runtime
+- Documentation / Architecture → https://github.com/AzielEliab/aziel-runtime/tree/main/docs/2.0
 - X → https://x.com/azieleliab
 - Donate → https://www.azieleliab.com/donate
 

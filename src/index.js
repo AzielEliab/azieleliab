@@ -207,7 +207,7 @@ export async function handleRequest(request, env = {}, ctx) {
   const mesh = meshStatus ? meshSnapshot(meshStatus.origin) : null;
 
   let res;
-  if (path === "/") res = html(pageHtml(await pageViews(request, env), doors, meshStatus));
+  if (path === "/") res = html(pageHtml(await pageViews(request, env), doors, meshStatus, live && live.version));
   else if (path === "/software") res = Response.redirect(SOFTWARE_SECTION, 301);
   else if (path === "/donate") res = html(donateHtml(), 200, DONATE_HTML_CACHE);
   else if (path === "/embryolock") res = html(embryoLockHtml(), 200, STUB_HTML_CACHE);
@@ -215,7 +215,7 @@ export async function handleRequest(request, env = {}, ctx) {
   else if (path === "/llms.txt") res = text(llmsTxt(doors), "text/plain", { cache: SEO_CACHE });
   else if (path === "/ai.txt") res = text(aiTxt(), "text/plain", { cache: SEO_CACHE });
   else if (path === "/cite.json") {
-    res = text(JSON.stringify(citeDoc(doors), null, 1) + "\n", "application/json", { cache: SEO_CACHE });
+    res = text(JSON.stringify(citeDoc(doors, live && live.version), null, 1) + "\n", "application/json", { cache: SEO_CACHE });
   } else if (path === "/sitemap.xml") {
     res = text(sitemapXml(new Date(), doors), "application/xml", { cache: SEO_CACHE });
   } else if (path === "/v1/software") {
