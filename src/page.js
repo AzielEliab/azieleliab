@@ -18,12 +18,17 @@ import {
   GITHUB,
   LIBRARY,
   PROSE,
+  RUNTIME_DOORS,
+  RUNTIME_NAME,
+  RUNTIME_TITLE,
+  RUNTIME_VERSION,
   SIGIL,
   SOFTWARE,
   SOFTWARE_SECTION,
   SPINE,
   X_HANDLE,
   X_URL,
+  resolveRuntimeVersion,
 } from "./copy.js";
 import { qrImg } from "./qr.js";
 import { MESH_STATUS_LOCAL, QNM_SPEC, QNS_CD_SPEC, liveNodesLabel, meshQuietLabel } from "./mesh.js";
@@ -219,6 +224,24 @@ a:hover{color:var(--gold);text-decoration-color:var(--gold)}
 .soft-line{color:var(--ink-soft);line-height:1.95}
 .soft-name{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;font-size:16px;font-weight:650;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--gold);padding-bottom:1px}
 .soft-name:hover{color:var(--gold)}
+.runtime-cite{margin:0 0 12px;color:var(--muted);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;font-size:14px;letter-spacing:.04em}
+.runtime-doors{margin:0 0 10px}
+.runtime-cta{
+  display:inline-flex;align-items:center;justify-content:center;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  font-size:15px;font-weight:750;letter-spacing:.02em;
+  background:var(--gold);color:#14110a;border:1px solid var(--gold);
+  border-radius:10px;padding:12px 18px;text-decoration:none;min-height:44px;
+}
+.runtime-cta:hover{color:#14110a;filter:brightness(1.08)}
+.runtime-secondary{display:flex;flex-wrap:wrap;gap:12px 18px;margin:0}
+.runtime-secondary a{
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  font-size:14px;font-weight:550;color:var(--ink-soft);
+  text-decoration:underline;text-decoration-color:var(--gold-dim);text-underline-offset:3px;
+  background:none;border:0;padding:0;
+}
+.runtime-secondary a:hover{color:var(--gold);text-decoration-color:var(--gold)}
 .doors{list-style:none;margin:0;padding:0}
 .doors li{margin:0 0 12px;padding:0;word-break:break-word}
 .door-label{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;font-weight:700;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--gold)}
@@ -373,8 +396,8 @@ function discoveryLinks() {
     .join("\n");
 }
 
-function documentHead({ title, description, canonical, software, extraMeta = "" }) {
-  const ld = JSON.stringify(jsonLd(software));
+function documentHead({ title, description, canonical, software, extraMeta = "", runtimeVersion }) {
+  const ld = JSON.stringify(jsonLd(software, runtimeVersion));
   return `<meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${esc(title)}</title>
@@ -458,7 +481,42 @@ const LIVE_NODES_SCRIPT = `<script>
 })();
 </script>`;
 
-export function pageHtml(views = 0, softwareItems = SOFTWARE, mesh = null) {
+const RUNTIME_VERSION_SCRIPT = `<script>
+(function(){
+  var el=document.getElementById("aziel-runtime-version");
+  if(!el)return;
+  fetch("/runtime/v1/health",{headers:{"Accept":"application/json","User-Agent":"Mozilla/5.0"}}).then(function(r){return r.json();}).then(function(d){
+    if(!d||!d.version)return;
+    el.textContent=String(d.version);
+  }).catch(function(){});
+})();
+</script>`;
+
+function runtimeDoorsHtml() {
+  const primary = RUNTIME_DOORS.filter((door) => door.primary);
+  const secondary = RUNTIME_DOORS.filter((door) => !door.primary);
+  return (
+    '<p class="runtime-doors">' +
+    primary.map((door) => a(door.href, door.label, "runtime-cta")).join("") +
+    "</p>" +
+    '<p class="runtime-secondary">' +
+    secondary.map((door) => a(door.href, door.label)).join("") +
+    "</p>"
+  );
+}
+
+export function runtimeCiteHtml(version) {
+  const ver = resolveRuntimeVersion(version);
+  return (
+    '<p class="runtime-cite">' +
+    esc(RUNTIME_NAME) +
+    " · <span id=\"aziel-runtime-version\">" +
+    esc(ver) +
+    "</span></p>"
+  );
+}
+
+export function pageHtml(views = 0, softwareItems = SOFTWARE, mesh = null, runtimeVersion = RUNTIME_VERSION) {
   const doorsSoftware = softwareItems && softwareItems.length ? softwareItems : SOFTWARE;
   const software = softwareLine(doorsSoftware);
   const doors = DOORS.map(doorRow).join("");
@@ -473,6 +531,7 @@ ${documentHead({
   canonical: CANON_ORIGIN + "/",
   software: doorsSoftware,
   extraMeta: quietDiscoveryMeta(),
+  runtimeVersion,
 })}
 </head>
 <body>
@@ -495,6 +554,11 @@ ${documentHead({
   <section class="card" id="software">
     <h2>Software</h2>
     <p class="soft-line">${software}</p>
+  </section>
+  <section class="card" id="runtime">
+    <h2>${esc(RUNTIME_TITLE)}</h2>
+    ${runtimeCiteHtml(runtimeVersion)}
+    ${runtimeDoorsHtml()}
   </section>
   <section class="card" id="research">
     <h2>Research</h2>
@@ -519,6 +583,7 @@ ${documentHead({
 </main>
 ${COPY_SCRIPT}
 ${LIVE_NODES_SCRIPT}
+${RUNTIME_VERSION_SCRIPT}
 </body>
 </html>`;
 }

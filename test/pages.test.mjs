@@ -58,6 +58,10 @@ import {
   SOFTWARE_HREF,
   SOFTWARE_SECTION,
   SPINE,
+  RUNTIME_VERSION,
+  RUNTIME_DOORS,
+  GLAMA_RUNTIME,
+  RUNTIME_DOCS,
   isAboutAlias,
   displaySoftwareName,
   isRuntimeSoftware,
@@ -179,6 +183,58 @@ describe("software doors", () => {
     assert.match(html, /<h2>Software<\/h2>\s*<p class="soft-line">/);
     assert.doesNotMatch(html, /soft-close/);
     assert.doesNotMatch(html, /runtime 1\.6\.\d+ FragGate/i);
+    const softwareCard = html.match(/<section class="card" id="software">[\s\S]*?<\/section>/);
+    assert.ok(softwareCard);
+    assert.match(softwareCard[0], /<h2>Software<\/h2>\s*<p class="soft-line">/);
+    assert.doesNotMatch(softwareCard[0], /Official Runtime|Try on Glama|Try \/ Deploy on Glama|Documentation \/ Architecture/);
+    assert.doesNotMatch(softwareCard[0], /2\.0\.0-rc1/);
+  });
+
+  it("cites Aziel Runtime 2.0.0-rc1 and Glama distribution doors outside Softwares", () => {
+    assert.equal(RUNTIME_VERSION, "2.0.0-rc1");
+    assert.equal(GLAMA_RUNTIME, "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime");
+    assert.equal(RUNTIME_DOCS, "https://github.com/AzielEliab/aziel-runtime/tree/main/docs/2.0");
+    assert.deepEqual(
+      RUNTIME_DOORS.map((d) => d.label),
+      ["Try on Glama", "Official Runtime", "Source on GitHub", "Documentation / Architecture"],
+    );
+    assert.equal(RUNTIME_DOORS[0].label, "Try on Glama");
+    assert.equal(RUNTIME_DOORS[0].href, GLAMA_RUNTIME);
+    assert.equal(RUNTIME_DOORS[0].primary, true);
+    assert.ok(RUNTIME_DOORS.slice(1).every((d) => !d.primary));
+    const html = pageHtml();
+    assert.match(html, /<section class="card" id="runtime">/);
+    assert.match(html, /<h2>Aziel Runtime<\/h2>/);
+    assert.match(html, /id="aziel-runtime-version">2\.0\.0-rc1</);
+    assert.match(html, /\/runtime\/v1\/health/);
+    for (const door of RUNTIME_DOORS) {
+      assert.ok(html.includes('href="' + door.href + '"'), door.label);
+      assert.ok(html.includes(">" + door.label + "<"), door.label + " label");
+    }
+    assert.match(html, /href="https:\/\/glama\.ai\/mcp\/servers\/AzielEliab\/aziel-runtime" class="runtime-cta"/);
+    assert.match(html, /class="runtime-cta"[^>]*>Try on Glama</);
+    assert.doesNotMatch(html, /Try \/ Deploy on Glama|Try\/Deploy on Glama/);
+    const runtimeCard = html.match(/<section class="card" id="runtime">[\s\S]*?<\/section>/);
+    assert.ok(runtimeCard);
+    assert.match(runtimeCard[0], /class="runtime-cta"[^>]*>Try on Glama</);
+    assert.doesNotMatch(runtimeCard[0], /class="runtime-cta"[^>]*>Official Runtime</);
+    assert.match(runtimeCard[0], /class="runtime-secondary"/);
+    assert.ok(runtimeCard[0].indexOf("Try on Glama") < runtimeCard[0].indexOf("Official Runtime"));
+    assert.ok(runtimeCard[0].indexOf("Official Runtime") < runtimeCard[0].indexOf("Source on GitHub"));
+    assert.doesNotMatch(html, /runtime 2\.0\.0-rc1 FragGate/i);
+    const ld = jsonLd();
+    assert.equal(ld["@graph"][2].softwareVersion, "2.0.0-rc1");
+    assert.ok(!/2\.0\.0-rc1/.test(ld["@graph"][2].description.split(".")[0]));
+    const cite = citeDoc();
+    assert.equal(cite.runtime_version, "2.0.0-rc1");
+    assert.equal(cite.glama_runtime, GLAMA_RUNTIME);
+    assert.equal(cite.runtime_docs, RUNTIME_DOCS);
+    assert.equal(cite.runtime_doors.length, 4);
+    assert.equal(cite.runtime_doors[0].label, "Try on Glama");
+    assert.equal(cite.runtime_doors[0].url, GLAMA_RUNTIME);
+    assert.equal(cite.runtime_doors[0].primary, true);
+    assert.equal(cite.runtime_doors[1].label, "Official Runtime");
+    assert.equal(cite.runtime_doors[1].primary, false);
   });
 
   it("names aziel-runtime / Aziel Runtime and refuses version+FragGate mash", () => {
@@ -643,6 +699,9 @@ describe("SEO routes", () => {
     assert.ok(llmsBody.includes("Cohere"));
     assert.ok(llmsBody.includes("Cursor (MCP)"));
     assert.ok(llmsBody.includes("Glama"));
+    assert.ok(llmsBody.includes("Try on Glama: " + GLAMA_RUNTIME));
+    assert.ok(!llmsBody.includes("Try / Deploy on Glama"));
+    assert.ok(!llmsBody.includes("Try/Deploy on Glama"));
     assert.ok(llmsBody.includes("Perplexity"));
     assert.ok(llmsBody.includes("Microsoft Copilot / Bing"));
     assert.ok(llmsBody.includes("Google Gemini / Vertex AI"));
