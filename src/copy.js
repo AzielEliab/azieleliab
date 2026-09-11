@@ -52,6 +52,48 @@ export const ECOSYSTEM_LINKS = [
   { label: "Try on Glama", href: GLAMA_RUNTIME },
 ];
 
+/** Frozen Runtime parent. Hub /runtime surface — not a Worker identity page. */
+export const RUNTIME_ID = RUNTIME_LOCAL + "#runtime";
+
+/**
+ * Named Runtime tools only. Not MCP ops/methods/verbs.
+ * @id is https://www.azieleliab.com/runtime#<slug>. Names are exact spellings.
+ */
+export const RUNTIME_NAMED_TOOLS = [
+  { slug: "fraggate", name: "FragGate" },
+  { slug: "forgereceipts", name: "ForgeReceipts" },
+  { slug: "decisiongate", name: "DecisionGate" },
+  { slug: "temporallock", name: "TemporalLock" },
+  { slug: "trajectorylock", name: "TrajectoryLock" },
+  { slug: "peacelock", name: "PeaceLock" },
+  { slug: "godlock", name: "GodLock" },
+  { slug: "azos", name: "AZ-OS" },
+  { slug: "azcoherence", name: "AZCoherence" },
+  { slug: "4dmap", name: "4DMap" },
+  { slug: "aziel-corpus", name: "Aziel Corpus" },
+  { slug: "askjeeves", name: "Ask Jeeves" },
+  { slug: "azbrowser", name: "AZBrowser" },
+  { slug: "azmail", name: "AZMail" },
+  { slug: "azhub", name: "AZHub" },
+  { slug: "azinterface", name: "AZInterface" },
+  { slug: "spectrallock", name: "SpectralLock" },
+  { slug: "shadowlock", name: "ShadowLock" },
+  { slug: "foldlock", name: "FoldLock" },
+  { slug: "codelock", name: "CodeLock" },
+  { slug: "vibelock", name: "VibeLock" },
+];
+
+export function runtimeToolId(slug) {
+  const raw = String(slug || "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+  return RUNTIME_LOCAL + "#" + (raw || "tool");
+}
+
+export const RUNTIME_NAMED_LINE =
+  "Aziel Runtime includes named components such as FragGate, ForgeReceipts, …";
+
 /** Human Runtime panel doors. Softwares tab stays heading → list only. */
 export const RUNTIME_DOORS = [
   { label: "Try on Glama", href: GLAMA_RUNTIME, primary: true },
