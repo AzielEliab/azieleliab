@@ -21,7 +21,7 @@ Locked `@id`s on the www host (never apex; never `#aziel-eliab`):
 | WebSite | [https://www.azieleliab.com/#website](https://www.azieleliab.com/#website) |
 | Runtime parent | [https://www.azieleliab.com/runtime#runtime](https://www.azieleliab.com/runtime#runtime) |
 
-Person `sameAs` only: [GitHub profile](https://github.com/AzielEliab), [Glama listing](https://glama.ai/mcp/servers/AzielEliab/aziel-runtime) (owner/repo path — no invented UUIDs), [Corpus Library](https://www.azielcorpuslibrary.net/), [GodLock](https://godlock.uk/). Project URLs stay on `author` / `creator` / `sourceCode` / `isPartOf`.
+Person `sameAs` only: [GitHub profile](https://github.com/AzielEliab), [Glama listing](https://glama.ai/mcp/servers/AzielEliab/aziel-runtime) (owner/repo path — no invented UUIDs), [Corpus Library](https://www.azielcorpuslibrary.net/), [GodLock](https://godlock.uk/), [He Didn't Jump](https://www.hedidntjump.com/). Project URLs stay on `author` / `creator` / `sourceCode` / `isPartOf`.
 
 Runtime `SoftwareApplication` `sameAs`: [AzielEliab/aziel-runtime](https://github.com/AzielEliab/aziel-runtime) + [Try on Glama](https://glama.ai/mcp/servers/AzielEliab/aziel-runtime). Worker origin is `relatedLink` / endpoint, not the identity page. Version cite **2.0.0-rc1**.
 
@@ -38,6 +38,7 @@ Part of the Aziel Eliab ecosystem. Cross-links for humans, Google, and AI crawle
 | Official site | [https://www.azieleliab.com/](https://www.azieleliab.com/) |
 | Corpus | [https://www.azielcorpuslibrary.net/](https://www.azielcorpuslibrary.net/) · [Aziel Eliab](https://www.azielcorpuslibrary.net/AzielEliab) · [Software](https://www.azielcorpuslibrary.net/software) · [Runtime front door](https://www.azielcorpuslibrary.net/runtime) |
 | GodLock | [https://godlock.uk/](https://godlock.uk/) · [Aziel Eliab](https://godlock.uk/AzielEliab) · [repo](https://github.com/AzielEliab/godlock) |
+| He Didn't Jump | [https://www.hedidntjump.com/](https://www.hedidntjump.com/) |
 | aziel-runtime **2.0.0-rc1** | [GitHub](https://github.com/AzielEliab/aziel-runtime) · [Official Runtime](https://aziel-runtime.vibelock.workers.dev/) · [docs/2.0](https://github.com/AzielEliab/aziel-runtime/tree/main/docs/2.0) |
 | Try on Glama | [https://glama.ai/mcp/servers/AzielEliab/aziel-runtime](https://glama.ai/mcp/servers/AzielEliab/aziel-runtime) (primary Runtime CTA; verified listing) |
 | Donate AZL-DONATE-1.0 | [https://www.azieleliab.com/donate](https://www.azieleliab.com/donate) |
@@ -74,7 +75,7 @@ Cloudflare Worker `azieleliab-com` serves the literary landing, crawl files, and
 | `GET /v1/update` · `/v1/update/check` | Quiet installer pointer at runtime `/v1/update/check` |
 | `GET /v1/mesh/status` · `/v1/mesh/nodes` | Suite node mesh (default off until runtime enables it) |
 
-JSON-LD: `Person` `@id` `https://www.azieleliab.com/#aziel` (Aziel Eliab; `alternateName` Aziel Elroi Eliab; `sameAs` GitHub profile, Glama listing, Corpus Library, GodLock — no invented Glama UUIDs) + `WebSite` `#website` (publisher/creator Person) + `AboutPage` + Runtime parent `SoftwareApplication` `@id` `https://www.azieleliab.com/runtime#runtime` (`hasPart` named tools only — not MCP ops; Worker is related/endpoint; `sameAs` GitHub repo + Glama) + one named-tool `SoftwareApplication` per Runtime component (`/runtime#<slug>`) + Software `ItemList` / `CollectionPage` + one catalog `SoftwareApplication` per Softwares name + Donate `WebPage` / `DonateAction`. Homepage title stays **Aziel Eliab**. Canonical host is always `https://www.azieleliab.com/` (self-referencing only). Softwares is the homepage `#software` strip (`/software` 301s there). Footer chrome: **Part of the Aziel Eliab ecosystem**. Donate canonical is `/donate?v=png`. hreflang `en` + `x-default` point at each page’s www canonical.
+JSON-LD: `Person` `@id` `https://www.azieleliab.com/#aziel` (Aziel Eliab; `alternateName` Aziel Elroi Eliab; `sameAs` GitHub profile, Glama listing, Corpus Library, GodLock, He Didn't Jump — no invented Glama UUIDs) + `WebSite` `#website` (publisher/creator Person) + `AboutPage` + Runtime parent `SoftwareApplication` `@id` `https://www.azieleliab.com/runtime#runtime` (`hasPart` named tools only — not MCP ops; Worker is related/endpoint; `sameAs` GitHub repo + Glama) + one named-tool `SoftwareApplication` per Runtime component (`/runtime#<slug>`) + Software `ItemList` / `CollectionPage` + one catalog `SoftwareApplication` per Softwares name + Donate `WebPage` / `DonateAction`. Homepage title stays **Aziel Eliab**. Canonical host is always `https://www.azieleliab.com/` (self-referencing only). Softwares is the homepage `#software` strip (`/software` 301s there). Footer chrome: **Part of the Aziel Eliab ecosystem**. Donate canonical is `/donate?v=png`. hreflang `en` + `x-default` point at each page’s www canonical.
 
 ### Research
 
@@ -235,6 +236,7 @@ Every label and URL is hyperlinked.
 - Corpus → https://www.azielcorpuslibrary.net/
 - Research → https://www.azielcorpuslibrary.net/ · also https://www.azielcorpuslibrary.net/AzielEliab
 - GodLock → https://godlock.uk/
+- He Didn't Jump → https://www.hedidntjump.com/
 - Runtime → https://www.azieleliab.com/runtime · also https://aziel-runtime.vibelock.workers.dev/ (**2.0.0-rc1**)
 - Try on Glama → https://glama.ai/mcp/servers/AzielEliab/aziel-runtime (primary Runtime CTA; verified Glama listing for AzielEliab/aziel-runtime — not an invented server id)
 - Official Runtime → https://aziel-runtime.vibelock.workers.dev/ (secondary Worker link)

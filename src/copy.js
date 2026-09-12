@@ -24,6 +24,8 @@ export const LIBRARY_RUNTIME = LIBRARY + "/runtime";
 export const LIBRARY_AZIEL = LIBRARY + "/AzielEliab";
 export const GODLOCK = "https://godlock.uk";
 export const GODLOCK_AZIEL = GODLOCK + "/AzielEliab";
+/** Sister research archive. www host as published on this hub. */
+export const HEDIDNTJUMP = "https://www.hedidntjump.com";
 export const RUNTIME = "https://aziel-runtime.vibelock.workers.dev";
 export const RUNTIME_PATH = "/runtime";
 export const RUNTIME_LOCAL = CANON_ORIGIN + RUNTIME_PATH;
@@ -41,12 +43,13 @@ export const RUNTIME_DOCS = "https://github.com/AzielEliab/aziel-runtime/tree/ma
 export const PERSON_ID = CANON_ORIGIN + "/#aziel";
 export const WEBSITE_ID = CANON_ORIGIN + "/#website";
 /** Person sameAs only. Project URLs belong on author/creator/sourceCode/isPartOf. */
-export const PERSON_SAME_AS = [GITHUB, GLAMA_RUNTIME, LIBRARY + "/", GODLOCK + "/"];
+export const PERSON_SAME_AS = [GITHUB, GLAMA_RUNTIME, LIBRARY + "/", GODLOCK + "/", HEDIDNTJUMP + "/"];
 
 export const ECOSYSTEM_TITLE = "Part of the Aziel Eliab ecosystem";
 export const ECOSYSTEM_LINKS = [
   { label: "Official site", href: CANON_ORIGIN + "/" },
   { label: "Aziel Corpus Library", href: LIBRARY + "/" },
+  { label: "He Didn't Jump", href: HEDIDNTJUMP + "/" },
   { label: "Aziel Runtime on GitHub", href: GITHUB_RUNTIME },
   { label: "Aziel Runtime", href: RUNTIME + "/", secondary: true },
   { label: "Try on Glama", href: GLAMA_RUNTIME },
@@ -501,6 +504,7 @@ export const DOORS = [
   { label: "Corpus", href: LIBRARY + "/" },
   { label: "Research", href: LIBRARY + "/", also: { label: LIBRARY_AZIEL, href: LIBRARY_AZIEL } },
   { label: "GodLock", href: GODLOCK + "/" },
+  { label: "He Didn't Jump", href: HEDIDNTJUMP + "/" },
   { label: "Runtime", href: RUNTIME_LOCAL, also: { label: RUNTIME + "/", href: RUNTIME + "/" } },
   { label: "X", href: X_URL },
   { label: "Donate", href: DONATE_HREF },

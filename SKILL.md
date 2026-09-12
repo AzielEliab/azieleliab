@@ -22,7 +22,7 @@ Softwares list: https://www.azieleliab.com/#software (`/software` 301s here)
 
 Donate door (AZL-DONATE-1.0, not a Softwares product): https://www.azieleliab.com/donate
 
-GitHub About / indexing (no Worker UI change): [docs/github-seo.md](docs/github-seo.md). Homepage `https://www.azieleliab.com/`. Cross-link Corpus, GodLock, aziel-runtime, Try on Glama, Donate.
+GitHub About / indexing (no Worker UI change): [docs/github-seo.md](docs/github-seo.md). Homepage `https://www.azieleliab.com/`. Cross-link Corpus, GodLock, He Didn't Jump, aziel-runtime, Try on Glama, Donate.
 
 About aliases `/about`, `/AzielEliab`, `/aziel-eliab` 301 to the homepage.
 

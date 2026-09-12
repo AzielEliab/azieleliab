@@ -11,7 +11,7 @@ Coordinator (repo admin) after merge:
 ```bash
 gh repo edit AzielEliab/azieleliab \
   --homepage "https://www.azieleliab.com/" \
-  --description "Public landing for Aziel Eliab. Canonical https://www.azieleliab.com/ · Person #aziel · Aziel Runtime 2.0.0-rc1 · Corpus · GodLock · Try on Glama · Donate AZL-DONATE-1.0. Identity Aziel Eliab only (Elroi aka)." \
+  --description "Public landing for Aziel Eliab. Canonical https://www.azieleliab.com/ · Person #aziel · Aziel Runtime 2.0.0-rc1 · Corpus · GodLock · He Didn't Jump · Try on Glama · Donate AZL-DONATE-1.0. Identity Aziel Eliab only (Elroi aka)." \
   --add-topic aziel-eliab \
   --add-topic azieleliab \
   --add-topic cloudflare-workers \
@@ -35,7 +35,7 @@ gh repo edit AzielEliab/azieleliab \
 | Field | Value |
 |-------|--------|
 | Homepage | `https://www.azieleliab.com/` |
-| Description | `Public landing for Aziel Eliab. Canonical https://www.azieleliab.com/ · Person #aziel · Aziel Runtime 2.0.0-rc1 · Corpus · GodLock · Try on Glama · Donate AZL-DONATE-1.0. Identity Aziel Eliab only (Elroi aka).` |
+| Description | `Public landing for Aziel Eliab. Canonical https://www.azieleliab.com/ · Person #aziel · Aziel Runtime 2.0.0-rc1 · Corpus · GodLock · He Didn't Jump · Try on Glama · Donate AZL-DONATE-1.0. Identity Aziel Eliab only (Elroi aka).` |
 
 Topics (≤20): `aziel-eliab` · `azieleliab` · `cloudflare-workers` · `mcp` · `model-context-protocol` · `website` · `apache-2-0` · `json-ld` · `schema-org` · `seo` · `aziel-runtime` · `godlock` · `digital-library` · `glama` · `ai-agents` · `donate` · `personal-website` · `openapi`
 
@@ -55,6 +55,7 @@ Person `sameAs` only:
 - https://glama.ai/mcp/servers/AzielEliab/aziel-runtime
 - https://www.azielcorpuslibrary.net/
 - https://godlock.uk/
+- https://www.hedidntjump.com/
 
 Do not invent Glama UUIDs or extra `sameAs` identities.
 
@@ -98,6 +99,7 @@ Not MCP ops (`fraggate_call`, `runtime_run`, …). Child `@id` is `https://www.a
 | GodLock | https://godlock.uk/ |
 | GodLock · Aziel Eliab | https://godlock.uk/AzielEliab |
 | GodLock repo | https://github.com/AzielEliab/godlock |
+| He Didn't Jump | https://www.hedidntjump.com/ |
 | aziel-runtime (2.0.0-rc1) | https://github.com/AzielEliab/aziel-runtime |
 | Official Runtime | https://aziel-runtime.vibelock.workers.dev/ |
 | Runtime docs | https://github.com/AzielEliab/aziel-runtime/tree/main/docs/2.0 |
