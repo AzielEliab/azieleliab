@@ -392,7 +392,7 @@ export const SOFTWARE_EXTRAS = [
     enabled_default: false,
     path: "/v1/mesh",
     spec: "QNM-BUILD-1.0",
-    note: "Suite rollup. Not a Softwares-tab product. Default OFF. GET never enables.",
+    note: "Suite rollup. Not a Softwares-tab product. Read-only suite presence is on (display from runtime). GET never enables.",
   },
 ];
 export const EXTRA_SOFTWARE = SOFTWARE_EXTRAS;
@@ -489,7 +489,7 @@ export const DONATE_RAILS = [
   },
 ];
 
-/** Homepage spine. Donate is also its own URL. */
+/** Homepage spine. Donate tab goes to the canonical /donate page only. */
 export const SPINE = [
   { id: "why", label: "Why", href: CANON_ORIGIN + "/#why" },
   { id: "software", label: "Software", href: SOFTWARE_SECTION },

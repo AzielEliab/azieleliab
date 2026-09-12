@@ -1,7 +1,8 @@
 /**
  * Suite decentralized node mesh doors for www.azieleliab.com.
  * Fetches runtime /v1/mesh/status and /v1/mesh/nodes via AZIEL_RUNTIME
- * (else HTTPS origin). Default off until runtime enables the mesh.
+ * (else HTTPS origin). Read-only suite presence is on — display from
+ * runtime. GET never enables.
  * QNS-CD-1.0 is hub cite / mesh.js cross-map only (photon QNS1 packet
  * transfer). Local qnsd lives in qnm-node. No public qnsd proxy.
  * No Node Gate. Not a Softwares-tab product.
@@ -47,7 +48,7 @@ export const QNS_CD = Object.freeze({
   node_gate: false,
   public_proxy: false,
   qnsd: "local",
-  mesh_default: "off",
+  mesh_default: "on",
   qnm_node: GITHUB_QNM_NODE,
   qnm_build: GITHUB_QNM_NODE + "/blob/main/docs/QNM-BUILD-1.0.md",
   runtime: GITHUB_RUNTIME,
@@ -61,11 +62,13 @@ export const QNS_CD = Object.freeze({
   author: AUTHOR,
   identity: AUTHOR,
   note:
-    "QNS-CD-1.0 photon QNS1 packet transfer. Local qnsd is coded in qnm-node. Runtime cites + catalog field live in aziel-runtime. AZInterface has pair custody. Hub cite / Worker mesh cross-map only — not a Softwares-tab product. No public qnsd proxy. No Node Gate. Mesh default OFF. Author Aziel Eliab only.",
+    "QNS-CD-1.0 photon QNS1 packet transfer. Local qnsd is coded in qnm-node. Runtime cites + catalog field live in aziel-runtime. AZInterface has pair custody. Hub cite / Worker mesh cross-map only — not a Softwares-tab product. No public qnsd proxy. No Node Gate. Read-only suite presence is on (display from runtime). Author Aziel Eliab only.",
 });
 
+export const MESH_DEFAULT = "on";
+
 export const MESH_NOTE =
-  "QNM-BUILD-1.0 suite rollup (live/locked/isolated). GET never enables. Operator enable requires a declared bearer (example: suite-presence). Default off until enabled on runtime. Display only — not Node Gate, not a Softwares-tab product. VPN/hop mesh is not claimed on this public surface. Cross-map QNS-CD-1.0 (photon QNS1 packet transfer). Local qnsd is qnm-node only — no public proxy. Author Aziel Eliab only.";
+  "QNM-BUILD-1.0 suite rollup (live/locked/isolated). Read-only suite presence is on — display from runtime. GET never enables. Operator enable requires a declared bearer (example: suite-presence). Display only — not Node Gate, not a Softwares-tab product. VPN/hop mesh is not claimed on this public surface. Cross-map QNS-CD-1.0 (photon QNS1 packet transfer). Local qnsd is qnm-node only — no public proxy. Author Aziel Eliab only.";
 
 function qnsCiteFields() {
   return {
@@ -130,7 +133,6 @@ export function meshIsOn(mesh) {
 }
 
 export function liveNodesLabel(mesh) {
-  if (!meshIsOn(mesh)) return "Live Nodes · off";
   return "Live Nodes · " + liveNodesCount(mesh);
 }
 
@@ -142,7 +144,7 @@ const MESH_OPENAPI_GET = (summary, description) => ({
     tags: ["mesh"],
     responses: {
       200: {
-        description: summary + " (default off until runtime enables the mesh)",
+        description: summary + " (read-only suite presence is on; display from runtime)",
       },
     },
   },
@@ -151,11 +153,11 @@ const MESH_OPENAPI_GET = (summary, description) => ({
 export const MESH_OPENAPI_PATHS = {
   [MESH_STATUS_PATH]: MESH_OPENAPI_GET(
     "mesh status",
-    "QNM-BUILD-1.0 suite rollup status (live_nodes). GET never enables. Operator enable requires a declared bearer (example: suite-presence). Default off. Cites QNS-CD-1.0. No public qnsd proxy. No Node Gate. Author Aziel Eliab.",
+    "QNM-BUILD-1.0 suite rollup status (live_nodes). Read-only suite presence is on (display from runtime). GET never enables. Operator enable requires a declared bearer (example: suite-presence). Cites QNS-CD-1.0. No public qnsd proxy. No Node Gate. Author Aziel Eliab.",
   ),
   [MESH_NODES_PATH]: MESH_OPENAPI_GET(
     "mesh nodes",
-    "QNM-BUILD-1.0 Live Nodes roster. Empty while default off. GET never enables. Cross-map QNS-CD-1.0. No public qnsd proxy. Author Aziel Eliab.",
+    "QNM-BUILD-1.0 Live Nodes roster. Display from runtime (Live Nodes · 0 when unavailable). GET never enables. Cross-map QNS-CD-1.0. No public qnsd proxy. Author Aziel Eliab.",
   ),
 };
 
@@ -185,7 +187,7 @@ export function meshSnapshot(origin) {
   const rollup = rollupCounts(origin);
   return {
     enabled,
-    default: "off",
+    default: MESH_DEFAULT,
     mesh: enabled ? "on" : "off",
     live_nodes: enabled ? rollup.live : 0,
     locked_nodes: enabled ? rollup.locked : 0,
@@ -211,7 +213,7 @@ function meshBase(origin) {
     product: "azieleliab",
     mesh: enabled ? "on" : "off",
     enabled,
-    default: "off",
+    default: MESH_DEFAULT,
     live_nodes: enabled ? rollup.live : 0,
     locked_nodes: enabled ? rollup.locked : 0,
     isolated_nodes: enabled ? rollup.isolated : 0,
@@ -261,7 +263,7 @@ export async function loadMeshNodes(env, ctx, opts) {
 }
 
 export function meshQuietLabel(mesh) {
-  return meshIsOn(mesh) ? "mesh on" : "mesh off";
+  return meshIsOn(mesh) ? "mesh on" : "";
 }
 
 export function injectMeshOpenApi(doc) {
@@ -279,7 +281,7 @@ export function injectMeshCite(doc) {
   if (!doc || typeof doc !== "object" || Array.isArray(doc)) return doc;
   if (!doc.mesh_status) doc.mesh_status = MESH_STATUS_RUNTIME;
   if (!doc.mesh_nodes) doc.mesh_nodes = MESH_NODES_RUNTIME;
-  if (!doc.mesh_default) doc.mesh_default = "off";
+  if (!doc.mesh_default) doc.mesh_default = MESH_DEFAULT;
   if (!doc.mesh_note) doc.mesh_note = MESH_NOTE;
   if (!doc.qns_cd_spec) doc.qns_cd_spec = QNS_CD_SPEC;
   if (!doc.qns_cd) doc.qns_cd = QNS_CD;
@@ -294,10 +296,10 @@ const MESH_LLMS_BLOCK = [
   "",
   "## Mesh",
   "",
-  "- GET " + MESH_STATUS_RUNTIME + "  (QNM-BUILD-1.0 suite rollup; live_nodes; GET never enables; default off)",
-  "- GET " + MESH_NODES_RUNTIME + "  (suite node list / Live Nodes; empty while off)",
+  "- GET " + MESH_STATUS_RUNTIME + "  (QNM-BUILD-1.0 suite rollup; live_nodes; GET never enables; read-only suite presence is on)",
+  "- GET " + MESH_NODES_RUNTIME + "  (suite node list / Live Nodes; display from runtime)",
   "- Origin: " + MESH_STATUS_ORIGIN + " · " + MESH_NODES_ORIGIN,
-  "- Operator enable requires a declared bearer (example: suite-presence). Default radios off.",
+  "- Operator enable requires a declared bearer (example: suite-presence). Read-only suite presence is on (display from runtime).",
   "- Cross-map: " + QNS_CD_SPEC + " (photon QNS1 packet transfer). Local qnsd is qnm-node only.",
   "- " + MESH_NOTE,
   "",

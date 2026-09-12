@@ -736,7 +736,10 @@ describe("SEO routes", () => {
     assert.ok(llmsBody.includes("/v1/update/check"));
     assert.ok(llmsBody.includes("/v1/mesh/status"));
     assert.ok(llmsBody.includes("/v1/mesh/nodes"));
-    assert.ok(llmsBody.includes("default off") || llmsBody.includes("GET never enables"));
+    assert.ok(llmsBody.includes("GET never enables"));
+    assert.ok(llmsBody.includes("read-only suite presence is on") || llmsBody.includes("display from runtime"));
+    assert.ok(!llmsBody.includes("default off"));
+    assert.ok(!llmsBody.includes("Default radios off"));
     assert.ok(llmsBody.includes("QNM-BUILD-1.0"));
     assert.ok(llmsBody.includes("suite-presence"));
     assert.ok(llmsBody.includes("GET never enables"));
@@ -828,7 +831,7 @@ describe("SEO routes", () => {
     assert.equal(citeBody.mesh_status, CANON_ORIGIN + "/v1/mesh/status");
     assert.equal(citeBody.mesh_nodes, CANON_ORIGIN + "/v1/mesh/nodes");
     assert.equal(citeBody.mesh_status_runtime, RUNTIME_LOCAL + "/v1/mesh/status");
-    assert.equal(citeBody.mesh_default, "off");
+    assert.equal(citeBody.mesh_default, "on");
     assert.equal(citeBody.qnm_spec, "QNM-BUILD-1.0");
     assert.equal(citeBody.mesh_enable_bearer, "suite-presence");
     assert.equal(citeBody.mesh_get_never_enables, true);
@@ -948,8 +951,10 @@ describe("SEO routes", () => {
     assert.ok(html.includes('name="aziel-qnm"'));
     assert.ok(html.includes('content="QNM-BUILD-1.0"'));
     assert.ok(html.includes('id="aziel-live-nodes"'));
-    assert.ok(html.includes(">Live Nodes · off<"));
-    assert.ok(html.includes(">mesh off<"));
+    assert.ok(html.includes(">Live Nodes · 0<"));
+    assert.ok(!html.includes(">mesh off<"));
+    assert.ok(!html.includes(">Live Nodes · off<"));
+    assert.ok(!html.includes("mesh off"));
     const softLine = html.match(/<p class="soft-line">[\s\S]*?<\/p>/);
     assert.ok(softLine);
     assert.doesNotMatch(softLine[0], /Live Nodes/i);
@@ -1081,7 +1086,9 @@ describe("public entity graph phases B–D + E audit", () => {
     assert.ok(footer);
     assert.ok(footer[0].includes(ECOSYSTEM_TITLE));
     assert.ok(footer[0].includes(">Try on Glama<"));
-    assert.ok(footer[0].includes(">mesh off<"));
+    assert.ok(footer[0].includes(">Live Nodes · 0<"));
+    assert.ok(!footer[0].includes(">mesh off<"));
+    assert.ok(!footer[0].includes("mesh off"));
     assert.ok(html.indexOf('id="software"') < html.indexOf("Part of the Aziel Eliab ecosystem"));
 
     const donate = donateHtml();
@@ -1204,16 +1211,20 @@ describe("public entity graph phases B–D + E audit", () => {
     assert.ok(SOFTWARE.some((s) => s.name === "DecisionGATE"));
   });
 
-  it("leaves Remain-OFF mesh defaults untouched", () => {
+  it("keeps read-only mesh presence on and GET-never-enables", () => {
     const html = pageHtml();
-    assert.ok(html.includes(">mesh off<"));
-    assert.ok(html.includes(">Live Nodes · off<"));
+    assert.ok(!html.includes(">mesh off<"));
+    assert.ok(!html.includes(">Live Nodes · off<"));
+    assert.ok(!html.includes("mesh off"));
+    assert.ok(html.includes(">Live Nodes · 0<"));
     const cite = citeDoc();
-    assert.equal(cite.mesh_default, "off");
+    assert.equal(cite.mesh_default, "on");
     assert.equal(cite.mesh_get_never_enables, true);
     assert.equal(cite.person_id, PERSON_ID);
     assert.ok(llmsTxt().includes("Person @id: " + PERSON_ID));
     assert.ok(llmsTxt().includes("sameAs: " + PERSON_SAME_AS.join(" · ")));
+    assert.match(cite.mesh_note, /Read-only suite presence is on/);
+    assert.doesNotMatch(cite.mesh_note, /[Dd]efault off/);
   });
 });
 
@@ -1474,6 +1485,14 @@ describe("worker routing", () => {
     assert.equal(res.headers.get("Content-Signal"), "search=yes, ai-input=yes, ai-train=yes");
     const body = await res.text();
     assert.ok(body.includes("<h1>Aziel Eliab</h1>"));
+    assert.ok(body.includes('id="doors"'));
+    assert.doesNotMatch(body, /<section class="card" id="donate">/);
+    assert.ok(!body.includes('id="donate"'));
+    assert.ok(!body.includes('class="rails"'));
+    assert.ok(!body.includes("Nothing is free.</p>"));
+    assert.ok(body.includes('aria-label="Spine"'));
+    assert.ok(body.includes(">" + DONATE_TITLE + "<"));
+    assert.ok(body.includes('href="' + DONATE_HREF + '"'));
   });
 
   it("301s apex to www", async () => {
@@ -1686,19 +1705,21 @@ describe("AZL-DONATE-1.0", () => {
     );
   });
 
-  it("puts Donate on the homepage spine and Doors list", () => {
+  it("puts Donate on the homepage spine and Doors list, not as a homepage section", () => {
     const html = pageHtml();
-    assert.ok(html.includes('id="donate"'));
+    assert.ok(!html.includes('id="donate"'));
+    assert.ok(!html.includes('href="#donate"'));
+    assert.doesNotMatch(html, /<section class="card" id="donate">/);
+    assert.ok(!html.includes('class="rails"'));
+    assert.ok(!html.includes('class="donate-law"'));
+    assert.ok(!html.includes("Nothing is free.</p>"));
     assert.ok(html.includes('id="why"'));
     assert.ok(html.includes('id="software"'));
     assert.ok(html.includes('id="research"'));
     assert.ok(html.includes('id="doors"'));
     assert.ok(html.includes('aria-label="Spine"'));
-    assert.ok(html.includes('href="#donate"'));
     assert.ok(html.includes(">" + DONATE_TITLE + "<"));
-    assert.ok(html.includes("Nothing is free."));
-    assert.ok(html.includes(DONATE_SIGN));
-    assert.ok(html.includes(DONATE_DISCLAIMER));
+    assert.ok(html.includes('href="' + DONATE_HREF + '"'));
     const donateDoor = DOORS.find((d) => d.label === "Donate");
     assert.ok(donateDoor);
     assert.equal(donateDoor.href, DONATE_HREF);
@@ -1708,12 +1729,15 @@ describe("AZL-DONATE-1.0", () => {
       SPINE.map((s) => s.label),
       ["Why", "Software", "Research", "Doors", "Donate"],
     );
+    const homeNav = spineNav("home");
+    assert.ok(homeNav.includes(">" + DONATE_TITLE + "<"));
+    assert.ok(homeNav.includes('href="' + DONATE_HREF + '"'));
+    assert.ok(!homeNav.includes('href="#donate"'));
     const nav = spineNav("donate");
     assert.ok(nav.includes('aria-current="page"'));
     assert.ok(nav.includes('href="' + DONATE_HREF + '"'));
     for (const rail of DONATE_RAILS) {
-      assert.ok(html.includes(rail.address), "homepage rail " + rail.id);
-      assert.ok(html.includes('href="' + rail.uri + '"'), "homepage URI " + rail.id);
+      assert.ok(!html.includes(rail.address), "homepage must not embed rail " + rail.id);
     }
   });
 
@@ -1728,7 +1752,7 @@ describe("AZL-DONATE-1.0", () => {
         rail.qrAlt +
         '">';
       assert.ok(html.includes(img), rail.id);
-      assert.ok(home.includes(img), "homepage " + rail.id);
+      assert.ok(!home.includes(img), "homepage must not embed QR " + rail.id);
       assert.ok(!img.includes("https://"), "QR src is a same-origin PNG, not a website URL");
     }
     assert.doesNotMatch(html, /<svg|qrline|path class="qrline"/);
@@ -1998,7 +2022,7 @@ describe("live software catalog", () => {
     assert.equal(doc.software.length, SOFTWARE.length);
     assert.equal(doc.products.length, SOFTWARE.length);
     assert.equal(doc.mesh.enabled, false);
-    assert.equal(doc.mesh.default, "off");
+    assert.equal(doc.mesh.default, "on");
     assert.equal(doc.mesh.mesh, "off");
     assert.equal(doc.mesh.live_nodes, 0);
     assert.equal(doc.mesh.status, CANON_ORIGIN + "/v1/mesh/status");
@@ -2043,16 +2067,16 @@ describe("live software catalog", () => {
 });
 
 describe("suite node mesh", () => {
-  it("defaults off and never claims a hop mesh", () => {
+  it("never claims a hop mesh and omits mesh-off labels", () => {
     assert.equal(MESH_STATUS_PATH, "/v1/mesh/status");
     assert.equal(MESH_NODES_PATH, "/v1/mesh/nodes");
     assert.equal(meshEnabled(null), false);
     assert.equal(meshEnabled({ error: "not found" }), false);
     assert.equal(meshEnabled({ enabled: false, mesh: "off" }), false);
     assert.equal(meshEnabled({ enabled: true, mesh: "on" }), true);
-    assert.equal(meshQuietLabel(null), "mesh off");
+    assert.equal(meshQuietLabel(null), "");
     assert.equal(meshQuietLabel({ origin: { enabled: true } }), "mesh on");
-    assert.equal(liveNodesLabel(null), "Live Nodes · off");
+    assert.equal(liveNodesLabel(null), "Live Nodes · 0");
     assert.equal(liveNodesLabel({ origin: { enabled: true, live_nodes: 40 } }), "Live Nodes · 40");
     assert.equal(liveNodesCount({ enabled: true, rollup: { live: 40 } }), 40);
     assert.equal(QNM_SPEC, "QNM-BUILD-1.0");
@@ -2063,14 +2087,15 @@ describe("suite node mesh", () => {
     assert.equal(off.identity, AUTHOR);
     assert.equal(off.enabled, false);
     assert.equal(off.mesh, "off");
-    assert.equal(off.default, "off");
+    assert.equal(off.default, "on");
     assert.equal(off.live_nodes, 0);
     assert.deepEqual(off.rollup, { live: 0, locked: 0, isolated: 0 });
     assert.deepEqual(off.bearers, []);
     assert.equal(off.qnm_spec, "QNM-BUILD-1.0");
     assert.equal(off.mesh_enable_bearer, "suite-presence");
     assert.equal(off.mesh_get_never_enables, true);
-    assert.match(off.note, /Default off/);
+    assert.match(off.note, /Read-only suite presence is on/);
+    assert.doesNotMatch(off.note, /[Dd]efault off/);
     assert.match(off.note, /GET never enables/);
     assert.match(off.note, /suite-presence/);
     assert.match(off.note, /VPN\/hop mesh is not claimed/);
@@ -2087,7 +2112,7 @@ describe("suite node mesh", () => {
     assert.equal(QNS_CD.node_gate, false);
     assert.equal(QNS_CD.public_proxy, false);
     assert.equal(QNS_CD.qnsd, "local");
-    assert.equal(QNS_CD.mesh_default, "off");
+    assert.equal(QNS_CD.mesh_default, "on");
     assert.equal(QNS_CD.qnm_node, GITHUB_QNM_NODE);
     assert.equal(QNS_CD.runtime, GITHUB_RUNTIME);
     assert.equal(QNS_CD.pair_custody, AZINTERFACE_GITHUB);
@@ -2107,7 +2132,7 @@ describe("suite node mesh", () => {
     assert.equal(snap.qns_cd.public_proxy, false);
   });
 
-  it("serves default-off /v1/mesh/status and /v1/mesh/nodes when runtime 404s", async () => {
+  it("serves /v1/mesh/status and /v1/mesh/nodes when runtime 404s", async () => {
     const status = await fetchPath("/v1/mesh/status");
     assert.equal(status.status, 200);
     const doc = await status.json();
@@ -2116,7 +2141,7 @@ describe("suite node mesh", () => {
     assert.equal(doc.identity, AUTHOR);
     assert.equal(doc.enabled, false);
     assert.equal(doc.mesh, "off");
-    assert.equal(doc.default, "off");
+    assert.equal(doc.default, "on");
     assert.equal(doc.live_nodes, 0);
     assert.equal(doc.qnm_spec, "QNM-BUILD-1.0");
     assert.equal(doc.mesh_enable_bearer, "suite-presence");
@@ -2142,6 +2167,13 @@ describe("suite node mesh", () => {
     const head = await fetchPath("/v1/mesh/nodes", { method: "HEAD" });
     assert.equal(head.status, 200);
     assert.equal(await head.text(), "");
+
+    const landing = await fetchPath("/", { headers: { "user-agent": "Mozilla/5.0" } });
+    const html = await landing.text();
+    assert.ok(!html.includes("mesh off"));
+    assert.ok(!html.includes("Live Nodes · off"));
+    assert.ok(html.includes(">Live Nodes · 0<"));
+    assert.ok(!html.includes(">mesh on<"));
   });
 
   it("attaches origin mesh when the runtime binding answers", async () => {
@@ -2204,7 +2236,7 @@ describe("suite node mesh", () => {
     assert.equal(index.mesh.live_nodes, 40);
     assert.deepEqual(index.mesh.bearers, ["suite-presence"]);
     assert.equal(index.mesh.qns_cd_spec, "QNS-CD-1.0");
-    assert.equal(index.mesh.default, "off");
+    assert.equal(index.mesh.default, "on");
 
     const landing = await fetchPath("/", { headers: { "user-agent": "Mozilla/5.0" } }, env);
     const html = await landing.text();
@@ -2238,7 +2270,7 @@ describe("suite node mesh", () => {
 
     const cited = JSON.parse(injectMeshDiscovery(JSON.stringify({ author: AUTHOR }), "application/json", "/cite.json"));
     assert.equal(cited.mesh_status, RUNTIME_LOCAL + "/v1/mesh/status");
-    assert.equal(cited.mesh_default, "off");
+    assert.equal(cited.mesh_default, "on");
     assert.equal(cited.qnm_spec, "QNM-BUILD-1.0");
     assert.equal(cited.mesh_enable_bearer, "suite-presence");
     assert.equal(cited.mesh_get_never_enables, true);
@@ -2252,7 +2284,8 @@ describe("suite node mesh", () => {
 
     const llms = injectMeshDiscovery("# Aziel Eliab Runtime\n", "text/plain", "/llms.txt");
     assert.match(llms, /\/v1\/mesh\/status/);
-    assert.match(llms, /default off/);
+    assert.match(llms, /read-only suite presence is on/);
+    assert.doesNotMatch(llms, /default off/);
     assert.match(llms, /QNM-BUILD-1\.0/);
     assert.match(llms, /suite-presence/);
     assert.match(llms, /GET never enables/);

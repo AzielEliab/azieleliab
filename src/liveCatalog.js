@@ -206,7 +206,7 @@ function extrasFromLiveDoc(doc, seen) {
       enabled_default: doc.mesh.enabled_default === true ? true : false,
       path: doc.mesh.path || "/v1/mesh",
       spec: doc.mesh.spec || "QNM-BUILD-1.0",
-      note: doc.mesh.note || "Suite rollup. Not a Softwares-tab product. Default OFF. GET never enables.",
+      note: doc.mesh.note || "Suite rollup. Not a Softwares-tab product. Read-only suite presence is on (display from runtime). GET never enables.",
     });
   }
 
