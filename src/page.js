@@ -96,9 +96,7 @@ export function spineNav(current) {
       const here = item.id === current;
       const href =
         item.id === "donate"
-          ? current === "home"
-            ? "#donate"
-            : DONATE_HREF
+          ? DONATE_HREF
           : current === "home"
             ? "#" + item.id
             : "/#" + item.id;
@@ -605,10 +603,6 @@ ${documentHead({
   <section class="card" id="doors">
     <h2>Doors</h2>
     <ul class="doors">${doors}</ul>
-  </section>
-  <section class="card" id="donate">
-    <h2>${esc(DONATE_TITLE)}</h2>
-    ${donateArticle()}
   </section>
   <section class="card close">
     <p>${esc(PROSE.close)}</p>

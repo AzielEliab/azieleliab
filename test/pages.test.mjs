@@ -1697,19 +1697,20 @@ describe("AZL-DONATE-1.0", () => {
     );
   });
 
-  it("puts Donate on the homepage spine and Doors list", () => {
+  it("puts Donate on the homepage spine and Doors list, not as a homepage section", () => {
     const html = pageHtml();
-    assert.ok(html.includes('id="donate"'));
+    assert.ok(!html.includes('id="donate"'));
+    assert.ok(!html.includes('href="#donate"'));
+    assert.doesNotMatch(html, /<section class="card" id="donate">/);
+    assert.ok(!html.includes('class="rails"'));
+    assert.ok(!html.includes('class="donate-law"'));
     assert.ok(html.includes('id="why"'));
     assert.ok(html.includes('id="software"'));
     assert.ok(html.includes('id="research"'));
     assert.ok(html.includes('id="doors"'));
     assert.ok(html.includes('aria-label="Spine"'));
-    assert.ok(html.includes('href="#donate"'));
     assert.ok(html.includes(">" + DONATE_TITLE + "<"));
-    assert.ok(html.includes("Nothing is free."));
-    assert.ok(html.includes(DONATE_SIGN));
-    assert.ok(html.includes(DONATE_DISCLAIMER));
+    assert.ok(html.includes('href="' + DONATE_HREF + '"'));
     const donateDoor = DOORS.find((d) => d.label === "Donate");
     assert.ok(donateDoor);
     assert.equal(donateDoor.href, DONATE_HREF);
@@ -1719,12 +1720,15 @@ describe("AZL-DONATE-1.0", () => {
       SPINE.map((s) => s.label),
       ["Why", "Software", "Research", "Doors", "Donate"],
     );
+    const homeNav = spineNav("home");
+    assert.ok(homeNav.includes(">" + DONATE_TITLE + "<"));
+    assert.ok(homeNav.includes('href="' + DONATE_HREF + '"'));
+    assert.ok(!homeNav.includes('href="#donate"'));
     const nav = spineNav("donate");
     assert.ok(nav.includes('aria-current="page"'));
     assert.ok(nav.includes('href="' + DONATE_HREF + '"'));
     for (const rail of DONATE_RAILS) {
-      assert.ok(html.includes(rail.address), "homepage rail " + rail.id);
-      assert.ok(html.includes('href="' + rail.uri + '"'), "homepage URI " + rail.id);
+      assert.ok(!html.includes(rail.address), "homepage must not embed rail " + rail.id);
     }
   });
 
@@ -1739,7 +1743,7 @@ describe("AZL-DONATE-1.0", () => {
         rail.qrAlt +
         '">';
       assert.ok(html.includes(img), rail.id);
-      assert.ok(home.includes(img), "homepage " + rail.id);
+      assert.ok(!home.includes(img), "homepage must not embed QR " + rail.id);
       assert.ok(!img.includes("https://"), "QR src is a same-origin PNG, not a website URL");
     }
     assert.doesNotMatch(html, /<svg|qrline|path class="qrline"/);

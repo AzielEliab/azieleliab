@@ -489,7 +489,7 @@ export const DONATE_RAILS = [
   },
 ];
 
-/** Homepage spine. Donate is also its own URL. */
+/** Homepage spine. Donate tab goes to the canonical /donate page only. */
 export const SPINE = [
   { id: "why", label: "Why", href: CANON_ORIGIN + "/#why" },
   { id: "software", label: "Software", href: SOFTWARE_SECTION },

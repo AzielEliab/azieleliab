@@ -58,7 +58,7 @@ Cloudflare Worker `azieleliab-com` serves the literary landing, crawl files, and
 | `/` | Landing (black / gold / white) |
 | `/software` · `/software/` | 301 to [`/#software`](https://www.azieleliab.com/#software) (homepage Software strip; same HTML as home) |
 | `/about` · `/AzielEliab` · `/aziel-eliab` | 301 to [`/`](https://www.azieleliab.com/) (About Aziel Eliab is the homepage) |
-| `/donate` · `/donate/` | AZL-DONATE-1.0 primary Donate door (static; also homepage `#donate`). Bare `/donate` 302s to `/donate?v=png` so CF edge cannot keep the old stroke-SVG HTML. Door HTML is `no-store`. Rails use solid PNG QRs at `/donate/qr/{btc,eth,ltc,xrp,doge}.png` (payment URI, not a website). |
+| `/donate` · `/donate/` | AZL-DONATE-1.0 primary Donate door (static; homepage has no Donate section). Bare `/donate` 302s to `/donate?v=png` so CF edge cannot keep the old stroke-SVG HTML. Door HTML is `no-store`. Rails use solid PNG QRs at `/donate/qr/{btc,eth,ltc,xrp,doge}.png` (payment URI, not a website). |
 | `/embryolock` · `/embryolock/` | EmbryoLock secondary local page (Softwares door is catalog `worker_home`) |
 | `/sigil.png` | Hosted Everblooming sigil (Donate / brandrow do not fetch the corpus) |
 | `/robots.txt` | `Allow: /` plus AI crawlers and `/runtime` |
@@ -225,7 +225,7 @@ This host is the **hub cite** surface for **QNS-CD-1.0** (photon QNS1 packet tra
 
 ## Donate
 
-Primary canonical door: [https://www.azieleliab.com/donate](https://www.azieleliab.com/donate) (AZL-DONATE-1.0). Homepage spine: Why / Software / Research / Doors / Donate (`#donate`). Label is **Donate**. Static HTML — no Worker KV, no email capture, no thank-you wall. Rails: BTC, ETH, LTC, XRP, DOGE. Disclaimer: Donations buy no privilege. Signature on this door is `— Aziel`. Site SEO identity remains Aziel Eliab.
+Primary canonical door: [https://www.azieleliab.com/donate](https://www.azieleliab.com/donate) (AZL-DONATE-1.0). Homepage spine: Why / Software / Research / Doors / Donate (Donate tab → `/donate`). Label is **Donate**. No Donate section on the homepage. Static HTML — no Worker KV, no email capture, no thank-you wall. Rails: BTC, ETH, LTC, XRP, DOGE. Disclaimer: Donations buy no privilege. Signature on this door is `— Aziel`. Site SEO identity remains Aziel Eliab.
 
 ## Doors
 
