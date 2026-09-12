@@ -63,6 +63,7 @@ import {
   RUNTIME_VERSION,
   RUNTIME_DOORS,
   GLAMA_RUNTIME,
+  HEDIDNTJUMP,
   PERSON_ID,
   PERSON_SAME_AS,
   RUNTIME,
@@ -598,6 +599,36 @@ describe("doors", () => {
     assert.ok(html.includes(">Research<"));
     assert.ok(PROSE.research.some((line) => line.includes(LIBRARY)));
   });
+
+  it("lists He Didn't Jump as a first-class door and ecosystem sister site", () => {
+    assert.equal(HEDIDNTJUMP, "https://www.hedidntjump.com");
+    const door = DOORS.find((d) => d.label === "He Didn't Jump");
+    assert.ok(door);
+    assert.equal(door.href, HEDIDNTJUMP + "/");
+    const eco = ECOSYSTEM_LINKS.find((d) => d.label === "He Didn't Jump");
+    assert.ok(eco);
+    assert.equal(eco.href, HEDIDNTJUMP + "/");
+    const html = pageHtml();
+    const doorsCard = html.match(/<section class="card" id="doors">[\s\S]*?<\/section>/);
+    assert.ok(doorsCard);
+    assert.ok(doorsCard[0].includes('class="door-label">He Didn\'t Jump<'));
+    assert.ok(doorsCard[0].includes('href="' + HEDIDNTJUMP + '/"'));
+    assert.ok(doorsCard[0].includes('class="door-url">' + HEDIDNTJUMP + "/<"));
+    const footer = html.match(/<footer>[\s\S]*?<\/footer>/);
+    assert.ok(footer);
+    assert.ok(footer[0].includes(">He Didn't Jump<"));
+    assert.ok(footer[0].includes('href="' + HEDIDNTJUMP + '/"'));
+    const cite = citeDoc();
+    assert.equal(cite.hedidntjump, HEDIDNTJUMP + "/");
+    assert.ok(cite.doors.some((d) => d.label === "He Didn't Jump" && d.url === HEDIDNTJUMP + "/"));
+    assert.equal(cite.doors.filter((d) => /hedidntjump/i.test(d.url)).length, 1);
+    assert.ok(PERSON_SAME_AS.includes(HEDIDNTJUMP + "/"));
+    assert.equal(PERSON_SAME_AS.filter((u) => u === HEDIDNTJUMP + "/").length, 1);
+    assert.ok(jsonLd()["@graph"][0].sameAs.includes(HEDIDNTJUMP + "/"));
+    assert.ok(llmsTxt().includes("He Didn't Jump: " + HEDIDNTJUMP + "/"));
+    assert.ok(aiTxt().includes("He Didn't Jump: " + HEDIDNTJUMP + "/"));
+    assert.ok(sitemapXml().includes("<loc>" + HEDIDNTJUMP + "/</loc>"));
+  });
 });
 
 describe("SEO routes", () => {
@@ -946,6 +977,7 @@ describe("public entity graph phases B–D + E audit", () => {
       "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime",
       "https://www.azielcorpuslibrary.net/",
       "https://godlock.uk/",
+      "https://www.hedidntjump.com/",
     ]);
     assert.equal(GLAMA_RUNTIME, "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime");
     assert.doesNotMatch(GLAMA_RUNTIME, /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i);
@@ -1020,6 +1052,7 @@ describe("public entity graph phases B–D + E audit", () => {
       [
         ["Official site", "https://www.azieleliab.com/", false],
         ["Aziel Corpus Library", "https://www.azielcorpuslibrary.net/", false],
+        ["He Didn't Jump", "https://www.hedidntjump.com/", false],
         ["Aziel Runtime on GitHub", "https://github.com/AzielEliab/aziel-runtime", false],
         ["Aziel Runtime", "https://aziel-runtime.vibelock.workers.dev/", true],
         ["Try on Glama", "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime", false],
@@ -1070,7 +1103,7 @@ describe("public entity graph phases B–D + E audit", () => {
         assert.equal(href, expected);
         assert.ok(href.startsWith(CANON_ORIGIN));
         assert.ok(!href.includes("azieleliab.com/#") || href.startsWith(CANON_ORIGIN));
-        assert.doesNotMatch(href, /azielcorpuslibrary\.net|godlock\.uk|github\.com|workers\.dev|glama\.ai/);
+        assert.doesNotMatch(href, /azielcorpuslibrary\.net|godlock\.uk|hedidntjump\.com|github\.com|workers\.dev|glama\.ai/);
         assert.doesNotMatch(href, /^https:\/\/azieleliab\.com\//);
       }
       const embedded = jsonLdFromHtml(html);
