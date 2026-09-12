@@ -9,6 +9,7 @@ const RUNTIME_ID = "https://www.azieleliab.com/runtime#runtime";
 const CANON = "https://www.azieleliab.com/";
 const CORPUS = "https://www.azielcorpuslibrary.net/";
 const GODLOCK = "https://godlock.uk/";
+const HEDIDNTJUMP = "https://www.hedidntjump.com/";
 const RUNTIME_REPO = "https://github.com/AzielEliab/aziel-runtime";
 const GLAMA = "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime";
 const DONATE = "https://www.azieleliab.com/donate";
@@ -76,7 +77,7 @@ describe("GitHub-side SEO / ecosystem docs", () => {
     }
   });
 
-  it("cross-links Corpus, GodLock, aziel-runtime, Try on Glama, Donate", () => {
+  it("cross-links Corpus, GodLock, He Didn't Jump, aziel-runtime, Try on Glama, Donate", () => {
     for (const [name, text] of [
       ["README.md", readme],
       ["docs/github-seo.md", docs],
@@ -84,6 +85,8 @@ describe("GitHub-side SEO / ecosystem docs", () => {
       assert.match(text, /Corpus/, name);
       assert.ok(text.includes(CORPUS), name + " Corpus URL");
       assert.ok(text.includes(GODLOCK), name + " GodLock URL");
+      assert.ok(text.includes(HEDIDNTJUMP), name + " He Didn't Jump URL");
+      assert.match(text, /He Didn't Jump/, name);
       assert.ok(text.includes(RUNTIME_REPO), name + " aziel-runtime repo");
       assert.ok(text.includes(GLAMA), name + " Try on Glama");
       assert.match(text, /Try on Glama/, name);
