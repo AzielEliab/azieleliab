@@ -1,4 +1,4 @@
-/** Hosted Everblooming sigil. Same-origin /sigil.png. Author: Aziel Eliab. */
+/** Hosted rose-star brand mark. Same-origin /sigil.png. Author: Aziel Eliab. */
 
 export const SIGIL_PATH = "/sigil.png";
 export const SIGIL_CACHE = "public, max-age=86400, s-maxage=86400, stale-while-revalidate=604800";
@@ -867,7 +867,7 @@ export function sigilResponse(pathname, extraHeaders) {
       "content-type": "image/png",
       "cache-control": SIGIL_CACHE,
       "X-Content-Type-Options": "nosniff",
-      "X-Aziel-Sigil": "Everblooming",
+      "X-Aziel-Brandmark": "rose-star",
       ...(extraHeaders || {}),
     },
   });

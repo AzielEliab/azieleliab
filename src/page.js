@@ -456,6 +456,23 @@ function quietDiscoveryMeta() {
 <meta name="aziel-fraggate-list" content="${esc(CANON_ORIGIN)}/runtime/v1/fraggate/list">`;
 }
 
+function brandRow(innerMeta = "") {
+  return (
+    '  <header class="brandrow">' +
+    '\n    <img class="brandmark" src="' +
+    esc(SIGIL) +
+    '" width="44" height="44" alt="">' +
+    '\n    <div class="brand-meta">' +
+    '\n      <a class="host" href="' +
+    esc(CANON_ORIGIN) +
+    '/">' +
+    esc(PROSE.host) +
+    "</a>" +
+    innerMeta +
+    "\n    </div>\n  </header>"
+  );
+}
+
 export function viewsPill(views) {
   const n = Number.isFinite(views) ? views : 0;
   const label = n === 1 ? "view" : "views";
@@ -566,14 +583,7 @@ ${documentHead({
 </head>
 <body>
 <main class="wrap">
-  <header class="brandrow">
-    <img class="brandmark" src="${esc(SIGIL)}" width="44" height="44" alt="">
-    <div class="brand-meta">
-      <a class="host" href="${esc(CANON_ORIGIN)}/">${esc(PROSE.host)}</a>
-      ${viewsPill(views)}
-      ${liveNodesPill(mesh)}
-    </div>
-  </header>
+${brandRow("\n      " + viewsPill(views) + "\n      " + liveNodesPill(mesh))}
   <h1>${esc(PROSE.title)}</h1>
   ${spineNav("home")}
   <article class="card lead">${paragraphs(PROSE.open)}</article>
@@ -634,12 +644,7 @@ ${documentHead({
 </head>
 <body>
 <main class="wrap">
-  <header class="brandrow">
-    <img class="brandmark" src="${esc(SIGIL)}" width="44" height="44" alt="">
-    <div class="brand-meta">
-      <a class="host" href="${esc(CANON_ORIGIN)}/">${esc(PROSE.host)}</a>
-    </div>
-  </header>
+${brandRow()}
   ${spineNav("donate")}
   <h1>${esc(DONATE_TITLE)}</h1>
   <article class="card lead">${donateArticle()}</article>
@@ -666,12 +671,7 @@ ${documentHead({
 </head>
 <body>
 <main class="wrap">
-  <header class="brandrow">
-    <img class="brandmark" src="${esc(SIGIL)}" width="44" height="44" alt="">
-    <div class="brand-meta">
-      <a class="host" href="${esc(CANON_ORIGIN)}/">${esc(PROSE.host)}</a>
-    </div>
-  </header>
+${brandRow()}
   <h1>${esc(EMBRYOLOCK_COPY.title)}</h1>
   <article class="card lead">${paragraphs(EMBRYOLOCK_COPY.open)}</article>
   <p>${a(EMBRYOLOCK_WORKER, "worker_home")} · ${a(SOFTWARE_SECTION, "Software")} · ${a(CANON_ORIGIN + "/", AUTHOR)}</p>
@@ -695,6 +695,7 @@ export function notFoundHtml() {
 </head>
 <body>
 <main class="wrap">
+${brandRow()}
   <h1>Not found</h1>
   <article class="card">
     <p>This path is not a door.</p>

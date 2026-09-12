@@ -1,7 +1,7 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import worker, { apexRedirect, donateCacheBustLocation, handleRequest } from "../src/index.js";
-import { donateHtml, embryoLockHtml, ecosystemHtml, pageHtml, spineNav } from "../src/page.js";
+import { donateHtml, embryoLockHtml, ecosystemHtml, notFoundHtml, pageHtml, spineNav } from "../src/page.js";
 import { incrementViews, memoryKv } from "../src/views.js";
 import { DONATE_HTML_CACHE, HTML_CACHE, SEO_CACHE, memoryCache } from "../src/edgeCache.js";
 import { FANOUT_MAX, allowOriginRefresh, isOperator } from "../src/costGuard.js";
@@ -54,6 +54,7 @@ import {
   RUNTIME_LOCAL,
   RUNTIME_NAME,
   RUNTIME_TITLE,
+  BRANDMARK_NAME,
   SIGIL,
   SOFTWARE,
   SOFTWARE_EXTRAS,
@@ -173,10 +174,26 @@ describe("landing copy", () => {
     assert.ok(html.includes("soft-card") || html.includes('class="card"') || html.includes('class="card lead"'));
   });
 
-  it("includes the everblooming sigil", () => {
+  it("puts the rose-star brand mark top-left and never says everblooming sigil", () => {
+    assert.equal(BRANDMARK_NAME, "rose-star brand mark");
     assert.equal(SIGIL, CANON_ORIGIN + "/sigil.png");
-    assert.ok(pageHtml().includes(SIGIL));
-    assert.ok(!pageHtml().includes("https://www.azielcorpuslibrary.net/sigil.png"));
+    const pages = [pageHtml(), donateHtml(), embryoLockHtml(), notFoundHtml()];
+    for (const html of pages) {
+      assert.match(html, /<header class="brandrow">[\s\S]*?<img class="brandmark" src="/);
+      assert.ok(html.includes('src="' + SIGIL + '"'));
+      assert.ok(html.indexOf('class="brandrow"') < html.indexOf("<h1"));
+      assert.ok(!html.includes("https://www.azielcorpuslibrary.net/sigil.png"));
+      assert.doesNotMatch(html, /everblooming\s+sigil/i);
+      assert.doesNotMatch(html, /Everblooming/);
+    }
+    assert.doesNotMatch(llmsTxt(), /everblooming\s+sigil/i);
+    assert.doesNotMatch(llmsTxt(), /Everblooming/);
+    assert.match(llmsTxt(), /hosted rose-star brand mark/);
+    const cite = citeDoc();
+    assert.equal(cite.brandmark, SIGIL);
+    assert.equal(cite.brandmark_name, BRANDMARK_NAME);
+    assert.equal(cite.sigil, SIGIL);
+    assert.equal(cite.identity, AUTHOR);
   });
 });
 
@@ -1498,7 +1515,8 @@ describe("worker routing", () => {
     const res = await fetchPath("/sigil.png");
     assert.equal(res.status, 200);
     assert.match(res.headers.get("content-type"), /image\/png/);
-    assert.equal(res.headers.get("X-Aziel-Sigil"), "Everblooming");
+    assert.equal(res.headers.get("X-Aziel-Brandmark"), "rose-star");
+    assert.equal(res.headers.get("X-Aziel-Sigil"), null);
     const buf = new Uint8Array(await res.arrayBuffer());
     assert.equal(buf[0], 0x89);
     assert.equal(String.fromCharCode(buf[1], buf[2], buf[3]), "PNG");
@@ -1516,6 +1534,9 @@ describe("worker routing", () => {
     assert.equal(res.status, 404);
     const body = await res.text();
     assert.ok(body.includes("This path is not a door."));
+    assert.match(body, /<header class="brandrow">[\s\S]*?<img class="brandmark" src="/);
+    assert.ok(body.includes('src="' + SIGIL + '"'));
+    assert.doesNotMatch(body, /everblooming\s+sigil/i);
   });
 
   it("301s /software and /software/ to the homepage Software strip", async () => {
