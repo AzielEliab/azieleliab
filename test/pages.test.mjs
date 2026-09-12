@@ -1485,6 +1485,14 @@ describe("worker routing", () => {
     assert.equal(res.headers.get("Content-Signal"), "search=yes, ai-input=yes, ai-train=yes");
     const body = await res.text();
     assert.ok(body.includes("<h1>Aziel Eliab</h1>"));
+    assert.ok(body.includes('id="doors"'));
+    assert.doesNotMatch(body, /<section class="card" id="donate">/);
+    assert.ok(!body.includes('id="donate"'));
+    assert.ok(!body.includes('class="rails"'));
+    assert.ok(!body.includes("Nothing is free.</p>"));
+    assert.ok(body.includes('aria-label="Spine"'));
+    assert.ok(body.includes(">" + DONATE_TITLE + "<"));
+    assert.ok(body.includes('href="' + DONATE_HREF + '"'));
   });
 
   it("301s apex to www", async () => {
@@ -1704,6 +1712,7 @@ describe("AZL-DONATE-1.0", () => {
     assert.doesNotMatch(html, /<section class="card" id="donate">/);
     assert.ok(!html.includes('class="rails"'));
     assert.ok(!html.includes('class="donate-law"'));
+    assert.ok(!html.includes("Nothing is free.</p>"));
     assert.ok(html.includes('id="why"'));
     assert.ok(html.includes('id="software"'));
     assert.ok(html.includes('id="research"'));
