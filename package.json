@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "azieleliab-com",
-  "description": "azieleliab.com — Aziel Eliab landing. Public identity Aziel Eliab only.",
+  "description": "azieleliab.com — Aziel Eliab landing. Canonical www.azieleliab.com. Person #aziel. Aziel Runtime 2.0.0-rc1. Identity Aziel Eliab only.",
   "license": "Apache-2.0",
   "type": "module",
   "scripts": {

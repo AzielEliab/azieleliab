@@ -16,10 +16,13 @@ This Worker is the **public landing** and **hub cite** surface. It is **not** a 
 Canonical: https://www.azieleliab.com/
 Person `@id`: https://www.azieleliab.com/#aziel (www, not apex; `#aziel` not `#aziel-eliab`)
 Runtime parent `@id`: https://www.azieleliab.com/runtime#runtime (`hasPart` named tools only; not MCP ops)
+Runtime version: **2.0.0-rc1**
 
 Softwares list: https://www.azieleliab.com/#software (`/software` 301s here)
 
 Donate door (AZL-DONATE-1.0, not a Softwares product): https://www.azieleliab.com/donate
+
+GitHub About / indexing (no Worker UI change): [docs/github-seo.md](docs/github-seo.md). Homepage `https://www.azieleliab.com/`. Cross-link Corpus, GodLock, aziel-runtime, Try on Glama, Donate.
 
 About aliases `/about`, `/AzielEliab`, `/aziel-eliab` 301 to the homepage.
 
@@ -54,6 +57,6 @@ Coded in `src/mesh.js` as `QNS_CD_SPEC` and `QNS_CD`. Peers read it from mesh st
 
 ## Compatible clients
 
-ChatGPT, Grok, Venice, Claude, Cursor, Glama, Perplexity, Copilot, Gemini, Mistral, Meta AI, Apple Intelligence, Amazon Q, DuckAssist, You.com, Cohere, plus other MCP/OpenAPI-capable assistants.
+ChatGPT (GPT Actions / OpenAI), Grok (xAI), Venice, Claude (Anthropic Desktop / custom tools), Cursor (MCP), Glama (Install Server / MCP), Perplexity, Microsoft Copilot / Bing, Google Gemini / Vertex AI, Mistral, Meta AI, Apple Intelligence / Applebot surfaces, Amazon Q / Amazonbot tooling, DuckAssist / DuckDuckGo AI, You.com, Cohere, plus other MCP/OpenAPI-capable assistants.
 
-Always send `User-Agent: Mozilla/5.0`. Author: **Aziel Eliab** only.
+Always send `User-Agent: Mozilla/5.0`. Author: **Aziel Eliab** only. Elroi is aka / `alternateName` only.
