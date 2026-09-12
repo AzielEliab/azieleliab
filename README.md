@@ -4,10 +4,49 @@ Public landing for **Aziel Eliab**.
 
 You don’t get to know me. You get to understand the work.
 
-Identity is **Aziel Eliab** only. Apache-2.0.
+Identity is **Aziel Eliab** only. Also known as Aziel Elroi Eliab (`alternateName` / aka only). Apache-2.0.
 
 Canonical: [https://www.azieleliab.com/](https://www.azieleliab.com/)  
 Apex `https://azieleliab.com/` 301s to www.
+
+GitHub About (Google + AI crawlers): homepage **https://www.azieleliab.com/** — apply description and topics from [docs/github-seo.md](docs/github-seo.md).
+
+## Identity / entity graph
+
+Locked `@id`s on the www host (never apex; never `#aziel-eliab`):
+
+| Node | `@id` |
+|------|-------|
+| Person | [https://www.azieleliab.com/#aziel](https://www.azieleliab.com/#aziel) |
+| WebSite | [https://www.azieleliab.com/#website](https://www.azieleliab.com/#website) |
+| Runtime parent | [https://www.azieleliab.com/runtime#runtime](https://www.azieleliab.com/runtime#runtime) |
+
+Person `sameAs` only: [GitHub profile](https://github.com/AzielEliab), [Glama listing](https://glama.ai/mcp/servers/AzielEliab/aziel-runtime) (owner/repo path — no invented UUIDs), [Corpus Library](https://www.azielcorpuslibrary.net/), [GodLock](https://godlock.uk/). Project URLs stay on `author` / `creator` / `sourceCode` / `isPartOf`.
+
+Runtime `SoftwareApplication` `sameAs`: [AzielEliab/aziel-runtime](https://github.com/AzielEliab/aziel-runtime) + [Try on Glama](https://glama.ai/mcp/servers/AzielEliab/aziel-runtime). Worker origin is `relatedLink` / endpoint, not the identity page. Version cite **2.0.0-rc1**.
+
+`hasPart` is **named tools only** — not MCP ops/methods/verbs. Each child is `https://www.azieleliab.com/runtime#<slug>`:
+
+FragGate · ForgeReceipts · DecisionGate · TemporalLock · TrajectoryLock · PeaceLock · GodLock · AZ-OS · AZCoherence · 4DMap · Aziel Corpus · Ask Jeeves · AZBrowser · AZMail · AZHub · AZInterface · SpectralLock · ShadowLock · FoldLock · CodeLock · VibeLock
+
+## Ecosystem
+
+Part of the Aziel Eliab ecosystem. Cross-links for humans, Google, and AI crawlers:
+
+| Surface | URL |
+|---------|-----|
+| Official site | [https://www.azieleliab.com/](https://www.azieleliab.com/) |
+| Corpus | [https://www.azielcorpuslibrary.net/](https://www.azielcorpuslibrary.net/) · [Aziel Eliab](https://www.azielcorpuslibrary.net/AzielEliab) · [Software](https://www.azielcorpuslibrary.net/software) · [Runtime front door](https://www.azielcorpuslibrary.net/runtime) |
+| GodLock | [https://godlock.uk/](https://godlock.uk/) · [Aziel Eliab](https://godlock.uk/AzielEliab) · [repo](https://github.com/AzielEliab/godlock) |
+| aziel-runtime **2.0.0-rc1** | [GitHub](https://github.com/AzielEliab/aziel-runtime) · [Official Runtime](https://aziel-runtime.vibelock.workers.dev/) · [docs/2.0](https://github.com/AzielEliab/aziel-runtime/tree/main/docs/2.0) |
+| Try on Glama | [https://glama.ai/mcp/servers/AzielEliab/aziel-runtime](https://glama.ai/mcp/servers/AzielEliab/aziel-runtime) (primary Runtime CTA; verified listing) |
+| Donate AZL-DONATE-1.0 | [https://www.azieleliab.com/donate](https://www.azieleliab.com/donate) |
+
+## Compatible AI clients
+
+ChatGPT (GPT Actions / OpenAI), Grok (xAI), Venice, Claude (Anthropic Desktop / custom tools), Cursor (MCP), Glama (Install Server / MCP), Perplexity, Microsoft Copilot / Bing, Google Gemini / Vertex AI, Mistral, Meta AI, Apple Intelligence / Applebot surfaces, Amazon Q / Amazonbot tooling, DuckAssist / DuckDuckGo AI, You.com, Cohere, plus other MCP/OpenAPI-capable assistants.
+
+Always send `User-Agent: Mozilla/5.0`. MCP: `POST https://www.azieleliab.com/runtime/mcp`. OpenAPI: https://www.azieleliab.com/runtime/openapi.json
 
 ## Worker
 

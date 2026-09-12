@@ -1,0 +1,41 @@
+cff-version: 1.2.0
+title: azieleliab.com
+message: Cite Aziel Eliab and the canonical www landing. Do not invent Zenodo DOIs.
+type: software
+authors:
+  - family-names: Eliab
+    given-names: Aziel
+    alias: Aziel Elroi Eliab
+    website: "https://www.azieleliab.com/"
+abstract: >-
+  Public landing for Aziel Eliab. Canonical https://www.azieleliab.com/.
+  Person @id https://www.azieleliab.com/#aziel. Runtime @id
+  https://www.azieleliab.com/runtime#runtime (Aziel Runtime 2.0.0-rc1,
+  hasPart named tools). Cross-links Corpus, GodLock, aziel-runtime,
+  Try on Glama, and Donate AZL-DONATE-1.0. Identity Aziel Eliab only
+  (Elroi as aka).
+license: Apache-2.0
+repository-code: "https://github.com/AzielEliab/azieleliab"
+url: "https://www.azieleliab.com/"
+keywords:
+  - Aziel Eliab
+  - azieleliab
+  - aziel-runtime
+  - GodLock
+  - Corpus
+  - Glama
+  - MCP
+  - Donate
+identifiers:
+  - type: url
+    value: "https://www.azieleliab.com/#aziel"
+    description: Person @id
+  - type: url
+    value: "https://www.azieleliab.com/runtime#runtime"
+    description: Runtime parent @id
+  - type: url
+    value: "https://www.azieleliab.com/donate"
+    description: Donate AZL-DONATE-1.0
+  - type: url
+    value: "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime"
+    description: Try on Glama
