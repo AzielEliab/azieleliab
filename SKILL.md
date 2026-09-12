@@ -2,7 +2,8 @@
 name: Aziel Eliab hub cite
 description: >-
   Public landing and hub cite Worker for Aziel Eliab (www.azieleliab.com).
-  Software strip is live catalog, not this repo. Suite mesh is default OFF.
+  Software strip is live catalog, not this repo. Read-only suite presence is on
+  (display from runtime). GET never enables.
   QNS-CD-1.0 is hub cite / mesh.js cross-map only (photon QNS1 packet
   transfer). Local qnsd is AzielEliab/qnm-node. Runtime cites live in
   AzielEliab/aziel-runtime. AZInterface has pair custody. No Node Gate.
@@ -26,19 +27,19 @@ GitHub About / indexing (no Worker UI change): [docs/github-seo.md](docs/github-
 
 About aliases `/about`, `/AzielEliab`, `/aziel-eliab` 301 to the homepage.
 
-## Mesh (default OFF)
+## Mesh (read-only ON)
 
-Suite node mesh doors stay **default OFF** until aziel-runtime enables them. VPN/hop mesh is not claimed. No Node Gate. Display only.
+Read-only suite presence is **on**. Display `live_nodes` from aziel-runtime. VPN/hop mesh is not claimed. No Node Gate. Display only.
 
 | Path | What |
 |------|------|
 | `GET /v1/mesh/status` | Same-origin QNM-BUILD-1.0 rollup (runtime via `AZIEL_RUNTIME`, else HTTPS). Hoists `live_nodes`. |
-| `GET /v1/mesh/nodes` | Live Nodes roster (empty while off) |
+| `GET /v1/mesh/nodes` | Live Nodes roster (display from runtime; `Live Nodes · 0` when unavailable) |
 | `GET /runtime/v1/mesh/status` | Same JSON through the quiet `/runtime` door |
 | `GET /runtime/v1/mesh/nodes` | Same |
 | `GET /cite.json` | Hub citation record, including mesh + QNM rollup + QNS-CD |
 
-`GET /v1/mesh/status` never enables radios. Operator enable on runtime requires a declared bearer (example: `suite-presence`). A 404 or missing origin is `{ enabled: false, mesh: "off", default: "off", live_nodes: 0 }`.
+`GET /v1/mesh/status` never enables radios. Operator enable on runtime requires a declared bearer (example: `suite-presence`). A 404 or missing origin still returns identity Aziel Eliab with `live_nodes: 0`. Public UI never renders an off-state quiet mesh label.
 
 Homepage brandrow shows `Live Nodes · N` (sister-hub pill) from origin `live_nodes`. Softwares list rules unchanged.
 
@@ -51,7 +52,7 @@ Coded in `src/mesh.js` as `QNS_CD_SPEC` and `QNS_CD`. Peers read it from mesh st
 
 **THIS IS:** photon QNS1 packet transfer cite. Local qnsd is coded in [qnm-node](https://github.com/AzielEliab/qnm-node). Runtime cites + catalog field live in [aziel-runtime](https://github.com/AzielEliab/aziel-runtime) (`docs/designs/`, `docs/NODE_MESH.md`, `/v1/skill`). Pair custody: [azinterface](https://github.com/AzielEliab/azinterface).
 
-**THIS IS NOT:** a Softwares-tab product, a public qnsd proxy, a Node Gate, or a reason to turn mesh on.
+**THIS IS NOT:** a Softwares-tab product, a public qnsd proxy, a Node Gate, or a mesh-off control.
 
 `MESH_NOTE` cites QNS-CD-1.0. Do not implement qnsd on this Worker.
 
