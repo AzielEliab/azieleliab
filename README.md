@@ -60,7 +60,7 @@ Cloudflare Worker `azieleliab-com` serves the literary landing, crawl files, and
 | `/about` · `/AzielEliab` · `/aziel-eliab` | 301 to [`/`](https://www.azieleliab.com/) (About Aziel Eliab is the homepage) |
 | `/donate` · `/donate/` | AZL-DONATE-1.0 primary Donate door (static; homepage has no Donate section). Bare `/donate` 302s to `/donate?v=png` so CF edge cannot keep the old stroke-SVG HTML. Door HTML is `no-store`. Rails use solid PNG QRs at `/donate/qr/{btc,eth,ltc,xrp,doge}.png` (payment URI, not a website). |
 | `/embryolock` · `/embryolock/` | EmbryoLock secondary local page (Softwares door is catalog `worker_home`) |
-| `/sigil.png` | Hosted Everblooming sigil (Donate / brandrow do not fetch the corpus) |
+| `/sigil.png` | Hosted rose-star brand mark (Donate / brandrow do not fetch the corpus) |
 | `/robots.txt` | `Allow: /` plus AI crawlers and `/runtime` |
 | `/llms.txt` | Door index for models |
 | `/ai.txt` | Crawl policy |
@@ -247,7 +247,7 @@ Every label and URL is hyperlinked.
 
 ## Visual
 
-Matches GodLock / Digital Library Workers: `#0e0c09` / `#12100c` ground, `#c9a227` gold trim, white body text, soft-card panels. Not royal-purple body copy. Hosted sigil: https://www.azieleliab.com/sigil.png
+Matches GodLock / Digital Library Workers: `#0e0c09` / `#12100c` ground, `#c9a227` gold trim, white body text, soft-card panels. Not royal-purple body copy. Hosted rose-star brand mark: https://www.azieleliab.com/sigil.png
 
 ## License
 
