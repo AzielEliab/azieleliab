@@ -6,9 +6,12 @@ export const WWW_HOST = "www.azieleliab.com";
 export const AUTHOR = "Aziel Eliab";
 export const AUTHOR_AKA = "Aziel Elroi Eliab";
 export const SITE = "Aziel Eliab";
-/** Same-origin hosted sigil. Donate / brandrow do not fetch the corpus. */
+/** Same-origin hosted rose-star brand mark. Donate / brandrow do not fetch the corpus. */
+export const BRANDMARK_NAME = "rose-star brand mark";
 export const SIGIL_PATH = "/sigil.png";
 export const SIGIL = CANON_ORIGIN + SIGIL_PATH;
+export const BRANDMARK_PATH = SIGIL_PATH;
+export const BRANDMARK = SIGIL;
 /** Cite only. Flaky corpus fetch is not the page image. */
 export const SIGIL_CORPUS = "https://www.azielcorpuslibrary.net/sigil.png";
 export const LICENSE = "Apache-2.0";
