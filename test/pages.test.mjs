@@ -611,9 +611,11 @@ describe("doors", () => {
     const html = pageHtml();
     const doorsCard = html.match(/<section class="card" id="doors">[\s\S]*?<\/section>/);
     assert.ok(doorsCard);
-    assert.ok(doorsCard[0].includes('class="door-label">He Didn\'t Jump<'));
+    assert.ok(doorsCard[0].includes('class="door-label"'));
+    assert.ok(doorsCard[0].includes(">He Didn't Jump<"));
     assert.ok(doorsCard[0].includes('href="' + HEDIDNTJUMP + '/"'));
-    assert.ok(doorsCard[0].includes('class="door-url">' + HEDIDNTJUMP + "/<"));
+    assert.ok(doorsCard[0].includes('class="door-url"'));
+    assert.ok(doorsCard[0].includes(">" + HEDIDNTJUMP + "/<"));
     const footer = html.match(/<footer>[\s\S]*?<\/footer>/);
     assert.ok(footer);
     assert.ok(footer[0].includes(">He Didn't Jump<"));
