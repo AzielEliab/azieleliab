@@ -392,7 +392,7 @@ export const SOFTWARE_EXTRAS = [
     enabled_default: false,
     path: "/v1/mesh",
     spec: "QNM-BUILD-1.0",
-    note: "Suite rollup. Not a Softwares-tab product. Default OFF. GET never enables.",
+    note: "Suite rollup. Not a Softwares-tab product. Read-only suite presence is on (display from runtime). GET never enables.",
   },
 ];
 export const EXTRA_SOFTWARE = SOFTWARE_EXTRAS;

@@ -73,7 +73,7 @@ Cloudflare Worker `azieleliab-com` serves the literary landing, crawl files, and
 | `POST /v1/view` | Increment pageviews |
 | `GET /v1/software` | Resolved Softwares catalog (`products` enriched from aziel-runtime; `extras` for FragGate / mesh / aziel-runtime; short edge TTL). Runtime version cite is **2.0.0-rc1** (or live `/v1/health`) |
 | `GET /v1/update` · `/v1/update/check` | Quiet installer pointer at runtime `/v1/update/check` |
-| `GET /v1/mesh/status` · `/v1/mesh/nodes` | Suite node mesh (default off until runtime enables it) |
+| `GET /v1/mesh/status` · `/v1/mesh/nodes` | Suite node mesh (read-only suite presence is on; display from runtime) |
 
 JSON-LD: `Person` `@id` `https://www.azieleliab.com/#aziel` (Aziel Eliab; `alternateName` Aziel Elroi Eliab; `sameAs` GitHub profile, Glama listing, Corpus Library, GodLock, He Didn't Jump — no invented Glama UUIDs) + `WebSite` `#website` (publisher/creator Person) + `AboutPage` + Runtime parent `SoftwareApplication` `@id` `https://www.azieleliab.com/runtime#runtime` (`hasPart` named tools only — not MCP ops; Worker is related/endpoint; `sameAs` GitHub repo + Glama) + one named-tool `SoftwareApplication` per Runtime component (`/runtime#<slug>`) + Software `ItemList` / `CollectionPage` + one catalog `SoftwareApplication` per Softwares name + Donate `WebPage` / `DonateAction`. Homepage title stays **Aziel Eliab**. Canonical host is always `https://www.azieleliab.com/` (self-referencing only). Softwares is the homepage `#software` strip (`/software` 301s there). Footer chrome: **Part of the Aziel Eliab ecosystem**. Donate canonical is `/donate?v=png`. hreflang `en` + `x-default` point at each page’s www canonical.
 
@@ -94,7 +94,7 @@ Discovery:
 - Mesh status: https://www.azieleliab.com/runtime/v1/mesh/status
 - Mesh nodes: https://www.azieleliab.com/runtime/v1/mesh/nodes
 
-Same JSON also lives at same-origin `/v1/mesh/status` and `/v1/mesh/nodes` (Software door). Both fetch `https://aziel-runtime.vibelock.workers.dev/v1/mesh/status` and `/v1/mesh/nodes` via service binding `AZIEL_RUNTIME` (HTTPS origin fallback). **Mesh is default off** until runtime enables it — a 404 or missing origin becomes `{ enabled: false, mesh: "off", live_nodes: 0, nodes: [] }` with identity Aziel Eliab. VPN/hop mesh is not claimed. **GET never enables.** Operator enable on runtime requires a declared bearer (example: `suite-presence`). The landing brandrow shows a Digital Library–style `Live Nodes · N` / `Live Nodes · off` pill fed from origin `live_nodes` (QNM-BUILD-1.0 rollup). The footer keeps the quiet `mesh off` / `mesh on` link. OpenAPI / cite / llms list the paths. Not Node Gate. Softwares list rules unchanged.
+Same JSON also lives at same-origin `/v1/mesh/status` and `/v1/mesh/nodes` (Software door). Both fetch `https://aziel-runtime.vibelock.workers.dev/v1/mesh/status` and `/v1/mesh/nodes` via service binding `AZIEL_RUNTIME` (HTTPS origin fallback). **Read-only suite presence is on** — display from runtime. A 404 or missing origin still returns identity Aziel Eliab with `live_nodes: 0` (brandrow/footer show `Live Nodes · 0`; they omit the quiet mesh label rather than an off-state string). VPN/hop mesh is not claimed. **GET never enables.** Operator enable on runtime requires a declared bearer (example: `suite-presence`). The landing brandrow shows a Digital Library–style `Live Nodes · N` pill fed from origin `live_nodes` (QNM-BUILD-1.0 rollup). The footer keeps the quiet `mesh on` link when runtime reports enabled, and omits that quiet label when status is unavailable. OpenAPI / cite / llms list the paths. Not Node Gate. Softwares list rules unchanged.
 
 Outbound proxy requests are stamped `X-Aziel-Runtime-Via: azieleliab.com` and `X-Aziel-Runtime-Host: www.azieleliab.com` so origin can attribute the hop if it has a uses store.
 
@@ -129,7 +129,7 @@ Public HTML and crawl files used to send `Cache-Control: no-store`, so every rep
 - Donate HTML (`/donate?v=png`): `no-store, max-age=0, must-revalidate`. Bare `/donate` 302s to `?v=png` so a stale CF HIT of stroke-SVG HTML cannot stick.
 - `/robots.txt`, `/llms.txt`, `/ai.txt`, `/cite.json`, `/sitemap.xml`: long public cache, full documents, never throttled.
 - Live Software catalog is **one packed snapshot** (Cache API + KV key `software:catalog:v2` on the existing `VIEWS` namespace). Warm HIT does not fetch runtime. Static `SOFTWARE` remains last resort.
-- Soft caps on `/v1/update/check` and mesh origin refresh apply only when someone hammers those fan-out doors after the snapshot is cold. They return the last full JSON (or the quiet default-off / pointer body) — not a soft-404, login wall, or thin page. **Rate limit here means cost/abuse protection, not content rationing.**
+- Soft caps on `/v1/update/check` and mesh origin refresh apply only when someone hammers those fan-out doors after the snapshot is cold. They return the last full JSON (or the quiet pointer / Live Nodes · 0 body) — not a soft-404, login wall, or thin page. **Rate limit here means cost/abuse protection, not content rationing.**
 - Optional `OPERATOR_TOKEN` (header `X-Aziel-Runtime-Token` or `Authorization: Bearer`) is uncapped. Do not add Node Gate / IP UI.
 
 New catalog products appear within the short snapshot TTL — no hand edit of this repo.
@@ -205,11 +205,11 @@ Fallback snapshot (used only when live catalog is unreachable):
 | VibeLock | https://vibelock-download-tracker.vibelock.workers.dev/ |
 | WhistleLock | https://whistlelock-download-tracker.vibelock.workers.dev/ |
 
-EmbryoLock Softwares door is catalog `worker_home` (`https://embryolock-download-tracker.vibelock.workers.dev/`). `/embryolock` remains a secondary local page. FragGate, mesh, and same-origin `aziel-runtime` are extras / doors — not Softwares `products[]` cards. Mesh stays default OFF. GET never enables.
+EmbryoLock Softwares door is catalog `worker_home` (`https://embryolock-download-tracker.vibelock.workers.dev/`). `/embryolock` remains a secondary local page. FragGate, mesh, and same-origin `aziel-runtime` are extras / doors — not Softwares `products[]` cards. Read-only suite presence is on (display from runtime). GET never enables.
 
 Quiet installer meta: `GET /v1/update/check` (alias `/v1/update`) points at runtime `GET /v1/update/check`. The landing also ships `<meta name="aziel-update-check">`.
 
-Quiet mesh meta: `GET /v1/mesh/status` and `GET /v1/mesh/nodes` (also `/runtime/v1/mesh/status` · `/runtime/v1/mesh/nodes`) point at runtime mesh authority. The landing ships `<meta name="aziel-mesh-status">`, `<meta name="aziel-qns-cd">`, `<meta name="aziel-qnm">` (`QNM-BUILD-1.0`), a brandrow Live Nodes pill, and a muted footer status. `/v1/software` includes a `mesh` snapshot with `live_nodes` and a `extras` mesh cite. **Mesh is default OFF. GET never enables.** Operator enable requires a declared bearer (example: suite-presence). No Node Gate. No public qnsd proxy. Softwares UI is heading → list only.
+Quiet mesh meta: `GET /v1/mesh/status` and `GET /v1/mesh/nodes` (also `/runtime/v1/mesh/status` · `/runtime/v1/mesh/nodes`) point at runtime mesh authority. The landing ships `<meta name="aziel-mesh-status">`, `<meta name="aziel-qns-cd">`, `<meta name="aziel-qnm">` (`QNM-BUILD-1.0`), a brandrow Live Nodes pill, and a muted footer status. `/v1/software` includes a `mesh` snapshot with `live_nodes` and a `extras` mesh cite. **Read-only suite presence is on (display from runtime). GET never enables.** Operator enable requires a declared bearer (example: suite-presence). No Node Gate. No public qnsd proxy. Softwares UI is heading → list only.
 
 ### QNS-CD-1.0 hub cite (mesh cross-map)
 

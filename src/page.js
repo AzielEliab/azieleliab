@@ -480,6 +480,15 @@ export function liveNodesPill(mesh) {
   );
 }
 
+function meshQuietHtml(mesh) {
+  const meshLabel = meshQuietLabel(mesh);
+  const nodesLabel = liveNodesLabel(mesh);
+  const links = [];
+  if (meshLabel) links.push(a("/v1/mesh/status", meshLabel));
+  links.push(a("/v1/mesh/status", nodesLabel));
+  return '<p class="mesh-quiet">' + links.join(" · ") + "</p>";
+}
+
 const LIVE_NODES_SCRIPT = `<script>
 (function(){
   var el=document.getElementById("aziel-live-nodes");
@@ -487,9 +496,8 @@ const LIVE_NODES_SCRIPT = `<script>
   fetch("/v1/mesh/status",{headers:{"Accept":"application/json","User-Agent":"Mozilla/5.0"}}).then(function(r){return r.json();}).then(function(d){
     if(!d)return;
     var src=d.origin&&typeof d.origin==="object"?d.origin:d;
-    var on=d.enabled===true||(src&&src.enabled===true)||d.mesh==="on"||d.mesh==="enabled"||d.mesh==="live";
     var n=d.live_nodes!=null?d.live_nodes:(src&&src.live_nodes!=null?src.live_nodes:(d.nodes&&d.nodes.length)||(src&&src.rollup&&src.rollup.live)||0);
-    el.textContent=on?("Live Nodes \\u00b7 "+n):"Live Nodes \\u00b7 off";
+    el.textContent="Live Nodes \\u00b7 "+n;
   }).catch(function(){});
 })();
 </script>`;
@@ -550,8 +558,7 @@ export function pageHtml(views = 0, softwareItems = SOFTWARE, mesh = null, runti
   const doorsSoftware = softwareItems && softwareItems.length ? softwareItems : SOFTWARE;
   const software = softwareLine(doorsSoftware);
   const doors = DOORS.map(doorRow).join("");
-  const meshLabel = meshQuietLabel(mesh);
-  const nodesLabel = liveNodesLabel(mesh);
+  const meshQuiet = meshQuietHtml(mesh);
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -610,7 +617,7 @@ ${documentHead({
   <footer>
     ${ecosystemHtml()}
     <p>${esc(AUTHOR)} · ${a(CANON_ORIGIN + "/cite.json", "cite.json")} · ${a(CANON_ORIGIN + "/llms.txt", "llms.txt")} · ${a(DONATE_HREF, DONATE_TITLE)} · Apache-2.0</p>
-    <p class="mesh-quiet">${a("/v1/mesh/status", meshLabel)} · ${a("/v1/mesh/status", nodesLabel)}</p>
+    ${meshQuiet}
   </footer>
 </main>
 ${COPY_SCRIPT}
