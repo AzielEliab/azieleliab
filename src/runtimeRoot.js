@@ -4,6 +4,7 @@
  * No human site chrome is injected. Author: Aziel Eliab.
  */
 import { AUTHOR, LIBRARY_RUNTIME, RUNTIME, RUNTIME_LOCAL, RUNTIME_PATH } from "./copy.js";
+import { injectPersonJsonLd } from "./identity.js";
 import { injectMeshDiscovery, loadMeshNodes, loadMeshStatus, MESH_NODES_PATH } from "./mesh.js";
 import {
   fetchOriginUses,
@@ -192,7 +193,8 @@ async function finishProxy(request, res, via, destPathAndQuery) {
   }
   const text = await res.text();
   const destPath = String(destPathAndQuery || "").split("?")[0];
-  const rewritten = injectMeshDiscovery(rewriteRuntimeBody(text, ct), ct, destPath);
+  let rewritten = injectMeshDiscovery(rewriteRuntimeBody(text, ct), ct, destPath);
+  if (ct.toLowerCase().includes("html")) rewritten = injectPersonJsonLd(rewritten);
   headers.delete("content-length");
   return new Response(rewritten, { status: res.status, statusText: res.statusText, headers });
 }

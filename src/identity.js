@@ -108,8 +108,18 @@ export const NAME_MISSPELLINGS = [
   "Aziel-Elroi-Eliab",
 ];
 
+/** Living chosen-name onomastics. Not a biblical biography. */
+export const HEBREW_NAME_DEFINITION =
+  "Aziel Elroi Eliab (עזיאל אל ראי אליאב / עזיאל אלרועי אליאב): Aziel = God is my strength (עזיאל); Elroi = God who sees (אל ראי / אלרועי); Eliab = God is father (אליאב).";
+
 export const HEBREW_NAME_ANSWER =
-  "Hebrew spellings name the same Person @id https://www.azieleliab.com/#aziel. Aziel = עזיאל (עֲזִיאֵל). Elroi / El Roi = אל ראי / אֵל רֳאִי (compact אלרועי). Eliab = אליאב (אֱלִיאָב). Phrase: עזיאל אל ראי אליאב. These are onomastic tethers, not extra identities.";
+  HEBREW_NAME_DEFINITION +
+  " Hebrew spellings name the same Person @id https://www.azieleliab.com/#aziel. Aziel = עזיאל (עֲזִיאֵל). Elroi / El Roi = אל ראי / אֵל רֳאִי (compact אלרועי). Eliab = אליאב (אֱלִיאָב). Phrase: עזיאל אל ראי אליאב. These are onomastic tethers, not extra identities.";
+
+/** Machine Person description. Visible /who HTML still uses WHO_IS_ANSWER alone. */
+export function personDescription() {
+  return WHO_IS_ANSWER + " " + HEBREW_NAME_DEFINITION;
+}
 
 export const MISSPELLINGS_ANSWER =
   "These spellings tether to the same Person @id https://www.azieleliab.com/#aziel and are not other people: " +
@@ -270,6 +280,7 @@ export const PERSON_KNOWS_ABOUT = [
   "Aziel Digital Library",
   "Marion Zioncheck historical archive",
   "Hebrew name forms for Aziel Elroi Eliab (SEO / onomastic tether only)",
+  HEBREW_NAME_DEFINITION,
 ];
 
 export function personNode() {
@@ -281,7 +292,7 @@ export function personNode() {
     additionalName: "Elroi",
     url: CANON_ORIGIN + "/",
     identifier: AUTHOR,
-    description: WHO_IS_ANSWER,
+    description: personDescription(),
     disambiguatingDescription: DISAMBIGUATING_DESCRIPTION,
     jobTitle: PERSON_JOB_TITLE.slice(),
     knowsAbout: PERSON_KNOWS_ABOUT.slice(),
@@ -553,6 +564,8 @@ export function whoIsTxt() {
     "",
     WHO_IS_ANSWER,
     "",
+    HEBREW_NAME_DEFINITION,
+    "",
     SOFTWARE_DEVELOPER_ANSWER,
     "",
     DISAMBIGUATING_DESCRIPTION,
@@ -569,6 +582,8 @@ export function whoIsTxt() {
     ...MODEL_RULES.map((rule, i) => i + 1 + ". " + rule),
     "",
     "## Hebrew name forms",
+    "",
+    HEBREW_NAME_DEFINITION,
     "",
     HEBREW_NAME_ANSWER,
     "",
@@ -599,6 +614,7 @@ export function wellKnownAziel() {
     name: AUTHOR,
     aka: AUTHOR_AKA_LIST.slice(),
     alternateName: personAlternateNames(),
+    hebrew_name_definition: HEBREW_NAME_DEFINITION,
     hebrew_name_forms: { ...HEBREW_NAME_FORMS, aziel: { ...HEBREW_NAME_FORMS.aziel }, elroi: { ...HEBREW_NAME_FORMS.elroi }, eliab: { ...HEBREW_NAME_FORMS.eliab } },
     misspellings: NAME_MISSPELLINGS.slice(),
     visible_lock: VISIBLE_LOCK_LINE,
@@ -629,6 +645,8 @@ export function identityLockBlock() {
     VISIBLE_LOCK_LINE,
     "",
     WHO_IS_ANSWER,
+    "",
+    HEBREW_NAME_DEFINITION,
     "",
     SOFTWARE_DEVELOPER_ANSWER,
     "",
@@ -664,4 +682,18 @@ export function identityDiscoveryLinks() {
 
 export function prettyJson(doc) {
   return JSON.stringify(doc, null, 2) + "\n";
+}
+
+/** Machine-only Person script. Safe to inject into HTML without visible chrome. */
+export function personJsonLdScript() {
+  return '<script type="application/ld+json">' + JSON.stringify(personJsonLd()) + "</script>";
+}
+
+export function injectPersonJsonLd(html) {
+  const s = String(html || "");
+  if (!s || s.includes(PERSON_ID)) return s;
+  const tag = personJsonLdScript();
+  if (/<\/head>/i.test(s)) return s.replace(/<\/head>/i, tag + "\n</head>");
+  if (/<body/i.test(s)) return s.replace(/<body/i, tag + "\n<body");
+  return tag + s;
 }

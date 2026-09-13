@@ -1033,6 +1033,9 @@ describe("SEO routes", () => {
     assert.ok(ld["@graph"][0].alternateName.includes("Aziell"));
     assert.ok(ld["@graph"][0].alternateName.includes("The Revealer of The Sealed"));
     assert.ok(ld["@graph"][0].alternateName.includes("Revealer of The Sealed"));
+    assert.ok(ld["@graph"][0].alternateName.includes("Elias Artista"));
+    assert.ok(ld["@graph"][0].sameAs.includes("https://github.com/AzielEliab"));
+    assert.ok(ld["@graph"][0].sameAs.includes("https://github.com/azieltherevealerofthesealed-arch"));
     assert.match(
       ld["@graph"][0].disambiguatingDescription,
       /two Levitical musicians Aziel and Eliab named together in 1 Chronicles 15:20/,
@@ -1134,6 +1137,8 @@ describe("public entity graph phases B–D + E audit", () => {
     assert.ok(person.alternateName.includes("Aziell"));
     assert.ok(person.alternateName.includes("The Revealer of The Sealed"));
     assert.ok(person.alternateName.includes("Revealer of The Sealed"));
+    assert.ok(person.alternateName.includes("Elias Artista"));
+    assert.ok(!person.alternateName.some((n) => /Everblooming|Flower That Holds The Name/i.test(n)));
     assert.deepEqual(person.sameAs, PERSON_SAME_AS);
     assert.ok(!person.sameAs.includes(GITHUB_RUNTIME));
     assert.ok(!person.sameAs.includes(RUNTIME_LOCAL));
@@ -1589,6 +1594,9 @@ describe("runtime proxy", () => {
     const html = await door.text();
     assert.match(html, /FragGate/);
     assert.match(html, /href="\/runtime\/v1\/health"/);
+    assert.ok(html.includes("https://www.azieleliab.com/#aziel"));
+    assert.ok(html.includes("Elias Artista"));
+    assert.ok(html.includes("application/ld+json"));
     assert.doesNotMatch(html, /godlock-runtime-chrome|<nav /i);
     assert.equal(door.headers.get("X-Aziel-Runtime-Via"), "service-binding");
     assert.equal(door.headers.get("X-Aziel-Runtime-Root"), RUNTIME_LOCAL);
