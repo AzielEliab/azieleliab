@@ -822,7 +822,10 @@ ${brandRow()}
     <h2>${esc(RECEIPTS_TITLE)}</h2>
     <ol class="receipts">${shown.map(receiptItem).join("")}</ol>
   </section>
-${literaryFooter(meshQuietHtml(null))}
+  <footer>
+    ${ecosystemHtml()}
+    <p>${esc(AUTHOR)} · ${a(CANON_ORIGIN + "/", AUTHOR)} · ${a(CANON_ORIGIN + "/cite.json", "cite.json")} · Apache-2.0</p>
+  </footer>
 </main>
 ${COPY_SCRIPT}
 </body>
