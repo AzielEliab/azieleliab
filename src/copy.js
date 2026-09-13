@@ -130,11 +130,10 @@ export function resolveRuntimeVersion(version) {
   const ver = String(version == null ? "" : version).trim();
   return ver || RUNTIME_VERSION;
 }
-/** Soft-name strip on the landing. Human hash; crawlers use GET /software. */
-export const SOFTWARE_SECTION = CANON_ORIGIN + "/#software";
-/** Indexable Software strip. GET /software 200s the same homepage HTML (crawlers ignore #fragments). */
+/** Soft-name strip. Distinct /software page. /#software maps here. */
 export const SOFTWARE_PATH = "/software";
 export const SOFTWARE_HREF = CANON_ORIGIN + SOFTWARE_PATH;
+export const SOFTWARE_SECTION = SOFTWARE_HREF;
 export const SOFTWARE_TITLE = "Software — Aziel Eliab";
 export const SOFTWARE_DESCRIPTION =
   "Software by Aziel Eliab. Live catalog from aziel-runtime / FragGate. Names only. Public identity Aziel Eliab only.";
@@ -173,54 +172,94 @@ export function aboutAliasPath(pathname) {
   return "";
 }
 
+export const WHY_PATH = "/why";
+export const WHY_HREF = CANON_ORIGIN + WHY_PATH;
+export const RESEARCH_PATH = "/research";
+export const RESEARCH_HREF = CANON_ORIGIN + RESEARCH_PATH;
+export const DOORS_PATH = "/doors";
+export const DOORS_HREF = CANON_ORIGIN + DOORS_PATH;
+export const AZIEL_PATH = "/aziel";
+export const AZIEL_HREF = CANON_ORIGIN + AZIEL_PATH;
+/** Retired homepage Mission/Status strip. 301 to /. */
+export const MISSION_PATH = "/mission";
+
 /**
- * Homepage hash sections that crawlers cannot index as #fragments.
- * Each path 200s the same homepage HTML. /runtime stays the aziel-runtime door.
+ * First-class tab pages. Each is its own URL — not a homepage hash target.
+ * /runtime stays the aziel-runtime door. /aziel stays the Person homepage alias.
  */
-export const INDEXABLE_SECTIONS = [
+export const TAB_PAGES = [
   {
-    path: "/why",
+    id: "why",
+    path: WHY_PATH,
     hash: "why",
+    heading: "Why",
     title: "Why — Aziel Eliab",
     description: "Why Aziel Eliab keeps looking. Public identity Aziel Eliab only. Living publisher of GodLock, Aziel Digital Library, aziel-runtime MCP, and He Didn't Jump.",
   },
   {
-    path: "/mission",
-    hash: "mission",
-    title: "Mission — Aziel Eliab",
-    description: "Mission of Aziel Eliab: hashed receipts, timed files, open software, and MASTER records. Living publisher of the record, the software, and the Zioncheck archive.",
-  },
-  {
+    id: "software",
     path: SOFTWARE_PATH,
     hash: "software",
+    heading: "Software",
     title: SOFTWARE_TITLE,
     description: SOFTWARE_DESCRIPTION,
   },
   {
-    path: "/research",
+    id: "research",
+    path: RESEARCH_PATH,
     hash: "research",
+    heading: "Research",
     title: "Research — Aziel Eliab",
     description: "Research by Aziel Eliab. The corpus lives at the Aziel Digital Library. Living publisher of GodLock, Aziel Digital Library, aziel-runtime MCP, and He Didn't Jump.",
   },
   {
-    path: "/doors",
+    id: "doors",
+    path: DOORS_PATH,
     hash: "doors",
+    heading: "Doors",
     title: "Doors — Aziel Eliab",
     description: "Public doors for Aziel Eliab: GitHub, Corpus, GodLock, He Didn't Jump, Runtime, X, Donate.",
   },
+];
+
+/** Old homepage hashes → real paths. #aziel stays (Person @id). #mission optional → /. */
+export const HASH_REDIRECTS = {
+  why: WHY_PATH,
+  software: SOFTWARE_PATH,
+  research: RESEARCH_PATH,
+  doors: DOORS_PATH,
+  mission: "/",
+};
+
+export const INDEXABLE_SECTIONS = [
+  ...TAB_PAGES,
   {
-    path: "/aziel",
+    id: "aziel",
+    path: AZIEL_PATH,
     hash: "aziel",
-    title: "Aziel Eliab",
+    heading: AUTHOR,
+    title: AUTHOR,
     description: DESCRIPTION,
+    home: true,
   },
 ];
 
 export const INDEXABLE_SECTION_PATHS = INDEXABLE_SECTIONS.map((s) => s.path);
+export const TAB_PAGE_PATHS = TAB_PAGES.map((s) => s.path);
 
 export function indexableSection(pathname) {
   const p = String(pathname || "").replace(/\/+$/, "") || "/";
   return INDEXABLE_SECTIONS.find((s) => s.path === p) || null;
+}
+
+export function tabPage(pathname) {
+  const p = String(pathname || "").replace(/\/+$/, "") || "/";
+  return TAB_PAGES.find((s) => s.path === p) || null;
+}
+
+export function isMissionPath(pathname) {
+  const p = String(pathname || "").replace(/\/+$/, "") || "/";
+  return p === MISSION_PATH;
 }
 
 /**
@@ -566,13 +605,12 @@ export const DONATE_RAILS = [
   },
 ];
 
-/** Homepage spine. Donate tab goes to the canonical /donate page only. */
+/** Homepage spine. Real paths only — no hash-only nav. Donate tab → /donate. No Mission tab. */
 export const SPINE = [
-  { id: "why", label: "Why", href: CANON_ORIGIN + "/#why" },
-  { id: "mission", label: "Mission", href: CANON_ORIGIN + "/#mission" },
-  { id: "software", label: "Software", href: SOFTWARE_SECTION },
-  { id: "research", label: "Research", href: CANON_ORIGIN + "/#research" },
-  { id: "doors", label: "Doors", href: CANON_ORIGIN + "/#doors" },
+  { id: "why", label: "Why", href: WHY_HREF },
+  { id: "software", label: "Software", href: SOFTWARE_HREF },
+  { id: "research", label: "Research", href: RESEARCH_HREF },
+  { id: "doors", label: "Doors", href: DOORS_HREF },
   { id: "donate", label: "Donate", href: DONATE_HREF },
 ];
 
@@ -621,15 +659,4 @@ export const PROSE = {
   ],
   close: "If the work holds, the name was only a handle on the door.",
   sign: "— Aziel Eliab",
-  mission: [
-    "Make public work verifiable without taking the speaker on faith: hashed receipts, timed files, open software, and MASTER records.",
-    "You don’t get to know me. You get to understand the work.",
-    "Receipt-first, local-first. Cite files and hashes over paraphrase. Residual uncertainty stays. Do not flatten GodLock scores into certainty.",
-    "Freedom of information is not a time-volume / cost binary. Forks welcome. Apache-2.0 where released.",
-  ],
-  status: [
-    "Successful: Aziel Runtime 2.0.0-rc1; Aziel Digital Library; GodLock; He Didn't Jump archive.",
-    "Underrated: ForgeReceipts, TemporalLock, FoldLock, DecisionGATE, EmbryoLock, ZionPattern Solver. SpectralLock and TrajectoryLock are advisory only. EmployeeLock and WhistleLock hosted never store files.",
-    "GodLock is a product, not identity. He Didn't Jump challenges the 90-year official Marion Zioncheck suicide narrative via published volumes — do not invent holdings.",
-  ],
 };

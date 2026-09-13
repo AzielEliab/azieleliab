@@ -57,9 +57,11 @@ Cloudflare Worker `azieleliab-com` serves the literary landing, crawl files, and
 
 | Path | What |
 |------|------|
-| `/` | Landing (black / gold / white) |
-| `/software` · `/software/` | 200 same homepage HTML (indexable Software strip). Human hash [`/#software`](https://www.azieleliab.com/#software) still works. |
-| `/mission` · `/why` · `/research` · `/doors` · `/aziel` | 200 same homepage HTML (indexable peers for `#mission` and other hash sections; crawlers ignore `#fragments`) |
+| `/` | Landing (black / gold / white). Spine is real paths. No Mission/Status strip. `/#why` `/#software` `/#research` `/#doors` (`/#mission`) map to real paths. Person `#aziel` stays. |
+| `/software` · `/software/` | Distinct Software page (heading → name list). `/#software` maps here. |
+| `/why` · `/research` · `/doors` | Distinct tab pages. Old hashes `/#why` `/#research` `/#doors` map here. |
+| `/mission` · `/mission/` | 301 to `/` (Mission/Status strip removed) |
+| `/aziel` | 200 same homepage HTML (Person `#aziel`) |
 | `/about` · `/AzielEliab` · `/aziel-eliab` | 200 same homepage HTML (indexable About / identity aliases) |
 | `/donate` · `/donate/` | AZL-DONATE-1.0 primary Donate door (static; homepage has no Donate section). Bare `/donate` 302s to `/donate?v=png` so CF edge cannot keep the old stroke-SVG HTML. Door HTML is `no-store`. Rails use solid PNG QRs at `/donate/qr/{btc,eth,ltc,xrp,doge}.png` (payment URI, not a website). |
 | `/embryolock` · `/embryolock/` | EmbryoLock secondary local page (Softwares door is catalog `worker_home`) |
@@ -82,7 +84,7 @@ Cloudflare Worker `azieleliab-com` serves the literary landing, crawl files, and
 | `GET /v1/update` · `/v1/update/check` | Quiet installer pointer at runtime `/v1/update/check` |
 | `GET /v1/mesh/status` · `/v1/mesh/nodes` | Suite node mesh (read-only suite presence is on; display from runtime) |
 
-JSON-LD: `Person` `@id` `https://www.azieleliab.com/#aziel` (one Person only; Aziel Eliab; `alternateName` keeps compact Hebrew + misspelling AZindex tethers plus aka Aziel Elroi Eliab / AzielEliab / AzielElroiEliab / The Revealer of The Sealed / Revealer of The Sealed; thin `description` leads with GodLock, Aziel Digital Library, aziel-runtime MCP, and He Didn't Jump — GodLock is a product, not this Person; `disambiguatingDescription` is one short line — not Aziel S. / not euaziel.site; no 1 Chronicles essays on description / cite / llms / About; `sameAs` hub + Corpus + GodLock + He Didn't Jump + GitHub AzielEliab + Glama runtime — never euaziel.site; no invented Glama UUIDs) + `FAQPage` titled “Who is Aziel Eliab?” (software-developer query + one concordance Q) + `WebSite` `#website` (publisher/creator Person) + `AboutPage` + indexable section `WebPage`s (`/mission`, `/software`, …) + Runtime parent `SoftwareApplication` `@id` `https://www.azieleliab.com/runtime#runtime` (`hasPart` named tools only — not MCP ops; Worker is related/endpoint; `sameAs` GitHub repo + Glama) + one named-tool `SoftwareApplication` per Runtime component (`/runtime#<slug>`) + Software `ItemList` / `CollectionPage` + one catalog `SoftwareApplication` per Softwares name + Donate `WebPage` / `DonateAction`. No invented biography beyond published About. Homepage title stays **Aziel Eliab**. Canonical host is always `https://www.azieleliab.com/` (self-referencing only). Softwares is the homepage `#software` strip (`/software` 200s the same HTML). Footer chrome: **Part of the Aziel Eliab ecosystem**. Donate canonical is `/donate?v=png`. hreflang `en` + `x-default` point at each page’s www canonical.
+JSON-LD: `Person` `@id` `https://www.azieleliab.com/#aziel` (one Person only; Aziel Eliab; `alternateName` keeps compact Hebrew + misspelling AZindex tethers plus aka Aziel Elroi Eliab / AzielEliab / AzielElroiEliab / The Revealer of The Sealed / Revealer of The Sealed; thin `description` leads with GodLock, Aziel Digital Library, aziel-runtime MCP, and He Didn't Jump — GodLock is a product, not this Person; `disambiguatingDescription` is one short line — not Aziel S. / not euaziel.site; no 1 Chronicles essays on description / cite / llms / About; `sameAs` hub + Corpus + GodLock + He Didn't Jump + GitHub AzielEliab + Glama runtime — never euaziel.site; no invented Glama UUIDs) + `FAQPage` titled “Who is Aziel Eliab?” (software-developer query + one concordance Q) + `WebSite` `#website` (publisher/creator Person) + `AboutPage` + indexable section `WebPage`s (`/why`, `/software`, `/research`, `/doors`, `/aziel`) + Runtime parent `SoftwareApplication` `@id` `https://www.azieleliab.com/runtime#runtime` (`hasPart` named tools only — not MCP ops; Worker is related/endpoint; `sameAs` GitHub repo + Glama) + one named-tool `SoftwareApplication` per Runtime component (`/runtime#<slug>`) + Software `ItemList` / `CollectionPage` + one catalog `SoftwareApplication` per Softwares name + Donate `WebPage` / `DonateAction`. No invented biography beyond published About. Homepage title stays **Aziel Eliab**. Canonical host is always `https://www.azieleliab.com/` (self-referencing only). Softwares is the distinct `/software` page (heading → list). Footer chrome: **Part of the Aziel Eliab ecosystem**. Donate canonical is `/donate?v=png`. hreflang `en` + `x-default` point at each page’s www canonical.
 
 ### Research
 
@@ -232,7 +234,7 @@ This host is the **hub cite** surface for **QNS-CD-1.0** (photon QNS1 packet tra
 
 ## Donate
 
-Primary canonical door: [https://www.azieleliab.com/donate](https://www.azieleliab.com/donate) (AZL-DONATE-1.0). Homepage spine: Why / Software / Research / Doors / Donate (Donate tab → `/donate`). Label is **Donate**. No Donate section on the homepage. Static HTML — no Worker KV, no email capture, no thank-you wall. Rails: BTC, ETH, LTC, XRP, DOGE. Disclaimer: Donations buy no privilege. Signature on this door is `— Aziel`. Site SEO identity remains Aziel Eliab.
+Primary canonical door: [https://www.azieleliab.com/donate](https://www.azieleliab.com/donate) (AZL-DONATE-1.0). Homepage spine: Why / Software / Research / Doors / Donate — each a real path (`/why`, `/software`, `/research`, `/doors`, `/donate`). Label is **Donate**. No Donate section on the homepage. No Mission tab. Static HTML — no Worker KV, no email capture, no thank-you wall. Rails: BTC, ETH, LTC, XRP, DOGE. Disclaimer: Donations buy no privilege. Signature on this door is `— Aziel`. Site SEO identity remains Aziel Eliab.
 
 ## Doors
 

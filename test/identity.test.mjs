@@ -277,7 +277,8 @@ describe("GROKBOT-EXEC 1.0 identity lock", () => {
     assert.ok(robots.includes("User-agent: GPTBot"));
     assert.doesNotMatch(robots, /Disallow:\s*\/?$/m);
     assert.doesNotMatch(robots, /User-agent: GPTBot[\s\S]*?Disallow:/);
-    assert.ok(map.includes("<loc>" + CANON_ORIGIN + "/mission</loc>"));
+    assert.ok(!map.includes("<loc>" + CANON_ORIGIN + "/mission</loc>"));
+    assert.ok(map.includes("<loc>" + CANON_ORIGIN + "/why</loc>"));
     assert.ok(map.includes("<loc>" + CANON_ORIGIN + "/AzielEliab</loc>"));
     assert.ok(llms.includes("GROKBOT-EXEC 1.0"));
     assert.ok(llms.includes("He Didn't Jump: " + HEDIDNTJUMP + "/"));
@@ -299,11 +300,14 @@ describe("GROKBOT-EXEC 1.0 identity lock", () => {
     assert.ok(html.includes('href="/graph.jsonld"'));
     assert.ok(html.includes('href="/who-is-aziel-eliab.txt"'));
     assert.ok(html.includes('href="/.well-known/aziel.json"'));
-    assert.ok(html.includes('id="mission"'));
-    assert.ok(html.includes("Awareness of published work, not vanity"));
-    assert.ok(html.includes(LIBRARY_STATS));
+    assert.ok(!html.includes('id="mission"'));
+    assert.ok(!html.includes("<h2>Mission</h2>"));
+    assert.ok(!html.includes("<h2>Status</h2>"));
+    assert.ok(!html.includes("Awareness of published work, not vanity"));
+    assert.ok(!html.includes('class="awareness"'));
+    assert.ok(!html.includes(LIBRARY_STATS));
     assert.ok(!html.includes(LIBRARY + "/v1/stats"));
-    assert.ok(html.includes(HEDIDNTJUMP + "/api/stats"));
+    assert.ok(!html.includes(HEDIDNTJUMP + "/api/stats"));
     assert.ok(html.includes("/v1/stats"));
     const embedded = JSON.parse(html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]);
     const person = embedded["@graph"].find((n) => n["@type"] === "Person");
