@@ -1,7 +1,7 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import worker, { apexRedirect, donateCacheBustLocation, handleRequest } from "../src/index.js";
-import { donateHtml, embryoLockHtml, ecosystemHtml, hashRedirectScript, notFoundHtml, pageHtml, sectionPageHtml, spineNav, whoHtml } from "../src/page.js";
+import { donateHtml, embryoLockHtml, ecosystemHtml, hashRedirectScript, notFoundHtml, pageHtml, receiptsHtml, sectionPageHtml, spineNav, whoHtml } from "../src/page.js";
 import { incrementViews, memoryKv } from "../src/views.js";
 import { DONATE_HTML_CACHE, HTML_CACHE, SEO_CACHE, memoryCache } from "../src/edgeCache.js";
 import { FANOUT_MAX, allowOriginRefresh, isOperator } from "../src/costGuard.js";
@@ -52,6 +52,8 @@ import {
   GITHUB_RUNTIME,
   PEACELOCK_WORKER,
   PROSE,
+  RECEIPTS_HREF,
+  RECEIPTS_TITLE,
   RUNTIME_LOCAL,
   RUNTIME_NAME,
   RUNTIME_TITLE,
@@ -197,10 +199,10 @@ describe("landing copy", () => {
     assert.ok(home.includes("<title>Aziel Eliab</title>"));
   });
 
-  it("memory-locks Mission/Status off every literary page and uses real spine paths", () => {
+  it("memory-locks Mission/Status off every literary page and uses real spine paths", async () => {
     const visible = (html) =>
       html.replace(/<script type="application\/ld\+json">[\s\S]*?<\/script>/g, "").replace(/<style>[\s\S]*?<\/style>/g, "");
-    const pages = [pageHtml(), whyHtml(), softwareHtml(), researchHtml(), doorsHtml(), donateHtml()];
+    const pages = [pageHtml(), whyHtml(), softwareHtml(), researchHtml(), doorsHtml(), await receiptsHtml(), donateHtml()];
     for (const html of pages) {
       const body = visible(html);
       assert.ok(!body.includes("<h2>Mission</h2>"), "Mission heading");
@@ -220,6 +222,7 @@ describe("landing copy", () => {
       assert.ok(body.includes('href="' + SOFTWARE_HREF + '"'));
       assert.ok(body.includes('href="' + CANON_ORIGIN + '/research"'));
       assert.ok(body.includes('href="' + CANON_ORIGIN + '/doors"'));
+      assert.ok(body.includes('href="' + RECEIPTS_HREF + '"'));
     }
     assert.ok(!TAB_PAGES.some((p) => p.id === "mission"));
     assert.equal(pageHtml().includes('id="aziel"'), true);
@@ -237,10 +240,10 @@ describe("landing copy", () => {
     assert.ok(html.includes("soft-card") || html.includes('class="card"') || html.includes('class="card lead"'));
   });
 
-  it("puts the rose-star brand mark top-left and never says everblooming sigil", () => {
+  it("puts the rose-star brand mark top-left and never says everblooming sigil", async () => {
     assert.equal(BRANDMARK_NAME, "rose-star brand mark");
     assert.equal(SIGIL, CANON_ORIGIN + "/sigil.png");
-    const pages = [pageHtml(), softwareHtml(), whyHtml(), researchHtml(), doorsHtml(), donateHtml(), embryoLockHtml(), notFoundHtml()];
+    const pages = [pageHtml(), softwareHtml(), whyHtml(), researchHtml(), doorsHtml(), await receiptsHtml(), donateHtml(), embryoLockHtml(), notFoundHtml()];
     for (const html of pages) {
       assert.match(html, /<header class="brandrow">[\s\S]*?<img class="brandmark" src="/);
       assert.ok(html.includes('src="' + SIGIL + '"'));
@@ -1962,11 +1965,11 @@ describe("AZL-DONATE-1.0", () => {
     assert.equal(DONATE_HREF, CANON_ORIGIN + DONATE_PATH + "?v=png");
     assert.deepEqual(
       SPINE.map((s) => s.label),
-      ["Why", "Software", "Research", "Doors", "Donate"],
+      ["Why", "Software", "Research", "Doors", "Receipts", "Donate"],
     );
     assert.deepEqual(
       SPINE.map((s) => s.href),
-      [CANON_ORIGIN + "/why", SOFTWARE_HREF, CANON_ORIGIN + "/research", CANON_ORIGIN + "/doors", DONATE_HREF],
+      [CANON_ORIGIN + "/why", SOFTWARE_HREF, CANON_ORIGIN + "/research", CANON_ORIGIN + "/doors", RECEIPTS_HREF, DONATE_HREF],
     );
     const homeNav = spineNav("home");
     assert.ok(homeNav.includes(">" + DONATE_TITLE + "<"));
@@ -1974,6 +1977,8 @@ describe("AZL-DONATE-1.0", () => {
     assert.ok(!homeNav.includes('href="#donate"'));
     assert.ok(!homeNav.includes('href="#why"'));
     assert.ok(homeNav.includes('href="' + CANON_ORIGIN + '/why"'));
+    assert.ok(homeNav.includes(">" + RECEIPTS_TITLE + "<"));
+    assert.ok(homeNav.includes('href="' + RECEIPTS_HREF + '"'));
     const nav = spineNav("donate");
     assert.ok(nav.includes('aria-current="page"'));
     assert.ok(nav.includes('href="' + DONATE_HREF + '"'));
