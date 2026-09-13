@@ -51,12 +51,15 @@ Why this matters: GitHub’s repository page is a second indexable URL. Empty ho
 
 Person `sameAs` lattice (AZindex):
 
+- https://github.com/AzielEliab
+- https://github.com/azieltherevealerofthesealed-arch
+- https://glama.ai/mcp/servers/AzielEliab/aziel-runtime
 - https://www.azieleliab.com/
 - https://www.azielcorpuslibrary.net/
 - https://godlock.uk/
 - https://www.hedidntjump.com/
-- https://github.com/AzielEliab
-- https://glama.ai/mcp/servers/AzielEliab/aziel-runtime
+- https://x.com/AzielElroiEliab
+- https://x.com/azieleliab
 
 Do not invent Glama UUIDs, Zenodo DOIs, or extra identities. Aka only: Aziel Elroi Eliab, AzielEliab, AzielElroiEliab.
 
@@ -65,6 +68,7 @@ Machine identity (identical bytes under [docs/aziel-identity-schema/](aziel-iden
 - https://www.azieleliab.com/person.jsonld
 - https://www.azieleliab.com/identity.jsonld
 - https://www.azieleliab.com/graph.jsonld
+- https://www.azieleliab.com/who
 - https://www.azieleliab.com/who-is-aziel-eliab.txt
 - https://www.azieleliab.com/.well-known/aziel.json
 

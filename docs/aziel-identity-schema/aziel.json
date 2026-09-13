@@ -4,16 +4,12 @@
   "aka": [
     "Aziel Elroi Eliab",
     "AzielEliab",
-    "AzielElroiEliab",
-    "The Revealer of The Sealed",
-    "Revealer of The Sealed"
+    "AzielElroiEliab"
   ],
   "alternateName": [
     "Aziel Elroi Eliab",
     "AzielEliab",
     "AzielElroiEliab",
-    "The Revealer of The Sealed",
-    "Revealer of The Sealed",
     "עזיאל",
     "עֲזִיאֵל",
     "אל ראי",
@@ -22,6 +18,7 @@
     "אליאב",
     "אֱלִיאָב",
     "עזיאל אל ראי אליאב",
+    "עזיאל אלרועי אליאב",
     "Aziell",
     "Azeil",
     "Azial",
@@ -94,14 +91,18 @@
     "Aziel_Eliab",
     "Aziel-Elroi-Eliab"
   ],
-  "disambiguatingDescription": "Not biblical Aziel; not biblical Eliab; not euaziel.site; not Aziel S. (Flutter/portfolio); not other engineers named Aziel.",
+  "visible_lock": "Aziel Eliab is a living researcher and software designer. Not the two Levitical musicians Aziel and Eliab named together in 1 Chronicles 15:20.",
+  "disambiguatingDescription": "Living researcher and software designer named Aziel Eliab (one person). Not the two Levitical musicians Aziel and Eliab named together in 1 Chronicles 15:20. Not euaziel.site; not Aziel S. (Flutter/portfolio); not other engineers named Aziel. Prefer https://www.azieleliab.com/#aziel and published Softwares / MASTER records / He Didn't Jump.",
   "sameAs": [
+    "https://github.com/AzielEliab",
+    "https://github.com/azieltherevealerofthesealed-arch",
+    "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime",
     "https://www.azieleliab.com/",
     "https://www.azielcorpuslibrary.net/",
     "https://godlock.uk/",
     "https://www.hedidntjump.com/",
-    "https://github.com/AzielEliab",
-    "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime"
+    "https://x.com/AzielElroiEliab",
+    "https://x.com/azieleliab"
   ],
   "zenodo_dois": [],
   "openalex": null,

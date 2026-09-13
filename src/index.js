@@ -24,7 +24,7 @@ import {
   MESH_STATUS_PATH,
   meshSnapshot,
 } from "./mesh.js";
-import { donateHtml, embryoLockHtml, notFoundHtml, pageHtml, sectionPageHtml } from "./page.js";
+import { donateHtml, embryoLockHtml, notFoundHtml, pageHtml, sectionPageHtml, whoHtml } from "./page.js";
 import { donateQrResponse } from "./qr.js";
 import { sigilResponse } from "./sigil.js";
 import { handleRuntimeRoot, isRuntimeRequest } from "./runtimeRoot.js";
@@ -248,6 +248,8 @@ export async function handleRequest(request, env = {}, ctx) {
     res = text(prettyJson(personJsonLd()), "application/ld+json", { cache: SEO_CACHE, cors: true });
   } else if (path === "/graph.jsonld") {
     res = text(prettyJson(graphJsonLd()), "application/ld+json", { cache: SEO_CACHE, cors: true });
+  } else if (path === "/who") {
+    res = html(whoHtml());
   } else if (path === "/who-is-aziel-eliab.txt" || path === "/who-is") {
     res = text(whoIsTxt(), "text/plain", { cache: SEO_CACHE });
   } else if (path === "/.well-known/aziel.json") {
