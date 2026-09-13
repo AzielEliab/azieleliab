@@ -76,14 +76,13 @@ function json(doc, cache) {
   });
 }
 
+// Door-index files stay off the Worker Cache API so a deploy cannot
+// re-pin a pre-cross-tether llms/ai/sitemap after the CDN revalidates.
 const PAGE_CACHE_PATHS = new Set([
   "/",
   "/embryolock",
   "/robots.txt",
-  "/llms.txt",
-  "/ai.txt",
   "/cite.json",
-  "/sitemap.xml",
   "/v1/software",
   "/sigil.png",
 ]);

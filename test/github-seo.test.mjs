@@ -78,6 +78,8 @@ describe("GitHub-side SEO / ecosystem docs", () => {
   });
 
   it("cross-links Corpus, GodLock, He Didn't Jump, aziel-runtime, Try on Glama, Donate", () => {
+    assert.ok(citation.includes(HEDIDNTJUMP), "CITATION.cff He Didn't Jump URL");
+    assert.match(citation, /He Didn't Jump/);
     for (const [name, text] of [
       ["README.md", readme],
       ["docs/github-seo.md", docs],

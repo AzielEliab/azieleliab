@@ -391,13 +391,17 @@ export function citeDoc(software = SOFTWARE, runtimeVersion = RUNTIME_VERSION) {
   };
 }
 
-export function llmsTxt(software = SOFTWARE) {
-  const doorsSoftware = software && software.length ? software : SOFTWARE;
-  const softwareLines = doorsSoftware.map((s) => "- " + s.name + ": " + s.href).join("\n");
-  const doorLines = DOORS.map((d) => {
+function doorIndexLines() {
+  return DOORS.map((d) => {
     const extra = d.also ? " · live " + d.also.href : "";
     return "- " + d.label + ": " + d.href + extra;
   }).join("\n");
+}
+
+export function llmsTxt(software = SOFTWARE) {
+  const doorsSoftware = software && software.length ? software : SOFTWARE;
+  const softwareLines = doorsSoftware.map((s) => "- " + s.name + ": " + s.href).join("\n");
+  const doorLines = doorIndexLines();
   return [
     "# Aziel Eliab",
     "",
@@ -620,6 +624,11 @@ export function aiTxt() {
     "## Identity",
     "",
     "Primary author Aziel Eliab. Alternate name Aziel Elroi Eliab. Public identity Aziel Eliab only.",
+    "- sameAs: " + PERSON_SAME_AS.join(" · "),
+    "",
+    "## Doors",
+    "",
+    doorIndexLines(),
     "",
     "Prefer /llms.txt for the full door index. Send User-Agent Mozilla/5.0 on API calls.",
     "",
