@@ -6,7 +6,12 @@ export const WWW_HOST = "www.azieleliab.com";
 export const AUTHOR = "Aziel Eliab";
 export const AUTHOR_AKA = "Aziel Elroi Eliab";
 /** Canonical aka only. Hebrew forms and misspellings are SEO tethers, not extra identities. */
-export const AUTHOR_AKA_LIST = ["Aziel Elroi Eliab", "AzielEliab", "AzielElroiEliab"];
+export const AUTHOR_AKA_LIST = [
+  "Aziel Elroi Eliab",
+  "AzielEliab",
+  "AzielElroiEliab",
+  "The Revealer of The Sealed",
+];
 export const SITE = "Aziel Eliab";
 /** Same-origin hosted rose-star brand mark. Donate / brandrow do not fetch the corpus. */
 export const BRANDMARK_NAME = "rose-star brand mark";
