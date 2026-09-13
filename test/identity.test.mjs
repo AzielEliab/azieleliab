@@ -100,21 +100,24 @@ describe("GROKBOT-EXEC 1.0 identity lock", () => {
 
   it("disambiguates biblical Aziel and Eliab and keeps no biography fields", () => {
     const person = personJsonLd();
-    assert.match(person.disambiguatingDescription, /Living author and engineer/i);
-    assert.match(person.disambiguatingDescription, /Jaaziel/);
-    assert.match(person.disambiguatingDescription, /1 Chronicles 15:20/);
-    assert.match(person.disambiguatingDescription, /Levitical musicians/);
-    assert.match(person.description, /living author and engineer/i);
-    assert.match(person.description, /aziel-runtime/);
-    assert.match(person.description, /GodLock/);
-    assert.match(person.description, /He Didn't Jump/);
-    assert.equal(person.jobTitle, "Author and engineer");
+    assert.match(person.disambiguatingDescription, /Living publisher of the record/i);
+    assert.match(person.disambiguatingDescription, /Not biblical Aziel/);
+    assert.match(person.disambiguatingDescription, /1 Chronicles/);
+    assert.match(person.disambiguatingDescription, /Not biblical Eliab/);
+    assert.match(person.disambiguatingDescription, /SEO tethers only/);
+    assert.match(person.description, /living publisher of the record, the software, and the Zioncheck archive/i);
+    assert.ok(!("jobTitle" in person));
+    assert.ok(!("additionalName" in person));
+    assert.ok(!("birthDate" in person));
+    assert.deepEqual(person.sameAs, PERSON_SAME_AS);
+    assert.ok(person.sameAs.includes("https://www.azieleliab.com/"));
+    assert.ok(person.sameAs.includes("https://www.azielcorpuslibrary.net/"));
+    assert.ok(person.sameAs.includes("https://godlock.uk/"));
+    assert.ok(person.sameAs.includes("https://www.hedidntjump.com/"));
     assert.ok(person.sameAs.includes("https://github.com/AzielEliab"));
     assert.ok(person.sameAs.includes("https://glama.ai/mcp/servers/AzielEliab/aziel-runtime"));
-    assert.ok(person.sameAs.includes("https://godlock.uk/AzielEliab"));
-    assert.ok(person.sameAs.includes("https://www.azielcorpuslibrary.net/AzielEliab"));
-    assert.ok(person.sameAs.includes("https://www.hedidntjump.com/"));
-    assert.ok(person.sameAs.includes("https://www.azieleliab.com/runtime"));
+    assert.equal(person.sameAs.length, 6);
+    assert.ok(!person.sameAs.includes("https://www.azieleliab.com/runtime"));
     assert.ok(!("birthDate" in person));
     assert.ok(!("homeLocation" in person));
     assert.ok(!("address" in person));
@@ -133,6 +136,7 @@ describe("GROKBOT-EXEC 1.0 identity lock", () => {
     assert.deepEqual(doc, graphJsonLd());
     const types = doc["@graph"].map((n) => n["@type"]);
     assert.ok(types.includes("Person"));
+    assert.equal(doc["@graph"].filter((n) => n["@type"] === "Person").length, 1);
     assert.ok(types.includes("FAQPage"));
     assert.ok(types.includes("SoftwareApplication"));
     assert.ok(types.includes("Dataset"));
@@ -143,8 +147,10 @@ describe("GROKBOT-EXEC 1.0 identity lock", () => {
     assert.ok(runtime);
     assert.equal(runtime["@type"], "SoftwareApplication");
     const faq = doc["@graph"].find((n) => n["@type"] === "FAQPage");
+    assert.equal(faq.name, "Who is Aziel Eliab?");
     const questions = faq.mainEntity.map((q) => q.name);
     assert.ok(questions.includes("Who is Aziel Eliab?"));
+    assert.equal(questions[0], "Who is Aziel Eliab?");
     assert.ok(questions.some((q) => /biblical Aziel/i.test(q)));
     assert.ok(questions.some((q) => /biblical Eliab/i.test(q)));
     assert.ok(questions.some((q) => /1 Chronicles 15:20/i.test(q)));
