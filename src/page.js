@@ -40,6 +40,7 @@ import { qrImg } from "./qr.js";
 import { MESH_STATUS_LOCAL, QNM_SPEC, QNS_CD_SPEC, liveNodesLabel, meshQuietLabel } from "./mesh.js";
 import {
   identityDiscoveryLinks,
+  personJsonLd,
   STATS_COUNTERS,
   STATS_NOTE,
   VISIBLE_LOCK_LINE,
@@ -798,6 +799,7 @@ ${brandRow()}
 }
 
 export function whoHtml() {
+  const person = JSON.stringify(personJsonLd());
   const faq = JSON.stringify(whoFaqPageNode());
   return `<!DOCTYPE html>
 <html lang="en">
@@ -809,6 +811,9 @@ export function whoHtml() {
 <link rel="alternate" type="application/ld+json" href="/person.jsonld" title="person.jsonld">
 <link rel="alternate" type="text/plain" href="/who-is-aziel-eliab.txt" title="who-is">
 <link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt">
+<script type="application/ld+json">
+${person}
+</script>
 <script type="application/ld+json">
 ${faq}
 </script>
