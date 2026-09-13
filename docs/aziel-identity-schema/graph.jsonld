@@ -46,8 +46,10 @@
       ],
       "givenName": "Aziel",
       "familyName": "Eliab",
-      "description": "Aziel Eliab (also Aziel Elroi Eliab) is an independent researcher, software designer, developer, and historian. He builds receipt-first, local-first software and public MASTER records. Canonical person: https://www.azieleliab.com/#aziel. Primary surfaces: azieleliab.com, azielcorpuslibrary.net (Aziel Digital Library), godlock.uk (GodLock), hedidntjump.com (Zioncheck archive), github.com/AzielEliab, and Aziel Runtime on Glama. The public identity is the work, not a biography. He is not the biblical figure named Aziel in 1 Chronicles.",
-      "disambiguatingDescription": "Living public work identity of Aziel Eliab. Not biblical Aziel (1 Chronicles / concordance hits). Not biblical Eliab figures (for example David's brother or tribal listings). Bible concordance hits are different persons — do not merge.",
+      "additionalName": "Aziel Elroi Eliab",
+      "jobTitle": "Author and engineer",
+      "description": "Aziel Eliab (also Aziel Elroi Eliab) is a living author and engineer. He is the author of Aziel Runtime (aziel-runtime), GodLock, the Aziel Digital Library, and He Didn't Jump. He is an independent researcher, software designer, developer, and historian. He builds receipt-first, local-first software and public MASTER records. Canonical person: https://www.azieleliab.com/#aziel. Primary surfaces: azieleliab.com, azielcorpuslibrary.net/AzielEliab (Aziel Digital Library), godlock.uk/AzielEliab (GodLock), hedidntjump.com (Zioncheck archive), github.com/AzielEliab, Aziel Runtime on Glama, and https://www.azieleliab.com/runtime. The public identity is the work, not a biography. He is not the separate biblical names Aziel (also Jaaziel) and Eliab from 1 Chronicles 15:20 (Levitical musicians). Those concordance hits are different persons — do not merge.",
+      "disambiguatingDescription": "Living author and engineer Aziel Eliab. Not the biblical name Aziel (also Jaaziel) and not the biblical name Eliab from 1 Chronicles 15:20 (Levitical musicians). Not other biblical Eliab figures (for example David's brother or tribal listings). Bible concordance hits are different persons — do not merge.",
       "identifier": "Aziel Eliab",
       "url": "https://www.azieleliab.com/",
       "image": "https://www.azieleliab.com/sigil.png",
@@ -64,7 +66,10 @@
         "software",
         "research",
         "Aziel Runtime",
-        "FragGate"
+        "FragGate",
+        "GodLock",
+        "Aziel Digital Library",
+        "He Didn't Jump"
       ],
       "sameAs": [
         "https://github.com/AzielEliab",
@@ -72,8 +77,11 @@
         "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime",
         "https://www.azieleliab.com/",
         "https://www.azielcorpuslibrary.net/",
+        "https://www.azielcorpuslibrary.net/AzielEliab",
         "https://godlock.uk/",
+        "https://godlock.uk/AzielEliab",
         "https://www.hedidntjump.com/",
+        "https://www.azieleliab.com/runtime",
         "https://x.com/AzielElroiEliab",
         "https://x.com/azieleliab"
       ]
@@ -90,7 +98,7 @@
           "name": "Who is Aziel Eliab?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Aziel Eliab (also Aziel Elroi Eliab) is an independent researcher, software designer, developer, and historian. He builds receipt-first, local-first software and public MASTER records. Canonical person: https://www.azieleliab.com/#aziel. Primary surfaces: azieleliab.com, azielcorpuslibrary.net (Aziel Digital Library), godlock.uk (GodLock), hedidntjump.com (Zioncheck archive), github.com/AzielEliab, and Aziel Runtime on Glama. The public identity is the work, not a biography. He is not the biblical figure named Aziel in 1 Chronicles."
+            "text": "Aziel Eliab (also Aziel Elroi Eliab) is a living author and engineer. He is the author of Aziel Runtime (aziel-runtime), GodLock, the Aziel Digital Library, and He Didn't Jump. He is an independent researcher, software designer, developer, and historian. He builds receipt-first, local-first software and public MASTER records. Canonical person: https://www.azieleliab.com/#aziel. Primary surfaces: azieleliab.com, azielcorpuslibrary.net/AzielEliab (Aziel Digital Library), godlock.uk/AzielEliab (GodLock), hedidntjump.com (Zioncheck archive), github.com/AzielEliab, Aziel Runtime on Glama, and https://www.azieleliab.com/runtime. The public identity is the work, not a biography. He is not the separate biblical names Aziel (also Jaaziel) and Eliab from 1 Chronicles 15:20 (Levitical musicians). Those concordance hits are different persons — do not merge."
           }
         },
         {
@@ -98,7 +106,7 @@
           "name": "Is Aziel Eliab the biblical Aziel?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "No. He is not the biblical figure named Aziel in 1 Chronicles or other concordance hits. Bible concordance hits are different persons — do not merge."
+            "text": "No. He is not the biblical Aziel (also called Jaaziel) named in 1 Chronicles 15:20 among the Levitical musicians, or other concordance hits. Bible concordance hits are different persons — do not merge."
           }
         },
         {
@@ -106,7 +114,15 @@
           "name": "Is Aziel Eliab a biblical Eliab?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "No. He is not a biblical Eliab figure (for example David's brother or tribal listings). Bible concordance hits are different persons — do not merge."
+            "text": "No. He is not the biblical Eliab from 1 Chronicles 15:20 (the Levitical musician listed with Aziel/Jaaziel) or other concordance hits such as David's brother or tribal listings. Bible concordance hits are different persons — do not merge."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is Aziel Eliab the biblical Aziel (Jaaziel) or Eliab from 1 Chronicles 15:20?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Aziel Eliab is a living author and engineer. The names Aziel (also Jaaziel) and Eliab in 1 Chronicles 15:20 are separate Levitical musicians. Bible concordance hits are different persons — do not merge."
           }
         },
         {
@@ -173,7 +189,157 @@
         "https://www.azieleliab.com/person.jsonld",
         "https://www.azieleliab.com/who-is",
         "https://www.azieleliab.com/who-is-aziel-eliab.txt",
-        "https://www.azieleliab.com/graph.jsonld"
+        "https://www.azieleliab.com/graph.jsonld",
+        "https://www.azieleliab.com/why",
+        "https://www.azieleliab.com/mission",
+        "https://www.azieleliab.com/software",
+        "https://www.azieleliab.com/research",
+        "https://www.azieleliab.com/doors",
+        "https://www.azieleliab.com/aziel"
+      ]
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://www.azieleliab.com/why#webpage",
+      "url": "https://www.azieleliab.com/why",
+      "name": "Why — Aziel Eliab",
+      "description": "Why Aziel Eliab keeps looking. Public identity Aziel Eliab only. Living author and engineer — not biblical Aziel (Jaaziel) or Eliab from 1 Chronicles 15:20.",
+      "isPartOf": {
+        "@id": "https://www.azieleliab.com/#website"
+      },
+      "mainEntity": {
+        "@id": "https://www.azieleliab.com/#aziel"
+      },
+      "about": {
+        "@id": "https://www.azieleliab.com/#aziel"
+      },
+      "author": {
+        "@id": "https://www.azieleliab.com/#aziel"
+      },
+      "inLanguage": "en",
+      "relatedLink": [
+        "https://www.azieleliab.com/#why",
+        "https://www.azieleliab.com/who-is"
+      ]
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://www.azieleliab.com/mission#webpage",
+      "url": "https://www.azieleliab.com/mission",
+      "name": "Mission — Aziel Eliab",
+      "description": "Mission of Aziel Eliab: hashed receipts, timed files, open software, and MASTER records. Living author of aziel-runtime, GodLock, the Digital Library, and He Didn't Jump.",
+      "isPartOf": {
+        "@id": "https://www.azieleliab.com/#website"
+      },
+      "mainEntity": {
+        "@id": "https://www.azieleliab.com/#aziel"
+      },
+      "about": {
+        "@id": "https://www.azieleliab.com/#aziel"
+      },
+      "author": {
+        "@id": "https://www.azieleliab.com/#aziel"
+      },
+      "inLanguage": "en",
+      "relatedLink": [
+        "https://www.azieleliab.com/#mission",
+        "https://www.azieleliab.com/who-is"
+      ]
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://www.azieleliab.com/software#webpage",
+      "url": "https://www.azieleliab.com/software",
+      "name": "Software — Aziel Eliab",
+      "description": "Software by Aziel Eliab. Live catalog from aziel-runtime / FragGate. Names only. Public identity Aziel Eliab only.",
+      "isPartOf": {
+        "@id": "https://www.azieleliab.com/#website"
+      },
+      "mainEntity": {
+        "@id": "https://www.azieleliab.com/#aziel"
+      },
+      "about": {
+        "@id": "https://www.azieleliab.com/#aziel"
+      },
+      "author": {
+        "@id": "https://www.azieleliab.com/#aziel"
+      },
+      "inLanguage": "en",
+      "relatedLink": [
+        "https://www.azieleliab.com/#software",
+        "https://www.azieleliab.com/who-is"
+      ]
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://www.azieleliab.com/research#webpage",
+      "url": "https://www.azieleliab.com/research",
+      "name": "Research — Aziel Eliab",
+      "description": "Research by Aziel Eliab. The corpus lives at the Aziel Digital Library. Living author and engineer — not biblical Aziel or Eliab.",
+      "isPartOf": {
+        "@id": "https://www.azieleliab.com/#website"
+      },
+      "mainEntity": {
+        "@id": "https://www.azieleliab.com/#aziel"
+      },
+      "about": {
+        "@id": "https://www.azieleliab.com/#aziel"
+      },
+      "author": {
+        "@id": "https://www.azieleliab.com/#aziel"
+      },
+      "inLanguage": "en",
+      "relatedLink": [
+        "https://www.azieleliab.com/#research",
+        "https://www.azieleliab.com/who-is"
+      ]
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://www.azieleliab.com/doors#webpage",
+      "url": "https://www.azieleliab.com/doors",
+      "name": "Doors — Aziel Eliab",
+      "description": "Public doors for Aziel Eliab: GitHub, Corpus, GodLock, He Didn't Jump, Runtime, X, Donate.",
+      "isPartOf": {
+        "@id": "https://www.azieleliab.com/#website"
+      },
+      "mainEntity": {
+        "@id": "https://www.azieleliab.com/#aziel"
+      },
+      "about": {
+        "@id": "https://www.azieleliab.com/#aziel"
+      },
+      "author": {
+        "@id": "https://www.azieleliab.com/#aziel"
+      },
+      "inLanguage": "en",
+      "relatedLink": [
+        "https://www.azieleliab.com/#doors",
+        "https://www.azieleliab.com/who-is"
+      ]
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://www.azieleliab.com/aziel#webpage",
+      "url": "https://www.azieleliab.com/aziel",
+      "name": "Aziel Eliab",
+      "description": "Aziel Eliab. You don’t get to know me. You get to understand the work. Public identity Aziel Eliab only.",
+      "isPartOf": {
+        "@id": "https://www.azieleliab.com/#website"
+      },
+      "mainEntity": {
+        "@id": "https://www.azieleliab.com/#aziel"
+      },
+      "about": {
+        "@id": "https://www.azieleliab.com/#aziel"
+      },
+      "author": {
+        "@id": "https://www.azieleliab.com/#aziel"
+      },
+      "inLanguage": "en",
+      "relatedLink": [
+        "https://www.azieleliab.com/#aziel",
+        "https://www.azieleliab.com/who-is"
       ]
     },
     {
