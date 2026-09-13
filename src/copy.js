@@ -186,6 +186,11 @@ export const RESEARCH_PATH = "/research";
 export const RESEARCH_HREF = CANON_ORIGIN + RESEARCH_PATH;
 export const DOORS_PATH = "/doors";
 export const DOORS_HREF = CANON_ORIGIN + DOORS_PATH;
+export const RECEIPTS_PATH = "/receipts";
+export const RECEIPTS_HREF = CANON_ORIGIN + RECEIPTS_PATH;
+export const RECEIPTS_TITLE = "Receipts";
+export const RECEIPTS_DESCRIPTION =
+  "This host’s action-receipt chain. Hash, request sentence, output sentence, event metadata. Newest first.";
 export const AZIEL_PATH = "/aziel";
 export const AZIEL_HREF = CANON_ORIGIN + AZIEL_PATH;
 /** Retired homepage Mission/Status strip. 301 to /. */
@@ -619,6 +624,7 @@ export const SPINE = [
   { id: "software", label: "Software", href: SOFTWARE_HREF },
   { id: "research", label: "Research", href: RESEARCH_HREF },
   { id: "doors", label: "Doors", href: DOORS_HREF },
+  { id: "receipts", label: "Receipts", href: RECEIPTS_HREF },
   { id: "donate", label: "Donate", href: DONATE_HREF },
 ];
 

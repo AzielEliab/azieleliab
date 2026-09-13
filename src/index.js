@@ -24,7 +24,7 @@ import {
   MESH_STATUS_PATH,
   meshSnapshot,
 } from "./mesh.js";
-import { donateHtml, embryoLockHtml, notFoundHtml, pageHtml, sectionPageHtml, whoHtml } from "./page.js";
+import { donateHtml, embryoLockHtml, notFoundHtml, pageHtml, receiptsHtml, sectionPageHtml, whoHtml } from "./page.js";
 import { donateQrResponse } from "./qr.js";
 import { sigilResponse } from "./sigil.js";
 import { handleRuntimeRoot, isRuntimeRequest } from "./runtimeRoot.js";
@@ -240,7 +240,8 @@ export async function handleRequest(request, env = {}, ctx) {
     );
   } else if (tab) {
     res = html(sectionPageHtml(tab, await readViews(env), doors, meshStatus, live && live.version));
-  } else if (path === "/donate") res = html(donateHtml(), 200, DONATE_HTML_CACHE);
+  } else if (path === "/receipts") res = html(await receiptsHtml());
+  else if (path === "/donate") res = html(donateHtml(), 200, DONATE_HTML_CACHE);
   else if (path === "/embryolock") res = html(embryoLockHtml(), 200, STUB_HTML_CACHE);
   else if (path === "/robots.txt") res = text(robotsTxt(), "text/plain", { cache: SEO_CACHE });
   else if (path === "/llms.txt") res = text(llmsTxt(doors), "text/plain", { cache: SEO_CACHE });
