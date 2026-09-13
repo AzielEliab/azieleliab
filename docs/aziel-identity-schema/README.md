@@ -4,7 +4,7 @@ Mirror copies of the locked identity surfaces on [www.azieleliab.com](https://ww
 
 | Route | Content-Type | File |
 |-------|--------------|------|
-| `GET /who` | `text/html` | Visible H1 `Who is Aziel Eliab` + lock line in the HTML body |
+| `GET /who` | `text/html` | Visible H1 `Who is Aziel Eliab` + who-answer paragraph |
 | `GET /person.jsonld` | `application/ld+json` | [person.jsonld](person.jsonld) |
 | `GET /identity.jsonld` | `application/ld+json` | [identity.jsonld](identity.jsonld) (identical to person) |
 | `GET /graph.jsonld` | `application/ld+json` | [graph.jsonld](graph.jsonld) |
@@ -19,7 +19,7 @@ Mirror copies of the locked identity surfaces on [www.azieleliab.com](https://ww
 | Name | Aziel Eliab |
 | Aka only | Aziel Elroi Eliab \| AzielEliab \| AzielElroiEliab \| The Revealer of The Sealed \| Revealer of The Sealed |
 
-Visible HTML lock (verbatim, first viewport on `/` above “You don’t get to know me.” and on `/who`):
+Machine lock line (llms, who-is txt, aziel.json — not rendered in visible `/` or `/who` HTML):
 
 > Aziel Eliab is a living researcher and software designer. Not the two Levitical musicians Aziel and Eliab named together in 1 Chronicles 15:20.
 
@@ -27,7 +27,7 @@ Visible HTML lock (verbatim, first viewport on `/` above “You don’t get to k
 
 `alternateName` keeps compact Hebrew forms and listed misspellings as AZindex tethers, plus aka Aziel Elroi Eliab / AzielEliab / AzielElroiEliab / The Revealer of The Sealed / Revealer of The Sealed. `knowsLanguage` includes `he`. `disambiguatingDescription` names both Levitical musicians + 1 Chronicles 15:20 and keeps euaziel.site / Aziel S. (Flutter/portfolio) machine NOT. Do not invent biography. `sameAs` lattice: GitHub AzielEliab, secondary source, Glama runtime, azieleliab.com, corpus, godlock.uk, hedidntjump.com, X. Never sameAs euaziel.site. `GET /.well-known/person.jsonld` is identical to `/person.jsonld`.
 
-Published About (exact homepage / `/about` / `/AzielEliab` lines, not biography) is factored into who-is, FAQPage, AboutPage, llms Mission, and cite.json. Person `mainEntityOfPage` is `/who`. AboutPage `significantLink` also points at `/person.jsonld`, `/who`, `/who-is`, `/graph.jsonld`, and indexable section paths. `/about` and `/AzielEliab` 200 the same homepage HTML (lock line included).
+Published About (exact homepage / `/about` / `/AzielEliab` lines, not biography) is factored into who-is, FAQPage, AboutPage, llms Mission, and cite.json. Person `mainEntityOfPage` is `/who`. AboutPage `significantLink` also points at `/person.jsonld`, `/who`, `/who-is`, `/graph.jsonld`, and indexable section paths. `/about` and `/AzielEliab` 200 the same homepage HTML.
 
 Live stats (do not invent numbers): `https://www.azieleliab.com/v1/stats`, Digital Library `https://www.azielcorpuslibrary.net/stats` (not `/v1/stats`; version is `GET /v1/health`; tracker fallback `https://aziel-corpus-download-tracker.vibelock.workers.dev/stats`), `https://www.hedidntjump.com/api/stats`.
 

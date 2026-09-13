@@ -42,7 +42,7 @@ import {
   identityDiscoveryLinks,
   STATS_COUNTERS,
   STATS_NOTE,
-  VISIBLE_LOCK_LINE,
+  WHO_DESCRIPTION,
   WHO_IS_ANSWER,
   whoFaqPageNode,
 } from "./identity.js";
@@ -681,7 +681,6 @@ ${hashRedirectScript()}
 <main class="wrap">
 ${brandRow("\n      " + viewsPill(views) + "\n      " + liveNodesPill(mesh))}
   <h1 id="aziel">${esc(PROSE.title)}</h1>
-  <p>${esc(VISIBLE_LOCK_LINE)}</p>
   ${spineNav("home")}
   <article class="card lead">${paragraphs(PROSE.open)}</article>
   <section class="card" id="runtime">
@@ -804,7 +803,7 @@ export function whoHtml() {
 <head>
 <meta charset="utf-8">
 <title>${esc(WHO_TITLE)}</title>
-<meta name="description" content="${esc(VISIBLE_LOCK_LINE)}">
+<meta name="description" content="${esc(WHO_DESCRIPTION)}">
 <link rel="canonical" href="${esc(WHO_HREF)}">
 <link rel="alternate" type="application/ld+json" href="/person.jsonld" title="person.jsonld">
 <link rel="alternate" type="text/plain" href="/who-is-aziel-eliab.txt" title="who-is">
@@ -816,7 +815,6 @@ ${faq}
 <body>
 <main>
 <h1>${esc(WHO_TITLE)}</h1>
-<p>${esc(VISIBLE_LOCK_LINE)}</p>
 <p>${esc(WHO_IS_ANSWER)}</p>
 </main>
 </body>
