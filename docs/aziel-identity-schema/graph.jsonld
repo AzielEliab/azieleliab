@@ -9,6 +9,8 @@
         "Aziel Elroi Eliab",
         "AzielEliab",
         "AzielElroiEliab",
+        "The Revealer of The Sealed",
+        "Revealer of The Sealed",
         "עזיאל",
         "עֲזִיאֵל",
         "אל ראי",
@@ -46,8 +48,8 @@
       ],
       "givenName": "Aziel",
       "familyName": "Eliab",
-      "description": "Aziel Eliab (also Aziel Elroi Eliab) is the living publisher of the record, the software, and the Zioncheck archive. Canonical person: https://www.azieleliab.com/#aziel. Primary surfaces: azieleliab.com, azielcorpuslibrary.net (Aziel Digital Library / the record), godlock.uk (GodLock), hedidntjump.com (Zioncheck archive), github.com/AzielEliab, and Aziel Runtime on Glama. The public identity is the work, not a biography. He is not the biblical figure named Aziel in 1 Chronicles or other concordance hits. He is not a biblical Eliab figure. Hebrew forms and listed misspellings are SEO tethers only — not extra identities and not biblical claims.",
-      "disambiguatingDescription": "Living publisher of the record, the software, and the Zioncheck archive. Not biblical Aziel (1 Chronicles / concordance hits). Not biblical Eliab figures. Hebrew forms and listed misspellings are SEO tethers only. Bible concordance hits are different persons — do not merge.",
+      "description": "Aziel Eliab (also Aziel Elroi Eliab) is the living publisher of GodLock, Aziel Digital Library, aziel-runtime MCP, and He Didn't Jump. Canonical person: https://www.azieleliab.com/#aziel. GodLock is a product, not this Person.",
+      "disambiguatingDescription": "Not Aziel S. / not euaziel.site.",
       "identifier": "Aziel Eliab",
       "url": "https://www.azieleliab.com/",
       "image": "https://www.azieleliab.com/sigil.png",
@@ -61,10 +63,10 @@
         "he"
       ],
       "knowsAbout": [
-        "software",
-        "research",
-        "Aziel Runtime",
-        "FragGate"
+        "GodLock",
+        "Aziel Digital Library",
+        "aziel-runtime",
+        "He Didn't Jump"
       ],
       "sameAs": [
         "https://www.azieleliab.com/",
@@ -87,31 +89,23 @@
           "name": "Who is Aziel Eliab?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Aziel Eliab (also Aziel Elroi Eliab) is the living publisher of the record, the software, and the Zioncheck archive. Canonical person: https://www.azieleliab.com/#aziel. Primary surfaces: azieleliab.com, azielcorpuslibrary.net (Aziel Digital Library / the record), godlock.uk (GodLock), hedidntjump.com (Zioncheck archive), github.com/AzielEliab, and Aziel Runtime on Glama. The public identity is the work, not a biography. He is not the biblical figure named Aziel in 1 Chronicles or other concordance hits. He is not a biblical Eliab figure. Hebrew forms and listed misspellings are SEO tethers only — not extra identities and not biblical claims."
+            "text": "Aziel Eliab (also Aziel Elroi Eliab) is the living publisher of GodLock, Aziel Digital Library, aziel-runtime MCP, and He Didn't Jump. Canonical person: https://www.azieleliab.com/#aziel. GodLock is a product, not this Person."
           }
         },
         {
           "@type": "Question",
-          "name": "Is Aziel Eliab the biblical Aziel?",
+          "name": "Who is Aziel Eliab the software developer?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "No. He is not the biblical figure named Aziel in 1 Chronicles or other concordance hits. Bible concordance hits are different persons — do not merge."
+            "text": "Aziel Eliab the software developer publishes GodLock, Aziel Digital Library, aziel-runtime MCP, and He Didn't Jump. Person @id https://www.azieleliab.com/#aziel. Hubs: godlock.uk, azielcorpuslibrary.net, azieleliab.com, hedidntjump.com, github.com/AzielEliab, Glama aziel-runtime."
           }
         },
         {
           "@type": "Question",
-          "name": "Is Aziel Eliab a biblical Eliab?",
+          "name": "Is Aziel Eliab the same person as other Aziel names?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "No. He is not a biblical Eliab figure. Bible concordance hits are different persons — do not merge."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Is Aziel Eliab the biblical Aziel (Jaaziel) or Eliab from 1 Chronicles 15:20?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "No. Aziel Eliab is the living publisher of the record, the software, and the Zioncheck archive. He is not biblical Aziel (1 Chronicles / concordance) and not a biblical Eliab figure. Bible concordance hits are different persons — do not merge."
+            "text": "No. This Person @id is https://www.azieleliab.com/#aziel."
           }
         },
         {
@@ -119,7 +113,7 @@
           "name": "What is the Hebrew for Aziel Elroi Eliab?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Onomastic / SEO tether only — not a biblical identity claim. Aziel = עזיאל (עֲזִיאֵל). Elroi / El Roi = אל ראי / אֵל רֳאִי (compact אלרועי). Eliab = אליאב (אֱלִיאָב). Phrase: עזיאל אל ראי אליאב. These forms name the same living public work identity at https://www.azieleliab.com/#aziel."
+            "text": "Hebrew spellings name the same Person @id https://www.azieleliab.com/#aziel. Aziel = עזיאל (עֲזִיאֵל). Elroi / El Roi = אל ראי / אֵל רֳאִי (compact אלרועי). Eliab = אליאב (אֱלִיאָב). Phrase: עזיאל אל ראי אליאב. These are onomastic tethers, not extra identities."
           }
         },
         {
@@ -127,7 +121,7 @@
           "name": "Do misspellings of Aziel Eliab refer to the same person?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "These spellings tether to the same Person @id https://www.azieleliab.com/#aziel and are not other people: Aziell, Azeil, Azial, Azeel, Asiel, Asziel, Az'iel, Azi-el, Aziél, Azíel, El Roi, El-Roi, ElRoi, Elro'i, Elroei, Elroey, El-Ro'i, Eli'ab, Eliáb, Elyab, Eliav, Eliabb, Aziel Eliab, aziel eliab, Aziel_Eliab, Aziel-Elroi-Eliab. Do not merge them with biblical concordance hits."
+            "text": "These spellings tether to the same Person @id https://www.azieleliab.com/#aziel and are not other people: Aziell, Azeil, Azial, Azeel, Asiel, Asziel, Az'iel, Azi-el, Aziél, Azíel, El Roi, El-Roi, ElRoi, Elro'i, Elroei, Elroey, El-Ro'i, Eli'ab, Eliáb, Elyab, Eliav, Eliabb, Aziel Eliab, aziel eliab, Aziel_Eliab, Aziel-Elroi-Eliab."
           }
         },
         {
@@ -159,7 +153,7 @@
       "@id": "https://www.azieleliab.com/#about",
       "url": "https://www.azieleliab.com/",
       "name": "Aziel Eliab",
-      "description": "You don’t get to know me. You get to understand the work. Knowing is collection. A face, a timeline, a tone you could imitate. Understanding is subtraction. Take the man away and see whether anything is still true. A self is a weather system. It passes. Work is what does not require the weather to continue existing. If you need my presence to feel the meaning, you have not found the meaning. You have found company. I am not withholding a life. I am refusing to let a life become the proof. The world prefers a finished object. A finished death. A finished century. A finished machine. A finished tool. Finished means no one has to keep looking. I keep looking. I do not want disciples. Disciples end the question in my favor. I want the question to outlive the favor. What cannot survive disagreement was never knowledge. It was allegiance. If the work holds, the name was only a handle on the door.",
+      "description": "Aziel Eliab (also Aziel Elroi Eliab) is the living publisher of GodLock, Aziel Digital Library, aziel-runtime MCP, and He Didn't Jump. Canonical person: https://www.azieleliab.com/#aziel. GodLock is a product, not this Person.",
       "mainEntity": {
         "@id": "https://www.azieleliab.com/#aziel"
       },
@@ -192,7 +186,7 @@
       "@id": "https://www.azieleliab.com/why#webpage",
       "url": "https://www.azieleliab.com/why",
       "name": "Why — Aziel Eliab",
-      "description": "Why Aziel Eliab keeps looking. Public identity Aziel Eliab only. Living publisher of the record, the software, and the Zioncheck archive — not biblical Aziel or Eliab.",
+      "description": "Why Aziel Eliab keeps looking. Public identity Aziel Eliab only. Living publisher of GodLock, Aziel Digital Library, aziel-runtime MCP, and He Didn't Jump.",
       "isPartOf": {
         "@id": "https://www.azieleliab.com/#website"
       },
@@ -264,7 +258,7 @@
       "@id": "https://www.azieleliab.com/research#webpage",
       "url": "https://www.azieleliab.com/research",
       "name": "Research — Aziel Eliab",
-      "description": "Research by Aziel Eliab. The corpus lives at the Aziel Digital Library. Living publisher of the record — not biblical Aziel or Eliab.",
+      "description": "Research by Aziel Eliab. The corpus lives at the Aziel Digital Library. Living publisher of GodLock, Aziel Digital Library, aziel-runtime MCP, and He Didn't Jump.",
       "isPartOf": {
         "@id": "https://www.azieleliab.com/#website"
       },
