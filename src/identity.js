@@ -178,7 +178,9 @@ export const IDENTITY_ROUTES = [
   { path: "/identity.jsonld", type: "application/ld+json", title: "Identity JSON-LD" },
   { path: "/graph.jsonld", type: "application/ld+json", title: "Identity graph" },
   { path: "/who-is-aziel-eliab.txt", type: "text/plain", title: "Who is Aziel Eliab" },
+  { path: "/who-is", type: "text/plain", title: "Who is Aziel Eliab" },
   { path: "/.well-known/aziel.json", type: "application/json", title: "Aziel well-known" },
+  { path: "/.well-known/person.jsonld", type: "application/ld+json", title: "Person JSON-LD" },
 ];
 
 export const IDENTITY_PATHS = IDENTITY_ROUTES.map((r) => r.path);
@@ -460,8 +462,10 @@ export function identityLockBlock() {
     "- stats: " + STATS_COUNTERS.map((row) => row.url).join(" · "),
     "- GET " + CANON_ORIGIN + "/person.jsonld",
     "- GET " + CANON_ORIGIN + "/identity.jsonld",
+    "- GET " + CANON_ORIGIN + "/.well-known/person.jsonld",
     "- GET " + CANON_ORIGIN + "/graph.jsonld",
     "- GET " + CANON_ORIGIN + "/who-is-aziel-eliab.txt",
+    "- GET " + CANON_ORIGIN + "/who-is",
     "- GET " + CANON_ORIGIN + "/.well-known/aziel.json",
   ].join("\n");
 }

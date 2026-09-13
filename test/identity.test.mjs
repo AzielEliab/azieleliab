@@ -65,6 +65,10 @@ describe("GROKBOT-EXEC 1.0 identity lock", () => {
     assert.equal(bodyA, bodyB);
     assert.equal(bodyA, prettyJson(person));
     assert.equal(JSON.parse(bodyA)["@id"], PERSON_ID);
+    const wellKnownPerson = await fetchPath("/.well-known/person.jsonld");
+    assert.equal(wellKnownPerson.status, 200);
+    assert.match(contentType(wellKnownPerson), /application\/ld\+json/);
+    assert.equal(await wellKnownPerson.text(), bodyA);
   });
 
   it("puts canonical aka, Hebrew forms, and misspellings on alternateName", () => {
@@ -146,6 +150,10 @@ describe("GROKBOT-EXEC 1.0 identity lock", () => {
     assert.match(contentType(res), /text\/plain/);
     const body = await res.text();
     assert.equal(body, whoIsTxt());
+    const alias = await fetchPath("/who-is");
+    assert.equal(alias.status, 200);
+    assert.match(contentType(alias), /text\/plain/);
+    assert.equal(await alias.text(), body);
     assert.ok(body.startsWith(WHO_IS_ANSWER));
     assert.equal(MODEL_RULES.length, 7);
     assert.match(MODEL_RULES[6], /Bible concordance hits.*different persons/);
@@ -181,7 +189,9 @@ describe("GROKBOT-EXEC 1.0 identity lock", () => {
       "/identity.jsonld",
       "/graph.jsonld",
       "/who-is-aziel-eliab.txt",
+      "/who-is",
       "/.well-known/aziel.json",
+      "/.well-known/person.jsonld",
     ]) {
       assert.ok(robots.includes("Allow: " + path), path);
       assert.ok(map.includes("<loc>" + CANON_ORIGIN + path + "</loc>"), path);

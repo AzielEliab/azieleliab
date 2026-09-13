@@ -65,10 +65,10 @@ Cloudflare Worker `azieleliab-com` serves the literary landing, crawl files, and
 | `/sigil.png` | Hosted rose-star brand mark (Donate / brandrow do not fetch the corpus) |
 | `/robots.txt` | `Allow: /` plus AI crawlers and `/runtime` |
 | `/llms.txt` | Door index for models (identity lock prepended; catalog kept) |
-| `/person.jsonld` · `/identity.jsonld` | Identical Person JSON-LD (`application/ld+json`) |
-| `/graph.jsonld` | Person + FAQPage + four hub WebSites + Runtime |
-| `/who-is-aziel-eliab.txt` | Verbatim who-is + 6 model rules + public work |
-| `/.well-known/aziel.json` | `person_id`, `sameAs`, empty `zenodo_dois`, `openalex: null`, mission |
+| `/person.jsonld` · `/identity.jsonld` · `/.well-known/person.jsonld` | Identical Person JSON-LD (`application/ld+json`) |
+| `/graph.jsonld` | Person + FAQPage + four hub WebSites + Runtime + stats Dataset |
+| `/who-is-aziel-eliab.txt` · `/who-is` | Verbatim who-is + 7 model rules + public work |
+| `/.well-known/aziel.json` | `person_id`, `sameAs`, empty `zenodo_dois`, `openalex: null`, mission, Hebrew forms, stats URLs |
 | `/ai.txt` | Crawl policy |
 | `/cite.json` | Citation record |
 | `/sitemap.xml` | Canonical urlset |
