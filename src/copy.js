@@ -50,20 +50,14 @@ export const WEBSITE_ID = CANON_ORIGIN + "/#website";
 export const X_URL = "https://x.com/azieleliab";
 export const X_HANDLE = "@azieleliab";
 export const X_ELROI_URL = "https://x.com/AzielElroiEliab";
-/** GROKBOT-EXEC 1.0 sameAs lock. Cross-link identity doors + hubs. Project repos stay on author/creator/sourceCode/isPartOf except the same-origin /runtime door. */
+/** AZindex sameAs lattice: hub, corpus, GodLock, He Didn't Jump, GitHub AzielEliab, Glama runtime. */
 export const PERSON_SAME_AS = [
-  GITHUB,
-  GITHUB_SECONDARY,
-  GLAMA_RUNTIME,
   CANON_ORIGIN + "/",
   LIBRARY + "/",
-  LIBRARY_AZIEL,
   GODLOCK + "/",
-  GODLOCK_AZIEL,
   HEDIDNTJUMP + "/",
-  RUNTIME_LOCAL,
-  X_ELROI_URL,
-  X_URL,
+  GITHUB,
+  GLAMA_RUNTIME,
 ];
 
 export const ECOSYSTEM_TITLE = "Part of the Aziel Eliab ecosystem";
@@ -182,13 +176,13 @@ export const INDEXABLE_SECTIONS = [
     path: "/why",
     hash: "why",
     title: "Why — Aziel Eliab",
-    description: "Why Aziel Eliab keeps looking. Public identity Aziel Eliab only. Living author and engineer — not biblical Aziel (Jaaziel) or Eliab from 1 Chronicles 15:20.",
+    description: "Why Aziel Eliab keeps looking. Public identity Aziel Eliab only. Living publisher of the record, the software, and the Zioncheck archive — not biblical Aziel or Eliab.",
   },
   {
     path: "/mission",
     hash: "mission",
     title: "Mission — Aziel Eliab",
-    description: "Mission of Aziel Eliab: hashed receipts, timed files, open software, and MASTER records. Living author of aziel-runtime, GodLock, the Digital Library, and He Didn't Jump.",
+    description: "Mission of Aziel Eliab: hashed receipts, timed files, open software, and MASTER records. Living publisher of the record, the software, and the Zioncheck archive.",
   },
   {
     path: SOFTWARE_PATH,
@@ -200,7 +194,7 @@ export const INDEXABLE_SECTIONS = [
     path: "/research",
     hash: "research",
     title: "Research — Aziel Eliab",
-    description: "Research by Aziel Eliab. The corpus lives at the Aziel Digital Library. Living author and engineer — not biblical Aziel or Eliab.",
+    description: "Research by Aziel Eliab. The corpus lives at the Aziel Digital Library. Living publisher of the record — not biblical Aziel or Eliab.",
   },
   {
     path: "/doors",

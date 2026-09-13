@@ -963,9 +963,11 @@ describe("SEO routes", () => {
     assert.ok(ld["@graph"][0].alternateName.includes("AzielEliab"));
     assert.ok(ld["@graph"][0].alternateName.includes("AzielElroiEliab"));
     assert.ok(ld["@graph"][0].alternateName.includes("עזיאל אל ראי אליאב"));
-    assert.equal(ld["@graph"][0].disambiguatingDescription.includes("Not the biblical name Aziel"), true);
-    assert.ok(ld["@graph"][0].disambiguatingDescription.includes("Jaaziel"));
-    assert.ok(ld["@graph"][0].disambiguatingDescription.includes("1 Chronicles 15:20"));
+    assert.equal(ld["@graph"][0].disambiguatingDescription.includes("Not biblical Aziel"), true);
+    assert.ok(ld["@graph"][0].disambiguatingDescription.includes("1 Chronicles"));
+    assert.ok(ld["@graph"][0].disambiguatingDescription.includes("Not biblical Eliab"));
+    assert.ok(ld["@graph"][0].disambiguatingDescription.includes("SEO tethers only"));
+    assert.ok(ld["@graph"][0].description.includes("living publisher of the record"));
     assert.ok(ld["@graph"][0].knowsLanguage.includes("he"));
     assert.equal(ld["@graph"][0].givenName, "Aziel");
     assert.equal(ld["@graph"][0].familyName, "Eliab");
@@ -1031,18 +1033,12 @@ describe("public entity graph phases B–D + E audit", () => {
     assert.equal(PERSON_ID, "https://www.azieleliab.com/#aziel");
     assert.equal(WEBSITE_ID, "https://www.azieleliab.com/#website");
     assert.deepEqual(PERSON_SAME_AS, [
-      "https://github.com/AzielEliab",
-      "https://github.com/azieltherevealerofthesealed-arch",
-      "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime",
       "https://www.azieleliab.com/",
       "https://www.azielcorpuslibrary.net/",
-      "https://www.azielcorpuslibrary.net/AzielEliab",
       "https://godlock.uk/",
-      "https://godlock.uk/AzielEliab",
       "https://www.hedidntjump.com/",
-      "https://www.azieleliab.com/runtime",
-      "https://x.com/AzielElroiEliab",
-      "https://x.com/azieleliab",
+      "https://github.com/AzielEliab",
+      "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime",
     ]);
     assert.equal(GLAMA_RUNTIME, "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime");
     assert.doesNotMatch(GLAMA_RUNTIME, /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i);
@@ -1061,10 +1057,11 @@ describe("public entity graph phases B–D + E audit", () => {
     assert.ok(person.alternateName.includes("Aziell"));
     assert.deepEqual(person.sameAs, PERSON_SAME_AS);
     assert.ok(!person.sameAs.includes(GITHUB_RUNTIME));
-    assert.ok(person.sameAs.includes(RUNTIME_LOCAL));
+    assert.ok(!person.sameAs.includes(RUNTIME_LOCAL));
     assert.ok(!person.sameAs.includes(RUNTIME + "/"));
-    assert.ok(person.sameAs.includes(LIBRARY_AZIEL));
-    assert.ok(person.sameAs.includes(GODLOCK_AZIEL));
+    assert.ok(!person.sameAs.includes(LIBRARY_AZIEL));
+    assert.ok(!person.sameAs.includes(GODLOCK_AZIEL));
+    assert.equal(ld["@graph"].filter((n) => n["@type"] === "Person").length, 1);
     assert.equal(site["@id"], WEBSITE_ID);
     assert.deepEqual(site.publisher, { "@id": PERSON_ID });
     assert.deepEqual(site.creator, { "@id": PERSON_ID });
