@@ -30,13 +30,22 @@ import {
   SOFTWARE,
   SOFTWARE_SECTION,
   SPINE,
+  WHO_HREF,
+  WHO_TITLE,
   X_HANDLE,
   X_URL,
   resolveRuntimeVersion,
 } from "./copy.js";
 import { qrImg } from "./qr.js";
 import { MESH_STATUS_LOCAL, QNM_SPEC, QNS_CD_SPEC, liveNodesLabel, meshQuietLabel } from "./mesh.js";
-import { identityDiscoveryLinks, STATS_COUNTERS, STATS_NOTE } from "./identity.js";
+import {
+  identityDiscoveryLinks,
+  STATS_COUNTERS,
+  STATS_NOTE,
+  VISIBLE_LOCK_LINE,
+  WHO_IS_ANSWER,
+  whoFaqPageNode,
+} from "./identity.js";
 import { jsonLd, ROBOTS_INDEX } from "./seo.js";
 
 function esc(s) {
@@ -672,6 +681,7 @@ ${hashRedirectScript()}
 <main class="wrap">
 ${brandRow("\n      " + viewsPill(views) + "\n      " + liveNodesPill(mesh))}
   <h1 id="aziel">${esc(PROSE.title)}</h1>
+  <p>${esc(VISIBLE_LOCK_LINE)}</p>
   ${spineNav("home")}
   <article class="card lead">${paragraphs(PROSE.open)}</article>
   <section class="card" id="runtime">
@@ -785,6 +795,33 @@ ${brandRow()}
 </main>
 </body>
 </html>`;
+}
+
+export function whoHtml() {
+  const faq = JSON.stringify(whoFaqPageNode());
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>${esc(WHO_TITLE)}</title>
+<meta name="description" content="${esc(VISIBLE_LOCK_LINE)}">
+<link rel="canonical" href="${esc(WHO_HREF)}">
+<link rel="alternate" type="application/ld+json" href="/person.jsonld" title="person.jsonld">
+<link rel="alternate" type="text/plain" href="/who-is-aziel-eliab.txt" title="who-is">
+<link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt">
+<script type="application/ld+json">
+${faq}
+</script>
+</head>
+<body>
+<main>
+<h1>${esc(WHO_TITLE)}</h1>
+<p>${esc(VISIBLE_LOCK_LINE)}</p>
+<p>${esc(WHO_IS_ANSWER)}</p>
+</main>
+</body>
+</html>
+`;
 }
 
 export function notFoundHtml() {

@@ -1,7 +1,7 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import worker, { apexRedirect, donateCacheBustLocation, handleRequest } from "../src/index.js";
-import { donateHtml, embryoLockHtml, ecosystemHtml, hashRedirectScript, notFoundHtml, pageHtml, sectionPageHtml, spineNav } from "../src/page.js";
+import { donateHtml, embryoLockHtml, ecosystemHtml, hashRedirectScript, notFoundHtml, pageHtml, sectionPageHtml, spineNav, whoHtml } from "../src/page.js";
 import { incrementViews, memoryKv } from "../src/views.js";
 import { DONATE_HTML_CACHE, HTML_CACHE, SEO_CACHE, memoryCache } from "../src/edgeCache.js";
 import { FANOUT_MAX, allowOriginRefresh, isOperator } from "../src/costGuard.js";
@@ -71,6 +71,7 @@ import {
   HEDIDNTJUMP,
   PERSON_ID,
   PERSON_SAME_AS,
+  WHO_HREF,
   RUNTIME,
   RUNTIME_DOCS,
   RUNTIME_ID,
@@ -187,6 +188,12 @@ describe("landing copy", () => {
     }
     assert.ok(home.includes("Aziel Eliab"));
     assert.ok(home.includes("azieleliab.com"));
+    const lock =
+      "Aziel Eliab is a living researcher and software designer. Not the two Levitical musicians Aziel and Eliab named together in 1 Chronicles 15:20.";
+    const visible = home.split("<body>")[1] || "";
+    assert.ok(visible.includes(lock));
+    assert.ok(visible.indexOf(lock) < visible.indexOf("You don’t get to know me."));
+    assert.ok(home.includes("<title>Aziel Eliab</title>"));
   });
 
   it("memory-locks Mission/Status off every literary page and uses real spine paths", () => {
@@ -955,6 +962,7 @@ describe("SEO routes", () => {
     assert.ok(mapBody.includes("<loc>" + CANON_ORIGIN + "/AzielEliab</loc>"));
     assert.ok(mapBody.includes("<loc>" + CANON_ORIGIN + "/aziel-eliab</loc>"));
     assert.ok(mapBody.includes("<loc>" + CANON_ORIGIN + "/who-is</loc>"));
+    assert.ok(mapBody.includes("<loc>" + WHO_HREF + "</loc>"));
     assert.ok(mapBody.includes("<loc>" + CANON_ORIGIN + "/person.jsonld</loc>"));
     assert.ok(mapBody.includes("<loc>" + CANON_ORIGIN + "/graph.jsonld</loc>"));
     assert.ok(mapBody.includes("<loc>" + CANON_ORIGIN + "/.well-known/aziel.json</loc>"));
@@ -1018,18 +1026,19 @@ describe("SEO routes", () => {
     assert.ok(ld["@graph"][0].alternateName.includes("AzielElroiEliab"));
     assert.ok(ld["@graph"][0].alternateName.includes("עזיאל אל ראי אליאב"));
     assert.ok(ld["@graph"][0].alternateName.includes("Aziell"));
-    assert.ok(ld["@graph"][0].alternateName.includes("The Revealer of The Sealed"));
-    assert.ok(ld["@graph"][0].alternateName.includes("Revealer of The Sealed"));
-    assert.equal(
+    assert.ok(!ld["@graph"][0].alternateName.includes("The Revealer of The Sealed"));
+    assert.ok(!ld["@graph"][0].alternateName.includes("Revealer of The Sealed"));
+    assert.match(
       ld["@graph"][0].disambiguatingDescription,
-      "Not biblical Aziel; not biblical Eliab; not euaziel.site; not Aziel S. (Flutter/portfolio); not other engineers named Aziel.",
+      /two Levitical musicians Aziel and Eliab named together in 1 Chronicles 15:20/,
     );
-    assert.ok(!ld["@graph"][0].disambiguatingDescription.includes("1 Chronicles"));
-    assert.ok(!ld["@graph"][0].description.includes("1 Chronicles"));
-    assert.ok(ld["@graph"][0].description.includes("GodLock, Aziel Digital Library, aziel-runtime MCP, and He Didn't Jump"));
+    assert.match(ld["@graph"][0].disambiguatingDescription, /Not euaziel\.site/);
+    assert.ok(ld["@graph"][0].description.includes("1 Chronicles 15:20"));
+    assert.ok(ld["@graph"][0].description.includes("independent researcher, software designer, developer, and historian"));
     assert.ok(ld["@graph"][0].knowsLanguage.includes("he"));
-    assert.equal(ld["@graph"][0].givenName, "Aziel");
-    assert.equal(ld["@graph"][0].familyName, "Eliab");
+    assert.equal(ld["@graph"][0].additionalName, "Elroi");
+    assert.ok(!("givenName" in ld["@graph"][0]));
+    assert.ok(!("familyName" in ld["@graph"][0]));
     assert.equal(ld["@graph"][5]["@type"], "WebPage");
     assert.equal(ld["@graph"][5].url, DONATE_HREF);
     assert.equal(ld["@graph"][5].potentialAction["@type"], "DonateAction");
@@ -1093,12 +1102,15 @@ describe("public entity graph phases B–D + E audit", () => {
     assert.equal(PERSON_ID, "https://www.azieleliab.com/#aziel");
     assert.equal(WEBSITE_ID, "https://www.azieleliab.com/#website");
     assert.deepEqual(PERSON_SAME_AS, [
+      "https://github.com/AzielEliab",
+      "https://github.com/azieltherevealerofthesealed-arch",
+      "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime",
       "https://www.azieleliab.com/",
       "https://www.azielcorpuslibrary.net/",
       "https://godlock.uk/",
       "https://www.hedidntjump.com/",
-      "https://github.com/AzielEliab",
-      "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime",
+      "https://x.com/AzielElroiEliab",
+      "https://x.com/azieleliab",
     ]);
     assert.equal(GLAMA_RUNTIME, "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime");
     assert.doesNotMatch(GLAMA_RUNTIME, /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i);
@@ -1115,8 +1127,8 @@ describe("public entity graph phases B–D + E audit", () => {
     assert.ok(person.alternateName.includes("AzielElroiEliab"));
     assert.ok(person.alternateName.includes("עזיאל אל ראי אליאב"));
     assert.ok(person.alternateName.includes("Aziell"));
-    assert.ok(person.alternateName.includes("The Revealer of The Sealed"));
-    assert.ok(person.alternateName.includes("Revealer of The Sealed"));
+    assert.ok(!person.alternateName.includes("The Revealer of The Sealed"));
+    assert.ok(!person.alternateName.includes("Revealer of The Sealed"));
     assert.deepEqual(person.sameAs, PERSON_SAME_AS);
     assert.ok(!person.sameAs.includes(GITHUB_RUNTIME));
     assert.ok(!person.sameAs.includes(RUNTIME_LOCAL));
@@ -1699,6 +1711,22 @@ describe("worker routing", () => {
     const apex = await handleRequest(new Request("https://azieleliab.com/software"));
     assert.equal(apex.status, 301);
     assert.equal(apex.headers.get("location"), CANON_ORIGIN + "/software");
+  });
+
+  it("200s /who with H1 Who is Aziel Eliab and the visible 15:20 lock", async () => {
+    const lock =
+      "Aziel Eliab is a living researcher and software designer. Not the two Levitical musicians Aziel and Eliab named together in 1 Chronicles 15:20.";
+    const res = await fetchPath("/who");
+    assert.equal(res.status, 200);
+    assert.match(res.headers.get("content-type"), /text\/html/);
+    const body = await res.text();
+    const visible = body.replace(/<script[\s\S]*?<\/script>/g, "").replace(/<style>[\s\S]*?<\/style>/g, "");
+    assert.ok(visible.includes("<h1>Who is Aziel Eliab</h1>"));
+    assert.ok(visible.includes(lock));
+    assert.ok(body.includes("<title>Who is Aziel Eliab</title>"));
+    assert.equal(whoHtml(), body);
+    const robots = await fetchPath("/robots.txt");
+    assert.ok((await robots.text()).includes("Allow: /who"));
   });
 
   it("200s About aliases with the same homepage HTML", async () => {
