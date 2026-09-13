@@ -37,6 +37,7 @@ import {
   ABOUT_PUBLISHED_ANSWER,
   ABOUT_PUBLISHED_LINES,
   VISIBLE_LOCK_LINE,
+  WHO_DESCRIPTION,
   WHO_IS_ANSWER,
   WHO_IS_FAQ_ID,
   graphJsonLd,
@@ -264,16 +265,18 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     assert.ok(body.includes("If the work holds, the name was only a handle on the door."));
   });
 
-  it("serves /who HTML with H1 and visible 15:20 lock line", async () => {
+  it("serves /who HTML with H1 and who-answer, not the visible 15:20 lock line", async () => {
     const res = await fetchPath("/who");
     assert.equal(res.status, 200);
     assert.match(contentType(res), /text\/html/);
     const body = await res.text();
     const visible = body.replace(/<script[\s\S]*?<\/script>/g, "").replace(/<style>[\s\S]*?<\/style>/g, "");
     assert.ok(visible.includes("<h1>Who is Aziel Eliab</h1>"));
-    assert.ok(visible.includes(VISIBLE_LOCK_LINE));
-    assert.ok(body.includes(VISIBLE_LOCK_LINE));
+    assert.ok(visible.includes(WHO_IS_ANSWER));
+    assert.ok(!visible.includes(VISIBLE_LOCK_LINE));
+    assert.ok(!body.includes(VISIBLE_LOCK_LINE));
     assert.ok(body.includes("<title>Who is Aziel Eliab</title>"));
+    assert.ok(body.includes('name="description" content="' + WHO_DESCRIPTION + '"'));
     assert.ok(body.includes('rel="canonical" href="' + WHO_HREF + '"'));
     assert.match(body, /two Levitical musicians Aziel and Eliab named together in 1 Chronicles 15:20/);
     const slash = await fetchPath("/who/");
@@ -353,10 +356,10 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     assert.ok(html.includes('href="/person.jsonld"'));
     assert.ok(html.includes('href="/graph.jsonld"'));
     assert.ok(html.includes('href="/who-is-aziel-eliab.txt"'));
-    assert.ok(html.includes(VISIBLE_LOCK_LINE));
+    assert.ok(!html.includes(VISIBLE_LOCK_LINE));
     const visibleBody = html.split("<body>")[1] || "";
-    assert.ok(visibleBody.includes(VISIBLE_LOCK_LINE));
-    assert.ok(visibleBody.indexOf(VISIBLE_LOCK_LINE) < visibleBody.indexOf("You don’t get to know me."));
+    assert.ok(!visibleBody.includes(VISIBLE_LOCK_LINE));
+    assert.ok(visibleBody.includes("You don’t get to know me."));
     assert.ok(html.includes('href="/.well-known/aziel.json"'));
     assert.ok(!html.includes('id="mission"'));
     assert.ok(!html.includes("<h2>Mission</h2>"));
