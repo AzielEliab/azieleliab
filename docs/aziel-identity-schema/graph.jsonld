@@ -10,6 +10,7 @@
         "AzielEliab",
         "AzielElroiEliab",
         "The Revealer of The Sealed",
+        "Revealer of The Sealed",
         "עזיאל",
         "עֲזִיאֵל",
         "אל ראי",
@@ -48,7 +49,7 @@
       "givenName": "Aziel",
       "familyName": "Eliab",
       "description": "Aziel Eliab (also Aziel Elroi Eliab) is the living publisher of GodLock, Aziel Digital Library, aziel-runtime MCP, and He Didn't Jump. Canonical person: https://www.azieleliab.com/#aziel. GodLock is a product, not this Person.",
-      "disambiguatingDescription": "Not Aziel S. / not euaziel.site. Not biblical Aziel (1 Chronicles / concordance).",
+      "disambiguatingDescription": "Not Aziel S. / not euaziel.site.",
       "identifier": "Aziel Eliab",
       "url": "https://www.azieleliab.com/",
       "image": "https://www.azieleliab.com/sigil.png",
@@ -101,10 +102,10 @@
         },
         {
           "@type": "Question",
-          "name": "Is Aziel Eliab the biblical Aziel from 1 Chronicles?",
+          "name": "Is Aziel Eliab the same person as other Aziel names?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "No. He is not biblical Aziel (1 Chronicles / concordance). This Person @id is https://www.azieleliab.com/#aziel."
+            "text": "No. This Person @id is https://www.azieleliab.com/#aziel."
           }
         },
         {

@@ -89,17 +89,18 @@ describe("GROKBOT-EXEC 1.0 identity lock", () => {
     assert.ok(names.includes(HEBREW_NAME_FORMS.phrase));
     assert.ok(names.includes("Aziell"));
     assert.ok(names.includes("The Revealer of The Sealed"));
+    assert.ok(names.includes("Revealer of The Sealed"));
     assert.ok(!names.some((n) => /euaziel|Aziel S|Flutter/i.test(n)));
   });
 
-  it("leads descriptions with the living stack; competitor and 1 Chronicles stay on disambiguatingDescription", () => {
+  it("leads descriptions with the living stack; one short competitor disambiguatingDescription", () => {
     const person = personJsonLd();
     assert.match(person.description, /^Aziel Eliab \(also Aziel Elroi Eliab\) is the living publisher of GodLock, Aziel Digital Library, aziel-runtime MCP, and He Didn't Jump/);
     assert.match(person.description, /GodLock is a product, not this Person/);
     assert.doesNotMatch(person.description, /1 Chronicles|biblical|concordance|Aziel S|euaziel/i);
     assert.equal(person.disambiguatingDescription, DISAMBIGUATING_DESCRIPTION);
-    assert.match(person.disambiguatingDescription, /Not Aziel S\. \/ not euaziel\.site/);
-    assert.match(person.disambiguatingDescription, /Not biblical Aziel \(1 Chronicles \/ concordance\)/);
+    assert.equal(person.disambiguatingDescription, "Not Aziel S. / not euaziel.site.");
+    assert.doesNotMatch(person.disambiguatingDescription, /1 Chronicles/);
     assert.deepEqual(person.knowsAbout, ["GodLock", "Aziel Digital Library", "aziel-runtime", "He Didn't Jump"]);
     assert.ok(!("jobTitle" in person));
     assert.ok(!("additionalName" in person));
@@ -151,8 +152,8 @@ describe("GROKBOT-EXEC 1.0 identity lock", () => {
     assert.ok(questions.includes("Who is Aziel Eliab?"));
     assert.equal(questions[0], "Who is Aziel Eliab?");
     assert.ok(questions.includes("Who is Aziel Eliab the software developer?"));
-    assert.equal(questions.filter((q) => /1 Chronicles/i.test(q)).length, 1);
-    assert.equal(questions[questions.findIndex((q) => /1 Chronicles/i.test(q))], CONCORDANCE_FAQ_NAME);
+    assert.ok(questions.includes(CONCORDANCE_FAQ_NAME));
+    assert.equal(questions.filter((q) => /1 Chronicles/i.test(q)).length, 0);
     assert.ok(questions.some((q) => /Hebrew/i.test(q)));
     assert.ok(questions.some((q) => /misspell/i.test(q)));
     assert.ok(questions.includes("What does the published About say?"));
@@ -168,7 +169,7 @@ describe("GROKBOT-EXEC 1.0 identity lock", () => {
     assert.doesNotMatch(HEBREW_NAME_ANSWER, /1 Chronicles/);
     assert.doesNotMatch(ABOUT_PUBLISHED_ANSWER, /1 Chronicles/);
     const faqBlob = JSON.stringify(faq);
-    assert.doesNotMatch(faqBlob, /Jaaziel|Aziel S\.|Flutter|euaziel/i);
+    assert.doesNotMatch(faqBlob, /1 Chronicles|Jaaziel|Flutter/i);
     const about = doc["@graph"].find((n) => n["@id"] === ABOUT_PAGE_ID);
     assert.equal(about.description, WHO_IS_ANSWER);
     assert.doesNotMatch(about.description, /1 Chronicles/);
@@ -311,6 +312,8 @@ describe("GROKBOT-EXEC 1.0 identity lock", () => {
     assert.equal(cite.software_developer_answer, SOFTWARE_DEVELOPER_ANSWER);
     assert.equal(cite.disambiguatingDescription, DISAMBIGUATING_DESCRIPTION);
     assert.doesNotMatch(cite.who_is_answer, /1 Chronicles/);
+    assert.doesNotMatch(JSON.stringify(cite), /1 Chronicles/);
+    assert.doesNotMatch(llmsTxt(), /1 Chronicles/);
     assert.equal(cite.library_stats, LIBRARY_STATS);
     assert.equal(cite.library_stats_fallback, LIBRARY_STATS_FALLBACK);
     assert.ok(cite.library_stats.endsWith("/stats"));

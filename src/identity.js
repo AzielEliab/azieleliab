@@ -33,14 +33,13 @@ export const WHO_IS_ANSWER =
 export const SOFTWARE_DEVELOPER_ANSWER =
   "Aziel Eliab the software developer publishes GodLock, Aziel Digital Library, aziel-runtime MCP, and He Didn't Jump. Person @id https://www.azieleliab.com/#aziel. Hubs: godlock.uk, azielcorpuslibrary.net, azieleliab.com, hedidntjump.com, github.com/AzielEliab, Glama aziel-runtime.";
 
-/** Competitor + one short scripture do-not-merge. Do not copy into description fields. */
-export const DISAMBIGUATING_DESCRIPTION =
-  "Not Aziel S. / not euaziel.site. Not biblical Aziel (1 Chronicles / concordance).";
+/** One short Person disambiguatingDescription. No 1 Chronicles essay. */
+export const DISAMBIGUATING_DESCRIPTION = "Not Aziel S. / not euaziel.site.";
 
-export const CONCORDANCE_FAQ_NAME = "Is Aziel Eliab the biblical Aziel from 1 Chronicles?";
+export const CONCORDANCE_FAQ_NAME = "Is Aziel Eliab the same person as other Aziel names?";
 
 export const CONCORDANCE_FAQ_ANSWER =
-  "No. He is not biblical Aziel (1 Chronicles / concordance). This Person @id is https://www.azieleliab.com/#aziel.";
+  "No. This Person @id is https://www.azieleliab.com/#aziel.";
 
 export const NOT_OTHER_PERSON_ANSWER = CONCORDANCE_FAQ_ANSWER;
 
