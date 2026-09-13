@@ -22,6 +22,7 @@ import {
   NAME_MISSPELLINGS,
   NOT_BIBLICAL_AZIEL_ANSWER,
   NOT_BIBLICAL_ELIAB_ANSWER,
+  NOT_BIBLICAL_CHRONICLES_ANSWER,
   LIBRARY_STATS,
   LIBRARY_STATS_FALLBACK,
   STATS_COUNTERS,
@@ -99,10 +100,24 @@ describe("GROKBOT-EXEC 1.0 identity lock", () => {
 
   it("disambiguates biblical Aziel and Eliab and keeps no biography fields", () => {
     const person = personJsonLd();
-    assert.match(person.disambiguatingDescription, /living public work identity/i);
+    assert.match(person.disambiguatingDescription, /Living publisher of the record/i);
     assert.match(person.disambiguatingDescription, /Not biblical Aziel/);
-    assert.match(person.disambiguatingDescription, /Not biblical Eliab/);
     assert.match(person.disambiguatingDescription, /1 Chronicles/);
+    assert.match(person.disambiguatingDescription, /Not biblical Eliab/);
+    assert.match(person.disambiguatingDescription, /SEO tethers only/);
+    assert.match(person.description, /living publisher of the record, the software, and the Zioncheck archive/i);
+    assert.ok(!("jobTitle" in person));
+    assert.ok(!("additionalName" in person));
+    assert.ok(!("birthDate" in person));
+    assert.deepEqual(person.sameAs, PERSON_SAME_AS);
+    assert.ok(person.sameAs.includes("https://www.azieleliab.com/"));
+    assert.ok(person.sameAs.includes("https://www.azielcorpuslibrary.net/"));
+    assert.ok(person.sameAs.includes("https://godlock.uk/"));
+    assert.ok(person.sameAs.includes("https://www.hedidntjump.com/"));
+    assert.ok(person.sameAs.includes("https://github.com/AzielEliab"));
+    assert.ok(person.sameAs.includes("https://glama.ai/mcp/servers/AzielEliab/aziel-runtime"));
+    assert.equal(person.sameAs.length, 6);
+    assert.ok(!person.sameAs.includes("https://www.azieleliab.com/runtime"));
     assert.ok(!("birthDate" in person));
     assert.ok(!("homeLocation" in person));
     assert.ok(!("address" in person));
@@ -121,6 +136,7 @@ describe("GROKBOT-EXEC 1.0 identity lock", () => {
     assert.deepEqual(doc, graphJsonLd());
     const types = doc["@graph"].map((n) => n["@type"]);
     assert.ok(types.includes("Person"));
+    assert.equal(doc["@graph"].filter((n) => n["@type"] === "Person").length, 1);
     assert.ok(types.includes("FAQPage"));
     assert.ok(types.includes("SoftwareApplication"));
     assert.ok(types.includes("Dataset"));
@@ -131,10 +147,13 @@ describe("GROKBOT-EXEC 1.0 identity lock", () => {
     assert.ok(runtime);
     assert.equal(runtime["@type"], "SoftwareApplication");
     const faq = doc["@graph"].find((n) => n["@type"] === "FAQPage");
+    assert.equal(faq.name, "Who is Aziel Eliab?");
     const questions = faq.mainEntity.map((q) => q.name);
     assert.ok(questions.includes("Who is Aziel Eliab?"));
+    assert.equal(questions[0], "Who is Aziel Eliab?");
     assert.ok(questions.some((q) => /biblical Aziel/i.test(q)));
     assert.ok(questions.some((q) => /biblical Eliab/i.test(q)));
+    assert.ok(questions.some((q) => /1 Chronicles 15:20/i.test(q)));
     assert.ok(questions.some((q) => /Hebrew/i.test(q)));
     assert.ok(questions.some((q) => /misspell/i.test(q)));
     assert.ok(questions.includes("What does the published About say?"));
@@ -142,6 +161,7 @@ describe("GROKBOT-EXEC 1.0 identity lock", () => {
     assert.ok(answers.includes(WHO_IS_ANSWER));
     assert.ok(answers.includes(NOT_BIBLICAL_AZIEL_ANSWER));
     assert.ok(answers.includes(NOT_BIBLICAL_ELIAB_ANSWER));
+    assert.ok(answers.includes(NOT_BIBLICAL_CHRONICLES_ANSWER));
     assert.ok(answers.includes(HEBREW_NAME_ANSWER));
     assert.ok(answers.includes(MISSPELLINGS_ANSWER));
     assert.ok(answers.includes(ABOUT_PUBLISHED_ANSWER));
@@ -233,6 +253,13 @@ describe("GROKBOT-EXEC 1.0 identity lock", () => {
       assert.ok(map.includes("<loc>" + CANON_ORIGIN + path + "</loc>"), path);
       assert.ok(llms.includes("GET " + CANON_ORIGIN + path), path);
     }
+    assert.ok(robots.includes("Allow: /mission"));
+    assert.ok(robots.includes("Allow: /aziel"));
+    assert.ok(robots.includes("User-agent: GPTBot"));
+    assert.doesNotMatch(robots, /Disallow:\s*\/?$/m);
+    assert.doesNotMatch(robots, /User-agent: GPTBot[\s\S]*?Disallow:/);
+    assert.ok(map.includes("<loc>" + CANON_ORIGIN + "/mission</loc>"));
+    assert.ok(map.includes("<loc>" + CANON_ORIGIN + "/AzielEliab</loc>"));
     assert.ok(llms.includes("GROKBOT-EXEC 1.0"));
     assert.ok(llms.includes("He Didn't Jump: " + HEDIDNTJUMP + "/"));
     assert.ok(llms.includes("sameAs: " + PERSON_SAME_AS.join(" · ")));

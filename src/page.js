@@ -619,18 +619,32 @@ export function ecosystemHtml() {
   );
 }
 
-export function pageHtml(views = 0, softwareItems = SOFTWARE, mesh = null, runtimeVersion = RUNTIME_VERSION) {
+function sectionScrollScript(hash) {
+  if (!hash) return "";
+  return (
+    "<script>(function(){var el=document.getElementById(" +
+    JSON.stringify(hash) +
+    ");if(el)el.scrollIntoView({block:\"start\"});})();</script>"
+  );
+}
+
+export function pageHtml(views = 0, softwareItems = SOFTWARE, mesh = null, runtimeVersion = RUNTIME_VERSION, opts = {}) {
   const doorsSoftware = softwareItems && softwareItems.length ? softwareItems : SOFTWARE;
   const software = softwareLine(doorsSoftware);
   const doors = DOORS.map(doorRow).join("");
   const meshQuiet = meshQuietHtml(mesh);
+  const section = opts && opts.section;
+  const title = (section && section.title) || AUTHOR;
+  const description = (section && section.description) || DESCRIPTION;
+  const canonical = (opts && opts.canonical) || (section ? CANON_ORIGIN + section.path : CANON_ORIGIN + "/");
+  const scrollHash = section && section.hash ? section.hash : "";
   return `<!doctype html>
 <html lang="en">
 <head>
 ${documentHead({
-  title: AUTHOR,
-  description: DESCRIPTION,
-  canonical: CANON_ORIGIN + "/",
+  title,
+  description,
+  canonical,
   software: doorsSoftware,
   extraMeta: quietDiscoveryMeta(),
   runtimeVersion,
@@ -639,7 +653,7 @@ ${documentHead({
 <body>
 <main class="wrap">
 ${brandRow("\n      " + viewsPill(views) + "\n      " + liveNodesPill(mesh))}
-  <h1>${esc(PROSE.title)}</h1>
+  <h1 id="aziel">${esc(PROSE.title)}</h1>
   ${spineNav("home")}
   <article class="card lead">${paragraphs(PROSE.open)}</article>
   <section class="card" id="why">
@@ -684,7 +698,7 @@ ${brandRow("\n      " + viewsPill(views) + "\n      " + liveNodesPill(mesh))}
 ${COPY_SCRIPT}
 ${LIVE_NODES_SCRIPT}
 ${RUNTIME_VERSION_SCRIPT}
-${AWARENESS_SCRIPT}
+${AWARENESS_SCRIPT}${scrollHash ? "\n" + sectionScrollScript(scrollHash) : ""}
 </body>
 </html>`;
 }
