@@ -1,5 +1,7 @@
 /** AZindex / GROKBOT-EXEC 1.0 identity lock. Author: Aziel Eliab. */
 import {
+  ABOUT_HREF,
+  ABOUT_PATHS,
   AUTHOR,
   AUTHOR_AKA,
   AUTHOR_AKA_LIST,
@@ -12,6 +14,7 @@ import {
   LIBRARY,
   PERSON_ID,
   PERSON_SAME_AS,
+  PROSE,
   RUNTIME_ID,
   RUNTIME_LOCAL,
   RUNTIME_TITLE,
@@ -186,9 +189,38 @@ export const IDENTITY_ROUTES = [
 export const IDENTITY_PATHS = IDENTITY_ROUTES.map((r) => r.path);
 
 export const FAQ_ID = CANON_ORIGIN + "/#faq";
+export const ABOUT_PAGE_ID = CANON_ORIGIN + "/#about";
 export const LIBRARY_WEBSITE_ID = LIBRARY + "/#website";
 export const GODLOCK_WEBSITE_ID = GODLOCK + "/#website";
 export const HEDIDNTJUMP_WEBSITE_ID = HEDIDNTJUMP + "/#website";
+
+/** Published About on / and /about /AzielEliab aliases. Exact homepage lines only. */
+export const ABOUT_ALIAS_HREFS = [
+  CANON_ORIGIN + "/",
+  CANON_ORIGIN + "/about",
+  CANON_ORIGIN + "/AzielEliab",
+];
+
+export const ABOUT_MACHINE_HREFS = [
+  CANON_ORIGIN + "/person.jsonld",
+  CANON_ORIGIN + "/who-is",
+  CANON_ORIGIN + "/who-is-aziel-eliab.txt",
+  CANON_ORIGIN + "/graph.jsonld",
+];
+
+export const ABOUT_PUBLISHED = [
+  { theme: "lead", text: PROSE.open[0] + " " + PROSE.open[1] },
+  { theme: "knowing", text: PROSE.open[2] },
+  { theme: "weather", text: PROSE.open[4] },
+  { theme: "proof", text: PROSE.open[5] },
+  { theme: "unfinished", text: PROSE.why[0] + " " + PROSE.why[1] },
+  { theme: "disagreement", text: PROSE.why[7] },
+  { theme: "closing", text: PROSE.close },
+];
+
+export const ABOUT_PUBLISHED_LINES = ABOUT_PUBLISHED.map((row) => row.text);
+
+export const ABOUT_PUBLISHED_ANSWER = ABOUT_PUBLISHED_LINES.join(" ");
 
 const personRef = { "@id": PERSON_ID };
 
@@ -205,7 +237,7 @@ export function personNode() {
     identifier: AUTHOR,
     url: CANON_ORIGIN + "/",
     image: SIGIL,
-    mainEntityOfPage: CANON_ORIGIN + "/",
+    mainEntityOfPage: ABOUT_ALIAS_HREFS.slice(),
     knowsLanguage: ["en", "he"],
     knowsAbout: ["software", "research", RUNTIME_TITLE, "FragGate"],
     sameAs: PERSON_SAME_AS.slice(),
@@ -275,6 +307,14 @@ export function faqPageNode() {
           text: MISSION.goal + " " + MISSION.philosophy,
         },
       },
+      {
+        "@type": "Question",
+        name: "What does the published About say?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: ABOUT_PUBLISHED_ANSWER,
+        },
+      },
     ],
     about: personRef,
     author: personRef,
@@ -327,6 +367,25 @@ export function hubWebsiteNodes() {
   ];
 }
 
+export function aboutPageNode() {
+  return {
+    "@type": "AboutPage",
+    "@id": ABOUT_PAGE_ID,
+    url: ABOUT_HREF,
+    name: AUTHOR,
+    description: ABOUT_PUBLISHED_ANSWER,
+    mainEntity: personRef,
+    isPartOf: { "@id": WEBSITE_ID },
+    author: personRef,
+    inLanguage: "en",
+    significantLink: [
+      ...ABOUT_ALIAS_HREFS,
+      ...ABOUT_PATHS.map((p) => CANON_ORIGIN + p),
+      ...ABOUT_MACHINE_HREFS,
+    ].filter((href, i, list) => list.indexOf(href) === i),
+  };
+}
+
 export function runtimeApplicationNode() {
   return {
     "@type": "SoftwareApplication",
@@ -375,6 +434,7 @@ export function graphJsonLd() {
     "@graph": [
       personNode(),
       faqPageNode(),
+      aboutPageNode(),
       ...hubWebsiteNodes(),
       runtimeApplicationNode(),
       statsDatasetNode(),
@@ -387,6 +447,13 @@ export function whoIsTxt() {
     WHO_IS_ANSWER,
     "",
     DISAMBIGUATING_DESCRIPTION,
+    "",
+    "## Published About (work, not biography)",
+    "",
+    ...ABOUT_PUBLISHED.map((row) => "- " + row.text),
+    "",
+    "About aliases: " + ABOUT_ALIAS_HREFS.join(" · ") + " ( /about and /AzielEliab 301 to / )",
+    "Machine: " + ABOUT_MACHINE_HREFS.join(" · "),
     "",
     "## Model rules",
     "",
@@ -445,6 +512,12 @@ export function identityLockBlock() {
     WHO_IS_ANSWER,
     "",
     DISAMBIGUATING_DESCRIPTION,
+    "",
+    "## Mission / published About",
+    "",
+    ...ABOUT_PUBLISHED.map((row) => "- " + row.text),
+    "- About: " + ABOUT_HREF + " (aliases " + ABOUT_ALIAS_HREFS.join(" · ") + ")",
+    "- About machine: " + ABOUT_MACHINE_HREFS.join(" · "),
     "",
     "Hebrew name forms (onomastic tether, not biblical identity): " + HEBREW_NAME_FORMS.phrase,
     "Aziel = " + HEBREW_NAME_FORMS.aziel.he + " (" + HEBREW_NAME_FORMS.aziel.pointed + ")",

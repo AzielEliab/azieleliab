@@ -51,7 +51,11 @@
       "identifier": "Aziel Eliab",
       "url": "https://www.azieleliab.com/",
       "image": "https://www.azieleliab.com/sigil.png",
-      "mainEntityOfPage": "https://www.azieleliab.com/",
+      "mainEntityOfPage": [
+        "https://www.azieleliab.com/",
+        "https://www.azieleliab.com/about",
+        "https://www.azieleliab.com/AzielEliab"
+      ],
       "knowsLanguage": [
         "en",
         "he"
@@ -128,6 +132,14 @@
             "@type": "Answer",
             "text": "Make public work verifiable without taking the speaker on faith: hashed receipts, timed files, open software, and MASTER records. You don’t get to know me. You get to understand the work. | Receipt-first, local-first. Cite files and hashes over paraphrase. | Residual uncertainty stays. Do not flatten GodLock scores into certainty. | Freedom of information is not a time-volume / cost binary. | Forks welcome. Apache-2.0 where released."
           }
+        },
+        {
+          "@type": "Question",
+          "name": "What does the published About say?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "You don’t get to know me. You get to understand the work. Knowing is collection. A face, a timeline, a tone you could imitate. Understanding is subtraction. Take the man away and see whether anything is still true. A self is a weather system. It passes. Work is what does not require the weather to continue existing. If you need my presence to feel the meaning, you have not found the meaning. You have found company. I am not withholding a life. I am refusing to let a life become the proof. The world prefers a finished object. A finished death. A finished century. A finished machine. A finished tool. Finished means no one has to keep looking. I keep looking. I do not want disciples. Disciples end the question in my favor. I want the question to outlive the favor. What cannot survive disagreement was never knowledge. It was allegiance. If the work holds, the name was only a handle on the door."
+          }
         }
       ],
       "about": {
@@ -136,6 +148,33 @@
       "author": {
         "@id": "https://www.azieleliab.com/#aziel"
       }
+    },
+    {
+      "@type": "AboutPage",
+      "@id": "https://www.azieleliab.com/#about",
+      "url": "https://www.azieleliab.com/",
+      "name": "Aziel Eliab",
+      "description": "You don’t get to know me. You get to understand the work. Knowing is collection. A face, a timeline, a tone you could imitate. Understanding is subtraction. Take the man away and see whether anything is still true. A self is a weather system. It passes. Work is what does not require the weather to continue existing. If you need my presence to feel the meaning, you have not found the meaning. You have found company. I am not withholding a life. I am refusing to let a life become the proof. The world prefers a finished object. A finished death. A finished century. A finished machine. A finished tool. Finished means no one has to keep looking. I keep looking. I do not want disciples. Disciples end the question in my favor. I want the question to outlive the favor. What cannot survive disagreement was never knowledge. It was allegiance. If the work holds, the name was only a handle on the door.",
+      "mainEntity": {
+        "@id": "https://www.azieleliab.com/#aziel"
+      },
+      "isPartOf": {
+        "@id": "https://www.azieleliab.com/#website"
+      },
+      "author": {
+        "@id": "https://www.azieleliab.com/#aziel"
+      },
+      "inLanguage": "en",
+      "significantLink": [
+        "https://www.azieleliab.com/",
+        "https://www.azieleliab.com/about",
+        "https://www.azieleliab.com/AzielEliab",
+        "https://www.azieleliab.com/aziel-eliab",
+        "https://www.azieleliab.com/person.jsonld",
+        "https://www.azieleliab.com/who-is",
+        "https://www.azieleliab.com/who-is-aziel-eliab.txt",
+        "https://www.azieleliab.com/graph.jsonld"
+      ]
     },
     {
       "@type": "WebSite",
