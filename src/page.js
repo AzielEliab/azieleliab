@@ -35,6 +35,7 @@ import {
 } from "./copy.js";
 import { qrImg } from "./qr.js";
 import { MESH_STATUS_LOCAL, QNM_SPEC, QNS_CD_SPEC, liveNodesLabel, meshQuietLabel } from "./mesh.js";
+import { identityDiscoveryLinks, STATS_COUNTERS, STATS_NOTE } from "./identity.js";
 import { jsonLd, ROBOTS_INDEX } from "./seo.js";
 
 function esc(s) {
@@ -266,6 +267,11 @@ footer a:hover{color:var(--gold)}
 .ecosystem li{margin:0 0 6px}
 .ecosystem-secondary{opacity:.82}
 .mesh-quiet{margin:0;font-size:12px;letter-spacing:.04em}
+.awareness{margin:14px 0 0;color:var(--muted);font-size:14px;line-height:1.55}
+.awareness-note{margin:0 0 8px}
+.awareness-list{list-style:none;margin:0;padding:0}
+.awareness-list li{margin:0 0 4px}
+.awareness-count{color:var(--gold);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;font-size:13px}
 .spine{
   display:flex;flex-wrap:wrap;gap:8px 14px;margin:0 0 28px;padding:0;
   font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
@@ -390,21 +396,22 @@ document.addEventListener("click",function(e){
 
 function discoveryLinks() {
   return [
-    ["application/json", "/cite.json", "cite.json"],
-    ["text/plain", "/llms.txt", "llms.txt"],
-    ["text/plain", "/ai.txt", "ai.txt"],
-    ["application/json", "/v1/software", "software catalog"],
-    ["application/json", "/v1/update/check", "update check"],
-    ["application/json", "/v1/mesh/status", "mesh status"],
-    ["application/json", "/v1/mesh/nodes", "mesh nodes"],
-    ["application/json", "/runtime/openapi.json", "OpenAPI"],
-    ["application/json", "/runtime/v1/fraggate/list", "FragGate list"],
-  ]
-    .map(
+    identityDiscoveryLinks(),
+    ...[
+      ["application/json", "/cite.json", "cite.json"],
+      ["text/plain", "/llms.txt", "llms.txt"],
+      ["text/plain", "/ai.txt", "ai.txt"],
+      ["application/json", "/v1/software", "software catalog"],
+      ["application/json", "/v1/update/check", "update check"],
+      ["application/json", "/v1/mesh/status", "mesh status"],
+      ["application/json", "/v1/mesh/nodes", "mesh nodes"],
+      ["application/json", "/runtime/openapi.json", "OpenAPI"],
+      ["application/json", "/runtime/v1/fraggate/list", "FragGate list"],
+    ].map(
       ([type, href, title]) =>
         '<link rel="alternate" type="' + type + '" href="' + href + '" title="' + title + '">',
-    )
-    .join("\n");
+    ),
+  ].join("\n");
 }
 
 function documentHead({ title, description, canonical, software, extraMeta = "", runtimeVersion }) {
@@ -517,6 +524,49 @@ const LIVE_NODES_SCRIPT = `<script>
 })();
 </script>`;
 
+export function awarenessHtml() {
+  return (
+    '<div class="awareness" id="awareness">' +
+    '<p class="awareness-note">' +
+    esc(STATS_NOTE) +
+    "</p>" +
+    '<ul class="awareness-list">' +
+    STATS_COUNTERS.map((row, i) => {
+      return (
+        "<li>" +
+        a(row.url, row.label) +
+        ' <span class="awareness-count" data-stats-url="' +
+        attr(row.url) +
+        '" id="aziel-stats-' +
+        i +
+        '"></span></li>'
+      );
+    }).join("") +
+    "</ul></div>"
+  );
+}
+
+const AWARENESS_SCRIPT = `<script>
+(function(){
+  function countFrom(d){
+    if(!d||typeof d!=="object") return "";
+    var n=d.views!=null?d.views:(d.downloads!=null?d.downloads:(d.count!=null?d.count:""));
+    if(n===""||n==null) return "";
+    var num=Number(n);
+    if(!Number.isFinite(num)||num<0) return "";
+    return String(num);
+  }
+  document.querySelectorAll("[data-stats-url]").forEach(function(el){
+    var url=el.getAttribute("data-stats-url");
+    if(!url) return;
+    fetch(url,{headers:{"Accept":"application/json","User-Agent":"Mozilla/5.0"}}).then(function(r){return r.ok?r.json():null;}).then(function(d){
+      var n=countFrom(d);
+      if(n) el.textContent="· "+n;
+    }).catch(function(){});
+  });
+})();
+</script>`;
+
 const RUNTIME_VERSION_SCRIPT = `<script>
 (function(){
   var el=document.getElementById("aziel-runtime-version");
@@ -596,6 +646,13 @@ ${brandRow("\n      " + viewsPill(views) + "\n      " + liveNodesPill(mesh))}
     <h2>Why</h2>
     ${paragraphs(PROSE.why)}
   </section>
+  <section class="card" id="mission">
+    <h2>Mission</h2>
+    ${paragraphs(PROSE.mission)}
+    <h2>Status</h2>
+    ${paragraphs(PROSE.status)}
+    ${awarenessHtml()}
+  </section>
   <section class="card" id="software">
     <h2>Software</h2>
     <p class="soft-line">${software}</p>
@@ -627,6 +684,7 @@ ${brandRow("\n      " + viewsPill(views) + "\n      " + liveNodesPill(mesh))}
 ${COPY_SCRIPT}
 ${LIVE_NODES_SCRIPT}
 ${RUNTIME_VERSION_SCRIPT}
+${AWARENESS_SCRIPT}
 </body>
 </html>`;
 }
@@ -692,6 +750,7 @@ export function notFoundHtml() {
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Not found — ${esc(AUTHOR)}</title>
 <link rel="canonical" href="${esc(CANON_ORIGIN)}/">
+${identityDiscoveryLinks()}
 <style>${CSS}</style>
 </head>
 <body>
