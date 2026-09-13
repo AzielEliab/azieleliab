@@ -646,6 +646,10 @@ describe("doors", () => {
     assert.ok(jsonLd()["@graph"][0].sameAs.includes(HEDIDNTJUMP + "/"));
     assert.ok(llmsTxt().includes("He Didn't Jump: " + HEDIDNTJUMP + "/"));
     assert.ok(aiTxt().includes("He Didn't Jump: " + HEDIDNTJUMP + "/"));
+    assert.ok(llmsTxt().includes("sameAs: " + PERSON_SAME_AS.join(" · ")));
+    assert.ok(aiTxt().includes("sameAs: " + PERSON_SAME_AS.join(" · ")));
+    assert.match(llmsTxt(), /## Doors[\s\S]*He Didn't Jump: https:\/\/www\.hedidntjump\.com\//);
+    assert.match(aiTxt(), /## Doors[\s\S]*He Didn't Jump: https:\/\/www\.hedidntjump\.com\//);
     assert.ok(sitemapXml().includes("<loc>" + HEDIDNTJUMP + "/</loc>"));
   });
 });
