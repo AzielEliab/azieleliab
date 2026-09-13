@@ -191,8 +191,9 @@ describe("landing copy", () => {
     const lock =
       "Aziel Eliab is a living researcher and software designer. Not the two Levitical musicians Aziel and Eliab named together in 1 Chronicles 15:20.";
     const visible = home.split("<body>")[1] || "";
-    assert.ok(visible.includes(lock));
-    assert.ok(visible.indexOf(lock) < visible.indexOf("You don’t get to know me."));
+    assert.ok(!visible.includes(lock));
+    assert.ok(!home.includes(lock));
+    assert.ok(visible.includes("You don’t get to know me."));
     assert.ok(home.includes("<title>Aziel Eliab</title>"));
   });
 
@@ -1717,7 +1718,7 @@ describe("worker routing", () => {
     assert.equal(apex.headers.get("location"), CANON_ORIGIN + "/software");
   });
 
-  it("200s /who with H1 Who is Aziel Eliab and the visible 15:20 lock", async () => {
+  it("200s /who with H1 Who is Aziel Eliab and the who-answer only", async () => {
     const lock =
       "Aziel Eliab is a living researcher and software designer. Not the two Levitical musicians Aziel and Eliab named together in 1 Chronicles 15:20.";
     const res = await fetchPath("/who");
@@ -1726,7 +1727,8 @@ describe("worker routing", () => {
     const body = await res.text();
     const visible = body.replace(/<script[\s\S]*?<\/script>/g, "").replace(/<style>[\s\S]*?<\/style>/g, "");
     assert.ok(visible.includes("<h1>Who is Aziel Eliab</h1>"));
-    assert.ok(visible.includes(lock));
+    assert.ok(!visible.includes(lock));
+    assert.ok(!body.includes(lock));
     assert.ok(body.includes("<title>Who is Aziel Eliab</title>"));
     assert.equal(whoHtml(), body);
     const robots = await fetchPath("/robots.txt");
