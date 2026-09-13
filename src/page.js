@@ -21,6 +21,9 @@ import {
   HASH_REDIRECTS,
   LIBRARY,
   PROSE,
+  RECEIPTS_DESCRIPTION,
+  RECEIPTS_HREF,
+  RECEIPTS_TITLE,
   RUNTIME_DOORS,
   RUNTIME_NAME,
   RUNTIME_NAMED_LINE,
@@ -48,6 +51,15 @@ import {
   whoFaqPageNode,
 } from "./identity.js";
 import { jsonLd, ROBOTS_INDEX } from "./seo.js";
+import {
+  RECEIPT_LATTICE,
+  RECEIPT_SPEC,
+  eventMetadataSentence,
+  hostReceipts,
+  newestFirst,
+  receiptsDatasetJsonLd,
+  verifyChain,
+} from "./receipts.js";
 
 function esc(s) {
   return String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -315,6 +327,18 @@ footer a:hover{color:var(--gold)}
 .rail-note{margin:0;color:var(--muted);font-size:13px}
 .wallet-hint{margin:14px 0 0;color:var(--muted);font-size:14px;line-height:1.45}
 .donate-law{margin:16px 0 0;color:var(--muted);font-size:15px}
+.lattice{margin:0 0 12px}
+.receipt-verify{margin:0;color:var(--muted);font-size:14px}
+.receipts{list-style:none;margin:0;padding:0}
+.receipts li{border-top:1px solid var(--line);padding:14px 0;margin:0}
+.receipts li:first-child{border-top:0;padding-top:0}
+.receipt-hash{
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:13px;line-height:1.55;word-break:break-all;color:var(--ink);margin:0 0 8px
+}
+.receipt-hash code{font:inherit;background:transparent}
+.receipt-request,.receipt-output{margin:0 0 8px}
+.receipt-event{margin:0;color:var(--muted);font-size:14px}
 @media (max-width:720px){
   .wrap{padding:22px 16px 80px}
   body{font-size:17px}
@@ -738,6 +762,72 @@ ${literaryFooter(meshQuiet)}
 ${COPY_SCRIPT}
 ${LIVE_NODES_SCRIPT}
 ${RUNTIME_VERSION_SCRIPT}
+</body>
+</html>`;
+}
+
+function receiptItem(entry) {
+  return (
+    "<li id=\"" +
+    attr(entry.entry_hash) +
+    "\">" +
+    '<p class="receipt-hash"><code>' +
+    esc(entry.entry_hash) +
+    "</code></p>" +
+    '<p class="receipt-request">' +
+    esc(entry.request) +
+    "</p>" +
+    '<p class="receipt-output">' +
+    esc(entry.output) +
+    "</p>" +
+    '<p class="receipt-event">' +
+    esc(eventMetadataSentence(entry)) +
+    "</p></li>"
+  );
+}
+
+export async function receiptsHtml() {
+  const chain = await hostReceipts();
+  const ok = await verifyChain(chain);
+  const shown = newestFirst(chain);
+  const dataset = JSON.stringify(receiptsDatasetJsonLd(chain));
+  const lattice =
+    '<p class="lattice">' +
+    "Lattice · " +
+    RECEIPT_LATTICE.map((link) => a(link.href, link.label)).join(" · ") +
+    "</p>";
+  return `<!doctype html>
+<html lang="en">
+<head>
+${documentHead({
+  title: RECEIPTS_TITLE + " — " + AUTHOR,
+  description: RECEIPTS_DESCRIPTION,
+  canonical: RECEIPTS_HREF,
+  extraMeta: quietDiscoveryMeta(),
+})}
+<script type="application/ld+json">${dataset}</script>
+${hashRedirectScript()}
+</head>
+<body>
+<main class="wrap">
+${brandRow()}
+  ${spineNav("receipts")}
+  <h1>${esc(RECEIPTS_TITLE)}</h1>
+  <article class="card lead">
+    <p>${esc(RECEIPTS_DESCRIPTION)}</p>
+    ${lattice}
+    <p class="receipt-verify">${esc(RECEIPT_SPEC + (ok ? " · chain verifies" : " · chain broken"))}</p>
+  </article>
+  <section class="card" id="receipts">
+    <h2>${esc(RECEIPTS_TITLE)}</h2>
+    <ol class="receipts">${shown.map(receiptItem).join("")}</ol>
+  </section>
+  <footer>
+    ${ecosystemHtml()}
+    <p>${esc(AUTHOR)} · ${a(CANON_ORIGIN + "/", AUTHOR)} · ${a(CANON_ORIGIN + "/cite.json", "cite.json")} · Apache-2.0</p>
+  </footer>
+</main>
+${COPY_SCRIPT}
 </body>
 </html>`;
 }
