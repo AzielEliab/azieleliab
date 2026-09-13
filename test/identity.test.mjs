@@ -93,13 +93,16 @@ describe("GROKBOT-EXEC 1.0 identity lock", () => {
     assert.ok(!names.some((n) => /euaziel|Aziel S|Flutter/i.test(n)));
   });
 
-  it("leads descriptions with the living stack; one short competitor disambiguatingDescription", () => {
+  it("leads descriptions with the living stack; one-line publisher NOT disambiguatingDescription", () => {
     const person = personJsonLd();
     assert.match(person.description, /^Aziel Eliab \(also Aziel Elroi Eliab\) is the living publisher of GodLock, Aziel Digital Library, aziel-runtime MCP, and He Didn't Jump/);
     assert.match(person.description, /GodLock is a product, not this Person/);
     assert.doesNotMatch(person.description, /1 Chronicles|biblical|concordance|Aziel S|euaziel/i);
     assert.equal(person.disambiguatingDescription, DISAMBIGUATING_DESCRIPTION);
-    assert.equal(person.disambiguatingDescription, "Not Aziel S. / not euaziel.site.");
+    assert.equal(
+      person.disambiguatingDescription,
+      "Not biblical Aziel; not biblical Eliab; not euaziel.site; not Aziel S. (Flutter/portfolio); not other engineers named Aziel.",
+    );
     assert.doesNotMatch(person.disambiguatingDescription, /1 Chronicles/);
     assert.deepEqual(person.knowsAbout, ["GodLock", "Aziel Digital Library", "aziel-runtime", "He Didn't Jump"]);
     assert.ok(!("jobTitle" in person));
@@ -124,7 +127,8 @@ describe("GROKBOT-EXEC 1.0 identity lock", () => {
     assert.doesNotMatch(blob, /10\.\d{4,}\//);
     assert.doesNotMatch(blob, /prophesy|prophet of|revelation of the sealed/i);
     assert.doesNotMatch(person.description + SOFTWARE_DEVELOPER_ANSWER, /Aziel S\.|euaziel|Flutter|React/i);
-    assert.doesNotMatch(blob, /Flutter|React/i);
+    assert.doesNotMatch(WHO_IS_ANSWER + SOFTWARE_DEVELOPER_ANSWER + ABOUT_PUBLISHED_ANSWER, /Flutter|React/i);
+    assert.doesNotMatch(blob, /React/i);
     assert.ok(!PERSON_SAME_AS.some((href) => /euaziel/i.test(href)));
   });
 
@@ -169,7 +173,9 @@ describe("GROKBOT-EXEC 1.0 identity lock", () => {
     assert.doesNotMatch(HEBREW_NAME_ANSWER, /1 Chronicles/);
     assert.doesNotMatch(ABOUT_PUBLISHED_ANSWER, /1 Chronicles/);
     const faqBlob = JSON.stringify(faq);
-    assert.doesNotMatch(faqBlob, /1 Chronicles|Jaaziel|Flutter/i);
+    assert.doesNotMatch(faqBlob, /1 Chronicles|Jaaziel/i);
+    assert.ok(CONCORDANCE_FAQ_ANSWER.includes(DISAMBIGUATING_DESCRIPTION));
+    assert.ok(faqBlob.includes(DISAMBIGUATING_DESCRIPTION));
     const about = doc["@graph"].find((n) => n["@id"] === ABOUT_PAGE_ID);
     assert.equal(about.description, WHO_IS_ANSWER);
     assert.doesNotMatch(about.description, /1 Chronicles/);
@@ -219,9 +225,9 @@ describe("GROKBOT-EXEC 1.0 identity lock", () => {
     assert.ok(body.includes("Aziell"));
     assert.ok(body.includes(DISAMBIGUATING_DESCRIPTION));
     assert.doesNotMatch(WHO_IS_ANSWER + "\n" + SOFTWARE_DEVELOPER_ANSWER, /1 Chronicles|Aziel S\.|Flutter/i);
-    assert.ok(body.includes("Not Aziel S. / not euaziel.site"));
+    assert.ok(body.includes("Not biblical Aziel; not biblical Eliab; not euaziel.site; not Aziel S. (Flutter/portfolio); not other engineers named Aziel."));
     assert.doesNotMatch(WHO_IS_ANSWER + "\n" + SOFTWARE_DEVELOPER_ANSWER, /Flutter|euaziel/i);
-    assert.doesNotMatch(body, /Flutter/i);
+    assert.doesNotMatch(body.replaceAll(DISAMBIGUATING_DESCRIPTION, ""), /Flutter/i);
     assert.ok(body.includes(LIBRARY_STATS));
     assert.ok(body.includes(LIBRARY_STATS_FALLBACK));
     assert.ok(!body.includes(LIBRARY + "/v1/stats"));
