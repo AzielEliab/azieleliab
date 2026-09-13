@@ -10,6 +10,8 @@ export const AUTHOR_AKA_LIST = [
   "Aziel Elroi Eliab",
   "AzielEliab",
   "AzielElroiEliab",
+  "The Revealer of The Sealed",
+  "Revealer of The Sealed",
 ];
 export const SITE = "Aziel Eliab";
 /** Same-origin hosted rose-star brand mark. Donate / brandrow do not fetch the corpus. */
