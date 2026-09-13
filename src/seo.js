@@ -240,7 +240,9 @@ const PUBLIC_ALLOW = [
 ];
 
 export function robotsTxt() {
-  const star = ["User-agent: *"].concat(PUBLIC_ALLOW.map((p) => "Allow: " + p));
+  const star = ["User-agent: *", "Content-Signal: " + CONTENT_SIGNAL].concat(
+    PUBLIC_ALLOW.map((p) => "Allow: " + p),
+  );
   const bots = AI_CRAWLER_AGENTS.flatMap((agent) => ["", "User-agent: " + agent, "Allow: /"]);
   return star.concat(bots).concat(["", "Sitemap: " + CANON_ORIGIN + "/sitemap.xml", ""]).join("\n");
 }

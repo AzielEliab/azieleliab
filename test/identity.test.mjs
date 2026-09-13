@@ -317,11 +317,19 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
       assert.ok(map.includes("<loc>" + CANON_ORIGIN + path + "</loc>"), path);
       assert.ok(llms.includes("GET " + CANON_ORIGIN + path), path);
     }
+    assert.ok(robots.includes("Content-Signal: search=yes, ai-input=yes, ai-train=yes"));
+    assert.match(robots, /User-agent: \*\nContent-Signal: search=yes, ai-input=yes, ai-train=yes/);
+    assert.match(robots, /^Allow: \/who$/m);
+    assert.match(robots, /^Allow: \/who\/$/m);
     assert.ok(robots.includes("Allow: /mission"));
     assert.ok(robots.includes("Allow: /aziel"));
     assert.ok(robots.includes("User-agent: GPTBot"));
+    assert.ok(robots.includes("User-agent: Claude"));
+    assert.ok(robots.includes("User-agent: PerplexityBot"));
+    assert.ok(robots.includes("User-agent: Google-Extended"));
     assert.doesNotMatch(robots, /Disallow:\s*\/?$/m);
     assert.doesNotMatch(robots, /User-agent: GPTBot[\s\S]*?Disallow:/);
+    assert.doesNotMatch(robots, /User-agent: Claude[\s\S]*?Disallow:/);
     assert.ok(!map.includes("<loc>" + CANON_ORIGIN + "/mission</loc>"));
     assert.ok(map.includes("<loc>" + CANON_ORIGIN + "/why</loc>"));
     assert.ok(map.includes("<loc>" + CANON_ORIGIN + "/AzielEliab</loc>"));
