@@ -24,7 +24,7 @@ Hebrew name forms are an SEO/onomastic tether only — not a biblical identity c
 
 Published About (exact homepage / `/about` / `/AzielEliab` lines, not biography) is factored into who-is, FAQPage, AboutPage, llms Mission, and cite.json. Person `mainEntityOfPage` lists `/`, `/about`, `/AzielEliab`. AboutPage `significantLink` also points at `/person.jsonld`, `/who-is`, and `/graph.jsonld`.
 
-Live stats (do not invent numbers): `https://www.azieleliab.com/v1/stats`, `https://www.azielcorpuslibrary.net/v1/stats`, `https://www.hedidntjump.com/api/stats`.
+Live stats (do not invent numbers): `https://www.azieleliab.com/v1/stats`, Digital Library `https://www.azielcorpuslibrary.net/stats` (not `/v1/stats`; version is `GET /v1/health`; tracker fallback `https://aziel-corpus-download-tracker.vibelock.workers.dev/stats`), `https://www.hedidntjump.com/api/stats`.
 
 `zenodo_dois` is `[]`. `openalex` is `null`. Do not invent DOIs. Do not add biography fields (legal name, home, county, employer, family, health, court matter). GodLock is a product, not identity. No prophetic claims.
 
