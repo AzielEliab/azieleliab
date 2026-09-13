@@ -964,6 +964,8 @@ describe("SEO routes", () => {
     assert.ok(ld["@graph"][0].alternateName.includes("AzielElroiEliab"));
     assert.ok(ld["@graph"][0].alternateName.includes("עזיאל אל ראי אליאב"));
     assert.ok(ld["@graph"][0].alternateName.includes("Aziell"));
+    assert.ok(ld["@graph"][0].alternateName.includes("The Revealer of The Sealed"));
+    assert.ok(ld["@graph"][0].disambiguatingDescription.includes("Not Aziel S. / not euaziel.site"));
     assert.ok(ld["@graph"][0].disambiguatingDescription.includes("1 Chronicles"));
     assert.ok(ld["@graph"][0].disambiguatingDescription.includes("Not biblical Aziel"));
     assert.ok(!ld["@graph"][0].description.includes("1 Chronicles"));
@@ -1055,6 +1057,7 @@ describe("public entity graph phases B–D + E audit", () => {
     assert.ok(person.alternateName.includes("AzielElroiEliab"));
     assert.ok(person.alternateName.includes("עזיאל אל ראי אליאב"));
     assert.ok(person.alternateName.includes("Aziell"));
+    assert.ok(person.alternateName.includes("The Revealer of The Sealed"));
     assert.deepEqual(person.sameAs, PERSON_SAME_AS);
     assert.ok(!person.sameAs.includes(GITHUB_RUNTIME));
     assert.ok(!person.sameAs.includes(RUNTIME_LOCAL));
