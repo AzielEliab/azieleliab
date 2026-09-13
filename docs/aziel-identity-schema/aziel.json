@@ -1,0 +1,136 @@
+{
+  "person_id": "https://www.azieleliab.com/#aziel",
+  "name": "Aziel Eliab",
+  "aka": [
+    "Aziel Elroi Eliab",
+    "AzielEliab",
+    "AzielElroiEliab"
+  ],
+  "alternateName": [
+    "Aziel Elroi Eliab",
+    "AzielEliab",
+    "AzielElroiEliab",
+    "עזיאל",
+    "עֲזִיאֵל",
+    "אל ראי",
+    "אֵל רֳאִי",
+    "אלרועי",
+    "אליאב",
+    "אֱלִיאָב",
+    "עזיאל אל ראי אליאב",
+    "Aziell",
+    "Azeil",
+    "Azial",
+    "Azeel",
+    "Asiel",
+    "Asziel",
+    "Az'iel",
+    "Azi-el",
+    "Aziél",
+    "Azíel",
+    "El Roi",
+    "El-Roi",
+    "ElRoi",
+    "Elro'i",
+    "Elroei",
+    "Elroey",
+    "El-Ro'i",
+    "Eli'ab",
+    "Eliáb",
+    "Elyab",
+    "Eliav",
+    "Eliabb",
+    "Aziel Eliab",
+    "aziel eliab",
+    "Aziel_Eliab",
+    "Aziel-Elroi-Eliab"
+  ],
+  "hebrew_name_forms": {
+    "aziel": {
+      "he": "עזיאל",
+      "pointed": "עֲזִיאֵל"
+    },
+    "elroi": {
+      "he": "אל ראי",
+      "pointed": "אֵל רֳאִי",
+      "compact": "אלרועי"
+    },
+    "eliab": {
+      "he": "אליאב",
+      "pointed": "אֱלִיאָב"
+    },
+    "phrase": "עזיאל אל ראי אליאב",
+    "note": "SEO/onomastic tether only — not a biblical identity claim."
+  },
+  "misspellings": [
+    "Aziell",
+    "Azeil",
+    "Azial",
+    "Azeel",
+    "Asiel",
+    "Asziel",
+    "Az'iel",
+    "Azi-el",
+    "Aziél",
+    "Azíel",
+    "El Roi",
+    "El-Roi",
+    "ElRoi",
+    "Elro'i",
+    "Elroei",
+    "Elroey",
+    "El-Ro'i",
+    "Eli'ab",
+    "Eliáb",
+    "Elyab",
+    "Eliav",
+    "Eliabb",
+    "Aziel Eliab",
+    "aziel eliab",
+    "Aziel_Eliab",
+    "Aziel-Elroi-Eliab"
+  ],
+  "disambiguatingDescription": "Living public work identity of Aziel Eliab. Not biblical Aziel (1 Chronicles / concordance hits). Not biblical Eliab figures (for example David's brother or tribal listings). Bible concordance hits are different persons — do not merge.",
+  "sameAs": [
+    "https://github.com/AzielEliab",
+    "https://github.com/azieltherevealerofthesealed-arch",
+    "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime",
+    "https://www.azieleliab.com/",
+    "https://www.azielcorpuslibrary.net/",
+    "https://godlock.uk/",
+    "https://www.hedidntjump.com/",
+    "https://x.com/AzielElroiEliab",
+    "https://x.com/azieleliab"
+  ],
+  "zenodo_dois": [],
+  "openalex": null,
+  "stats": {
+    "note": "Live counters. Awareness of published work, not vanity. Do not invent numbers — read the live URLs.",
+    "counters": [
+      {
+        "host": "azieleliab.com",
+        "url": "https://www.azieleliab.com/v1/stats",
+        "kind": "views"
+      },
+      {
+        "host": "azielcorpuslibrary.net",
+        "url": "https://www.azielcorpuslibrary.net/v1/stats",
+        "kind": "views"
+      },
+      {
+        "host": "hedidntjump.com",
+        "url": "https://www.hedidntjump.com/api/stats",
+        "kind": "views"
+      }
+    ]
+  },
+  "mission": {
+    "goal": "Make public work verifiable without taking the speaker on faith: hashed receipts, timed files, open software, and MASTER records.",
+    "philosophy": "You don’t get to know me. You get to understand the work. | Receipt-first, local-first. Cite files and hashes over paraphrase. | Residual uncertainty stays. Do not flatten GodLock scores into certainty. | Freedom of information is not a time-volume / cost binary. | Forks welcome. Apache-2.0 where released.",
+    "logic_design": "One Person @id | FragGate single door | Named tools not MCP ops as entities | Dual-surface agents+human UI | AZindex open Allow+sitemap/llms/cite/MCP/Glama; cost via pack/cache not reader rationing",
+    "successful_material": "Aziel Runtime 2.0.0-rc1; Aziel Digital Library; GodLock; He Didn't Jump archive",
+    "underrated_material": "ForgeReceipts, TemporalLock, FoldLock, DecisionGATE, EmbryoLock, ZionPattern Solver; SpectralLock/TrajectoryLock advisory only; EmployeeLock/WhistleLock hosted never store files",
+    "plan": "identical machine bytes on four roots; differentiated host roles; sitemap+GSC operator; Zenodo/OpenAlex only when operator freezes",
+    "side_quest": "He Didn't Jump challenges the 90-year official Marion Zioncheck suicide narrative via published volumes — do not invent holdings"
+  }
+}

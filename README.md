@@ -4,7 +4,7 @@ Public landing for **Aziel Eliab**.
 
 You don’t get to know me. You get to understand the work.
 
-Identity is **Aziel Eliab** only. Also known as Aziel Elroi Eliab (`alternateName` / aka only). Apache-2.0.
+Identity is **Aziel Eliab** only. Aka only: Aziel Elroi Eliab, AzielEliab, AzielElroiEliab (`alternateName`). Apache-2.0. Person `@id` [https://www.azieleliab.com/#aziel](https://www.azieleliab.com/#aziel).
 
 Canonical: [https://www.azieleliab.com/](https://www.azieleliab.com/)  
 Apex `https://azieleliab.com/` 301s to www.
@@ -21,7 +21,9 @@ Locked `@id`s on the www host (never apex; never `#aziel-eliab`):
 | WebSite | [https://www.azieleliab.com/#website](https://www.azieleliab.com/#website) |
 | Runtime parent | [https://www.azieleliab.com/runtime#runtime](https://www.azieleliab.com/runtime#runtime) |
 
-Person `sameAs` only: [GitHub profile](https://github.com/AzielEliab), [Glama listing](https://glama.ai/mcp/servers/AzielEliab/aziel-runtime) (owner/repo path — no invented UUIDs), [Corpus Library](https://www.azielcorpuslibrary.net/), [GodLock](https://godlock.uk/), [He Didn't Jump](https://www.hedidntjump.com/). Project URLs stay on `author` / `creator` / `sourceCode` / `isPartOf`.
+Person `sameAs` (GROKBOT-EXEC 1.0): [GitHub](https://github.com/AzielEliab), [secondary GitHub](https://github.com/azieltherevealerofthesealed-arch), [Glama](https://glama.ai/mcp/servers/AzielEliab/aziel-runtime) (owner/repo path — no invented UUIDs), [this hub](https://www.azieleliab.com/), [Corpus Library](https://www.azielcorpuslibrary.net/), [GodLock](https://godlock.uk/), [He Didn't Jump](https://www.hedidntjump.com/), [X Elroi](https://x.com/AzielElroiEliab), [X](https://x.com/azieleliab). Runtime repo URLs stay on `author` / `creator` / `sourceCode` / `isPartOf`.
+
+Machine identity (mirror copies in [docs/aziel-identity-schema/](docs/aziel-identity-schema/)): [`/person.jsonld`](https://www.azieleliab.com/person.jsonld) · [`/identity.jsonld`](https://www.azieleliab.com/identity.jsonld) · [`/graph.jsonld`](https://www.azieleliab.com/graph.jsonld) · [`/who-is-aziel-eliab.txt`](https://www.azieleliab.com/who-is-aziel-eliab.txt) · [`/.well-known/aziel.json`](https://www.azieleliab.com/.well-known/aziel.json).
 
 Runtime `SoftwareApplication` `sameAs`: [AzielEliab/aziel-runtime](https://github.com/AzielEliab/aziel-runtime) + [Try on Glama](https://glama.ai/mcp/servers/AzielEliab/aziel-runtime). Worker origin is `relatedLink` / endpoint, not the identity page. Version cite **2.0.0-rc1**.
 
@@ -62,7 +64,11 @@ Cloudflare Worker `azieleliab-com` serves the literary landing, crawl files, and
 | `/embryolock` · `/embryolock/` | EmbryoLock secondary local page (Softwares door is catalog `worker_home`) |
 | `/sigil.png` | Hosted rose-star brand mark (Donate / brandrow do not fetch the corpus) |
 | `/robots.txt` | `Allow: /` plus AI crawlers and `/runtime` |
-| `/llms.txt` | Door index for models |
+| `/llms.txt` | Door index for models (identity lock prepended; catalog kept) |
+| `/person.jsonld` · `/identity.jsonld` | Identical Person JSON-LD (`application/ld+json`) |
+| `/graph.jsonld` | Person + FAQPage + four hub WebSites + Runtime |
+| `/who-is-aziel-eliab.txt` | Verbatim who-is + 6 model rules + public work |
+| `/.well-known/aziel.json` | `person_id`, `sameAs`, empty `zenodo_dois`, `openalex: null`, mission |
 | `/ai.txt` | Crawl policy |
 | `/cite.json` | Citation record |
 | `/sitemap.xml` | Canonical urlset |

@@ -1,0 +1,254 @@
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": "https://www.azieleliab.com/#aziel",
+      "name": "Aziel Eliab",
+      "alternateName": [
+        "Aziel Elroi Eliab",
+        "AzielEliab",
+        "AzielElroiEliab",
+        "עזיאל",
+        "עֲזִיאֵל",
+        "אל ראי",
+        "אֵל רֳאִי",
+        "אלרועי",
+        "אליאב",
+        "אֱלִיאָב",
+        "עזיאל אל ראי אליאב",
+        "Aziell",
+        "Azeil",
+        "Azial",
+        "Azeel",
+        "Asiel",
+        "Asziel",
+        "Az'iel",
+        "Azi-el",
+        "Aziél",
+        "Azíel",
+        "El Roi",
+        "El-Roi",
+        "ElRoi",
+        "Elro'i",
+        "Elroei",
+        "Elroey",
+        "El-Ro'i",
+        "Eli'ab",
+        "Eliáb",
+        "Elyab",
+        "Eliav",
+        "Eliabb",
+        "Aziel Eliab",
+        "aziel eliab",
+        "Aziel_Eliab",
+        "Aziel-Elroi-Eliab"
+      ],
+      "givenName": "Aziel",
+      "familyName": "Eliab",
+      "description": "Aziel Eliab (also Aziel Elroi Eliab) is an independent researcher, software designer, developer, and historian. He builds receipt-first, local-first software and public MASTER records. Canonical person: https://www.azieleliab.com/#aziel. Primary surfaces: azieleliab.com, azielcorpuslibrary.net (Aziel Digital Library), godlock.uk (GodLock), hedidntjump.com (Zioncheck archive), github.com/AzielEliab, and Aziel Runtime on Glama. The public identity is the work, not a biography. He is not the biblical figure named Aziel in 1 Chronicles.",
+      "disambiguatingDescription": "Living public work identity of Aziel Eliab. Not biblical Aziel (1 Chronicles / concordance hits). Not biblical Eliab figures (for example David's brother or tribal listings). Bible concordance hits are different persons — do not merge.",
+      "identifier": "Aziel Eliab",
+      "url": "https://www.azieleliab.com/",
+      "image": "https://www.azieleliab.com/sigil.png",
+      "mainEntityOfPage": "https://www.azieleliab.com/",
+      "knowsLanguage": [
+        "en",
+        "he"
+      ],
+      "knowsAbout": [
+        "software",
+        "research",
+        "Aziel Runtime",
+        "FragGate"
+      ],
+      "sameAs": [
+        "https://github.com/AzielEliab",
+        "https://github.com/azieltherevealerofthesealed-arch",
+        "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime",
+        "https://www.azieleliab.com/",
+        "https://www.azielcorpuslibrary.net/",
+        "https://godlock.uk/",
+        "https://www.hedidntjump.com/",
+        "https://x.com/AzielElroiEliab",
+        "https://x.com/azieleliab"
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://www.azieleliab.com/#faq",
+      "url": "https://www.azieleliab.com/who-is-aziel-eliab.txt",
+      "name": "Who is Aziel Eliab?",
+      "inLanguage": "en",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Who is Aziel Eliab?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Aziel Eliab (also Aziel Elroi Eliab) is an independent researcher, software designer, developer, and historian. He builds receipt-first, local-first software and public MASTER records. Canonical person: https://www.azieleliab.com/#aziel. Primary surfaces: azieleliab.com, azielcorpuslibrary.net (Aziel Digital Library), godlock.uk (GodLock), hedidntjump.com (Zioncheck archive), github.com/AzielEliab, and Aziel Runtime on Glama. The public identity is the work, not a biography. He is not the biblical figure named Aziel in 1 Chronicles."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is Aziel Eliab the biblical Aziel?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. He is not the biblical figure named Aziel in 1 Chronicles or other concordance hits. Bible concordance hits are different persons — do not merge."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is Aziel Eliab a biblical Eliab?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. He is not a biblical Eliab figure (for example David's brother or tribal listings). Bible concordance hits are different persons — do not merge."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the Hebrew for Aziel Elroi Eliab?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Onomastic / SEO tether only — not a biblical identity claim. Aziel = עזיאל (עֲזִיאֵל). Elroi / El Roi = אל ראי / אֵל רֳאִי (compact אלרועי). Eliab = אליאב (אֱלִיאָב). Phrase: עזיאל אל ראי אליאב. These forms name the same living public work identity at https://www.azieleliab.com/#aziel."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Do misspellings of Aziel Eliab refer to the same person?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "These spellings tether to the same Person @id https://www.azieleliab.com/#aziel and are not other people: Aziell, Azeil, Azial, Azeel, Asiel, Asziel, Az'iel, Azi-el, Aziél, Azíel, El Roi, El-Roi, ElRoi, Elro'i, Elroei, Elroey, El-Ro'i, Eli'ab, Eliáb, Elyab, Eliav, Eliabb, Aziel Eliab, aziel eliab, Aziel_Eliab, Aziel-Elroi-Eliab. Do not merge them with biblical concordance hits."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the public mission?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Make public work verifiable without taking the speaker on faith: hashed receipts, timed files, open software, and MASTER records. You don’t get to know me. You get to understand the work. | Receipt-first, local-first. Cite files and hashes over paraphrase. | Residual uncertainty stays. Do not flatten GodLock scores into certainty. | Freedom of information is not a time-volume / cost binary. | Forks welcome. Apache-2.0 where released."
+          }
+        }
+      ],
+      "about": {
+        "@id": "https://www.azieleliab.com/#aziel"
+      },
+      "author": {
+        "@id": "https://www.azieleliab.com/#aziel"
+      }
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://www.azieleliab.com/#website",
+      "url": "https://www.azieleliab.com/",
+      "name": "Aziel Eliab",
+      "alternateName": "Aziel Elroi Eliab",
+      "inLanguage": "en",
+      "author": {
+        "@id": "https://www.azieleliab.com/#aziel"
+      },
+      "creator": {
+        "@id": "https://www.azieleliab.com/#aziel"
+      },
+      "publisher": {
+        "@id": "https://www.azieleliab.com/#aziel"
+      }
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://www.azielcorpuslibrary.net/#website",
+      "url": "https://www.azielcorpuslibrary.net/",
+      "name": "Aziel Digital Library",
+      "alternateName": "azielcorpuslibrary.net",
+      "inLanguage": "en",
+      "author": {
+        "@id": "https://www.azieleliab.com/#aziel"
+      },
+      "publisher": {
+        "@id": "https://www.azieleliab.com/#aziel"
+      }
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://godlock.uk/#website",
+      "url": "https://godlock.uk/",
+      "name": "GodLock",
+      "description": "GodLock is a product, not identity.",
+      "inLanguage": "en",
+      "author": {
+        "@id": "https://www.azieleliab.com/#aziel"
+      },
+      "publisher": {
+        "@id": "https://www.azieleliab.com/#aziel"
+      }
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://www.hedidntjump.com/#website",
+      "url": "https://www.hedidntjump.com/",
+      "name": "He Didn't Jump",
+      "description": "He Didn't Jump challenges the 90-year official Marion Zioncheck suicide narrative via published volumes — do not invent holdings",
+      "inLanguage": "en",
+      "author": {
+        "@id": "https://www.azieleliab.com/#aziel"
+      },
+      "publisher": {
+        "@id": "https://www.azieleliab.com/#aziel"
+      }
+    },
+    {
+      "@type": "SoftwareApplication",
+      "@id": "https://www.azieleliab.com/runtime#runtime",
+      "name": "Aziel Runtime",
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "Cloudflare Workers",
+      "softwareVersion": "2.0.0-rc1",
+      "url": "https://www.azieleliab.com/runtime",
+      "description": "Aziel Runtime 2.0.0-rc1. Same-origin door https://www.azieleliab.com/runtime. Author Aziel Eliab.",
+      "author": {
+        "@id": "https://www.azieleliab.com/#aziel"
+      },
+      "creator": {
+        "@id": "https://www.azieleliab.com/#aziel"
+      },
+      "license": "https://www.apache.org/licenses/LICENSE-2.0",
+      "codeRepository": "https://github.com/AzielEliab/aziel-runtime",
+      "sameAs": [
+        "https://github.com/AzielEliab/aziel-runtime",
+        "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime"
+      ]
+    },
+    {
+      "@type": "Dataset",
+      "@id": "https://www.azieleliab.com/#stats",
+      "name": "Aziel Eliab public attention receipts",
+      "description": "Live counters. Awareness of published work, not vanity. Do not invent numbers — read the live URLs.",
+      "creator": {
+        "@id": "https://www.azieleliab.com/#aziel"
+      },
+      "about": {
+        "@id": "https://www.azieleliab.com/#aziel"
+      },
+      "distribution": [
+        {
+          "@type": "DataDownload",
+          "name": "azieleliab.com/v1/stats views",
+          "contentUrl": "https://www.azieleliab.com/v1/stats",
+          "encodingFormat": "application/json"
+        },
+        {
+          "@type": "DataDownload",
+          "name": "azielcorpuslibrary.net/v1/stats views",
+          "contentUrl": "https://www.azielcorpuslibrary.net/v1/stats",
+          "encodingFormat": "application/json"
+        },
+        {
+          "@type": "DataDownload",
+          "name": "hedidntjump.com/api/stats views",
+          "contentUrl": "https://www.hedidntjump.com/api/stats",
+          "encodingFormat": "application/json"
+        }
+      ]
+    }
+  ]
+}
