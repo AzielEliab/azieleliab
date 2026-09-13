@@ -416,7 +416,7 @@ export function sectionPageNode(section) {
     about: personRef,
     author: personRef,
     inLanguage: "en",
-    relatedLink: [CANON_ORIGIN + "/#" + section.hash, CANON_ORIGIN + "/who-is"],
+    relatedLink: [CANON_ORIGIN + "/", CANON_ORIGIN + "/who-is"],
   };
 }
 

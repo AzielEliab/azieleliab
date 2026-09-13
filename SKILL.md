@@ -19,13 +19,13 @@ Person `@id`: https://www.azieleliab.com/#aziel (www, not apex; `#aziel` not `#a
 Runtime parent `@id`: https://www.azieleliab.com/runtime#runtime (`hasPart` named tools only; not MCP ops)
 Runtime version: **2.0.0-rc1**
 
-Softwares list: https://www.azieleliab.com/#software (`/software` 200s the same homepage HTML)
+Softwares list: https://www.azieleliab.com/software (`/#software` maps here)
 
 Donate door (AZL-DONATE-1.0, not a Softwares product): https://www.azieleliab.com/donate
 
 GitHub About / indexing (no Worker UI change): [docs/github-seo.md](docs/github-seo.md). Homepage `https://www.azieleliab.com/`. Cross-link Corpus, GodLock, He Didn't Jump, aziel-runtime, Try on Glama, Donate.
 
-About aliases `/about`, `/AzielEliab`, `/aziel-eliab` 200 the same homepage HTML. Hash-section peers `/mission`, `/why`, `/research`, `/doors`, `/aziel` 200 the same homepage HTML so crawlers can index them.
+About aliases `/about`, `/AzielEliab`, `/aziel-eliab` 200 the same homepage HTML. Tab pages `/why`, `/software`, `/research`, `/doors` are distinct URLs. `/aziel` 200s the homepage (Person `#aziel`). `/mission` 301s to `/`. Old hashes `/#why` `/#software` `/#research` `/#doors` (`/#mission`) map to those paths.
 
 ## Mesh (read-only ON)
 
