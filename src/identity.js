@@ -108,6 +108,11 @@ export function personAlternateNames() {
   return out;
 }
 
+/** Digital Library counters are GET /stats (views, downloads). Version is GET /v1/health. */
+export const LIBRARY_STATS = LIBRARY + "/stats";
+export const LIBRARY_STATS_FALLBACK =
+  "https://aziel-corpus-download-tracker.vibelock.workers.dev/stats";
+
 export const STATS_COUNTERS = [
   {
     host: "azieleliab.com",
@@ -117,9 +122,10 @@ export const STATS_COUNTERS = [
   },
   {
     host: "azielcorpuslibrary.net",
-    label: "azielcorpuslibrary.net/v1/stats",
-    url: LIBRARY + "/v1/stats",
-    kind: "views",
+    label: "azielcorpuslibrary.net/stats",
+    url: LIBRARY_STATS,
+    kind: "views, downloads",
+    fallback: LIBRARY_STATS_FALLBACK,
   },
   {
     host: "hedidntjump.com",
@@ -419,12 +425,24 @@ export function statsDatasetNode() {
     description: STATS_NOTE,
     creator: personRef,
     about: personRef,
-    distribution: STATS_COUNTERS.map((row) => ({
-      "@type": "DataDownload",
-      name: row.label + " " + row.kind,
-      contentUrl: row.url,
-      encodingFormat: "application/json",
-    })),
+    distribution: STATS_COUNTERS.flatMap((row) => {
+      const primary = {
+        "@type": "DataDownload",
+        name: row.label + " " + row.kind,
+        contentUrl: row.url,
+        encodingFormat: "application/json",
+      };
+      if (!row.fallback) return [primary];
+      return [
+        primary,
+        {
+          "@type": "DataDownload",
+          name: row.label + " fallback",
+          contentUrl: row.fallback,
+          encodingFormat: "application/json",
+        },
+      ];
+    }),
   };
 }
 
@@ -473,7 +491,10 @@ export function whoIsTxt() {
     "",
     "## Awareness stats (live counters — do not invent numbers)",
     "",
-    ...STATS_COUNTERS.map((row) => "- " + row.label + ": " + row.url),
+    ...STATS_COUNTERS.map((row) => {
+      const line = "- " + row.label + ": " + row.url;
+      return row.fallback ? line + " (fallback " + row.fallback + ")" : line;
+    }),
     "",
     "Canonical person: " + PERSON_ID,
     "sameAs: " + PERSON_SAME_AS.join(" · "),
@@ -495,7 +516,11 @@ export function wellKnownAziel() {
     openalex: null,
     stats: {
       note: STATS_NOTE,
-      counters: STATS_COUNTERS.map((row) => ({ host: row.host, url: row.url, kind: row.kind })),
+      counters: STATS_COUNTERS.map((row) => {
+        const out = { host: row.host, url: row.url, kind: row.kind };
+        if (row.fallback) out.fallback = row.fallback;
+        return out;
+      }),
     },
     mission: { ...MISSION },
   };

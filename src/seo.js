@@ -60,6 +60,8 @@ import {
   ABOUT_PUBLISHED_LINES,
   DISAMBIGUATING_DESCRIPTION,
   HEBREW_NAME_FORMS,
+  LIBRARY_STATS,
+  LIBRARY_STATS_FALLBACK,
   NAME_MISSPELLINGS,
   STATS_COUNTERS,
   STATS_NOTE,
@@ -356,9 +358,14 @@ export function citeDoc(software = SOFTWARE, runtimeVersion = RUNTIME_VERSION) {
     disambiguatingDescription: DISAMBIGUATING_DESCRIPTION,
     stats: {
       note: STATS_NOTE,
-      counters: STATS_COUNTERS.map((row) => ({ host: row.host, url: row.url, kind: row.kind })),
+      counters: STATS_COUNTERS.map((row) => {
+        const out = { host: row.host, url: row.url, kind: row.kind };
+        if (row.fallback) out.fallback = row.fallback;
+        return out;
+      }),
     },
-    library_stats: LIBRARY + "/v1/stats",
+    library_stats: LIBRARY_STATS,
+    library_stats_fallback: LIBRARY_STATS_FALLBACK,
     hedidntjump_stats: HEDIDNTJUMP + "/api/stats",
     sitemap: CANON_ORIGIN + "/sitemap.xml",
     robots: CANON_ORIGIN + "/robots.txt",

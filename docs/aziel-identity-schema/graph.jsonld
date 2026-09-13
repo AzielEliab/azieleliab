@@ -277,8 +277,14 @@
         },
         {
           "@type": "DataDownload",
-          "name": "azielcorpuslibrary.net/v1/stats views",
-          "contentUrl": "https://www.azielcorpuslibrary.net/v1/stats",
+          "name": "azielcorpuslibrary.net/stats views, downloads",
+          "contentUrl": "https://www.azielcorpuslibrary.net/stats",
+          "encodingFormat": "application/json"
+        },
+        {
+          "@type": "DataDownload",
+          "name": "azielcorpuslibrary.net/stats fallback",
+          "contentUrl": "https://aziel-corpus-download-tracker.vibelock.workers.dev/stats",
           "encodingFormat": "application/json"
         },
         {
