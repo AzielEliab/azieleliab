@@ -1026,8 +1026,8 @@ describe("SEO routes", () => {
     assert.ok(ld["@graph"][0].alternateName.includes("AzielElroiEliab"));
     assert.ok(ld["@graph"][0].alternateName.includes("עזיאל אל ראי אליאב"));
     assert.ok(ld["@graph"][0].alternateName.includes("Aziell"));
-    assert.ok(!ld["@graph"][0].alternateName.includes("The Revealer of The Sealed"));
-    assert.ok(!ld["@graph"][0].alternateName.includes("Revealer of The Sealed"));
+    assert.ok(ld["@graph"][0].alternateName.includes("The Revealer of The Sealed"));
+    assert.ok(ld["@graph"][0].alternateName.includes("Revealer of The Sealed"));
     assert.match(
       ld["@graph"][0].disambiguatingDescription,
       /two Levitical musicians Aziel and Eliab named together in 1 Chronicles 15:20/,
@@ -1127,8 +1127,8 @@ describe("public entity graph phases B–D + E audit", () => {
     assert.ok(person.alternateName.includes("AzielElroiEliab"));
     assert.ok(person.alternateName.includes("עזיאל אל ראי אליאב"));
     assert.ok(person.alternateName.includes("Aziell"));
-    assert.ok(!person.alternateName.includes("The Revealer of The Sealed"));
-    assert.ok(!person.alternateName.includes("Revealer of The Sealed"));
+    assert.ok(person.alternateName.includes("The Revealer of The Sealed"));
+    assert.ok(person.alternateName.includes("Revealer of The Sealed"));
     assert.deepEqual(person.sameAs, PERSON_SAME_AS);
     assert.ok(!person.sameAs.includes(GITHUB_RUNTIME));
     assert.ok(!person.sameAs.includes(RUNTIME_LOCAL));
