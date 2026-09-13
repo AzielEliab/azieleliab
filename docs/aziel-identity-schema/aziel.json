@@ -4,12 +4,16 @@
   "aka": [
     "Aziel Elroi Eliab",
     "AzielEliab",
-    "AzielElroiEliab"
+    "AzielElroiEliab",
+    "The Revealer of The Sealed",
+    "Revealer of The Sealed"
   ],
   "alternateName": [
     "Aziel Elroi Eliab",
     "AzielEliab",
     "AzielElroiEliab",
+    "The Revealer of The Sealed",
+    "Revealer of The Sealed",
     "עזיאל",
     "עֲזִיאֵל",
     "אל ראי",
@@ -60,7 +64,7 @@
       "pointed": "אֱלִיאָב"
     },
     "phrase": "עזיאל אל ראי אליאב",
-    "note": "SEO/onomastic tether only — not a biblical identity claim."
+    "note": "Onomastic tether only — not an extra identity."
   },
   "misspellings": [
     "Aziell",
@@ -90,7 +94,7 @@
     "Aziel_Eliab",
     "Aziel-Elroi-Eliab"
   ],
-  "disambiguatingDescription": "Living publisher of the record, the software, and the Zioncheck archive. Not biblical Aziel (1 Chronicles / concordance hits). Not biblical Eliab figures. Hebrew forms and listed misspellings are SEO tethers only. Bible concordance hits are different persons — do not merge.",
+  "disambiguatingDescription": "Not Aziel S. / not euaziel.site.",
   "sameAs": [
     "https://www.azieleliab.com/",
     "https://www.azielcorpuslibrary.net/",

@@ -6,7 +6,13 @@ export const WWW_HOST = "www.azieleliab.com";
 export const AUTHOR = "Aziel Eliab";
 export const AUTHOR_AKA = "Aziel Elroi Eliab";
 /** Canonical aka only. Hebrew forms and misspellings are SEO tethers, not extra identities. */
-export const AUTHOR_AKA_LIST = ["Aziel Elroi Eliab", "AzielEliab", "AzielElroiEliab"];
+export const AUTHOR_AKA_LIST = [
+  "Aziel Elroi Eliab",
+  "AzielEliab",
+  "AzielElroiEliab",
+  "The Revealer of The Sealed",
+  "Revealer of The Sealed",
+];
 export const SITE = "Aziel Eliab";
 /** Same-origin hosted rose-star brand mark. Donate / brandrow do not fetch the corpus. */
 export const BRANDMARK_NAME = "rose-star brand mark";
@@ -176,7 +182,7 @@ export const INDEXABLE_SECTIONS = [
     path: "/why",
     hash: "why",
     title: "Why — Aziel Eliab",
-    description: "Why Aziel Eliab keeps looking. Public identity Aziel Eliab only. Living publisher of the record, the software, and the Zioncheck archive — not biblical Aziel or Eliab.",
+    description: "Why Aziel Eliab keeps looking. Public identity Aziel Eliab only. Living publisher of GodLock, Aziel Digital Library, aziel-runtime MCP, and He Didn't Jump.",
   },
   {
     path: "/mission",
@@ -194,7 +200,7 @@ export const INDEXABLE_SECTIONS = [
     path: "/research",
     hash: "research",
     title: "Research — Aziel Eliab",
-    description: "Research by Aziel Eliab. The corpus lives at the Aziel Digital Library. Living publisher of the record — not biblical Aziel or Eliab.",
+    description: "Research by Aziel Eliab. The corpus lives at the Aziel Digital Library. Living publisher of GodLock, Aziel Digital Library, aziel-runtime MCP, and He Didn't Jump.",
   },
   {
     path: "/doors",
