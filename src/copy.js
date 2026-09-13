@@ -176,7 +176,7 @@ export const INDEXABLE_SECTIONS = [
     path: "/why",
     hash: "why",
     title: "Why — Aziel Eliab",
-    description: "Why Aziel Eliab keeps looking. Public identity Aziel Eliab only. Living publisher of the record, the software, and the Zioncheck archive — not biblical Aziel or Eliab.",
+    description: "Why Aziel Eliab keeps looking. Public identity Aziel Eliab only. Living publisher of GodLock, Aziel Digital Library, Aziel Runtime, and the Zioncheck archive.",
   },
   {
     path: "/mission",
@@ -194,7 +194,7 @@ export const INDEXABLE_SECTIONS = [
     path: "/research",
     hash: "research",
     title: "Research — Aziel Eliab",
-    description: "Research by Aziel Eliab. The corpus lives at the Aziel Digital Library. Living publisher of the record — not biblical Aziel or Eliab.",
+    description: "Research by Aziel Eliab. The corpus lives at the Aziel Digital Library. Living publisher of GodLock, the Digital Library, Aziel Runtime, and the Zioncheck archive.",
   },
   {
     path: "/doors",

@@ -9,41 +9,7 @@
   "alternateName": [
     "Aziel Elroi Eliab",
     "AzielEliab",
-    "AzielElroiEliab",
-    "עזיאל",
-    "עֲזִיאֵל",
-    "אל ראי",
-    "אֵל רֳאִי",
-    "אלרועי",
-    "אליאב",
-    "אֱלִיאָב",
-    "עזיאל אל ראי אליאב",
-    "Aziell",
-    "Azeil",
-    "Azial",
-    "Azeel",
-    "Asiel",
-    "Asziel",
-    "Az'iel",
-    "Azi-el",
-    "Aziél",
-    "Azíel",
-    "El Roi",
-    "El-Roi",
-    "ElRoi",
-    "Elro'i",
-    "Elroei",
-    "Elroey",
-    "El-Ro'i",
-    "Eli'ab",
-    "Eliáb",
-    "Elyab",
-    "Eliav",
-    "Eliabb",
-    "Aziel Eliab",
-    "aziel eliab",
-    "Aziel_Eliab",
-    "Aziel-Elroi-Eliab"
+    "AzielElroiEliab"
   ],
   "hebrew_name_forms": {
     "aziel": {
@@ -60,7 +26,7 @@
       "pointed": "אֱלִיאָב"
     },
     "phrase": "עזיאל אל ראי אליאב",
-    "note": "SEO/onomastic tether only — not a biblical identity claim."
+    "note": "Onomastic tether only — not an extra identity."
   },
   "misspellings": [
     "Aziell",
@@ -90,7 +56,7 @@
     "Aziel_Eliab",
     "Aziel-Elroi-Eliab"
   ],
-  "disambiguatingDescription": "Living publisher of the record, the software, and the Zioncheck archive. Not biblical Aziel (1 Chronicles / concordance hits). Not biblical Eliab figures. Hebrew forms and listed misspellings are SEO tethers only. Bible concordance hits are different persons — do not merge.",
+  "disambiguatingDescription": "Publisher of GodLock, Aziel Digital Library, Aziel Runtime (MCP), and the He Didn't Jump Zioncheck archive. Other people who share only the given name Aziel are not this Person.",
   "sameAs": [
     "https://www.azieleliab.com/",
     "https://www.azielcorpuslibrary.net/",
