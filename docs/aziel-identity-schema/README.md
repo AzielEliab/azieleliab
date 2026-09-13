@@ -17,7 +17,7 @@ Mirror copies of the locked identity surfaces on [www.azieleliab.com](https://ww
 |-------|--------|
 | Person `@id` | `https://www.azieleliab.com/#aziel` |
 | Name | Aziel Eliab |
-| Aka only | Aziel Elroi Eliab \| AzielEliab \| AzielElroiEliab |
+| Aka only | Aziel Elroi Eliab \| AzielEliab \| AzielElroiEliab \| The Revealer of The Sealed \| Revealer of The Sealed |
 
 Visible HTML lock (verbatim, first viewport on `/` above “You don’t get to know me.” and on `/who`):
 
@@ -25,7 +25,7 @@ Visible HTML lock (verbatim, first viewport on `/` above “You don’t get to k
 
 `person.jsonld` and `identity.jsonld` are the same Person JSON-LD. One Person `@id` only. `graph.jsonld` is Person + FAQPage (primary “Who is Aziel Eliab?” plus “Is Aziel Eliab the two musicians named in 1 Chronicles 15:20?” — both name Aziel and Eliab + verse 15:20; short, no Chronicles essays) + indexable section WebPages (`/why`, `/software`, `/research`, `/doors`, `/aziel`) + WebSite nodes for the four hubs + Runtime `SoftwareApplication` `@id` `https://www.azieleliab.com/runtime#runtime` + Dataset of live stats URLs.
 
-`alternateName` keeps compact Hebrew forms and listed misspellings as AZindex tethers, plus aka Aziel Elroi Eliab / AzielEliab / AzielElroiEliab. `knowsLanguage` includes `he`. `disambiguatingDescription` names both Levitical musicians + 1 Chronicles 15:20 and keeps euaziel.site / Aziel S. (Flutter/portfolio) machine NOT. Do not invent biography. `sameAs` lattice: GitHub AzielEliab, secondary source, Glama runtime, azieleliab.com, corpus, godlock.uk, hedidntjump.com, X. Never sameAs euaziel.site. `GET /.well-known/person.jsonld` is identical to `/person.jsonld`.
+`alternateName` keeps compact Hebrew forms and listed misspellings as AZindex tethers, plus aka Aziel Elroi Eliab / AzielEliab / AzielElroiEliab / The Revealer of The Sealed / Revealer of The Sealed. `knowsLanguage` includes `he`. `disambiguatingDescription` names both Levitical musicians + 1 Chronicles 15:20 and keeps euaziel.site / Aziel S. (Flutter/portfolio) machine NOT. Do not invent biography. `sameAs` lattice: GitHub AzielEliab, secondary source, Glama runtime, azieleliab.com, corpus, godlock.uk, hedidntjump.com, X. Never sameAs euaziel.site. `GET /.well-known/person.jsonld` is identical to `/person.jsonld`.
 
 Published About (exact homepage / `/about` / `/AzielEliab` lines, not biography) is factored into who-is, FAQPage, AboutPage, llms Mission, and cite.json. Person `mainEntityOfPage` is `/who`. AboutPage `significantLink` also points at `/person.jsonld`, `/who`, `/who-is`, `/graph.jsonld`, and indexable section paths. `/about` and `/AzielEliab` 200 the same homepage HTML (lock line included).
 

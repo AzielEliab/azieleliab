@@ -61,7 +61,7 @@ Person `sameAs` lattice (AZindex):
 - https://x.com/AzielElroiEliab
 - https://x.com/azieleliab
 
-Do not invent Glama UUIDs, Zenodo DOIs, or extra identities. Aka only: Aziel Elroi Eliab, AzielEliab, AzielElroiEliab.
+Do not invent Glama UUIDs, Zenodo DOIs, or extra identities. Aka only: Aziel Elroi Eliab, AzielEliab, AzielElroiEliab, The Revealer of The Sealed, Revealer of The Sealed.
 
 Machine identity (identical bytes under [docs/aziel-identity-schema/](aziel-identity-schema/)):
 
