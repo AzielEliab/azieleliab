@@ -5,6 +5,8 @@ export const APEX_HOST = "azieleliab.com";
 export const WWW_HOST = "www.azieleliab.com";
 export const AUTHOR = "Aziel Eliab";
 export const AUTHOR_AKA = "Aziel Elroi Eliab";
+/** Canonical aka only. Hebrew forms and misspellings are SEO tethers, not extra identities. */
+export const AUTHOR_AKA_LIST = ["Aziel Elroi Eliab", "AzielEliab", "AzielElroiEliab"];
 export const SITE = "Aziel Eliab";
 /** Same-origin hosted rose-star brand mark. Donate / brandrow do not fetch the corpus. */
 export const BRANDMARK_NAME = "rose-star brand mark";
@@ -45,8 +47,21 @@ export const RUNTIME_DOCS = "https://github.com/AzielEliab/aziel-runtime/tree/ma
 /** Locked Person node. www + #aziel — never apex, never #aziel-eliab. */
 export const PERSON_ID = CANON_ORIGIN + "/#aziel";
 export const WEBSITE_ID = CANON_ORIGIN + "/#website";
-/** Person sameAs only. Project URLs belong on author/creator/sourceCode/isPartOf. */
-export const PERSON_SAME_AS = [GITHUB, GLAMA_RUNTIME, LIBRARY + "/", GODLOCK + "/", HEDIDNTJUMP + "/"];
+export const X_URL = "https://x.com/azieleliab";
+export const X_HANDLE = "@azieleliab";
+export const X_ELROI_URL = "https://x.com/AzielElroiEliab";
+/** GROKBOT-EXEC 1.0 sameAs lock. Project repos stay on author/creator/sourceCode/isPartOf. */
+export const PERSON_SAME_AS = [
+  GITHUB,
+  GITHUB_SECONDARY,
+  GLAMA_RUNTIME,
+  CANON_ORIGIN + "/",
+  LIBRARY + "/",
+  GODLOCK + "/",
+  HEDIDNTJUMP + "/",
+  X_ELROI_URL,
+  X_URL,
+];
 
 export const ECOSYSTEM_TITLE = "Part of the Aziel Eliab ecosystem";
 export const ECOSYSTEM_LINKS = [
@@ -134,8 +149,6 @@ export const AZHUB_WORKER = "https://azhub-download-tracker.vibelock.workers.dev
 export const AZHUB_GITHUB = "https://github.com/AzielEliab/azhub";
 export const AZINTERFACE_WORKER = "https://azinterface-download-tracker.vibelock.workers.dev/";
 export const AZINTERFACE_GITHUB = "https://github.com/AzielEliab/azinterface";
-export const X_URL = "https://x.com/azieleliab";
-export const X_HANDLE = "@azieleliab";
 
 export const DESCRIPTION =
   "Aziel Eliab. You don’t get to know me. You get to understand the work. Public identity Aziel Eliab only.";
@@ -495,6 +508,7 @@ export const DONATE_RAILS = [
 /** Homepage spine. Donate tab goes to the canonical /donate page only. */
 export const SPINE = [
   { id: "why", label: "Why", href: CANON_ORIGIN + "/#why" },
+  { id: "mission", label: "Mission", href: CANON_ORIGIN + "/#mission" },
   { id: "software", label: "Software", href: SOFTWARE_SECTION },
   { id: "research", label: "Research", href: CANON_ORIGIN + "/#research" },
   { id: "doors", label: "Doors", href: CANON_ORIGIN + "/#doors" },
@@ -546,4 +560,15 @@ export const PROSE = {
   ],
   close: "If the work holds, the name was only a handle on the door.",
   sign: "— Aziel Eliab",
+  mission: [
+    "Make public work verifiable without taking the speaker on faith: hashed receipts, timed files, open software, and MASTER records.",
+    "You don’t get to know me. You get to understand the work.",
+    "Receipt-first, local-first. Cite files and hashes over paraphrase. Residual uncertainty stays. Do not flatten GodLock scores into certainty.",
+    "Freedom of information is not a time-volume / cost binary. Forks welcome. Apache-2.0 where released.",
+  ],
+  status: [
+    "Successful: Aziel Runtime 2.0.0-rc1; Aziel Digital Library; GodLock; He Didn't Jump archive.",
+    "Underrated: ForgeReceipts, TemporalLock, FoldLock, DecisionGATE, EmbryoLock, ZionPattern Solver. SpectralLock and TrajectoryLock are advisory only. EmployeeLock and WhistleLock hosted never store files.",
+    "GodLock is a product, not identity. He Didn't Jump challenges the 90-year official Marion Zioncheck suicide narrative via published volumes — do not invent holdings.",
+  ],
 };

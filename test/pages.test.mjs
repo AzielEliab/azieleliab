@@ -646,6 +646,10 @@ describe("doors", () => {
     assert.ok(jsonLd()["@graph"][0].sameAs.includes(HEDIDNTJUMP + "/"));
     assert.ok(llmsTxt().includes("He Didn't Jump: " + HEDIDNTJUMP + "/"));
     assert.ok(aiTxt().includes("He Didn't Jump: " + HEDIDNTJUMP + "/"));
+    assert.ok(llmsTxt().includes("sameAs: " + PERSON_SAME_AS.join(" · ")));
+    assert.ok(aiTxt().includes("sameAs: " + PERSON_SAME_AS.join(" · ")));
+    assert.match(llmsTxt(), /## Doors[\s\S]*He Didn't Jump: https:\/\/www\.hedidntjump\.com\//);
+    assert.match(aiTxt(), /## Doors[\s\S]*He Didn't Jump: https:\/\/www\.hedidntjump\.com\//);
     assert.ok(sitemapXml().includes("<loc>" + HEDIDNTJUMP + "/</loc>"));
   });
 });
@@ -935,7 +939,12 @@ describe("SEO routes", () => {
     assert.equal(ld["@graph"][4]["@type"], "ItemList");
     assert.equal(ld["@graph"][4].name, "Software");
     assert.ok(ld["@graph"][4].itemListElement.some((item) => item.name === "EmbryoLock"));
-    assert.equal(ld["@graph"][0].alternateName, "Aziel Elroi Eliab");
+    assert.ok(ld["@graph"][0].alternateName.includes("Aziel Elroi Eliab"));
+    assert.ok(ld["@graph"][0].alternateName.includes("AzielEliab"));
+    assert.ok(ld["@graph"][0].alternateName.includes("AzielElroiEliab"));
+    assert.ok(ld["@graph"][0].alternateName.includes("עזיאל אל ראי אליאב"));
+    assert.equal(ld["@graph"][0].disambiguatingDescription.includes("Not biblical Aziel"), true);
+    assert.ok(ld["@graph"][0].knowsLanguage.includes("he"));
     assert.equal(ld["@graph"][0].givenName, "Aziel");
     assert.equal(ld["@graph"][0].familyName, "Eliab");
     assert.equal(ld["@graph"][5]["@type"], "WebPage");
@@ -998,10 +1007,14 @@ describe("public entity graph phases B–D + E audit", () => {
     assert.equal(WEBSITE_ID, "https://www.azieleliab.com/#website");
     assert.deepEqual(PERSON_SAME_AS, [
       "https://github.com/AzielEliab",
+      "https://github.com/azieltherevealerofthesealed-arch",
       "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime",
+      "https://www.azieleliab.com/",
       "https://www.azielcorpuslibrary.net/",
       "https://godlock.uk/",
       "https://www.hedidntjump.com/",
+      "https://x.com/AzielElroiEliab",
+      "https://x.com/azieleliab",
     ]);
     assert.equal(GLAMA_RUNTIME, "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime");
     assert.doesNotMatch(GLAMA_RUNTIME, /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i);
@@ -1013,7 +1026,11 @@ describe("public entity graph phases B–D + E audit", () => {
     assert.ok(site);
     assert.equal(person["@id"], PERSON_ID);
     assert.equal(person.name, AUTHOR);
-    assert.equal(person.alternateName, "Aziel Elroi Eliab");
+    assert.ok(person.alternateName.includes("Aziel Elroi Eliab"));
+    assert.ok(person.alternateName.includes("AzielEliab"));
+    assert.ok(person.alternateName.includes("AzielElroiEliab"));
+    assert.ok(person.alternateName.includes("עזיאל אל ראי אליאב"));
+    assert.ok(person.alternateName.includes("Aziell"));
     assert.deepEqual(person.sameAs, PERSON_SAME_AS);
     assert.ok(!person.sameAs.includes(GITHUB_RUNTIME));
     assert.ok(!person.sameAs.includes(RUNTIME_LOCAL));
@@ -1735,6 +1752,7 @@ describe("AZL-DONATE-1.0", () => {
     assert.ok(!html.includes('class="donate-law"'));
     assert.ok(!html.includes("Nothing is free.</p>"));
     assert.ok(html.includes('id="why"'));
+    assert.ok(html.includes('id="mission"'));
     assert.ok(html.includes('id="software"'));
     assert.ok(html.includes('id="research"'));
     assert.ok(html.includes('id="doors"'));
@@ -1748,7 +1766,7 @@ describe("AZL-DONATE-1.0", () => {
     assert.equal(DONATE_HREF, CANON_ORIGIN + DONATE_PATH + "?v=png");
     assert.deepEqual(
       SPINE.map((s) => s.label),
-      ["Why", "Software", "Research", "Doors", "Donate"],
+      ["Why", "Mission", "Software", "Research", "Doors", "Donate"],
     );
     const homeNav = spineNav("home");
     assert.ok(homeNav.includes(">" + DONATE_TITLE + "<"));
