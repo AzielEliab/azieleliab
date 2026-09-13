@@ -94,9 +94,18 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     assert.ok(names.includes(HEBREW_NAME_FORMS.phrase));
     assert.ok(names.includes("עזיאל אלרועי אליאב"));
     assert.ok(names.includes("Aziell"));
-    assert.ok(!names.includes("The Revealer of The Sealed"));
-    assert.ok(!names.includes("Revealer of The Sealed"));
+    assert.ok(names.includes("The Revealer of The Sealed"));
+    assert.ok(names.includes("Revealer of The Sealed"));
     assert.ok(!names.some((n) => /euaziel|Aziel S|Flutter/i.test(n)));
+  });
+
+  it("includes both Revealer of The Sealed alternateName forms", () => {
+    const names = personJsonLd().alternateName;
+    assert.ok(AUTHOR_AKA_LIST.includes("The Revealer of The Sealed"));
+    assert.ok(AUTHOR_AKA_LIST.includes("Revealer of The Sealed"));
+    assert.ok(names.includes("The Revealer of The Sealed"));
+    assert.ok(names.includes("Revealer of The Sealed"));
+    assert.deepEqual(names, personAlternateNames());
   });
 
   it("locks living researcher copy, 15:20 musicians, and euaziel machine NOT", () => {
