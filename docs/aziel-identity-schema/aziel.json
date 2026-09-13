@@ -90,17 +90,14 @@
     "Aziel_Eliab",
     "Aziel-Elroi-Eliab"
   ],
-  "disambiguatingDescription": "Living public work identity of Aziel Eliab. Not biblical Aziel (1 Chronicles / concordance hits). Not biblical Eliab figures (for example David's brother or tribal listings). Bible concordance hits are different persons — do not merge.",
+  "disambiguatingDescription": "Living publisher of the record, the software, and the Zioncheck archive. Not biblical Aziel (1 Chronicles / concordance hits). Not biblical Eliab figures. Hebrew forms and listed misspellings are SEO tethers only. Bible concordance hits are different persons — do not merge.",
   "sameAs": [
-    "https://github.com/AzielEliab",
-    "https://github.com/azieltherevealerofthesealed-arch",
-    "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime",
     "https://www.azieleliab.com/",
     "https://www.azielcorpuslibrary.net/",
     "https://godlock.uk/",
     "https://www.hedidntjump.com/",
-    "https://x.com/AzielElroiEliab",
-    "https://x.com/azieleliab"
+    "https://github.com/AzielEliab",
+    "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime"
   ],
   "zenodo_dois": [],
   "openalex": null,

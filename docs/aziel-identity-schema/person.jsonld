@@ -44,8 +44,8 @@
   ],
   "givenName": "Aziel",
   "familyName": "Eliab",
-  "description": "Aziel Eliab (also Aziel Elroi Eliab) is an independent researcher, software designer, developer, and historian. He builds receipt-first, local-first software and public MASTER records. Canonical person: https://www.azieleliab.com/#aziel. Primary surfaces: azieleliab.com, azielcorpuslibrary.net (Aziel Digital Library), godlock.uk (GodLock), hedidntjump.com (Zioncheck archive), github.com/AzielEliab, and Aziel Runtime on Glama. The public identity is the work, not a biography. He is not the biblical figure named Aziel in 1 Chronicles.",
-  "disambiguatingDescription": "Living public work identity of Aziel Eliab. Not biblical Aziel (1 Chronicles / concordance hits). Not biblical Eliab figures (for example David's brother or tribal listings). Bible concordance hits are different persons — do not merge.",
+  "description": "Aziel Eliab (also Aziel Elroi Eliab) is the living publisher of the record, the software, and the Zioncheck archive. Canonical person: https://www.azieleliab.com/#aziel. Primary surfaces: azieleliab.com, azielcorpuslibrary.net (Aziel Digital Library / the record), godlock.uk (GodLock), hedidntjump.com (Zioncheck archive), github.com/AzielEliab, and Aziel Runtime on Glama. The public identity is the work, not a biography. He is not the biblical figure named Aziel in 1 Chronicles or other concordance hits. He is not a biblical Eliab figure. Hebrew forms and listed misspellings are SEO tethers only — not extra identities and not biblical claims.",
+  "disambiguatingDescription": "Living publisher of the record, the software, and the Zioncheck archive. Not biblical Aziel (1 Chronicles / concordance hits). Not biblical Eliab figures. Hebrew forms and listed misspellings are SEO tethers only. Bible concordance hits are different persons — do not merge.",
   "identifier": "Aziel Eliab",
   "url": "https://www.azieleliab.com/",
   "image": "https://www.azieleliab.com/sigil.png",
@@ -65,14 +65,11 @@
     "FragGate"
   ],
   "sameAs": [
-    "https://github.com/AzielEliab",
-    "https://github.com/azieltherevealerofthesealed-arch",
-    "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime",
     "https://www.azieleliab.com/",
     "https://www.azielcorpuslibrary.net/",
     "https://godlock.uk/",
     "https://www.hedidntjump.com/",
-    "https://x.com/AzielElroiEliab",
-    "https://x.com/azieleliab"
+    "https://github.com/AzielEliab",
+    "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime"
   ]
 }

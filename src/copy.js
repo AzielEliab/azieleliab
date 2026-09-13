@@ -50,17 +50,14 @@ export const WEBSITE_ID = CANON_ORIGIN + "/#website";
 export const X_URL = "https://x.com/azieleliab";
 export const X_HANDLE = "@azieleliab";
 export const X_ELROI_URL = "https://x.com/AzielElroiEliab";
-/** GROKBOT-EXEC 1.0 sameAs lock. Project repos stay on author/creator/sourceCode/isPartOf. */
+/** AZindex sameAs lattice: hub, corpus, GodLock, He Didn't Jump, GitHub AzielEliab, Glama runtime. */
 export const PERSON_SAME_AS = [
-  GITHUB,
-  GITHUB_SECONDARY,
-  GLAMA_RUNTIME,
   CANON_ORIGIN + "/",
   LIBRARY + "/",
   GODLOCK + "/",
   HEDIDNTJUMP + "/",
-  X_ELROI_URL,
-  X_URL,
+  GITHUB,
+  GLAMA_RUNTIME,
 ];
 
 export const ECOSYSTEM_TITLE = "Part of the Aziel Eliab ecosystem";
@@ -127,9 +124,9 @@ export function resolveRuntimeVersion(version) {
   const ver = String(version == null ? "" : version).trim();
   return ver || RUNTIME_VERSION;
 }
-/** Soft-name strip on the landing. */
+/** Soft-name strip on the landing. Human hash; crawlers use GET /software. */
 export const SOFTWARE_SECTION = CANON_ORIGIN + "/#software";
-/** Thin alias. GET /software 301s to the homepage Software strip. */
+/** Indexable Software strip. GET /software 200s the same homepage HTML (crawlers ignore #fragments). */
 export const SOFTWARE_PATH = "/software";
 export const SOFTWARE_HREF = CANON_ORIGIN + SOFTWARE_PATH;
 export const SOFTWARE_TITLE = "Software — Aziel Eliab";
@@ -152,7 +149,7 @@ export const AZINTERFACE_GITHUB = "https://github.com/AzielEliab/azinterface";
 
 export const DESCRIPTION =
   "Aziel Eliab. You don’t get to know me. You get to understand the work. Public identity Aziel Eliab only.";
-/** About surfaces on this origin canonicalize to the homepage. */
+/** About surfaces 200 with the same homepage HTML so they are indexable. */
 export const ABOUT_PATHS = ["/about", "/AzielEliab", "/aziel-eliab"];
 export const ABOUT_HREF = CANON_ORIGIN + "/";
 
@@ -160,6 +157,64 @@ export function isAboutAlias(pathname) {
   const p = String(pathname || "").replace(/\/+$/, "") || "/";
   const lower = p.toLowerCase();
   return lower === "/about" || lower === "/azieleliab" || lower === "/aziel-eliab";
+}
+
+export function aboutAliasPath(pathname) {
+  const p = String(pathname || "").replace(/\/+$/, "") || "/";
+  if (p === "/about" || p.toLowerCase() === "/about") return "/about";
+  if (p === "/AzielEliab" || p.toLowerCase() === "/azieleliab") return "/AzielEliab";
+  if (p === "/aziel-eliab" || p.toLowerCase() === "/aziel-eliab") return "/aziel-eliab";
+  return "";
+}
+
+/**
+ * Homepage hash sections that crawlers cannot index as #fragments.
+ * Each path 200s the same homepage HTML. /runtime stays the aziel-runtime door.
+ */
+export const INDEXABLE_SECTIONS = [
+  {
+    path: "/why",
+    hash: "why",
+    title: "Why — Aziel Eliab",
+    description: "Why Aziel Eliab keeps looking. Public identity Aziel Eliab only. Living publisher of the record, the software, and the Zioncheck archive — not biblical Aziel or Eliab.",
+  },
+  {
+    path: "/mission",
+    hash: "mission",
+    title: "Mission — Aziel Eliab",
+    description: "Mission of Aziel Eliab: hashed receipts, timed files, open software, and MASTER records. Living publisher of the record, the software, and the Zioncheck archive.",
+  },
+  {
+    path: SOFTWARE_PATH,
+    hash: "software",
+    title: SOFTWARE_TITLE,
+    description: SOFTWARE_DESCRIPTION,
+  },
+  {
+    path: "/research",
+    hash: "research",
+    title: "Research — Aziel Eliab",
+    description: "Research by Aziel Eliab. The corpus lives at the Aziel Digital Library. Living publisher of the record — not biblical Aziel or Eliab.",
+  },
+  {
+    path: "/doors",
+    hash: "doors",
+    title: "Doors — Aziel Eliab",
+    description: "Public doors for Aziel Eliab: GitHub, Corpus, GodLock, He Didn't Jump, Runtime, X, Donate.",
+  },
+  {
+    path: "/aziel",
+    hash: "aziel",
+    title: "Aziel Eliab",
+    description: DESCRIPTION,
+  },
+];
+
+export const INDEXABLE_SECTION_PATHS = INDEXABLE_SECTIONS.map((s) => s.path);
+
+export function indexableSection(pathname) {
+  const p = String(pathname || "").replace(/\/+$/, "") || "/";
+  return INDEXABLE_SECTIONS.find((s) => s.path === p) || null;
 }
 
 /**
