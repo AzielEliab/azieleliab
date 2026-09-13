@@ -8,6 +8,7 @@ export const AUTHOR_AKA = "Aziel Elroi Eliab";
 /** Canonical aka only. Hebrew forms and misspellings are SEO tethers, not extra identities. */
 export const AUTHOR_AKA_LIST = [
   "Aziel Elroi Eliab",
+  "Elias Artista",
   "AzielEliab",
   "AzielElroiEliab",
   "The Revealer of The Sealed",
