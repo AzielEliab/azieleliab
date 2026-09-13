@@ -22,6 +22,8 @@ import {
   NAME_MISSPELLINGS,
   NOT_BIBLICAL_AZIEL_ANSWER,
   NOT_BIBLICAL_ELIAB_ANSWER,
+  LIBRARY_STATS,
+  LIBRARY_STATS_FALLBACK,
   STATS_COUNTERS,
   STATS_DATASET_ID,
   ABOUT_ALIAS_HREFS,
@@ -153,8 +155,22 @@ describe("GROKBOT-EXEC 1.0 identity lock", () => {
     assert.ok(dataset);
     const urls = dataset.distribution.map((d) => d.contentUrl);
     assert.ok(urls.includes(CANON_ORIGIN + "/v1/stats"));
-    assert.ok(urls.includes(LIBRARY + "/v1/stats"));
+    assert.ok(urls.includes(LIBRARY_STATS));
+    assert.ok(urls.includes(LIBRARY_STATS_FALLBACK));
     assert.ok(urls.includes(HEDIDNTJUMP + "/api/stats"));
+    assert.ok(!urls.includes(LIBRARY + "/v1/stats"));
+  });
+
+  it("cites Digital Library counters at /stats, not /v1/stats", () => {
+    const corpus = STATS_COUNTERS.find((row) => row.host === "azielcorpuslibrary.net");
+    assert.ok(corpus);
+    assert.ok(corpus.url.endsWith("/stats"));
+    assert.ok(!corpus.url.endsWith("/v1/stats"));
+    assert.equal(corpus.url, LIBRARY + "/stats");
+    assert.equal(corpus.url, LIBRARY_STATS);
+    assert.equal(corpus.fallback, LIBRARY_STATS_FALLBACK);
+    assert.ok(!LIBRARY_STATS.endsWith("/v1/stats"));
+    assert.ok(LIBRARY_STATS.endsWith("/stats"));
   });
 
   it("serves who-is text with verbatim answer, 7 rules, Hebrew, misspellings, stats", async () => {
@@ -173,7 +189,9 @@ describe("GROKBOT-EXEC 1.0 identity lock", () => {
     assert.ok(body.includes("7. " + MODEL_RULES[6]));
     assert.ok(body.includes(HEBREW_NAME_FORMS.phrase));
     assert.ok(body.includes("Aziell"));
-    assert.ok(body.includes(LIBRARY + "/v1/stats"));
+    assert.ok(body.includes(LIBRARY_STATS));
+    assert.ok(body.includes(LIBRARY_STATS_FALLBACK));
+    assert.ok(!body.includes(LIBRARY + "/v1/stats"));
     assert.ok(body.includes(HEDIDNTJUMP + "/api/stats"));
     assert.ok(body.includes("## Published About (work, not biography)"));
     for (const line of ABOUT_PUBLISHED_LINES) assert.ok(body.includes(line), line);
@@ -193,7 +211,8 @@ describe("GROKBOT-EXEC 1.0 identity lock", () => {
     assert.equal(doc.openalex, null);
     assert.equal(doc.hebrew_name_forms.phrase, HEBREW_NAME_FORMS.phrase);
     assert.ok(doc.stats.counters.every((row) => row.url && !("views" in row) && !("count" in row)));
-    assert.ok(doc.stats.counters.some((row) => row.url === LIBRARY + "/v1/stats"));
+    assert.ok(doc.stats.counters.some((row) => row.url === LIBRARY_STATS && row.fallback === LIBRARY_STATS_FALLBACK));
+    assert.ok(!doc.stats.counters.some((row) => row.url === LIBRARY + "/v1/stats"));
     assert.ok(doc.stats.counters.some((row) => row.url === HEDIDNTJUMP + "/api/stats"));
   });
 
@@ -224,6 +243,8 @@ describe("GROKBOT-EXEC 1.0 identity lock", () => {
     assert.match(llms, /## Mission/);
     assert.match(llms, /## Identity[\s\S]*About machine/);
     for (const line of ABOUT_PUBLISHED_LINES) assert.ok(llms.includes(line), "llms " + line);
+    assert.ok(llms.includes(LIBRARY_STATS));
+    assert.ok(!llms.includes(LIBRARY + "/v1/stats"));
   });
 
   it("embeds identity alternates and awareness receipts on public HTML", () => {
@@ -234,7 +255,8 @@ describe("GROKBOT-EXEC 1.0 identity lock", () => {
     assert.ok(html.includes('href="/.well-known/aziel.json"'));
     assert.ok(html.includes('id="mission"'));
     assert.ok(html.includes("Awareness of published work, not vanity"));
-    assert.ok(html.includes(LIBRARY + "/v1/stats"));
+    assert.ok(html.includes(LIBRARY_STATS));
+    assert.ok(!html.includes(LIBRARY + "/v1/stats"));
     assert.ok(html.includes(HEDIDNTJUMP + "/api/stats"));
     assert.ok(html.includes("/v1/stats"));
     const embedded = JSON.parse(html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]);
@@ -243,7 +265,10 @@ describe("GROKBOT-EXEC 1.0 identity lock", () => {
     assert.equal(person.disambiguatingDescription, DISAMBIGUATING_DESCRIPTION);
     const cite = citeDoc();
     assert.equal(cite.person_id, PERSON_ID);
-    assert.equal(cite.library_stats, LIBRARY + "/v1/stats");
+    assert.equal(cite.library_stats, LIBRARY_STATS);
+    assert.equal(cite.library_stats_fallback, LIBRARY_STATS_FALLBACK);
+    assert.ok(cite.library_stats.endsWith("/stats"));
+    assert.ok(!cite.library_stats.endsWith("/v1/stats"));
     assert.equal(cite.hedidntjump_stats, HEDIDNTJUMP + "/api/stats");
     assert.ok(cite.stats.counters.some((row) => row.url === CANON_ORIGIN + "/v1/stats"));
     assert.deepEqual(cite.about_pages, ABOUT_ALIAS_HREFS);

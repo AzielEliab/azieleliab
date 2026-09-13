@@ -45,7 +45,7 @@ These spellings tether to the same Person @id https://www.azieleliab.com/#aziel 
 ## Awareness stats (live counters — do not invent numbers)
 
 - azieleliab.com/v1/stats: https://www.azieleliab.com/v1/stats
-- azielcorpuslibrary.net/v1/stats: https://www.azielcorpuslibrary.net/v1/stats
+- azielcorpuslibrary.net/stats: https://www.azielcorpuslibrary.net/stats (fallback https://aziel-corpus-download-tracker.vibelock.workers.dev/stats)
 - hedidntjump.com/api/stats: https://www.hedidntjump.com/api/stats
 
 Canonical person: https://www.azieleliab.com/#aziel

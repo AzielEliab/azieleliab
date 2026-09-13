@@ -114,8 +114,9 @@
       },
       {
         "host": "azielcorpuslibrary.net",
-        "url": "https://www.azielcorpuslibrary.net/v1/stats",
-        "kind": "views"
+        "url": "https://www.azielcorpuslibrary.net/stats",
+        "kind": "views, downloads",
+        "fallback": "https://aziel-corpus-download-tracker.vibelock.workers.dev/stats"
       },
       {
         "host": "hedidntjump.com",
