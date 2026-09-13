@@ -1,5 +1,5 @@
 /** azieleliab.com landing Worker. Author: Aziel Eliab. */
-import { APEX_HOST, CANON_ORIGIN, isAboutAlias, SOFTWARE_SECTION } from "./copy.js";
+import { aboutAliasPath, APEX_HOST, CANON_ORIGIN, indexableSection } from "./copy.js";
 import {
   DONATE_CACHE_BUST,
   DONATE_HTML_CACHE,
@@ -141,9 +141,6 @@ export async function handleRequest(request, env = {}, ctx) {
   }
 
   const path = routePath(url.pathname);
-  if (isAboutAlias(path)) {
-    return Response.redirect(CANON_ORIGIN + "/", 301);
-  }
   const jsonGet = new Set([
     "/v1/view",
     "/v1/stats",
@@ -203,13 +200,16 @@ export async function handleRequest(request, env = {}, ctx) {
     }
   }
 
+  const aboutPath = aboutAliasPath(path);
+  const section = indexableSection(path);
+  const homeLike = path === "/" || Boolean(aboutPath) || Boolean(section);
   const needsLive =
-    path === "/" ||
+    homeLike ||
     path === "/llms.txt" ||
     path === "/cite.json" ||
     path === "/sitemap.xml" ||
     path === "/v1/software";
-  const needsMesh = path === "/" || path === "/v1/software";
+  const needsMesh = homeLike || path === "/v1/software";
   const [live, meshStatus] = await Promise.all([
     needsLive ? loadLiveSoftware(env, ctx) : Promise.resolve(null),
     needsMesh ? loadMeshStatus(env, ctx) : Promise.resolve(null),
@@ -218,9 +218,22 @@ export async function handleRequest(request, env = {}, ctx) {
   const mesh = meshStatus ? meshSnapshot(meshStatus.origin) : null;
 
   let res;
-  if (path === "/") res = html(pageHtml(await pageViews(request, env), doors, meshStatus, live && live.version));
-  else if (path === "/software") res = Response.redirect(SOFTWARE_SECTION, 301);
-  else if (path === "/donate") res = html(donateHtml(), 200, DONATE_HTML_CACHE);
+  if (path === "/") {
+    res = html(pageHtml(await pageViews(request, env), doors, meshStatus, live && live.version));
+  } else if (aboutPath) {
+    res = html(
+      pageHtml(await readViews(env), doors, meshStatus, live && live.version, {
+        canonical: CANON_ORIGIN + aboutPath,
+      }),
+    );
+  } else if (section) {
+    res = html(
+      pageHtml(await readViews(env), doors, meshStatus, live && live.version, {
+        section,
+        canonical: CANON_ORIGIN + section.path,
+      }),
+    );
+  } else if (path === "/donate") res = html(donateHtml(), 200, DONATE_HTML_CACHE);
   else if (path === "/embryolock") res = html(embryoLockHtml(), 200, STUB_HTML_CACHE);
   else if (path === "/robots.txt") res = text(robotsTxt(), "text/plain", { cache: SEO_CACHE });
   else if (path === "/llms.txt") res = text(llmsTxt(doors), "text/plain", { cache: SEO_CACHE });

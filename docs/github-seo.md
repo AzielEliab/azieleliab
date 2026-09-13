@@ -56,8 +56,11 @@ Person `sameAs` (GROKBOT-EXEC 1.0 lock):
 - https://glama.ai/mcp/servers/AzielEliab/aziel-runtime
 - https://www.azieleliab.com/
 - https://www.azielcorpuslibrary.net/
+- https://www.azielcorpuslibrary.net/AzielEliab
 - https://godlock.uk/
+- https://godlock.uk/AzielEliab
 - https://www.hedidntjump.com/
+- https://www.azieleliab.com/runtime
 - https://x.com/AzielElroiEliab
 - https://x.com/azieleliab
 

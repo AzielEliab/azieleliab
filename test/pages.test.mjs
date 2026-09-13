@@ -34,6 +34,7 @@ import {
   LIBRARY,
   LIBRARY_AZIEL,
   LIBRARY_SOFTWARE,
+  GODLOCK_AZIEL,
   AZBROWSER_WORKER,
   AZHUB_GITHUB,
   AZHUB_WORKER,
@@ -663,6 +664,11 @@ describe("SEO routes", () => {
     assert.ok(body.includes("Allow: /"));
     assert.ok(body.includes("Allow: /software"));
     assert.ok(body.includes("Allow: /software/"));
+    assert.ok(body.includes("Allow: /mission"));
+    assert.ok(body.includes("Allow: /why"));
+    assert.ok(body.includes("Allow: /research"));
+    assert.ok(body.includes("Allow: /doors"));
+    assert.ok(body.includes("Allow: /aziel"));
     assert.ok(body.includes("Allow: /about"));
     assert.ok(body.includes("Allow: /about/"));
     assert.ok(body.includes("Allow: /AzielEliab"));
@@ -733,10 +739,11 @@ describe("SEO routes", () => {
     assert.ok(llmsBody.includes("Person @id: " + PERSON_ID));
     assert.ok(llmsBody.includes("Runtime parent @id: " + RUNTIME_ID));
     assert.ok(llmsBody.includes("Named tools (not MCP ops): FragGate, ForgeReceipts"));
-    assert.ok(llmsBody.includes(SOFTWARE_HREF + "  (301 to /#software)"));
-    assert.ok(llmsBody.includes(CANON_ORIGIN + "/about  (301 to / — About Aziel Eliab)"));
+    assert.ok(llmsBody.includes(SOFTWARE_HREF + "  (200 same homepage Software strip; /#software still works for humans)"));
+    assert.ok(llmsBody.includes(CANON_ORIGIN + "/about  (200 same homepage — About Aziel Eliab)"));
+    assert.ok(llmsBody.includes(CANON_ORIGIN + "/mission  (200 same homepage Mission strip; /#mission still works for humans)"));
     assert.ok(llmsBody.includes("Softwares list: " + SOFTWARE_SECTION));
-    assert.ok(llmsBody.includes("Softwares alias: " + SOFTWARE_HREF + " (301 to /#software)"));
+    assert.ok(llmsBody.includes("Softwares alias: " + SOFTWARE_HREF + " (200 same homepage Software strip; /#software still works for humans)"));
     assert.ok(llmsBody.includes("FragGate Worker: " + FRAGGATE_WORKER));
     assert.ok(llmsBody.includes(DONATE_HREF + "  (AZL-DONATE-1.0 primary Donate door)"));
     assert.ok(llmsBody.includes("## Donate"));
@@ -806,7 +813,7 @@ describe("SEO routes", () => {
     assert.ok(aiBody.includes("Allow: /software/"));
     assert.ok(aiBody.includes("Allow: /about"));
     assert.ok(aiBody.includes("Allow: /AzielEliab"));
-    assert.ok(aiBody.includes("Softwares: " + SOFTWARE_SECTION));
+    assert.ok(aiBody.includes("Softwares: " + SOFTWARE_SECTION + " (alias " + SOFTWARE_HREF + " 200 same HTML)"));
     assert.ok(aiBody.includes("User-agent: Googlebot"));
     assert.ok(aiBody.includes("User-agent: Cloudflare-AI-Search"));
     assert.ok(aiBody.includes("User-agent: Claude"));
@@ -885,6 +892,19 @@ describe("SEO routes", () => {
     assert.ok(mapBody.includes("<loc>" + DONATE_HREF + "</loc>"));
     assert.ok(mapBody.includes("<loc>" + SOFTWARE_HREF + "</loc>"));
     assert.ok(mapBody.includes("<loc>" + SOFTWARE_SECTION + "</loc>"));
+    assert.ok(mapBody.includes("<loc>" + CANON_ORIGIN + "/mission</loc>"));
+    assert.ok(mapBody.includes("<loc>" + CANON_ORIGIN + "/why</loc>"));
+    assert.ok(mapBody.includes("<loc>" + CANON_ORIGIN + "/research</loc>"));
+    assert.ok(mapBody.includes("<loc>" + CANON_ORIGIN + "/doors</loc>"));
+    assert.ok(mapBody.includes("<loc>" + CANON_ORIGIN + "/aziel</loc>"));
+    assert.ok(mapBody.includes("<loc>" + CANON_ORIGIN + "/about</loc>"));
+    assert.ok(mapBody.includes("<loc>" + CANON_ORIGIN + "/AzielEliab</loc>"));
+    assert.ok(mapBody.includes("<loc>" + CANON_ORIGIN + "/aziel-eliab</loc>"));
+    assert.ok(mapBody.includes("<loc>" + CANON_ORIGIN + "/who-is</loc>"));
+    assert.ok(mapBody.includes("<loc>" + CANON_ORIGIN + "/person.jsonld</loc>"));
+    assert.ok(mapBody.includes("<loc>" + CANON_ORIGIN + "/graph.jsonld</loc>"));
+    assert.ok(mapBody.includes("<loc>" + CANON_ORIGIN + "/.well-known/aziel.json</loc>"));
+    assert.ok(mapBody.includes("<loc>" + CANON_ORIGIN + "/donate</loc>"));
     assert.ok(mapBody.includes("<loc>" + CANON_ORIGIN + "/ai.txt</loc>"));
     assert.ok(mapBody.includes("<loc>" + RUNTIME_LOCAL + "/v1/fraggate/list</loc>"));
     assert.ok(mapBody.includes("<loc>" + CANON_ORIGIN + "/</loc>"));
@@ -915,7 +935,7 @@ describe("SEO routes", () => {
     assert.ok(html.includes('href="/runtime/openapi.json"'));
     assert.ok(html.includes('href="/runtime/v1/fraggate/list"'));
     assert.ok(html.includes('name="aziel-software-catalog"'));
-    assert.ok(html.includes("<h1>" + AUTHOR + "</h1>"));
+    assert.ok(html.includes('<h1 id="aziel">' + AUTHOR + "</h1>"));
     const ld = jsonLd();
     assert.equal(ld["@graph"][0]["@type"], "Person");
     assert.equal(ld["@graph"][0]["@id"], PERSON_ID);
@@ -943,7 +963,9 @@ describe("SEO routes", () => {
     assert.ok(ld["@graph"][0].alternateName.includes("AzielEliab"));
     assert.ok(ld["@graph"][0].alternateName.includes("AzielElroiEliab"));
     assert.ok(ld["@graph"][0].alternateName.includes("עזיאל אל ראי אליאב"));
-    assert.equal(ld["@graph"][0].disambiguatingDescription.includes("Not biblical Aziel"), true);
+    assert.equal(ld["@graph"][0].disambiguatingDescription.includes("Not the biblical name Aziel"), true);
+    assert.ok(ld["@graph"][0].disambiguatingDescription.includes("Jaaziel"));
+    assert.ok(ld["@graph"][0].disambiguatingDescription.includes("1 Chronicles 15:20"));
     assert.ok(ld["@graph"][0].knowsLanguage.includes("he"));
     assert.equal(ld["@graph"][0].givenName, "Aziel");
     assert.equal(ld["@graph"][0].familyName, "Eliab");
@@ -952,8 +974,11 @@ describe("SEO routes", () => {
     assert.equal(ld["@graph"][5].potentialAction["@type"], "DonateAction");
     assert.equal(ld["@graph"][6]["@type"], "AboutPage");
     assert.equal(ld["@graph"][6].url, CANON_ORIGIN + "/");
-    assert.equal(ld["@graph"][7]["@type"], "CollectionPage");
-    assert.equal(ld["@graph"][7].url, SOFTWARE_SECTION);
+    const collection = ld["@graph"].find((n) => n["@type"] === "CollectionPage");
+    assert.ok(collection);
+    assert.equal(collection.url, SOFTWARE_SECTION);
+    assert.ok(ld["@graph"].some((n) => n["@type"] === "WebPage" && n.url === CANON_ORIGIN + "/mission"));
+    assert.ok(ld["@graph"].some((n) => n["@type"] === "FAQPage" && n.name === "Who is Aziel Eliab?"));
     const catalogApps = ld["@graph"].filter(
       (n) => n["@type"] === "SoftwareApplication" && n.isPartOf && n.isPartOf["@id"] === CANON_ORIGIN + "/#software",
     );
@@ -1002,7 +1027,7 @@ function canonicalsFromHtml(html) {
 }
 
 describe("public entity graph phases B–D + E audit", () => {
-  it("locks Person @id to www #aziel and slims sameAs", () => {
+  it("locks Person @id to www #aziel and cross-links sameAs", () => {
     assert.equal(PERSON_ID, "https://www.azieleliab.com/#aziel");
     assert.equal(WEBSITE_ID, "https://www.azieleliab.com/#website");
     assert.deepEqual(PERSON_SAME_AS, [
@@ -1011,8 +1036,11 @@ describe("public entity graph phases B–D + E audit", () => {
       "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime",
       "https://www.azieleliab.com/",
       "https://www.azielcorpuslibrary.net/",
+      "https://www.azielcorpuslibrary.net/AzielEliab",
       "https://godlock.uk/",
+      "https://godlock.uk/AzielEliab",
       "https://www.hedidntjump.com/",
+      "https://www.azieleliab.com/runtime",
       "https://x.com/AzielElroiEliab",
       "https://x.com/azieleliab",
     ]);
@@ -1033,9 +1061,10 @@ describe("public entity graph phases B–D + E audit", () => {
     assert.ok(person.alternateName.includes("Aziell"));
     assert.deepEqual(person.sameAs, PERSON_SAME_AS);
     assert.ok(!person.sameAs.includes(GITHUB_RUNTIME));
-    assert.ok(!person.sameAs.includes(RUNTIME_LOCAL));
+    assert.ok(person.sameAs.includes(RUNTIME_LOCAL));
     assert.ok(!person.sameAs.includes(RUNTIME + "/"));
-    assert.ok(!person.sameAs.includes(LIBRARY_AZIEL));
+    assert.ok(person.sameAs.includes(LIBRARY_AZIEL));
+    assert.ok(person.sameAs.includes(GODLOCK_AZIEL));
     assert.equal(site["@id"], WEBSITE_ID);
     assert.deepEqual(site.publisher, { "@id": PERSON_ID });
     assert.deepEqual(site.creator, { "@id": PERSON_ID });
@@ -1518,7 +1547,7 @@ describe("worker routing", () => {
     assert.match(res.headers.get("content-type"), /text\/html/);
     assert.equal(res.headers.get("Content-Signal"), "search=yes, ai-input=yes, ai-train=yes");
     const body = await res.text();
-    assert.ok(body.includes("<h1>Aziel Eliab</h1>"));
+    assert.ok(body.includes('<h1 id="aziel">Aziel Eliab</h1>'));
     assert.ok(body.includes('id="doors"'));
     assert.doesNotMatch(body, /<section class="card" id="donate">/);
     assert.ok(!body.includes('id="donate"'));
@@ -1575,7 +1604,7 @@ describe("worker routing", () => {
     assert.doesNotMatch(body, /everblooming\s+sigil/i);
   });
 
-  it("301s /software and /software/ to the homepage Software strip", async () => {
+  it("200s /software and /software/ with the same homepage Software strip", async () => {
     assert.equal(SOFTWARE_SECTION, CANON_ORIGIN + "/#software");
     assert.equal(SOFTWARE_HREF, CANON_ORIGIN + "/software");
     const html = await fetchPath("/");
@@ -1586,13 +1615,16 @@ describe("worker routing", () => {
 
     for (const path of ["/software", "/software/"]) {
       const res = await fetchPath(path);
-      assert.equal(res.status, 301);
-      assert.equal(res.headers.get("location"), SOFTWARE_SECTION);
+      assert.equal(res.status, 200);
+      assert.match(res.headers.get("content-type"), /text\/html/);
+      const body = await res.text();
+      assert.ok(body.includes('id="software"'));
+      assert.ok(body.includes("<h2>Software</h2>"));
+      assert.ok(body.includes('rel="canonical" href="' + SOFTWARE_HREF + '"'));
     }
 
     const head = await fetchPath("/software", { method: "HEAD" });
-    assert.equal(head.status, 301);
-    assert.equal(head.headers.get("location"), SOFTWARE_SECTION);
+    assert.equal(head.status, 200);
     assert.equal(await head.text(), "");
 
     const post = await fetchPath("/software", { method: "POST" });
@@ -1603,7 +1635,7 @@ describe("worker routing", () => {
     assert.equal(apex.headers.get("location"), CANON_ORIGIN + "/software");
   });
 
-  it("301s About aliases to the www homepage", async () => {
+  it("200s About aliases with the same homepage HTML", async () => {
     assert.equal(isAboutAlias("/about"), true);
     assert.equal(isAboutAlias("/about/"), true);
     assert.equal(isAboutAlias("/AzielEliab"), true);
@@ -1611,12 +1643,47 @@ describe("worker routing", () => {
     assert.equal(isAboutAlias("/software"), false);
     for (const path of ["/about", "/about/", "/AzielEliab", "/aziel-eliab"]) {
       const res = await fetchPath(path);
-      assert.equal(res.status, 301, path);
-      assert.equal(res.headers.get("location"), CANON_ORIGIN + "/");
+      assert.equal(res.status, 200, path);
+      assert.match(res.headers.get("content-type"), /text\/html/, path);
+      const body = await res.text();
+      assert.ok(body.includes("<h2>Why</h2>"), path);
+      assert.ok(body.includes('id="aziel"'), path);
     }
+    const azielEliab = await fetchPath("/AzielEliab");
+    const aliasBody = await azielEliab.text();
+    assert.ok(aliasBody.includes('rel="canonical" href="' + CANON_ORIGIN + '/AzielEliab"'));
     const apex = await handleRequest(new Request("https://azieleliab.com/about"));
     assert.equal(apex.status, 301);
     assert.equal(apex.headers.get("location"), CANON_ORIGIN + "/about");
+  });
+
+  it("200s hash-section paths with the same homepage content", async () => {
+    for (const [path, hash, title] of [
+      ["/mission", "mission", "Mission — Aziel Eliab"],
+      ["/why", "why", "Why — Aziel Eliab"],
+      ["/research", "research", "Research — Aziel Eliab"],
+      ["/doors", "doors", "Doors — Aziel Eliab"],
+      ["/aziel", "aziel", "Aziel Eliab"],
+    ]) {
+      const res = await fetchPath(path);
+      assert.equal(res.status, 200, path);
+      assert.match(res.headers.get("content-type"), /text\/html/, path);
+      const body = await res.text();
+      assert.ok(body.includes('id="' + hash + '"'), path);
+      assert.ok(body.includes("<title>" + title + "</title>"), path);
+      assert.ok(body.includes('rel="canonical" href="' + CANON_ORIGIN + path + '"'), path);
+      assert.ok(body.includes("<h2>Why</h2>"), path);
+      assert.ok(body.includes("<h2>Mission</h2>"), path);
+      assert.ok(body.includes("<h2>Software</h2>"), path);
+      assert.equal(res.headers.get("Content-Signal"), "search=yes, ai-input=yes, ai-train=yes", path);
+    }
+    const mission = await fetchPath("/mission");
+    const missionBody = await mission.text();
+    assert.ok(missionBody.includes("scrollIntoView"));
+    assert.ok(missionBody.includes('"mission"'));
+    const home = pageHtml();
+    assert.ok(!home.includes("scrollIntoView"));
+    assert.ok(home.includes('href="#mission"'));
   });
 
   it("serves GET /embryolock as a secondary local page, not the corpus catalog", async () => {
@@ -1919,8 +1986,10 @@ describe("live software catalog", () => {
     const landing = await fetchPath("/", { headers: { "user-agent": "Mozilla/5.0" } }, env);
     const html = await landing.text();
     const softwares = await fetchPath("/software", {}, env);
-    assert.equal(softwares.status, 301);
-    assert.equal(softwares.headers.get("location"), SOFTWARE_SECTION);
+    assert.equal(softwares.status, 200);
+    const softwareBody = await softwares.text();
+    assert.ok(softwareBody.includes(">NewLock<"));
+    assert.ok(softwareBody.includes('id="software"'));
     assert.ok(html.includes(">NewLock<"));
     assert.ok(html.includes("#software-newlock"));
     assert.ok(html.includes('href="https://newlock-download-tracker.vibelock.workers.dev/"'));

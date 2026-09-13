@@ -44,8 +44,10 @@
   ],
   "givenName": "Aziel",
   "familyName": "Eliab",
-  "description": "Aziel Eliab (also Aziel Elroi Eliab) is an independent researcher, software designer, developer, and historian. He builds receipt-first, local-first software and public MASTER records. Canonical person: https://www.azieleliab.com/#aziel. Primary surfaces: azieleliab.com, azielcorpuslibrary.net (Aziel Digital Library), godlock.uk (GodLock), hedidntjump.com (Zioncheck archive), github.com/AzielEliab, and Aziel Runtime on Glama. The public identity is the work, not a biography. He is not the biblical figure named Aziel in 1 Chronicles.",
-  "disambiguatingDescription": "Living public work identity of Aziel Eliab. Not biblical Aziel (1 Chronicles / concordance hits). Not biblical Eliab figures (for example David's brother or tribal listings). Bible concordance hits are different persons — do not merge.",
+  "additionalName": "Aziel Elroi Eliab",
+  "jobTitle": "Author and engineer",
+  "description": "Aziel Eliab (also Aziel Elroi Eliab) is a living author and engineer. He is the author of Aziel Runtime (aziel-runtime), GodLock, the Aziel Digital Library, and He Didn't Jump. He is an independent researcher, software designer, developer, and historian. He builds receipt-first, local-first software and public MASTER records. Canonical person: https://www.azieleliab.com/#aziel. Primary surfaces: azieleliab.com, azielcorpuslibrary.net/AzielEliab (Aziel Digital Library), godlock.uk/AzielEliab (GodLock), hedidntjump.com (Zioncheck archive), github.com/AzielEliab, Aziel Runtime on Glama, and https://www.azieleliab.com/runtime. The public identity is the work, not a biography. He is not the separate biblical names Aziel (also Jaaziel) and Eliab from 1 Chronicles 15:20 (Levitical musicians). Those concordance hits are different persons — do not merge.",
+  "disambiguatingDescription": "Living author and engineer Aziel Eliab. Not the biblical name Aziel (also Jaaziel) and not the biblical name Eliab from 1 Chronicles 15:20 (Levitical musicians). Not other biblical Eliab figures (for example David's brother or tribal listings). Bible concordance hits are different persons — do not merge.",
   "identifier": "Aziel Eliab",
   "url": "https://www.azieleliab.com/",
   "image": "https://www.azieleliab.com/sigil.png",
@@ -62,7 +64,10 @@
     "software",
     "research",
     "Aziel Runtime",
-    "FragGate"
+    "FragGate",
+    "GodLock",
+    "Aziel Digital Library",
+    "He Didn't Jump"
   ],
   "sameAs": [
     "https://github.com/AzielEliab",
@@ -70,8 +75,11 @@
     "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime",
     "https://www.azieleliab.com/",
     "https://www.azielcorpuslibrary.net/",
+    "https://www.azielcorpuslibrary.net/AzielEliab",
     "https://godlock.uk/",
+    "https://godlock.uk/AzielEliab",
     "https://www.hedidntjump.com/",
+    "https://www.azieleliab.com/runtime",
     "https://x.com/AzielElroiEliab",
     "https://x.com/azieleliab"
   ]

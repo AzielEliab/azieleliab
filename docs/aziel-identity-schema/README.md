@@ -18,11 +18,11 @@ Mirror copies of the locked identity surfaces on [www.azieleliab.com](https://ww
 | Name | Aziel Eliab |
 | Aka only | Aziel Elroi Eliab \| AzielEliab \| AzielElroiEliab |
 
-`person.jsonld` and `identity.jsonld` are the same Person JSON-LD. `graph.jsonld` is Person + FAQPage (Who is Aziel Eliab? + biblical Aziel? No + biblical Eliab? No + Hebrew + misspellings + public mission) + WebSite nodes for the four hubs + Runtime `SoftwareApplication` `@id` `https://www.azieleliab.com/runtime#runtime` + Dataset of live stats URLs.
+`person.jsonld` and `identity.jsonld` are the same Person JSON-LD. `graph.jsonld` is Person + FAQPage (Who is Aziel Eliab? + biblical Aziel/Jaaziel? No + biblical Eliab? No + 1 Chronicles 15:20 Levitical musicians? No + Hebrew + misspellings + public mission) + indexable section WebPages (`/mission`, `/software`, …) + WebSite nodes for the four hubs + Runtime `SoftwareApplication` `@id` `https://www.azieleliab.com/runtime#runtime` + Dataset of live stats URLs.
 
-Hebrew name forms are an SEO/onomastic tether only — not a biblical identity claim. Misspellings in `alternateName` point at the same Person. `knowsLanguage` includes `he`. `disambiguatingDescription` refuses biblical Aziel (1 Chronicles / concordance) and biblical Eliab figures.
+Hebrew name forms are an SEO/onomastic tether only — not a biblical identity claim. Misspellings in `alternateName` point at the same Person. `knowsLanguage` includes `he`. `disambiguatingDescription` refuses biblical Aziel (Jaaziel) and Eliab from 1 Chronicles 15:20 (Levitical musicians). Person `jobTitle` is Author and engineer. `sameAs` includes GitHub, Glama, Corpus `/AzielEliab`, GodLock `/AzielEliab`, He Didn't Jump, and same-origin `/runtime`.
 
-Published About (exact homepage / `/about` / `/AzielEliab` lines, not biography) is factored into who-is, FAQPage, AboutPage, llms Mission, and cite.json. Person `mainEntityOfPage` lists `/`, `/about`, `/AzielEliab`. AboutPage `significantLink` also points at `/person.jsonld`, `/who-is`, and `/graph.jsonld`.
+Published About (exact homepage / `/about` / `/AzielEliab` lines, not biography) is factored into who-is, FAQPage, AboutPage, llms Mission, and cite.json. Person `mainEntityOfPage` lists `/`, `/about`, `/AzielEliab`. AboutPage `significantLink` also points at `/person.jsonld`, `/who-is`, `/graph.jsonld`, and indexable section paths. `/about` and `/AzielEliab` 200 the same homepage HTML.
 
 Live stats (do not invent numbers): `https://www.azieleliab.com/v1/stats`, Digital Library `https://www.azielcorpuslibrary.net/stats` (not `/v1/stats`; version is `GET /v1/health`; tracker fallback `https://aziel-corpus-download-tracker.vibelock.workers.dev/stats`), `https://www.hedidntjump.com/api/stats`.
 
