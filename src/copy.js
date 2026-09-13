@@ -10,8 +10,6 @@ export const AUTHOR_AKA_LIST = [
   "Aziel Elroi Eliab",
   "AzielEliab",
   "AzielElroiEliab",
-  "The Revealer of The Sealed",
-  "Revealer of The Sealed",
 ];
 export const SITE = "Aziel Eliab";
 /** Same-origin hosted rose-star brand mark. Donate / brandrow do not fetch the corpus. */
@@ -58,12 +56,15 @@ export const X_HANDLE = "@azieleliab";
 export const X_ELROI_URL = "https://x.com/AzielElroiEliab";
 /** AZindex sameAs lattice: hub, corpus, GodLock, He Didn't Jump, GitHub AzielEliab, Glama runtime. */
 export const PERSON_SAME_AS = [
+  GITHUB,
+  GITHUB_SECONDARY,
+  GLAMA_RUNTIME,
   CANON_ORIGIN + "/",
   LIBRARY + "/",
   GODLOCK + "/",
   HEDIDNTJUMP + "/",
-  GITHUB,
-  GLAMA_RUNTIME,
+  X_ELROI_URL,
+  X_URL,
 ];
 
 export const ECOSYSTEM_TITLE = "Part of the Aziel Eliab ecosystem";
@@ -157,6 +158,10 @@ export const DESCRIPTION =
 /** About surfaces 200 with the same homepage HTML so they are indexable. */
 export const ABOUT_PATHS = ["/about", "/AzielEliab", "/aziel-eliab"];
 export const ABOUT_HREF = CANON_ORIGIN + "/";
+/** Visible HTML who-is page. Machine twin remains /who-is-aziel-eliab.txt. */
+export const WHO_PATH = "/who";
+export const WHO_HREF = CANON_ORIGIN + WHO_PATH;
+export const WHO_TITLE = "Who is Aziel Eliab";
 
 export function isAboutAlias(pathname) {
   const p = String(pathname || "").replace(/\/+$/, "") || "/";

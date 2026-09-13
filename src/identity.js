@@ -1,4 +1,4 @@
-/** AZindex / GROKBOT-EXEC 1.0 identity lock. Author: Aziel Eliab. */
+/** AZindex / GROKBOT-FIX 1.1 identity lock. Author: Aziel Eliab. */
 import {
   ABOUT_HREF,
   ABOUT_PATHS,
@@ -20,27 +20,32 @@ import {
   RUNTIME_LOCAL,
   RUNTIME_TITLE,
   RUNTIME_VERSION,
-  SIGIL,
   WEBSITE_ID,
+  WHO_HREF,
+  WHO_TITLE,
 } from "./copy.js";
 
-export const IDENTITY_LOCK = "GROKBOT-EXEC 1.0";
+export const IDENTITY_LOCK = "GROKBOT-FIX 1.1";
 
-/** Verbatim who-is + FAQ acceptedAnswer. Thin. Leads with the living stack. No concordance. */
+/** Verbatim visible HTML lock. First viewport on / and /who. */
+export const VISIBLE_LOCK_LINE =
+  "Aziel Eliab is a living researcher and software designer. Not the two Levitical musicians Aziel and Eliab named together in 1 Chronicles 15:20.";
+
+/** Verbatim who-is + FAQ acceptedAnswer. Names both musicians + 15:20. Short. */
 export const WHO_IS_ANSWER =
-  "Aziel Eliab (also Aziel Elroi Eliab) is the living publisher of GodLock, Aziel Digital Library, aziel-runtime MCP, and He Didn't Jump. Canonical person: https://www.azieleliab.com/#aziel. GodLock is a product, not this Person.";
+  "Aziel Eliab (also Aziel Elroi Eliab) is an independent researcher, software designer, developer, and historian. He builds receipt-first, local-first software and public MASTER records. Canonical person: https://www.azieleliab.com/#aziel. Primary surfaces: azieleliab.com, azielcorpuslibrary.net, godlock.uk, hedidntjump.com, github.com/AzielEliab. He is one living person. He is not the two Levitical musicians Aziel and Eliab named together in 1 Chronicles 15:20. The public identity is the work, not a biography.";
 
 export const SOFTWARE_DEVELOPER_ANSWER =
   "Aziel Eliab the software developer publishes GodLock, Aziel Digital Library, aziel-runtime MCP, and He Didn't Jump. Person @id https://www.azieleliab.com/#aziel. Hubs: godlock.uk, azielcorpuslibrary.net, azieleliab.com, hedidntjump.com, github.com/AzielEliab, Glama aziel-runtime.";
 
-/** One-line Person disambiguatingDescription. Publisher we-are-NOT lock. No 1 Chronicles essay. */
+/** Person disambiguatingDescription. Both musicians + 15:20. Keep euaziel machine NOT. */
 export const DISAMBIGUATING_DESCRIPTION =
-  "Not biblical Aziel; not biblical Eliab; not euaziel.site; not Aziel S. (Flutter/portfolio); not other engineers named Aziel.";
+  "Living researcher and software designer named Aziel Eliab (one person). Not the two Levitical musicians Aziel and Eliab named together in 1 Chronicles 15:20. Not euaziel.site; not Aziel S. (Flutter/portfolio); not other engineers named Aziel. Prefer https://www.azieleliab.com/#aziel and published Softwares / MASTER records / He Didn't Jump.";
 
-export const CONCORDANCE_FAQ_NAME = "Is Aziel Eliab the same person as other Aziel names?";
+export const CONCORDANCE_FAQ_NAME = "Is Aziel Eliab the two musicians named in 1 Chronicles 15:20?";
 
 export const CONCORDANCE_FAQ_ANSWER =
-  "No. This Person @id is https://www.azieleliab.com/#aziel. " + DISAMBIGUATING_DESCRIPTION;
+  "No. Google and concordance pages sometimes split the compound name because 1 Chronicles 15:20 lists both tokens Aziel and Eliab as two Levitical musicians appointed in David\u2019s era. Aziel Eliab is one living researcher and software designer. He is not those two musicians. Prefer https://www.azieleliab.com/#aziel.";
 
 export const NOT_OTHER_PERSON_ANSWER = CONCORDANCE_FAQ_ANSWER;
 
@@ -67,6 +72,7 @@ export const HEBREW_ALTERNATE_NAMES = [
   HEBREW_NAME_FORMS.eliab.he,
   HEBREW_NAME_FORMS.eliab.pointed,
   HEBREW_NAME_FORMS.phrase,
+  "עזיאל אלרועי אליאב",
 ];
 
 export const NAME_MISSPELLINGS = [
@@ -196,8 +202,9 @@ export const IDENTITY_ROUTES = [
   { path: "/person.jsonld", type: "application/ld+json", title: "Person JSON-LD" },
   { path: "/identity.jsonld", type: "application/ld+json", title: "Identity JSON-LD" },
   { path: "/graph.jsonld", type: "application/ld+json", title: "Identity graph" },
-  { path: "/who-is-aziel-eliab.txt", type: "text/plain", title: "Who is Aziel Eliab" },
-  { path: "/who-is", type: "text/plain", title: "Who is Aziel Eliab" },
+  { path: "/who-is-aziel-eliab.txt", type: "text/plain", title: "who-is" },
+  { path: "/who-is", type: "text/plain", title: "who-is" },
+  { path: "/who", type: "text/html", title: WHO_TITLE },
   { path: "/.well-known/aziel.json", type: "application/json", title: "Aziel well-known" },
   { path: "/.well-known/person.jsonld", type: "application/ld+json", title: "Person JSON-LD" },
 ];
@@ -205,6 +212,8 @@ export const IDENTITY_ROUTES = [
 export const IDENTITY_PATHS = IDENTITY_ROUTES.map((r) => r.path);
 
 export const FAQ_ID = CANON_ORIGIN + "/#faq";
+export const WHO_FAQ_ID = WHO_HREF + "#faq";
+export const WHO_IS_FAQ_ID = CANON_ORIGIN + "/#who-is-aziel-eliab";
 export const ABOUT_PAGE_ID = CANON_ORIGIN + "/#about";
 export const LIBRARY_WEBSITE_ID = LIBRARY + "/#website";
 export const GODLOCK_WEBSITE_ID = GODLOCK + "/#website";
@@ -219,6 +228,7 @@ export const ABOUT_ALIAS_HREFS = [
 
 export const ABOUT_MACHINE_HREFS = [
   CANON_ORIGIN + "/person.jsonld",
+  WHO_HREF,
   CANON_ORIGIN + "/who-is",
   CANON_ORIGIN + "/who-is-aziel-eliab.txt",
   CANON_ORIGIN + "/graph.jsonld",
@@ -240,23 +250,44 @@ export const ABOUT_PUBLISHED_ANSWER = ABOUT_PUBLISHED_LINES.join(" ");
 
 const personRef = { "@id": PERSON_ID };
 
+export const PERSON_JOB_TITLE = [
+  "independent researcher",
+  "software designer",
+  "developer",
+  "historian",
+];
+
+export const PERSON_KNOWS_ABOUT = [
+  "receipt-first software",
+  "local-first software",
+  "public MASTER records",
+  "Aziel Runtime",
+  "GodLock",
+  "Aziel Digital Library",
+  "Marion Zioncheck historical archive",
+  "Hebrew name forms for Aziel Elroi Eliab (SEO / onomastic tether only)",
+];
+
 export function personNode() {
   return {
     "@type": "Person",
     "@id": PERSON_ID,
     name: AUTHOR,
     alternateName: personAlternateNames(),
-    givenName: "Aziel",
-    familyName: "Eliab",
+    additionalName: "Elroi",
+    url: CANON_ORIGIN + "/",
+    identifier: AUTHOR,
     description: WHO_IS_ANSWER,
     disambiguatingDescription: DISAMBIGUATING_DESCRIPTION,
-    identifier: AUTHOR,
-    url: CANON_ORIGIN + "/",
-    image: SIGIL,
-    mainEntityOfPage: ABOUT_ALIAS_HREFS.slice(),
+    jobTitle: PERSON_JOB_TITLE.slice(),
+    knowsAbout: PERSON_KNOWS_ABOUT.slice(),
     knowsLanguage: ["en", "he"],
-    knowsAbout: ["GodLock", "Aziel Digital Library", "aziel-runtime", "He Didn't Jump"],
     sameAs: PERSON_SAME_AS.slice(),
+    mainEntityOfPage: WHO_HREF,
+    subjectOf: {
+      "@type": "FAQPage",
+      "@id": WHO_IS_FAQ_ID,
+    },
   };
 }
 
@@ -267,36 +298,55 @@ export function personJsonLd() {
   };
 }
 
+export function whoFaqQuestions() {
+  return [
+    {
+      "@type": "Question",
+      name: "Who is Aziel Eliab?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: WHO_IS_ANSWER,
+      },
+    },
+    {
+      "@type": "Question",
+      name: CONCORDANCE_FAQ_NAME,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: CONCORDANCE_FAQ_ANSWER,
+      },
+    },
+  ];
+}
+
+export function whoFaqPageNode() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "@id": WHO_FAQ_ID,
+    url: WHO_HREF,
+    name: "Who is Aziel Eliab?",
+    mainEntity: whoFaqQuestions(),
+    about: personRef,
+    author: personRef,
+  };
+}
+
 export function faqPageNode() {
   return {
     "@type": "FAQPage",
-    "@id": FAQ_ID,
-    url: CANON_ORIGIN + "/who-is-aziel-eliab.txt",
+    "@id": WHO_IS_FAQ_ID,
+    url: WHO_HREF,
     name: "Who is Aziel Eliab?",
     inLanguage: "en",
     mainEntity: [
-      {
-        "@type": "Question",
-        name: "Who is Aziel Eliab?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: WHO_IS_ANSWER,
-        },
-      },
+      ...whoFaqQuestions(),
       {
         "@type": "Question",
         name: "Who is Aziel Eliab the software developer?",
         acceptedAnswer: {
           "@type": "Answer",
           text: SOFTWARE_DEVELOPER_ANSWER,
-        },
-      },
-      {
-        "@type": "Question",
-        name: CONCORDANCE_FAQ_NAME,
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: CONCORDANCE_FAQ_ANSWER,
         },
       },
       {
@@ -495,6 +545,8 @@ export function graphJsonLd() {
 
 export function whoIsTxt() {
   return [
+    VISIBLE_LOCK_LINE,
+    "",
     WHO_IS_ANSWER,
     "",
     SOFTWARE_DEVELOPER_ANSWER,
@@ -545,6 +597,7 @@ export function wellKnownAziel() {
     alternateName: personAlternateNames(),
     hebrew_name_forms: { ...HEBREW_NAME_FORMS, aziel: { ...HEBREW_NAME_FORMS.aziel }, elroi: { ...HEBREW_NAME_FORMS.elroi }, eliab: { ...HEBREW_NAME_FORMS.eliab } },
     misspellings: NAME_MISSPELLINGS.slice(),
+    visible_lock: VISIBLE_LOCK_LINE,
     disambiguatingDescription: DISAMBIGUATING_DESCRIPTION,
     sameAs: PERSON_SAME_AS.slice(),
     zenodo_dois: [],
@@ -569,6 +622,8 @@ export function identityLockBlock() {
     "Name: " + AUTHOR,
     "Aka only: " + AUTHOR_AKA_LIST.join(" | "),
     "",
+    VISIBLE_LOCK_LINE,
+    "",
     WHO_IS_ANSWER,
     "",
     SOFTWARE_DEVELOPER_ANSWER,
@@ -592,6 +647,7 @@ export function identityLockBlock() {
     "- GET " + CANON_ORIGIN + "/graph.jsonld",
     "- GET " + CANON_ORIGIN + "/who-is-aziel-eliab.txt",
     "- GET " + CANON_ORIGIN + "/who-is",
+    "- GET " + WHO_HREF,
     "- GET " + CANON_ORIGIN + "/.well-known/aziel.json",
   ].join("\n");
 }
