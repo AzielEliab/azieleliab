@@ -28,6 +28,13 @@ import { donateHtml, embryoLockHtml, notFoundHtml, pageHtml } from "./page.js";
 import { donateQrResponse } from "./qr.js";
 import { sigilResponse } from "./sigil.js";
 import { handleRuntimeRoot, isRuntimeRequest } from "./runtimeRoot.js";
+import {
+  graphJsonLd,
+  personJsonLd,
+  prettyJson,
+  wellKnownAziel,
+  whoIsTxt,
+} from "./identity.js";
 import { aiTxt, citeDoc, CONTENT_SIGNAL, llmsTxt, robotsTxt, sitemapXml } from "./seo.js";
 import { incrementViews, isBot, readViews, viewsBody } from "./views.js";
 
@@ -76,14 +83,13 @@ function json(doc, cache) {
   });
 }
 
+// Door-index files stay off the Worker Cache API so a deploy cannot
+// re-pin a pre-cross-tether llms/ai/sitemap after the CDN revalidates.
 const PAGE_CACHE_PATHS = new Set([
   "/",
   "/embryolock",
   "/robots.txt",
-  "/llms.txt",
-  "/ai.txt",
   "/cite.json",
-  "/sitemap.xml",
   "/v1/software",
   "/sigil.png",
 ]);
@@ -146,6 +152,11 @@ export async function handleRequest(request, env = {}, ctx) {
     UPDATE_CHECK_PATH,
     MESH_STATUS_PATH,
     MESH_NODES_PATH,
+    "/person.jsonld",
+    "/identity.jsonld",
+    "/graph.jsonld",
+    "/.well-known/aziel.json",
+    "/.well-known/person.jsonld",
   ]);
   if (request.method === "OPTIONS" && jsonGet.has(path)) {
     return new Response(null, { status: 204, headers: { ...SECURITY, ...CORS } });
@@ -213,7 +224,15 @@ export async function handleRequest(request, env = {}, ctx) {
   else if (path === "/embryolock") res = html(embryoLockHtml(), 200, STUB_HTML_CACHE);
   else if (path === "/robots.txt") res = text(robotsTxt(), "text/plain", { cache: SEO_CACHE });
   else if (path === "/llms.txt") res = text(llmsTxt(doors), "text/plain", { cache: SEO_CACHE });
-  else if (path === "/ai.txt") res = text(aiTxt(), "text/plain", { cache: SEO_CACHE });
+  else if (path === "/person.jsonld" || path === "/identity.jsonld" || path === "/.well-known/person.jsonld") {
+    res = text(prettyJson(personJsonLd()), "application/ld+json", { cache: SEO_CACHE, cors: true });
+  } else if (path === "/graph.jsonld") {
+    res = text(prettyJson(graphJsonLd()), "application/ld+json", { cache: SEO_CACHE, cors: true });
+  } else if (path === "/who-is-aziel-eliab.txt" || path === "/who-is") {
+    res = text(whoIsTxt(), "text/plain", { cache: SEO_CACHE });
+  } else if (path === "/.well-known/aziel.json") {
+    res = text(prettyJson(wellKnownAziel()), "application/json", { cache: SEO_CACHE, cors: true });
+  } else if (path === "/ai.txt") res = text(aiTxt(), "text/plain", { cache: SEO_CACHE });
   else if (path === "/cite.json") {
     res = text(JSON.stringify(citeDoc(doors, live && live.version), null, 1) + "\n", "application/json", { cache: SEO_CACHE });
   } else if (path === "/sitemap.xml") {

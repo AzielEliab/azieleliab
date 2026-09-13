@@ -11,9 +11,9 @@ abstract: >-
   Public landing for Aziel Eliab. Canonical https://www.azieleliab.com/.
   Person @id https://www.azieleliab.com/#aziel. Runtime @id
   https://www.azieleliab.com/runtime#runtime (Aziel Runtime 2.0.0-rc1,
-  hasPart named tools). Cross-links Corpus, GodLock, aziel-runtime,
-  Try on Glama, and Donate AZL-DONATE-1.0. Identity Aziel Eliab only
-  (Elroi as aka).
+  hasPart named tools). Cross-links Corpus, GodLock, He Didn't Jump,
+  aziel-runtime, Try on Glama, and Donate AZL-DONATE-1.0. Identity
+  Aziel Eliab only (Elroi as aka).
 license: Apache-2.0
 repository-code: "https://github.com/AzielEliab/azieleliab"
 url: "https://www.azieleliab.com/"
@@ -22,6 +22,7 @@ keywords:
   - azieleliab
   - aziel-runtime
   - GodLock
+  - He Didn't Jump
   - Corpus
   - Glama
   - MCP
@@ -39,3 +40,6 @@ identifiers:
   - type: url
     value: "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime"
     description: Try on Glama
+  - type: url
+    value: "https://www.hedidntjump.com/"
+    description: He Didn't Jump

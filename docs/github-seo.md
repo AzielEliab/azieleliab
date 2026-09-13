@@ -49,15 +49,27 @@ Why this matters: GitHub’s repository page is a second indexable URL. Empty ho
 | WebSite | `https://www.azieleliab.com/#website` | publisher / creator → Person |
 | Runtime | `https://www.azieleliab.com/runtime#runtime` | Aziel Runtime **2.0.0-rc1**. `sameAs` GitHub repo + Glama. Worker is related/endpoint. |
 
-Person `sameAs` only:
+Person `sameAs` (GROKBOT-EXEC 1.0 lock):
 
 - https://github.com/AzielEliab
+- https://github.com/azieltherevealerofthesealed-arch
 - https://glama.ai/mcp/servers/AzielEliab/aziel-runtime
+- https://www.azieleliab.com/
 - https://www.azielcorpuslibrary.net/
 - https://godlock.uk/
 - https://www.hedidntjump.com/
+- https://x.com/AzielElroiEliab
+- https://x.com/azieleliab
 
-Do not invent Glama UUIDs or extra `sameAs` identities.
+Do not invent Glama UUIDs, Zenodo DOIs, or extra identities. Aka only: Aziel Elroi Eliab, AzielEliab, AzielElroiEliab.
+
+Machine identity (identical bytes under [docs/aziel-identity-schema/](aziel-identity-schema/)):
+
+- https://www.azieleliab.com/person.jsonld
+- https://www.azieleliab.com/identity.jsonld
+- https://www.azieleliab.com/graph.jsonld
+- https://www.azieleliab.com/who-is-aziel-eliab.txt
+- https://www.azieleliab.com/.well-known/aziel.json
 
 ### Runtime `hasPart` (named tools only)
 
