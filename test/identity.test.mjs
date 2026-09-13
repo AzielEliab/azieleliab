@@ -24,6 +24,11 @@ import {
   NOT_BIBLICAL_ELIAB_ANSWER,
   STATS_COUNTERS,
   STATS_DATASET_ID,
+  ABOUT_ALIAS_HREFS,
+  ABOUT_MACHINE_HREFS,
+  ABOUT_PAGE_ID,
+  ABOUT_PUBLISHED_ANSWER,
+  ABOUT_PUBLISHED_LINES,
   WHO_IS_ANSWER,
   graphJsonLd,
   personAlternateNames,
@@ -130,12 +135,20 @@ describe("GROKBOT-EXEC 1.0 identity lock", () => {
     assert.ok(questions.some((q) => /biblical Eliab/i.test(q)));
     assert.ok(questions.some((q) => /Hebrew/i.test(q)));
     assert.ok(questions.some((q) => /misspell/i.test(q)));
+    assert.ok(questions.includes("What does the published About say?"));
     const answers = faq.mainEntity.map((q) => q.acceptedAnswer.text);
     assert.ok(answers.includes(WHO_IS_ANSWER));
     assert.ok(answers.includes(NOT_BIBLICAL_AZIEL_ANSWER));
     assert.ok(answers.includes(NOT_BIBLICAL_ELIAB_ANSWER));
     assert.ok(answers.includes(HEBREW_NAME_ANSWER));
     assert.ok(answers.includes(MISSPELLINGS_ANSWER));
+    assert.ok(answers.includes(ABOUT_PUBLISHED_ANSWER));
+    const about = doc["@graph"].find((n) => n["@id"] === ABOUT_PAGE_ID);
+    assert.ok(about);
+    assert.equal(about["@type"], "AboutPage");
+    assert.ok(ABOUT_ALIAS_HREFS.every((href) => about.significantLink.includes(href)));
+    assert.ok(ABOUT_MACHINE_HREFS.every((href) => about.significantLink.includes(href)));
+    assert.deepEqual(person.mainEntityOfPage, ABOUT_ALIAS_HREFS);
     const dataset = doc["@graph"].find((n) => n["@id"] === STATS_DATASET_ID);
     assert.ok(dataset);
     const urls = dataset.distribution.map((d) => d.contentUrl);
@@ -162,6 +175,10 @@ describe("GROKBOT-EXEC 1.0 identity lock", () => {
     assert.ok(body.includes("Aziell"));
     assert.ok(body.includes(LIBRARY + "/v1/stats"));
     assert.ok(body.includes(HEDIDNTJUMP + "/api/stats"));
+    assert.ok(body.includes("## Published About (work, not biography)"));
+    for (const line of ABOUT_PUBLISHED_LINES) assert.ok(body.includes(line), line);
+    assert.ok(body.includes("You don’t get to know me. You get to understand the work."));
+    assert.ok(body.includes("If the work holds, the name was only a handle on the door."));
   });
 
   it("serves well-known aziel.json with empty DOIs and live stats URLs only", async () => {
@@ -204,6 +221,9 @@ describe("GROKBOT-EXEC 1.0 identity lock", () => {
     assert.ok(llms.includes("## Aziel Runtime"));
     assert.ok(llms.includes(HEBREW_NAME_FORMS.phrase));
     assert.match(llms, /## Doors[\s\S]*He Didn't Jump/);
+    assert.match(llms, /## Mission/);
+    assert.match(llms, /## Identity[\s\S]*About machine/);
+    for (const line of ABOUT_PUBLISHED_LINES) assert.ok(llms.includes(line), "llms " + line);
   });
 
   it("embeds identity alternates and awareness receipts on public HTML", () => {
@@ -226,6 +246,14 @@ describe("GROKBOT-EXEC 1.0 identity lock", () => {
     assert.equal(cite.library_stats, LIBRARY + "/v1/stats");
     assert.equal(cite.hedidntjump_stats, HEDIDNTJUMP + "/api/stats");
     assert.ok(cite.stats.counters.some((row) => row.url === CANON_ORIGIN + "/v1/stats"));
+    assert.deepEqual(cite.about_pages, ABOUT_ALIAS_HREFS);
+    assert.deepEqual(cite.about_published, ABOUT_PUBLISHED_LINES);
+    assert.deepEqual(cite.about_machine, ABOUT_MACHINE_HREFS);
+    const htmlAbout = embedded["@graph"].find((n) => n["@type"] === "AboutPage");
+    assert.ok(htmlAbout.significantLink.includes(CANON_ORIGIN + "/person.jsonld"));
+    assert.ok(htmlAbout.significantLink.includes(CANON_ORIGIN + "/who-is"));
+    assert.ok(htmlAbout.significantLink.includes(CANON_ORIGIN + "/graph.jsonld"));
+    assert.deepEqual(person.mainEntityOfPage, ABOUT_ALIAS_HREFS);
   });
 
   it("keeps docs/aziel-identity-schema copies in lockstep with generators", () => {

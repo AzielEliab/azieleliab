@@ -49,7 +49,11 @@
   "identifier": "Aziel Eliab",
   "url": "https://www.azieleliab.com/",
   "image": "https://www.azieleliab.com/sigil.png",
-  "mainEntityOfPage": "https://www.azieleliab.com/",
+  "mainEntityOfPage": [
+    "https://www.azieleliab.com/",
+    "https://www.azieleliab.com/about",
+    "https://www.azieleliab.com/AzielEliab"
+  ],
   "knowsLanguage": [
     "en",
     "he"
