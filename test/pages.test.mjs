@@ -722,7 +722,11 @@ describe("SEO routes", () => {
     assert.equal(res.status, 200);
     const body = await res.text();
     assert.ok(body.includes("User-agent: *"));
+    assert.ok(body.includes("Content-Signal: search=yes, ai-input=yes, ai-train=yes"));
+    assert.match(body, /User-agent: \*\nContent-Signal: search=yes, ai-input=yes, ai-train=yes/);
     assert.ok(body.includes("Allow: /"));
+    assert.match(body, /^Allow: \/who$/m);
+    assert.match(body, /^Allow: \/who\/$/m);
     assert.ok(body.includes("Allow: /software"));
     assert.ok(body.includes("Allow: /software/"));
     assert.ok(body.includes("Allow: /mission"));
