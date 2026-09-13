@@ -156,6 +156,7 @@ export async function handleRequest(request, env = {}, ctx) {
     "/identity.jsonld",
     "/graph.jsonld",
     "/.well-known/aziel.json",
+    "/.well-known/person.jsonld",
   ]);
   if (request.method === "OPTIONS" && jsonGet.has(path)) {
     return new Response(null, { status: 204, headers: { ...SECURITY, ...CORS } });
@@ -223,11 +224,11 @@ export async function handleRequest(request, env = {}, ctx) {
   else if (path === "/embryolock") res = html(embryoLockHtml(), 200, STUB_HTML_CACHE);
   else if (path === "/robots.txt") res = text(robotsTxt(), "text/plain", { cache: SEO_CACHE });
   else if (path === "/llms.txt") res = text(llmsTxt(doors), "text/plain", { cache: SEO_CACHE });
-  else if (path === "/person.jsonld" || path === "/identity.jsonld") {
+  else if (path === "/person.jsonld" || path === "/identity.jsonld" || path === "/.well-known/person.jsonld") {
     res = text(prettyJson(personJsonLd()), "application/ld+json", { cache: SEO_CACHE, cors: true });
   } else if (path === "/graph.jsonld") {
     res = text(prettyJson(graphJsonLd()), "application/ld+json", { cache: SEO_CACHE, cors: true });
-  } else if (path === "/who-is-aziel-eliab.txt") {
+  } else if (path === "/who-is-aziel-eliab.txt" || path === "/who-is") {
     res = text(whoIsTxt(), "text/plain", { cache: SEO_CACHE });
   } else if (path === "/.well-known/aziel.json") {
     res = text(prettyJson(wellKnownAziel()), "application/json", { cache: SEO_CACHE, cors: true });
