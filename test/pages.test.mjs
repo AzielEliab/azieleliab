@@ -1,7 +1,7 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import worker, { apexRedirect, donateCacheBustLocation, handleRequest } from "../src/index.js";
-import { donateHtml, embryoLockHtml, ecosystemHtml, notFoundHtml, pageHtml, spineNav } from "../src/page.js";
+import { donateHtml, embryoLockHtml, ecosystemHtml, hashRedirectScript, notFoundHtml, pageHtml, sectionPageHtml, spineNav } from "../src/page.js";
 import { incrementViews, memoryKv } from "../src/views.js";
 import { DONATE_HTML_CACHE, HTML_CACHE, SEO_CACHE, memoryCache } from "../src/edgeCache.js";
 import { FANOUT_MAX, allowOriginRefresh, isOperator } from "../src/costGuard.js";
@@ -59,9 +59,12 @@ import {
   SIGIL,
   SOFTWARE,
   SOFTWARE_EXTRAS,
+  HASH_REDIRECTS,
   SOFTWARE_HREF,
   SOFTWARE_SECTION,
   SPINE,
+  TAB_PAGES,
+  indexableSection,
   RUNTIME_VERSION,
   RUNTIME_DOORS,
   GLAMA_RUNTIME,
@@ -133,6 +136,22 @@ function envWithViews(seed = 0) {
   return isolatedEnv({ VIEWS: memoryKv(seed) });
 }
 
+function softwareHtml(softwareItems) {
+  return sectionPageHtml(indexableSection("/software"), 0, softwareItems);
+}
+
+function doorsHtml() {
+  return sectionPageHtml(indexableSection("/doors"));
+}
+
+function whyHtml() {
+  return sectionPageHtml(indexableSection("/why"));
+}
+
+function researchHtml() {
+  return sectionPageHtml(indexableSection("/research"));
+}
+
 async function fetchPath(path, init = {}, env) {
   const request = new Request("https://www.azieleliab.com" + path, init);
   return worker.fetch(request, env ? isolatedEnv(env) : isolatedEnv());
@@ -148,21 +167,56 @@ function runtimeEnv(handler) {
 
 describe("landing copy", () => {
   it("keeps the exact opening, why, research, and close", () => {
-    const html = pageHtml();
-    for (const line of [...PROSE.open, ...PROSE.why, PROSE.close, PROSE.sign]) {
-      assert.ok(html.includes(line), "missing copy: " + line);
+    const home = pageHtml();
+    for (const line of [...PROSE.open, PROSE.close, PROSE.sign]) {
+      assert.ok(home.includes(line), "missing home copy: " + line);
     }
+    const why = whyHtml();
+    for (const line of PROSE.why) {
+      assert.ok(why.includes(line), "missing why copy: " + line);
+    }
+    const research = researchHtml();
     for (const line of PROSE.research) {
       const needle = LIBRARY + "/";
       if (line.includes(needle)) {
-        assert.ok(html.includes(line.split(needle)[0]), "missing research prefix: " + line);
-        assert.ok(html.includes('href="' + needle + '"'), "missing research href");
+        assert.ok(research.includes(line.split(needle)[0]), "missing research prefix: " + line);
+        assert.ok(research.includes('href="' + needle + '"'), "missing research href");
       } else {
-        assert.ok(html.includes(line), "missing copy: " + line);
+        assert.ok(research.includes(line), "missing copy: " + line);
       }
     }
-    assert.ok(html.includes("Aziel Eliab"));
-    assert.ok(html.includes("azieleliab.com"));
+    assert.ok(home.includes("Aziel Eliab"));
+    assert.ok(home.includes("azieleliab.com"));
+  });
+
+  it("memory-locks Mission/Status off every literary page and uses real spine paths", () => {
+    const visible = (html) =>
+      html.replace(/<script type="application\/ld\+json">[\s\S]*?<\/script>/g, "").replace(/<style>[\s\S]*?<\/style>/g, "");
+    const pages = [pageHtml(), whyHtml(), softwareHtml(), researchHtml(), doorsHtml(), donateHtml()];
+    for (const html of pages) {
+      const body = visible(html);
+      assert.ok(!body.includes("<h2>Mission</h2>"), "Mission heading");
+      assert.ok(!body.includes("<h2>Status</h2>"), "Status heading");
+      assert.ok(!body.includes('id="mission"'), "mission id");
+      assert.doesNotMatch(body, /Successful:\s*Aziel Runtime/);
+      assert.doesNotMatch(body, /Underrated:\s*ForgeReceipts/);
+      assert.ok(!body.includes("Freedom of information is not a time-volume"));
+      assert.ok(!body.includes("Awareness of published work, not vanity"));
+      assert.ok(!body.includes('class="awareness"'));
+      assert.ok(!body.includes('href="#why"'));
+      assert.ok(!body.includes('href="#software"'));
+      assert.ok(!body.includes('href="#research"'));
+      assert.ok(!body.includes('href="#doors"'));
+      assert.ok(!body.includes('href="#mission"'));
+      assert.ok(body.includes('href="' + CANON_ORIGIN + '/why"'));
+      assert.ok(body.includes('href="' + SOFTWARE_HREF + '"'));
+      assert.ok(body.includes('href="' + CANON_ORIGIN + '/research"'));
+      assert.ok(body.includes('href="' + CANON_ORIGIN + '/doors"'));
+    }
+    assert.ok(!TAB_PAGES.some((p) => p.id === "mission"));
+    assert.equal(pageHtml().includes('id="aziel"'), true);
+    assert.ok(pageHtml().includes('id="runtime"'));
+    assert.match(pageHtml(), /class="runtime-cta"[^>]*>Try on Glama</);
   });
 
   it("uses white / near-white body color and no royal-purple body text", () => {
@@ -178,7 +232,7 @@ describe("landing copy", () => {
   it("puts the rose-star brand mark top-left and never says everblooming sigil", () => {
     assert.equal(BRANDMARK_NAME, "rose-star brand mark");
     assert.equal(SIGIL, CANON_ORIGIN + "/sigil.png");
-    const pages = [pageHtml(), donateHtml(), embryoLockHtml(), notFoundHtml()];
+    const pages = [pageHtml(), softwareHtml(), whyHtml(), researchHtml(), doorsHtml(), donateHtml(), embryoLockHtml(), notFoundHtml()];
     for (const html of pages) {
       assert.match(html, /<header class="brandrow">[\s\S]*?<img class="brandmark" src="/);
       assert.ok(html.includes('src="' + SIGIL + '"'));
@@ -200,7 +254,7 @@ describe("landing copy", () => {
 
 describe("software doors", () => {
   it("hyperlinks every SOFTWARE name to a verified URL", () => {
-    const html = pageHtml();
+    const html = softwareHtml();
     assert.equal(CATALOG_SOFTWARE.length, 37);
     assert.equal(SOFTWARE.length, 37);
     for (const item of SOFTWARE) {
@@ -212,7 +266,7 @@ describe("software doors", () => {
     assert.match(html, /<h2>Software<\/h2>\s*<p class="soft-line">/);
     assert.doesNotMatch(html, /soft-close/);
     assert.doesNotMatch(html, /runtime 1\.6\.\d+ FragGate/i);
-    const softwareCard = html.match(/<section class="card" id="software">[\s\S]*?<\/section>/);
+    const softwareCard = html.match(/<section class="card lead" id="software">[\s\S]*?<\/section>/);
     assert.ok(softwareCard);
     assert.match(softwareCard[0], /<h2>Software<\/h2>\s*<p class="soft-line">/);
     assert.doesNotMatch(softwareCard[0], /Official Runtime|Try on Glama|Try \/ Deploy on Glama|Documentation \/ Architecture|named components|Ask Jeeves/);
@@ -275,7 +329,7 @@ describe("software doors", () => {
     assert.equal(isRuntimeSoftware("fraggate", "FragGate"), false);
     assert.equal(displaySoftwareName("fraggate", "FragGate"), "FragGate");
     assert.equal(displaySoftwareName("azai", "AZAI"), "AZAI");
-    const html = pageHtml();
+    const html = softwareHtml();
     assert.ok(!html.includes('class="soft-name">' + RUNTIME_NAME + "<"));
     assert.doesNotMatch(html, /runtime 1\.6\.\d+ FragGate/i);
     const ld = jsonLd();
@@ -318,7 +372,7 @@ describe("software doors", () => {
   });
 
   it("lists PeaceLock in Lock and uses PEACELOCK_WORKER now that the tracker is live", () => {
-    const html = pageHtml();
+    const html = softwareHtml();
     const peace = SOFTWARE.find((s) => s.name === "PeaceLock");
     assert.ok(peace);
     assert.equal(peace.slug, "peacelock");
@@ -335,7 +389,7 @@ describe("software doors", () => {
   });
 
   it("lists AZMail in Plain and uses AZMAIL_WORKER now that it is in the catalog", () => {
-    const html = pageHtml();
+    const html = softwareHtml();
     const azmail = SOFTWARE.find((s) => s.name === "AZMail");
     assert.ok(azmail);
     assert.equal(azmail.slug, "azmail");
@@ -352,7 +406,7 @@ describe("software doors", () => {
   });
 
   it("points EmbryoLock Softwares at catalog worker_home and keeps a secondary local page", () => {
-    const html = pageHtml();
+    const html = softwareHtml();
     assert.deepEqual(CATALOG_ONLY, []);
     const embryo = SOFTWARE.find((s) => s.name === "EmbryoLock");
     assert.equal(EMBRYOLOCK_PATH, "/embryolock");
@@ -382,7 +436,7 @@ describe("software doors", () => {
   });
 
   it("lists AZBrowser in Plain as its own Worker UI, not nested with FragGate or AZNet", () => {
-    const html = pageHtml();
+    const html = softwareHtml();
     const azbrowser = SOFTWARE.find((s) => s.name === "AZBrowser");
     const aznet = SOFTWARE.find((s) => s.name === "AZNet");
     const fraggate = SOFTWARE_EXTRAS.find((s) => s.name === "FragGate");
@@ -401,7 +455,7 @@ describe("software doors", () => {
   });
 
   it("lists AZNet in Plain as its own Worker UI, not nested under AZBrowser", () => {
-    const html = pageHtml();
+    const html = softwareHtml();
     const aznet = SOFTWARE.find((s) => s.name === "AZNet");
     const azbrowser = SOFTWARE.find((s) => s.name === "AZBrowser");
     const fraggate = SOFTWARE_EXTRAS.find((s) => s.name === "FragGate");
@@ -421,7 +475,7 @@ describe("software doors", () => {
   });
 
   it("lists AZHub in Plain as its own Worker UI, not nested with AZInterface", () => {
-    const html = pageHtml();
+    const html = softwareHtml();
     const azhub = SOFTWARE.find((s) => s.name === "AZHub");
     const azinterface = SOFTWARE.find((s) => s.name === "AZInterface");
     const azbrowser = SOFTWARE.find((s) => s.name === "AZBrowser");
@@ -448,7 +502,7 @@ describe("software doors", () => {
   });
 
   it("lists AZInterface in Plain as its own Worker UI, not nested under AZHub", () => {
-    const html = pageHtml();
+    const html = softwareHtml();
     const azinterface = SOFTWARE.find((s) => s.name === "AZInterface");
     const azhub = SOFTWARE.find((s) => s.name === "AZHub");
     const azbrowser = SOFTWARE.find((s) => s.name === "AZBrowser");
@@ -476,7 +530,7 @@ describe("software doors", () => {
   });
 
   it("keeps GodLock on Softwares and FragGate / runtime as extras only", () => {
-    const html = pageHtml();
+    const html = softwareHtml();
     const byName = Object.fromEntries(SOFTWARE.map((s) => [s.name, s.href]));
     const fraggate = SOFTWARE_EXTRAS.find((s) => s.name === "FragGate");
     const runtime = SOFTWARE_EXTRAS.find((s) => s.slug === "aziel-runtime");
@@ -562,7 +616,7 @@ describe("software doors", () => {
     assert.ok(names.includes("PeaceLock"));
     assert.ok(names.includes("AZMail"));
     assert.ok(!names.includes("Lumen"));
-    const html = pageHtml();
+    const html = softwareHtml();
     const idx = (name) => html.indexOf(">" + name + "<");
     assert.ok(idx("AZAI") < idx("StaticClock"));
     assert.ok(idx("AZBot") < idx("AZBrowser"));
@@ -596,7 +650,7 @@ describe("software doors", () => {
 
 describe("doors", () => {
   it("hyperlinks every door label and URL", () => {
-    const html = pageHtml();
+    const html = doorsHtml();
     for (const door of DOORS) {
       assert.ok(html.includes('href="' + door.href + '"'), door.label);
       assert.ok(html.includes(">" + door.label + "<"), door.label + " label");
@@ -626,8 +680,8 @@ describe("doors", () => {
     const eco = ECOSYSTEM_LINKS.find((d) => d.label === "He Didn't Jump");
     assert.ok(eco);
     assert.equal(eco.href, HEDIDNTJUMP + "/");
-    const html = pageHtml();
-    const doorsCard = html.match(/<section class="card" id="doors">[\s\S]*?<\/section>/);
+    const html = doorsHtml();
+    const doorsCard = html.match(/<section class="card lead" id="doors">[\s\S]*?<\/section>/);
     assert.ok(doorsCard);
     assert.ok(doorsCard[0].includes('class="door-label"'));
     assert.ok(doorsCard[0].includes(">He Didn't Jump<"));
@@ -739,11 +793,11 @@ describe("SEO routes", () => {
     assert.ok(llmsBody.includes("Person @id: " + PERSON_ID));
     assert.ok(llmsBody.includes("Runtime parent @id: " + RUNTIME_ID));
     assert.ok(llmsBody.includes("Named tools (not MCP ops): FragGate, ForgeReceipts"));
-    assert.ok(llmsBody.includes(SOFTWARE_HREF + "  (200 same homepage Software strip; /#software still works for humans)"));
+    assert.ok(llmsBody.includes(SOFTWARE_HREF + "  (distinct Software page; /#software maps here)"));
     assert.ok(llmsBody.includes(CANON_ORIGIN + "/about  (200 same homepage — About Aziel Eliab)"));
-    assert.ok(llmsBody.includes(CANON_ORIGIN + "/mission  (200 same homepage Mission strip; /#mission still works for humans)"));
-    assert.ok(llmsBody.includes("Softwares list: " + SOFTWARE_SECTION));
-    assert.ok(llmsBody.includes("Softwares alias: " + SOFTWARE_HREF + " (200 same homepage Software strip; /#software still works for humans)"));
+    assert.ok(llmsBody.includes(CANON_ORIGIN + "/mission  (301 to / ; Mission/Status strip removed)"));
+    assert.ok(llmsBody.includes("Softwares list: " + SOFTWARE_HREF));
+    assert.ok(llmsBody.includes("Softwares page: " + SOFTWARE_HREF + " (distinct Software page; /#software maps here)"));
     assert.ok(llmsBody.includes("FragGate Worker: " + FRAGGATE_WORKER));
     assert.ok(llmsBody.includes(DONATE_HREF + "  (AZL-DONATE-1.0 primary Donate door)"));
     assert.ok(llmsBody.includes("## Donate"));
@@ -813,7 +867,7 @@ describe("SEO routes", () => {
     assert.ok(aiBody.includes("Allow: /software/"));
     assert.ok(aiBody.includes("Allow: /about"));
     assert.ok(aiBody.includes("Allow: /AzielEliab"));
-    assert.ok(aiBody.includes("Softwares: " + SOFTWARE_SECTION + " (alias " + SOFTWARE_HREF + " 200 same HTML)"));
+    assert.ok(aiBody.includes("Softwares: " + SOFTWARE_HREF + " (distinct page; /#software maps here)"));
     assert.ok(aiBody.includes("User-agent: Googlebot"));
     assert.ok(aiBody.includes("User-agent: Cloudflare-AI-Search"));
     assert.ok(aiBody.includes("User-agent: Claude"));
@@ -891,8 +945,8 @@ describe("SEO routes", () => {
     assert.equal(citeBody.donate, DONATE_HREF);
     assert.ok(mapBody.includes("<loc>" + DONATE_HREF + "</loc>"));
     assert.ok(mapBody.includes("<loc>" + SOFTWARE_HREF + "</loc>"));
-    assert.ok(mapBody.includes("<loc>" + SOFTWARE_SECTION + "</loc>"));
-    assert.ok(mapBody.includes("<loc>" + CANON_ORIGIN + "/mission</loc>"));
+    assert.ok(!mapBody.includes("<loc>" + CANON_ORIGIN + "/#software</loc>"));
+    assert.ok(!mapBody.includes("<loc>" + CANON_ORIGIN + "/mission</loc>"));
     assert.ok(mapBody.includes("<loc>" + CANON_ORIGIN + "/why</loc>"));
     assert.ok(mapBody.includes("<loc>" + CANON_ORIGIN + "/research</loc>"));
     assert.ok(mapBody.includes("<loc>" + CANON_ORIGIN + "/doors</loc>"));
@@ -983,8 +1037,9 @@ describe("SEO routes", () => {
     assert.equal(ld["@graph"][6].url, CANON_ORIGIN + "/");
     const collection = ld["@graph"].find((n) => n["@type"] === "CollectionPage");
     assert.ok(collection);
-    assert.equal(collection.url, SOFTWARE_SECTION);
-    assert.ok(ld["@graph"].some((n) => n["@type"] === "WebPage" && n.url === CANON_ORIGIN + "/mission"));
+    assert.equal(collection.url, SOFTWARE_HREF);
+    assert.ok(ld["@graph"].some((n) => n["@type"] === "WebPage" && n.url === CANON_ORIGIN + "/why"));
+    assert.ok(!ld["@graph"].some((n) => n["@type"] === "WebPage" && n.url === CANON_ORIGIN + "/mission"));
     assert.ok(ld["@graph"].some((n) => n["@type"] === "FAQPage" && n.name === "Who is Aziel Eliab?"));
     const catalogApps = ld["@graph"].filter(
       (n) => n["@type"] === "SoftwareApplication" && n.isPartOf && n.isPartOf["@id"] === CANON_ORIGIN + "/#software",
@@ -1013,7 +1068,7 @@ describe("SEO routes", () => {
     assert.ok(!html.includes(">mesh off<"));
     assert.ok(!html.includes(">Live Nodes · off<"));
     assert.ok(!html.includes("mesh off"));
-    const softLine = html.match(/<p class="soft-line">[\s\S]*?<\/p>/);
+    const softLine = softwareHtml().match(/<p class="soft-line">[\s\S]*?<\/p>/);
     assert.ok(softLine);
     assert.doesNotMatch(softLine[0], /Live Nodes/i);
     assert.ok(ld["@graph"][2].description.includes("/v1/mesh/status"));
@@ -1144,7 +1199,8 @@ describe("public entity graph phases B–D + E audit", () => {
     assert.doesNotMatch(block, /Try \/ Deploy on Glama|Try\/Deploy on Glama/);
 
     const html = pageHtml();
-    const softwareCard = html.match(/<section class="card" id="software">[\s\S]*?<\/section>/);
+    const softwarePage = softwareHtml();
+    const softwareCard = softwarePage.match(/<section class="card lead" id="software">[\s\S]*?<\/section>/);
     assert.ok(softwareCard);
     assert.match(softwareCard[0], /<h2>Software<\/h2>\s*<p class="soft-line">/);
     assert.doesNotMatch(softwareCard[0], /Part of the Aziel Eliab ecosystem/);
@@ -1156,7 +1212,7 @@ describe("public entity graph phases B–D + E audit", () => {
     assert.ok(footer[0].includes(">Live Nodes · 0<"));
     assert.ok(!footer[0].includes(">mesh off<"));
     assert.ok(!footer[0].includes("mesh off"));
-    assert.ok(html.indexOf('id="software"') < html.indexOf("Part of the Aziel Eliab ecosystem"));
+    assert.ok(softwarePage.indexOf('id="software"') < softwarePage.indexOf("Part of the Aziel Eliab ecosystem"));
 
     const donate = donateHtml();
     const embryo = embryoLockHtml();
@@ -1266,7 +1322,7 @@ describe("public entity graph phases B–D + E audit", () => {
     }
 
     const html = pageHtml();
-    const softwareCard = html.match(/<section class="card" id="software">[\s\S]*?<\/section>/);
+    const softwareCard = softwareHtml().match(/<section class="card lead" id="software">[\s\S]*?<\/section>/);
     const runtimeCard = html.match(/<section class="card" id="runtime">[\s\S]*?<\/section>/);
     assert.ok(softwareCard);
     assert.ok(runtimeCard);
@@ -1552,7 +1608,8 @@ describe("worker routing", () => {
     assert.equal(res.headers.get("Content-Signal"), "search=yes, ai-input=yes, ai-train=yes");
     const body = await res.text();
     assert.ok(body.includes('<h1 id="aziel">Aziel Eliab</h1>'));
-    assert.ok(body.includes('id="doors"'));
+    assert.ok(!body.includes('id="doors"'));
+    assert.ok(body.includes('href="' + CANON_ORIGIN + "/doors" + '"'));
     assert.doesNotMatch(body, /<section class="card" id="donate">/);
     assert.ok(!body.includes('id="donate"'));
     assert.ok(!body.includes('class="rails"'));
@@ -1608,14 +1665,16 @@ describe("worker routing", () => {
     assert.doesNotMatch(body, /everblooming\s+sigil/i);
   });
 
-  it("200s /software and /software/ with the same homepage Software strip", async () => {
-    assert.equal(SOFTWARE_SECTION, CANON_ORIGIN + "/#software");
+  it("200s /software and /software/ as a distinct Software page", async () => {
+    assert.equal(SOFTWARE_SECTION, SOFTWARE_HREF);
     assert.equal(SOFTWARE_HREF, CANON_ORIGIN + "/software");
     const html = await fetchPath("/");
     const home = await html.text();
-    assert.ok(home.includes('id="software"'));
+    assert.ok(!home.includes('id="software"'));
+    assert.ok(!home.includes("<h2>Software</h2>"));
     assert.ok(home.includes('"@type":"SoftwareApplication"'));
     assert.ok(home.includes('"@id":"' + softwareNodeId({ name: "AZAI" }) + '"') || home.includes("#software-azai"));
+    assert.ok(home.includes('href="' + SOFTWARE_HREF + '"'));
 
     for (const path of ["/software", "/software/"]) {
       const res = await fetchPath(path);
@@ -1624,7 +1683,10 @@ describe("worker routing", () => {
       const body = await res.text();
       assert.ok(body.includes('id="software"'));
       assert.ok(body.includes("<h2>Software</h2>"));
+      assert.ok(body.includes("<h1>Software</h1>"));
       assert.ok(body.includes('rel="canonical" href="' + SOFTWARE_HREF + '"'));
+      assert.ok(!body.includes("<h2>Why</h2>"));
+      assert.ok(!body.includes("<h2>Mission</h2>"));
     }
 
     const head = await fetchPath("/software", { method: "HEAD" });
@@ -1650,8 +1712,9 @@ describe("worker routing", () => {
       assert.equal(res.status, 200, path);
       assert.match(res.headers.get("content-type"), /text\/html/, path);
       const body = await res.text();
-      assert.ok(body.includes("<h2>Why</h2>"), path);
+      assert.ok(!body.includes("<h2>Why</h2>"), path);
       assert.ok(body.includes('id="aziel"'), path);
+      assert.ok(body.includes("You don’t get to know me."), path);
     }
     const azielEliab = await fetchPath("/AzielEliab");
     const aliasBody = await azielEliab.text();
@@ -1661,13 +1724,12 @@ describe("worker routing", () => {
     assert.equal(apex.headers.get("location"), CANON_ORIGIN + "/about");
   });
 
-  it("200s hash-section paths with the same homepage content", async () => {
+  it("serves Why / Software / Research / Doors as distinct pages and 301s /mission", async () => {
     for (const [path, hash, title] of [
-      ["/mission", "mission", "Mission — Aziel Eliab"],
       ["/why", "why", "Why — Aziel Eliab"],
+      ["/software", "software", "Software — Aziel Eliab"],
       ["/research", "research", "Research — Aziel Eliab"],
       ["/doors", "doors", "Doors — Aziel Eliab"],
-      ["/aziel", "aziel", "Aziel Eliab"],
     ]) {
       const res = await fetchPath(path);
       assert.equal(res.status, 200, path);
@@ -1676,18 +1738,39 @@ describe("worker routing", () => {
       assert.ok(body.includes('id="' + hash + '"'), path);
       assert.ok(body.includes("<title>" + title + "</title>"), path);
       assert.ok(body.includes('rel="canonical" href="' + CANON_ORIGIN + path + '"'), path);
-      assert.ok(body.includes("<h2>Why</h2>"), path);
-      assert.ok(body.includes("<h2>Mission</h2>"), path);
-      assert.ok(body.includes("<h2>Software</h2>"), path);
+      assert.ok(body.includes("<h2>" + title.split(" — ")[0] + "</h2>"), path);
+      assert.ok(!body.includes("<h2>Mission</h2>"), path);
+      assert.ok(!body.includes("<h2>Status</h2>"), path);
       assert.equal(res.headers.get("Content-Signal"), "search=yes, ai-input=yes, ai-train=yes", path);
     }
+    const aziel = await fetchPath("/aziel");
+    assert.equal(aziel.status, 200);
+    const azielBody = await aziel.text();
+    assert.ok(azielBody.includes('id="aziel"'));
+    assert.ok(azielBody.includes("<title>Aziel Eliab</title>"));
+    assert.ok(azielBody.includes('rel="canonical" href="' + CANON_ORIGIN + '/aziel"'));
+    assert.ok(!azielBody.includes("<h2>Why</h2>"));
+
     const mission = await fetchPath("/mission");
-    const missionBody = await mission.text();
-    assert.ok(missionBody.includes("scrollIntoView"));
-    assert.ok(missionBody.includes('"mission"'));
+    assert.equal(mission.status, 301);
+    assert.equal(mission.headers.get("location"), CANON_ORIGIN + "/");
+    const missionSlash = await fetchPath("/mission/");
+    assert.equal(missionSlash.status, 301);
+    assert.equal(missionSlash.headers.get("location"), CANON_ORIGIN + "/");
+
     const home = pageHtml();
     assert.ok(!home.includes("scrollIntoView"));
-    assert.ok(home.includes('href="#mission"'));
+    assert.ok(!home.includes('href="#mission"'));
+    assert.ok(!home.includes('href="#why"'));
+    assert.ok(home.includes('href="' + CANON_ORIGIN + '/why"'));
+    assert.deepEqual(HASH_REDIRECTS, {
+      why: "/why",
+      software: "/software",
+      research: "/research",
+      doors: "/doors",
+      mission: "/",
+    });
+    assert.ok(hashRedirectScript().includes('why":"/why"'));
   });
 
   it("serves GET /embryolock as a secondary local page, not the corpus catalog", async () => {
@@ -1822,11 +1905,11 @@ describe("AZL-DONATE-1.0", () => {
     assert.ok(!html.includes('class="rails"'));
     assert.ok(!html.includes('class="donate-law"'));
     assert.ok(!html.includes("Nothing is free.</p>"));
-    assert.ok(html.includes('id="why"'));
-    assert.ok(html.includes('id="mission"'));
-    assert.ok(html.includes('id="software"'));
-    assert.ok(html.includes('id="research"'));
-    assert.ok(html.includes('id="doors"'));
+    assert.ok(!html.includes('id="why"'));
+    assert.ok(!html.includes('id="mission"'));
+    assert.ok(!html.includes('id="software"'));
+    assert.ok(!html.includes('id="research"'));
+    assert.ok(!html.includes('id="doors"'));
     assert.ok(html.includes('aria-label="Spine"'));
     assert.ok(html.includes(">" + DONATE_TITLE + "<"));
     assert.ok(html.includes('href="' + DONATE_HREF + '"'));
@@ -1837,12 +1920,18 @@ describe("AZL-DONATE-1.0", () => {
     assert.equal(DONATE_HREF, CANON_ORIGIN + DONATE_PATH + "?v=png");
     assert.deepEqual(
       SPINE.map((s) => s.label),
-      ["Why", "Mission", "Software", "Research", "Doors", "Donate"],
+      ["Why", "Software", "Research", "Doors", "Donate"],
+    );
+    assert.deepEqual(
+      SPINE.map((s) => s.href),
+      [CANON_ORIGIN + "/why", SOFTWARE_HREF, CANON_ORIGIN + "/research", CANON_ORIGIN + "/doors", DONATE_HREF],
     );
     const homeNav = spineNav("home");
     assert.ok(homeNav.includes(">" + DONATE_TITLE + "<"));
     assert.ok(homeNav.includes('href="' + DONATE_HREF + '"'));
     assert.ok(!homeNav.includes('href="#donate"'));
+    assert.ok(!homeNav.includes('href="#why"'));
+    assert.ok(homeNav.includes('href="' + CANON_ORIGIN + '/why"'));
     const nav = spineNav("donate");
     assert.ok(nav.includes('aria-current="page"'));
     assert.ok(nav.includes('href="' + DONATE_HREF + '"'));
@@ -1994,16 +2083,16 @@ describe("live software catalog", () => {
     const softwareBody = await softwares.text();
     assert.ok(softwareBody.includes(">NewLock<"));
     assert.ok(softwareBody.includes('id="software"'));
-    assert.ok(html.includes(">NewLock<"));
+    assert.ok(!html.includes('class="soft-name">NewLock<'));
     assert.ok(html.includes("#software-newlock"));
-    assert.ok(html.includes('href="https://newlock-download-tracker.vibelock.workers.dev/"'));
-    assert.ok(html.includes(">AZAI<"));
-    assert.ok(html.includes(">DecisionGATE<"));
-    assert.ok(!html.includes('class="soft-name">FragGate<'));
-    assert.ok(html.includes(">EmbryoLock<"));
-    assert.ok(html.includes('href="' + EMBRYOLOCK_WORKER + '"'));
-    assert.match(html, /embryolock-download-tracker/i);
-    const idx = (name) => html.indexOf(">" + name + "<");
+    assert.ok(softwareBody.includes('href="https://newlock-download-tracker.vibelock.workers.dev/"'));
+    assert.ok(softwareBody.includes(">AZAI<"));
+    assert.ok(softwareBody.includes(">DecisionGATE<"));
+    assert.ok(!softwareBody.includes('class="soft-name">FragGate<'));
+    assert.ok(softwareBody.includes(">EmbryoLock<"));
+    assert.ok(softwareBody.includes('href="' + EMBRYOLOCK_WORKER + '"'));
+    assert.match(softwareBody, /embryolock-download-tracker/i);
+    const idx = (name) => softwareBody.indexOf(">" + name + "<");
     assert.ok(idx("AZAI") < idx("DecisionGATE"));
     assert.ok(idx("DecisionGATE") < idx("NewLock"));
 
@@ -2065,11 +2154,15 @@ describe("live software catalog", () => {
 
     const landing = await fetchPath("/", { headers: { "user-agent": "Mozilla/5.0" } }, env);
     const html = await landing.text();
+    const software = await fetchPath("/software", {}, env);
+    const softwareBody = await software.text();
     assert.ok(!html.includes('class="soft-name">' + RUNTIME_NAME + "<"));
+    assert.ok(!softwareBody.includes('class="soft-name">' + RUNTIME_NAME + "<"));
     assert.doesNotMatch(html, /runtime 1\.6\.15 FragGate/);
+    assert.doesNotMatch(softwareBody, /runtime 1\.6\.15 FragGate/);
     assert.doesNotMatch(html, /Run them without me/);
-    assert.match(html, /<h2>Software<\/h2>\s*<p class="soft-line">/);
-    const idx = (name) => html.indexOf(">" + name + "<");
+    assert.match(softwareBody, /<h2>Software<\/h2>\s*<p class="soft-line">/);
+    const idx = (name) => softwareBody.indexOf(">" + name + "<");
     assert.ok(idx("AZAI") < idx("DecisionGATE"));
     assert.ok(idx("DecisionGATE") < idx("CodeLock"));
 
@@ -2356,7 +2449,8 @@ describe("suite node mesh", () => {
     assert.ok(html.includes(">Live Nodes · 40<"));
     assert.ok(html.includes('id="aziel-live-nodes"'));
     assert.ok(html.includes('name="aziel-mesh-status"'));
-    const landingSoft = html.match(/<p class="soft-line">[\s\S]*?<\/p>/);
+    const softwarePage = await fetchPath("/software", {}, env);
+    const landingSoft = (await softwarePage.text()).match(/<p class="soft-line">[\s\S]*?<\/p>/);
     assert.ok(landingSoft);
     assert.doesNotMatch(landingSoft[0], /Live Nodes/i);
 
@@ -2417,7 +2511,11 @@ describe("edge cache and cost", () => {
     assert.equal(home.status, 200);
     assert.equal(home.headers.get("cache-control"), HTML_CACHE);
     assert.doesNotMatch(home.headers.get("cache-control"), /no-store/i);
-    assert.ok((await home.text()).includes(">AZAI<"));
+    const homeBody = await home.text();
+    assert.ok(homeBody.includes("#software-azai") || homeBody.includes(">AZAI<"));
+    const softwareRes = await fetchPath("/software");
+    assert.equal(softwareRes.status, 200);
+    assert.ok((await softwareRes.text()).includes(">AZAI<"));
 
     const donateBare = await fetchPath("/donate");
     assert.equal(donateBare.status, 302);
@@ -2489,8 +2587,12 @@ describe("edge cache and cost", () => {
 
     const home = await fetchPath("/", { headers: { "user-agent": "Mozilla/5.0" } }, env);
     const html = await home.text();
-    assert.ok(html.includes(">NewLock<"));
-    assert.ok(html.includes(">AZAI<"));
+    assert.ok(html.includes("#software-newlock"));
+    assert.ok(html.includes("#software-azai"));
+    const softwarePage = await fetchPath("/software", {}, env);
+    const softwareBody = await softwarePage.text();
+    assert.ok(softwareBody.includes(">NewLock<"));
+    assert.ok(softwareBody.includes(">AZAI<"));
     assert.equal(paths.filter((p) => p === "/v1/software" || p === "/v1/fraggate/list").length, before);
   });
 

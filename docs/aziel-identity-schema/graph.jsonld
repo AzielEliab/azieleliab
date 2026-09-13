@@ -174,7 +174,6 @@
         "https://www.azieleliab.com/who-is-aziel-eliab.txt",
         "https://www.azieleliab.com/graph.jsonld",
         "https://www.azieleliab.com/why",
-        "https://www.azieleliab.com/mission",
         "https://www.azieleliab.com/software",
         "https://www.azieleliab.com/research",
         "https://www.azieleliab.com/doors",
@@ -201,31 +200,7 @@
       },
       "inLanguage": "en",
       "relatedLink": [
-        "https://www.azieleliab.com/#why",
-        "https://www.azieleliab.com/who-is"
-      ]
-    },
-    {
-      "@type": "WebPage",
-      "@id": "https://www.azieleliab.com/mission#webpage",
-      "url": "https://www.azieleliab.com/mission",
-      "name": "Mission — Aziel Eliab",
-      "description": "Mission of Aziel Eliab: hashed receipts, timed files, open software, and MASTER records. Living publisher of the record, the software, and the Zioncheck archive.",
-      "isPartOf": {
-        "@id": "https://www.azieleliab.com/#website"
-      },
-      "mainEntity": {
-        "@id": "https://www.azieleliab.com/#aziel"
-      },
-      "about": {
-        "@id": "https://www.azieleliab.com/#aziel"
-      },
-      "author": {
-        "@id": "https://www.azieleliab.com/#aziel"
-      },
-      "inLanguage": "en",
-      "relatedLink": [
-        "https://www.azieleliab.com/#mission",
+        "https://www.azieleliab.com/",
         "https://www.azieleliab.com/who-is"
       ]
     },
@@ -249,7 +224,7 @@
       },
       "inLanguage": "en",
       "relatedLink": [
-        "https://www.azieleliab.com/#software",
+        "https://www.azieleliab.com/",
         "https://www.azieleliab.com/who-is"
       ]
     },
@@ -273,7 +248,7 @@
       },
       "inLanguage": "en",
       "relatedLink": [
-        "https://www.azieleliab.com/#research",
+        "https://www.azieleliab.com/",
         "https://www.azieleliab.com/who-is"
       ]
     },
@@ -297,7 +272,7 @@
       },
       "inLanguage": "en",
       "relatedLink": [
-        "https://www.azieleliab.com/#doors",
+        "https://www.azieleliab.com/",
         "https://www.azieleliab.com/who-is"
       ]
     },
@@ -321,7 +296,7 @@
       },
       "inLanguage": "en",
       "relatedLink": [
-        "https://www.azieleliab.com/#aziel",
+        "https://www.azieleliab.com/",
         "https://www.azieleliab.com/who-is"
       ]
     },
