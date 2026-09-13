@@ -1,5 +1,5 @@
 /** azieleliab.com landing Worker. Author: Aziel Eliab. */
-import { aboutAliasPath, APEX_HOST, CANON_ORIGIN, indexableSection } from "./copy.js";
+import { aboutAliasPath, APEX_HOST, AUTHOR, CANON_ORIGIN, DESCRIPTION, isMissionPath, tabPage } from "./copy.js";
 import {
   DONATE_CACHE_BUST,
   DONATE_HTML_CACHE,
@@ -24,7 +24,7 @@ import {
   MESH_STATUS_PATH,
   meshSnapshot,
 } from "./mesh.js";
-import { donateHtml, embryoLockHtml, notFoundHtml, pageHtml } from "./page.js";
+import { donateHtml, embryoLockHtml, notFoundHtml, pageHtml, sectionPageHtml } from "./page.js";
 import { donateQrResponse } from "./qr.js";
 import { sigilResponse } from "./sigil.js";
 import { handleRuntimeRoot, isRuntimeRequest } from "./runtimeRoot.js";
@@ -200,9 +200,14 @@ export async function handleRequest(request, env = {}, ctx) {
     }
   }
 
+  if (isMissionPath(path)) {
+    return Response.redirect(CANON_ORIGIN + "/", 301);
+  }
+
   const aboutPath = aboutAliasPath(path);
-  const section = indexableSection(path);
-  const homeLike = path === "/" || Boolean(aboutPath) || Boolean(section);
+  const tab = tabPage(path);
+  const azielAlias = path === "/aziel";
+  const homeLike = path === "/" || Boolean(aboutPath) || Boolean(tab) || azielAlias;
   const needsLive =
     homeLike ||
     path === "/llms.txt" ||
@@ -226,13 +231,15 @@ export async function handleRequest(request, env = {}, ctx) {
         canonical: CANON_ORIGIN + aboutPath,
       }),
     );
-  } else if (section) {
+  } else if (azielAlias) {
     res = html(
       pageHtml(await readViews(env), doors, meshStatus, live && live.version, {
-        section,
-        canonical: CANON_ORIGIN + section.path,
+        section: { title: AUTHOR, description: DESCRIPTION, path: "/aziel" },
+        canonical: CANON_ORIGIN + "/aziel",
       }),
     );
+  } else if (tab) {
+    res = html(sectionPageHtml(tab, await readViews(env), doors, meshStatus, live && live.version));
   } else if (path === "/donate") res = html(donateHtml(), 200, DONATE_HTML_CACHE);
   else if (path === "/embryolock") res = html(embryoLockHtml(), 200, STUB_HTML_CACHE);
   else if (path === "/robots.txt") res = text(robotsTxt(), "text/plain", { cache: SEO_CACHE });

@@ -18,6 +18,7 @@ import {
   EMBRYOLOCK_HREF,
   EMBRYOLOCK_WORKER,
   GITHUB,
+  HASH_REDIRECTS,
   LIBRARY,
   PROSE,
   RUNTIME_DOORS,
@@ -95,14 +96,8 @@ export function spineNav(current) {
     '<nav class="spine" aria-label="Spine">' +
     SPINE.map((item) => {
       const here = item.id === current;
-      const href =
-        item.id === "donate"
-          ? DONATE_HREF
-          : current === "home"
-            ? "#" + item.id
-            : "/#" + item.id;
       const cur = here ? ' aria-current="page"' : "";
-      return '<a href="' + attr(href) + '"' + cur + ">" + esc(item.label) + "</a>";
+      return '<a href="' + attr(item.href) + '"' + cur + ">" + esc(item.label) + "</a>";
     }).join("") +
     "</nav>"
   );
@@ -619,25 +614,47 @@ export function ecosystemHtml() {
   );
 }
 
-function sectionScrollScript(hash) {
-  if (!hash) return "";
+export function hashRedirectScript() {
   return (
-    "<script>(function(){var el=document.getElementById(" +
-    JSON.stringify(hash) +
-    ");if(el)el.scrollIntoView({block:\"start\"});})();</script>"
+    "<script>(function(){var map=" +
+    JSON.stringify(HASH_REDIRECTS) +
+    ';var h=String(location.hash||"").replace(/^#/,"");if(map[h])location.replace(map[h]);})();</script>'
+  );
+}
+
+function tabArticle(section, softwareItems) {
+  if (section.id === "why") return paragraphs(PROSE.why);
+  if (section.id === "software") return '<p class="soft-line">' + softwareLine(softwareItems) + "</p>";
+  if (section.id === "research") return researchParagraphs();
+  if (section.id === "doors") return '<ul class="doors">' + DOORS.map(doorRow).join("") + "</ul>";
+  return "";
+}
+
+function literaryFooter(meshQuiet) {
+  return (
+    "  <footer>\n    " +
+    ecosystemHtml() +
+    "\n    <p>" +
+    esc(AUTHOR) +
+    " · " +
+    a(CANON_ORIGIN + "/cite.json", "cite.json") +
+    " · " +
+    a(CANON_ORIGIN + "/llms.txt", "llms.txt") +
+    " · " +
+    a(DONATE_HREF, DONATE_TITLE) +
+    " · Apache-2.0</p>\n    " +
+    meshQuiet +
+    "\n  </footer>"
   );
 }
 
 export function pageHtml(views = 0, softwareItems = SOFTWARE, mesh = null, runtimeVersion = RUNTIME_VERSION, opts = {}) {
   const doorsSoftware = softwareItems && softwareItems.length ? softwareItems : SOFTWARE;
-  const software = softwareLine(doorsSoftware);
-  const doors = DOORS.map(doorRow).join("");
   const meshQuiet = meshQuietHtml(mesh);
   const section = opts && opts.section;
   const title = (section && section.title) || AUTHOR;
   const description = (section && section.description) || DESCRIPTION;
   const canonical = (opts && opts.canonical) || (section ? CANON_ORIGIN + section.path : CANON_ORIGIN + "/");
-  const scrollHash = section && section.hash ? section.hash : "";
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -649,6 +666,7 @@ ${documentHead({
   extraMeta: quietDiscoveryMeta(),
   runtimeVersion,
 })}
+${hashRedirectScript()}
 </head>
 <body>
 <main class="wrap">
@@ -656,49 +674,60 @@ ${brandRow("\n      " + viewsPill(views) + "\n      " + liveNodesPill(mesh))}
   <h1 id="aziel">${esc(PROSE.title)}</h1>
   ${spineNav("home")}
   <article class="card lead">${paragraphs(PROSE.open)}</article>
-  <section class="card" id="why">
-    <h2>Why</h2>
-    ${paragraphs(PROSE.why)}
-  </section>
-  <section class="card" id="mission">
-    <h2>Mission</h2>
-    ${paragraphs(PROSE.mission)}
-    <h2>Status</h2>
-    ${paragraphs(PROSE.status)}
-    ${awarenessHtml()}
-  </section>
-  <section class="card" id="software">
-    <h2>Software</h2>
-    <p class="soft-line">${software}</p>
-  </section>
   <section class="card" id="runtime">
     <h2>${esc(RUNTIME_TITLE)}</h2>
     ${runtimeCiteHtml(runtimeVersion)}
     <p class="runtime-named">${esc(RUNTIME_NAMED_LINE)}</p>
     ${runtimeDoorsHtml()}
   </section>
-  <section class="card" id="research">
-    <h2>Research</h2>
-    ${researchParagraphs()}
-  </section>
-  <section class="card" id="doors">
-    <h2>Doors</h2>
-    <ul class="doors">${doors}</ul>
-  </section>
   <section class="card close">
     <p>${esc(PROSE.close)}</p>
     <p class="sign">${esc(PROSE.sign)}</p>
   </section>
-  <footer>
-    ${ecosystemHtml()}
-    <p>${esc(AUTHOR)} · ${a(CANON_ORIGIN + "/cite.json", "cite.json")} · ${a(CANON_ORIGIN + "/llms.txt", "llms.txt")} · ${a(DONATE_HREF, DONATE_TITLE)} · Apache-2.0</p>
-    ${meshQuiet}
-  </footer>
+${literaryFooter(meshQuiet)}
 </main>
 ${COPY_SCRIPT}
 ${LIVE_NODES_SCRIPT}
 ${RUNTIME_VERSION_SCRIPT}
-${AWARENESS_SCRIPT}${scrollHash ? "\n" + sectionScrollScript(scrollHash) : ""}
+</body>
+</html>`;
+}
+
+export function sectionPageHtml(section, views = 0, softwareItems = SOFTWARE, mesh = null, runtimeVersion = RUNTIME_VERSION) {
+  const doorsSoftware = softwareItems && softwareItems.length ? softwareItems : SOFTWARE;
+  const meshQuiet = meshQuietHtml(mesh);
+  const heading = (section && section.heading) || (section && section.title) || AUTHOR;
+  const title = (section && section.title) || AUTHOR;
+  const description = (section && section.description) || DESCRIPTION;
+  const canonical = CANON_ORIGIN + section.path;
+  const current = section.id;
+  return `<!doctype html>
+<html lang="en">
+<head>
+${documentHead({
+  title,
+  description,
+  canonical,
+  software: doorsSoftware,
+  extraMeta: quietDiscoveryMeta(),
+  runtimeVersion,
+})}
+${hashRedirectScript()}
+</head>
+<body>
+<main class="wrap">
+${brandRow("\n      " + viewsPill(views) + "\n      " + liveNodesPill(mesh))}
+  ${spineNav(current)}
+  <h1>${esc(heading)}</h1>
+  <section class="card lead" id="${attr(section.hash || section.id)}">
+    <h2>${esc(heading)}</h2>
+    ${tabArticle(section, doorsSoftware)}
+  </section>
+${literaryFooter(meshQuiet)}
+</main>
+${COPY_SCRIPT}
+${LIVE_NODES_SCRIPT}
+${RUNTIME_VERSION_SCRIPT}
 </body>
 </html>`;
 }
@@ -714,6 +743,7 @@ ${documentHead({
   canonical: DONATE_HREF,
   extraMeta: quietDiscoveryMeta(),
 })}
+${hashRedirectScript()}
 </head>
 <body>
 <main class="wrap">
@@ -741,6 +771,7 @@ ${documentHead({
   canonical: EMBRYOLOCK_HREF,
   extraMeta: quietDiscoveryMeta(),
 })}
+${hashRedirectScript()}
 </head>
 <body>
 <main class="wrap">
