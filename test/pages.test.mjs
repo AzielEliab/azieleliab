@@ -966,7 +966,10 @@ describe("SEO routes", () => {
     assert.ok(ld["@graph"][0].alternateName.includes("Aziell"));
     assert.ok(ld["@graph"][0].alternateName.includes("The Revealer of The Sealed"));
     assert.ok(ld["@graph"][0].alternateName.includes("Revealer of The Sealed"));
-    assert.equal(ld["@graph"][0].disambiguatingDescription, "Not Aziel S. / not euaziel.site.");
+    assert.equal(
+      ld["@graph"][0].disambiguatingDescription,
+      "Not biblical Aziel; not biblical Eliab; not euaziel.site; not Aziel S. (Flutter/portfolio); not other engineers named Aziel.",
+    );
     assert.ok(!ld["@graph"][0].disambiguatingDescription.includes("1 Chronicles"));
     assert.ok(!ld["@graph"][0].description.includes("1 Chronicles"));
     assert.ok(ld["@graph"][0].description.includes("GodLock, Aziel Digital Library, aziel-runtime MCP, and He Didn't Jump"));
