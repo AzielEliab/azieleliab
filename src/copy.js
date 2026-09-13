@@ -160,7 +160,7 @@ export const DESCRIPTION =
 /** About surfaces 200 with the same homepage HTML so they are indexable. */
 export const ABOUT_PATHS = ["/about", "/AzielEliab", "/aziel-eliab"];
 export const ABOUT_HREF = CANON_ORIGIN + "/";
-/** Visible HTML who-is page. Machine twin remains /who-is-aziel-eliab.txt. */
+/** Visible HTML who-is page (H1 + who-answer). Machine twin remains /who-is-aziel-eliab.txt. */
 export const WHO_PATH = "/who";
 export const WHO_HREF = CANON_ORIGIN + WHO_PATH;
 export const WHO_TITLE = "Who is Aziel Eliab";
