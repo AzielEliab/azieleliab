@@ -7,6 +7,9 @@ import { CANON_ORIGIN, LIBRARY, PERSON_ID } from "../src/copy.js";
 import { VISIBLE_LOCK_LINE } from "../src/identity.js";
 import { canonicalPageBytes } from "../src/ingest.js";
 import {
+  ARCHIVE_ORG_DOWNLOAD,
+  ARCHIVE_ORG_IDENTIFIER,
+  ARCHIVE_ORG_TIP_PACK,
   CAP7_BRIDGE,
   CODEBERG_PACK_SHA256,
   CODEBERG_TIP_PACK,
@@ -18,10 +21,13 @@ import {
   LOCKSET_TIP,
   NO_FAN,
   NO_FAN_PHRASE,
+  PLANE_B_THIRD_ANY_OF,
+  PLANE_B_WORKING_TARGETS,
   PUBLISHED_SURFACES,
   SHELVES_HREF,
   SHELVES_JSON_HREF,
   SHELVES_REGISTRY,
+  TIP_PACK_SHA256,
   cap7Cite,
   shelvesDoc,
 } from "../src/shelves.js";
@@ -89,30 +95,51 @@ describe("COLD-MULTI-SHELF-1.0 AZindex gate", () => {
     assert.equal(doc.registry.growth_on, true);
   });
 
-  it("keeps Plane B Codeberg SLOT until archive.org + GitFlic verify; Zenodo refused", () => {
+  it("keeps Plane B Codeberg+archive.org PASS; third target Framagit OR GitLab; GitFlic not required", () => {
     const b = shelvesDoc().planes.B;
     assert.equal(b.status, "slot");
     assert.equal(b.doi, null);
     assert.equal(b.live_ready, false);
     assert.equal(b.zenodo_working_path, false);
     assert.equal(b.refuse, "CNS-ZENODO-IP-BAN");
-    assert.deepEqual(b.working_targets, ["codeberg", "archive.org", "gitflic-ru"]);
+    assert.deepEqual(b.working_targets, PLANE_B_WORKING_TARGETS);
+    assert.deepEqual(b.third_target.any_of, PLANE_B_THIRD_ANY_OF);
+    assert.equal(b.third_target.verified, false);
+    assert.equal(b.third_target.url, null);
     assert.equal(b.codeberg.url, CODEBERG_TIP_PACK);
     assert.equal(b.codeberg.pack_sha256, CODEBERG_PACK_SHA256);
     assert.equal(b.codeberg.hash_verify, "pass");
     assert.equal(b.codeberg.live_ready, false);
     assert.equal(b.codeberg.refuse, "CNS-PLANE-B-ALL-TARGETS");
+    assert.equal(b.archive_org.url, ARCHIVE_ORG_TIP_PACK);
+    assert.equal(b.archive_org.identifier, ARCHIVE_ORG_IDENTIFIER);
+    assert.equal(b.archive_org.download_base, ARCHIVE_ORG_DOWNLOAD);
+    assert.equal(b.archive_org.pack_sha256, TIP_PACK_SHA256);
+    assert.equal(b.archive_org.hash_verify, "pass");
+    assert.equal(b.archive_org.live_ready, false);
+    assert.equal(b.gitflic.required, false);
+    assert.equal(b.gitflic.refuse, "CNS-GITFLIC-EMAIL");
 
     const shelves = shelvesDoc().registry.shelves;
     const codeberg = shelves.find((row) => row.id === "plane-b-codeberg-tip-pack");
     const archive = shelves.find((row) => row.id === "plane-b-archive-org-tip-pack");
+    const framagit = shelves.find((row) => row.id === "plane-b-framagit-tip-pack");
+    const gitlab = shelves.find((row) => row.id === "plane-b-gitlab-tip-pack");
     const gitflic = shelves.find((row) => row.id === "plane-b-gitflic-ru-tip-pack");
     const zenodo = shelves.find((row) => row.id === "plane-b-zenodo-tip-pack");
     assert.equal(codeberg.status, "slot");
-    assert.equal(codeberg.pack_sha256, CODEBERG_PACK_SHA256);
-    assert.equal(codeberg.url, CODEBERG_TIP_PACK);
-    assert.equal(archive.url, null);
-    assert.equal(gitflic.url, null);
+    assert.equal(codeberg.hash_verify, "pass");
+    assert.equal(archive.status, "slot");
+    assert.equal(archive.url, ARCHIVE_ORG_TIP_PACK);
+    assert.equal(archive.hash_verify, "pass");
+    assert.equal(archive.pack_sha256, TIP_PACK_SHA256);
+    assert.equal(framagit.url, null);
+    assert.equal(gitlab.url, null);
+    assert.equal(gitflic.status, "refused");
+    assert.equal(gitflic.required, false);
+    assert.ok(gitflic.refuse.includes("CNS-GITFLIC-EMAIL"));
+    assert.ok(shelvesDoc().registry.refused.includes("plane-b-gitflic-ru-tip-pack"));
+    assert.ok(!shelvesDoc().registry.slot.includes("plane-b-gitflic-ru-tip-pack"));
     assert.equal(zenodo.status, "refused");
     assert.equal(zenodo.doi, null);
     assert.ok(zenodo.refuse.includes("CNS-ZENODO-IP-BAN"));
@@ -209,7 +236,11 @@ describe("COLD-MULTI-SHELF-1.0 AZindex gate", () => {
       assert.ok(text.includes(COLD_MULTI_SHELF_RULE), name);
       assert.ok(text.includes(SHELVES_REGISTRY), name);
       assert.ok(text.includes(CODEBERG_TIP_PACK), name);
+      assert.ok(text.includes(ARCHIVE_ORG_TIP_PACK), name);
       assert.ok(text.includes(CODEBERG_PACK_SHA256), name);
+      assert.ok(text.includes("Framagit OR GitLab"), name);
+      assert.ok(text.includes("CNS-GITFLIC-EMAIL"), name);
+      assert.doesNotMatch(text, /archive\.org unverified/, name);
       assert.ok(text.includes("CNS-ZENODO-IP-BAN"), name);
       assert.ok(text.includes("CNS-OPERATOR-ATTEST"), name);
       assert.ok(text.includes(LAMB_LENS_PATH), name);
