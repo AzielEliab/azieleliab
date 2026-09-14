@@ -39,8 +39,8 @@ export const TIP_PACK_FILES = ["aziel-tip-pack.tar", "SHA256SUMS", "lockset.json
 export const ARCHIVE_ORG_TIP_PACK = "https://archive.org/details/aziel-lockset-tip";
 export const ARCHIVE_ORG_IDENTIFIER = "aziel-lockset-tip";
 export const ARCHIVE_ORG_DOWNLOAD = "https://archive.org/download/aziel-lockset-tip/";
-export const PLANE_B_WORKING_TARGETS = ["codeberg", "archive.org", "framagit-or-gitlab"];
-export const PLANE_B_THIRD_ANY_OF = ["framagit", "gitlab"];
+export const PLANE_B_WORKING_TARGETS = ["codeberg", "archive.org", "framagit"];
+export const PLANE_B_THIRD = "framagit";
 
 export const NO_FAN = "NO-FAN-1.0";
 export const NO_FAN_PHRASE = "No falsification. No ambiguity. No misleading.";
@@ -91,17 +91,17 @@ export function planeB() {
     doi: null,
     working_targets: PLANE_B_WORKING_TARGETS.slice(),
     third_target: {
-      any_of: PLANE_B_THIRD_ANY_OF.slice(),
+      forge: PLANE_B_THIRD,
       required: true,
       verified: false,
       url: null,
-      note: "Either Framagit or GitLab hash-verify PASS fills the third target. Do not invent a URL.",
+      note: "Framagit is the Plane B third target. Do not invent a URL. Never LIVE until it hash-verifies.",
     },
     zenodo_working_path: false,
     live_ready: false,
     refuse: "CNS-ZENODO-IP-BAN",
     checklist: "tools/cold_shelf/ALT-FORGE-TIP-PACK-CHECKLIST.md",
-    note: "Codeberg + archive.org uploaded + hash-verify PASS (still SLOT). Third target is Framagit OR GitLab. GitFlic blocked (CNS-GITFLIC-EMAIL) — not required. LIVE only when the third target verifies (CNS-PLANE-B-ALL-TARGETS). Zenodo refused (CNS-ZENODO-IP-BAN).",
+    note: "Codeberg + archive.org uploaded + hash-verify PASS (still SLOT). Third target is Framagit. GitFlic blocked (CNS-GITFLIC-EMAIL). GitLab blocked (CNS-GITLAB-CF-LOOP). Never invent URLs. Never LIVE yet.",
     codeberg: {
       url: CODEBERG_TIP_PACK,
       branch: CODEBERG_BRANCH,
@@ -129,6 +129,11 @@ export function planeB() {
     gitflic: {
       required: false,
       refuse: "CNS-GITFLIC-EMAIL",
+      url: null,
+    },
+    gitlab: {
+      required: false,
+      refuse: "CNS-GITLAB-CF-LOOP",
       url: null,
     },
   };
@@ -374,7 +379,7 @@ export function shelvesList() {
       refuse: "CNS-NO-FORGE-MIRROR",
       checklist: "tools/cold_shelf/ALT-FORGE-TIP-PACK-CHECKLIST.md",
       reason:
-        "Plane B working shelf is an alternate independent forge/archive tip-pack (Codeberg / archive.org / Framagit-OR-GitLab). Codeberg + archive.org hash-verify PASS; third target unverified. SLOT until Framagit OR GitLab hash-verify. GitFlic blocked (CNS-GITFLIC-EMAIL) — not required. cite.json / lockset doi stay null.",
+        "Plane B working shelf is an alternate independent forge/archive tip-pack (Codeberg / archive.org / Framagit). Codeberg + archive.org hash-verify PASS; Framagit unverified. SLOT until Framagit hash-verify. GitFlic blocked (CNS-GITFLIC-EMAIL). GitLab blocked (CNS-GITLAB-CF-LOOP). Never invent URLs. cite.json / lockset doi stay null.",
       note: "Not Zenodo. Zenodo is not the Plane B working path (CNS-ZENODO-IP-BAN).",
     },
     {
@@ -397,7 +402,7 @@ export function shelvesList() {
       lockset_shelf: true,
       refuse: "CNS-PLANE-B-ALL-TARGETS",
       reason:
-        "Codeberg tip-pack uploaded and hash-verify PASS. archive.org also PASS. SLOT until Framagit OR GitLab also hash-verify (CNS-PLANE-B-ALL-TARGETS). GitFlic blocked (CNS-GITFLIC-EMAIL) — not required. Plane B LIVE only when the third target verifies. doi null.",
+        "Codeberg tip-pack uploaded and hash-verify PASS. archive.org also PASS. SLOT until Framagit hash-verify (CNS-PLANE-B-ALL-TARGETS). GitFlic blocked (CNS-GITFLIC-EMAIL). GitLab blocked (CNS-GITLAB-CF-LOOP). Never invent URLs. Never LIVE yet. doi null.",
     },
     {
       id: "plane-b-archive-org-tip-pack",
@@ -424,7 +429,7 @@ export function shelvesList() {
         ARCHIVE_ORG_TIP_PACK +
         " and hash-verify PASS (pack " +
         TIP_PACK_SHA256 +
-        "). SLOT until Framagit OR GitLab also hash-verify. GitFlic blocked (CNS-GITFLIC-EMAIL) — not required. Plane B LIVE only when the third target verifies. doi null.",
+        "). SLOT until Framagit hash-verify. GitFlic blocked (CNS-GITFLIC-EMAIL). GitLab blocked (CNS-GITLAB-CF-LOOP). Never invent URLs. Never LIVE yet. doi null.",
     },
     {
       id: "plane-b-framagit-tip-pack",
@@ -437,26 +442,24 @@ export function shelvesList() {
       independent: true,
       lockset_shelf: true,
       required: true,
-      any_of: PLANE_B_THIRD_ANY_OF.slice(),
       refuse: "CNS-NO-FORGE-MIRROR",
       reason:
-        "Framagit is one of two Plane B third-target options (Framagit OR GitLab). No verified URL in-repo. SLOT. Do not invent a URL. LIVE only after tip hash-verify.",
+        "Framagit is the Plane B third target. No verified URL in-repo. SLOT. Do not invent a URL. Never LIVE until Framagit hash-verifies.",
     },
     {
       id: "plane-b-gitlab-tip-pack",
       plane: "B",
       kind: "git_mirror",
-      status: "slot",
+      status: "refused",
       forge: "gitlab",
       url: null,
       blast_radius: "gitlab",
       independent: true,
-      lockset_shelf: true,
-      required: true,
-      any_of: PLANE_B_THIRD_ANY_OF.slice(),
-      refuse: "CNS-NO-FORGE-MIRROR",
+      lockset_shelf: false,
+      required: false,
+      refuse: ["CNS-GITLAB-CF-LOOP", "CNS-NO-FORGE-MIRROR"],
       reason:
-        "GitLab is one of two Plane B third-target options (Framagit OR GitLab). No verified URL in-repo. SLOT. Do not invent a URL. LIVE only after tip hash-verify.",
+        "GitLab is blocked (CNS-GITLAB-CF-LOOP). Not the Plane B third target. Third target is Framagit. Do not invent a URL.",
     },
     {
       id: "plane-b-gitflic-ru-tip-pack",
@@ -471,7 +474,7 @@ export function shelvesList() {
       required: false,
       refuse: ["CNS-GITFLIC-EMAIL", "CNS-NO-FORGE-MIRROR"],
       reason:
-        "GitFlic (RU) is blocked (CNS-GITFLIC-EMAIL). Not a required Plane B working target. Third target is Framagit OR GitLab. Do not invent a URL.",
+        "GitFlic (RU) is blocked (CNS-GITFLIC-EMAIL). Not a required Plane B working target. Third target is Framagit. Do not invent a URL.",
     },
     {
       id: "plane-b-zenodo-tip-pack",
@@ -518,7 +521,7 @@ export function shelvesList() {
       lockset_shelf: true,
       refuse: "CNS-NO-FORGE-MIRROR",
       reason:
-        "Optional Plane C second-forge slot. Codeberg / archive.org / Framagit-OR-GitLab are Plane B working targets, not this slot. GitFlic is blocked (CNS-GITFLIC-EMAIL). No account URL here. SLOT. Do not invent a URL.",
+        "Optional Plane C second-forge slot. Codeberg / archive.org / Framagit are Plane B working targets, not this slot. GitFlic is blocked (CNS-GITFLIC-EMAIL). GitLab is blocked (CNS-GITLAB-CF-LOOP). No account URL here. SLOT. Do not invent a URL.",
     },
     {
       id: "ipfs-lockset",
@@ -574,12 +577,11 @@ export function shelvesRegistry() {
       "plane-b-codeberg-tip-pack",
       "plane-b-archive-org-tip-pack",
       "plane-b-framagit-tip-pack",
-      "plane-b-gitlab-tip-pack",
       "plane-c-usb-airgap",
       "plane-c-forge-off-github",
       "ipfs-lockset",
     ],
-    refused: ["plane-b-zenodo-tip-pack", "plane-b-gitflic-ru-tip-pack"],
+    refused: ["plane-b-zenodo-tip-pack", "plane-b-gitflic-ru-tip-pack", "plane-b-gitlab-tip-pack"],
     shelves: shelvesList(),
     verify: {
       paste_hash: LIBRARY + "/receipts/verify?hash=",
@@ -611,7 +613,7 @@ export function shelvesRegistry() {
       NOLIE_NO_REWRITE_RULE +
       " " +
       COLD_MULTI_SHELF_RULE +
-      " Plane A is one CF/GitHub tunnel (5 published surfaces / 2 family radii; independent_live_count stays 1). Plane B is alt independent forge/archive SLOT: Codeberg + archive.org hash-verify PASS; third target Framagit OR GitLab unverified; GitFlic blocked (CNS-GITFLIC-EMAIL) — not required; Zenodo tip-pack is refused (CNS-ZENODO-IP-BAN). doi null. Paper deposits are not tip-pack Plane B. Plane C USB stays SLOT until CNS-OPERATOR-ATTEST.",
+      " Plane A is one CF/GitHub tunnel (5 published surfaces / 2 family radii; independent_live_count stays 1). Plane B is alt independent forge/archive SLOT: Codeberg + archive.org hash-verify PASS; third target Framagit unverified; GitFlic blocked (CNS-GITFLIC-EMAIL); GitLab blocked (CNS-GITLAB-CF-LOOP); never invent URLs; never LIVE yet; Zenodo tip-pack is refused (CNS-ZENODO-IP-BAN). doi null. Paper deposits are not tip-pack Plane B. Plane C USB stays SLOT until CNS-OPERATOR-ATTEST.",
   };
 }
 
@@ -713,7 +715,7 @@ export function shelvesLlmsBlock() {
       ARCHIVE_ORG_TIP_PACK +
       " pack SHA-256 " +
       TIP_PACK_SHA256 +
-      " hash-verify PASS; still SLOT until Framagit OR GitLab verifies (CNS-PLANE-B-ALL-TARGETS). GitFlic blocked (CNS-GITFLIC-EMAIL) — not required. Zenodo refused (CNS-ZENODO-IP-BAN). doi null.",
+      " hash-verify PASS; still SLOT until Framagit verifies (CNS-PLANE-B-ALL-TARGETS). GitFlic blocked (CNS-GITFLIC-EMAIL). GitLab blocked (CNS-GITLAB-CF-LOOP). Never invent URLs. Never LIVE yet. Zenodo refused (CNS-ZENODO-IP-BAN). doi null.",
     "- Plane C: USB airgap SLOT until CNS-OPERATOR-ATTEST.",
     "- LIVE only after hash verify. Do not invent Framagit / GitLab / GitFlic URLs or tip-pack DOIs.",
     "",

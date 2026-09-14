@@ -21,7 +21,7 @@ import {
   LOCKSET_TIP,
   NO_FAN,
   NO_FAN_PHRASE,
-  PLANE_B_THIRD_ANY_OF,
+  PLANE_B_THIRD,
   PLANE_B_WORKING_TARGETS,
   PUBLISHED_SURFACES,
   SHELVES_HREF,
@@ -95,7 +95,7 @@ describe("COLD-MULTI-SHELF-1.0 AZindex gate", () => {
     assert.equal(doc.registry.growth_on, true);
   });
 
-  it("keeps Plane B Codeberg+archive.org PASS; third target Framagit OR GitLab; GitFlic not required", () => {
+  it("keeps Plane B Codeberg+archive.org PASS; third target Framagit; GitLab/GitFlic refused", () => {
     const b = shelvesDoc().planes.B;
     assert.equal(b.status, "slot");
     assert.equal(b.doi, null);
@@ -103,9 +103,10 @@ describe("COLD-MULTI-SHELF-1.0 AZindex gate", () => {
     assert.equal(b.zenodo_working_path, false);
     assert.equal(b.refuse, "CNS-ZENODO-IP-BAN");
     assert.deepEqual(b.working_targets, PLANE_B_WORKING_TARGETS);
-    assert.deepEqual(b.third_target.any_of, PLANE_B_THIRD_ANY_OF);
+    assert.equal(b.third_target.forge, PLANE_B_THIRD);
     assert.equal(b.third_target.verified, false);
     assert.equal(b.third_target.url, null);
+    assert.ok(!("any_of" in b.third_target));
     assert.equal(b.codeberg.url, CODEBERG_TIP_PACK);
     assert.equal(b.codeberg.pack_sha256, CODEBERG_PACK_SHA256);
     assert.equal(b.codeberg.hash_verify, "pass");
@@ -119,6 +120,9 @@ describe("COLD-MULTI-SHELF-1.0 AZindex gate", () => {
     assert.equal(b.archive_org.live_ready, false);
     assert.equal(b.gitflic.required, false);
     assert.equal(b.gitflic.refuse, "CNS-GITFLIC-EMAIL");
+    assert.equal(b.gitlab.required, false);
+    assert.equal(b.gitlab.refuse, "CNS-GITLAB-CF-LOOP");
+    assert.equal(b.gitlab.url, null);
 
     const shelves = shelvesDoc().registry.shelves;
     const codeberg = shelves.find((row) => row.id === "plane-b-codeberg-tip-pack");
@@ -133,13 +137,21 @@ describe("COLD-MULTI-SHELF-1.0 AZindex gate", () => {
     assert.equal(archive.url, ARCHIVE_ORG_TIP_PACK);
     assert.equal(archive.hash_verify, "pass");
     assert.equal(archive.pack_sha256, TIP_PACK_SHA256);
+    assert.equal(framagit.status, "slot");
     assert.equal(framagit.url, null);
+    assert.equal(framagit.required, true);
+    assert.equal(gitlab.status, "refused");
     assert.equal(gitlab.url, null);
+    assert.equal(gitlab.required, false);
+    assert.ok(gitlab.refuse.includes("CNS-GITLAB-CF-LOOP"));
     assert.equal(gitflic.status, "refused");
     assert.equal(gitflic.required, false);
     assert.ok(gitflic.refuse.includes("CNS-GITFLIC-EMAIL"));
     assert.ok(shelvesDoc().registry.refused.includes("plane-b-gitflic-ru-tip-pack"));
+    assert.ok(shelvesDoc().registry.refused.includes("plane-b-gitlab-tip-pack"));
+    assert.ok(shelvesDoc().registry.slot.includes("plane-b-framagit-tip-pack"));
     assert.ok(!shelvesDoc().registry.slot.includes("plane-b-gitflic-ru-tip-pack"));
+    assert.ok(!shelvesDoc().registry.slot.includes("plane-b-gitlab-tip-pack"));
     assert.equal(zenodo.status, "refused");
     assert.equal(zenodo.doi, null);
     assert.ok(zenodo.refuse.includes("CNS-ZENODO-IP-BAN"));
@@ -238,8 +250,10 @@ describe("COLD-MULTI-SHELF-1.0 AZindex gate", () => {
       assert.ok(text.includes(CODEBERG_TIP_PACK), name);
       assert.ok(text.includes(ARCHIVE_ORG_TIP_PACK), name);
       assert.ok(text.includes(CODEBERG_PACK_SHA256), name);
-      assert.ok(text.includes("Framagit OR GitLab"), name);
+      assert.ok(text.includes("until Framagit verifies"), name);
+      assert.doesNotMatch(text, /Framagit OR GitLab/, name);
       assert.ok(text.includes("CNS-GITFLIC-EMAIL"), name);
+      assert.ok(text.includes("CNS-GITLAB-CF-LOOP"), name);
       assert.doesNotMatch(text, /archive\.org unverified/, name);
       assert.ok(text.includes("CNS-ZENODO-IP-BAN"), name);
       assert.ok(text.includes("CNS-OPERATOR-ATTEST"), name);
