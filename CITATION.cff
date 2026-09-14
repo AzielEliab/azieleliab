@@ -1,6 +1,6 @@
 cff-version: 1.2.0
 title: azieleliab.com
-message: Cite Aziel Eliab and the canonical www landing. Do not invent Zenodo DOIs. Same tip string as first-screen HTML / cite.json / llms.txt.
+message: Cite Aziel Eliab and the canonical www landing. Do not invent Zenodo DOIs. Same tip string as Receipts-tab first-screen HTML (/receipts) / ingest / cite.json / llms.txt.
 type: software
 authors:
   - family-names: Eliab

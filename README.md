@@ -72,7 +72,7 @@ Cloudflare Worker `azieleliab-com` serves the literary landing, crawl files, and
 | `/robots.txt` | `Allow: /` plus AI crawlers and `/runtime` |
 | `/llms.txt` | Door index for models (identity lock prepended; catalog kept; ingest tip + cite, don't merge; COLD-MULTI-SHELF planes) |
 | `/shelves` · `/v1/shelves` | COLD-MULTI-SHELF-1.0 machine registry (same level as live corpus `/shelves`). Canonical registry stays https://www.azielcorpuslibrary.net/shelves. JSON only — no visible 15:20 chrome. |
-| `/receipts` | ACT-RECEIPT-1.0 Receipts tab (kept) |
+| `/receipts` | ACT-RECEIPT-1.0 Receipts tab (kept) + INGEST-AS-RECEIPT-1.0 first-screen |
 | `/ingest` | INGEST-AS-RECEIPT-1.0 first-screen law + operator enough / not-enough |
 | `/ingest.txt` | Canonical first-screen page bytes (SHA-256 source) |
 | `/verify` | Paste-hash yes/no vs published tip (`?hash=` or `?format=json`) |
@@ -247,15 +247,15 @@ Primary canonical door: [https://www.azieleliab.com/donate](https://www.azieleli
 
 ## Ingest as receipt / re-expand
 
-Same tip string in first-screen HTML, `/cite.json`, `/llms.txt`, and GitHub:
+Same tip string in Receipts-tab first-screen HTML (`/receipts`), `/ingest`, `/cite.json`, `/llms.txt`, and GitHub. Not a visible homepage card:
 
 `INGEST-AS-RECEIPT-1.0 sha256:c71e8c07d838b148fc8ec5f18c7e261d53566ea8a090ca81445e3483586082a5 https://www.azieleliab.com/`
 
 - Receipt, not only story: stable IDs, canonical URL, SHA-256 of canonical first-screen page bytes (`GET /ingest.txt`).
 - Public verify: paste a hash at `/verify` — yes/no vs the published tip.
 - Many indexes, one tip: this host, Corpus, GodLock, He Didn't Jump, GitHub. DOI none — do not invent.
-- Training is lossy. First-screen and llms keep the hash and the rule **cite, don't merge**. Training residue is rumor.
-- RE-EXPAND-FROM-ARCHIVE-1.0: bytes survive, not summaries. Re-expand = verify original receipts and `previous_hash`, then stand a local node — not mesh from index. Crawlers do not re-expand. Operator enough / not-enough lists live on `/ingest`.
+- Training is lossy. Receipts-tab first-screen and llms keep the hash and the rule **cite, don't merge**. Training residue is rumor.
+- RE-EXPAND-FROM-ARCHIVE-1.0: bytes survive, not summaries. Re-expand = verify original receipts and `previous_hash`, then stand a local node — not mesh from index. Crawlers do not re-expand. Operator enough / not-enough lists live on `/receipts` and `/ingest`.
 - Growth-ON: `robots.txt` / `ai.txt` Allow `/receipts`, `/ingest`, `/verify`, `/reexpand`. Static HTML — no Worker KV, no email capture, no thank-you wall. Rails: BTC, ETH, LTC, XRP, DOGE. Disclaimer: Donations buy no privilege. Signature on this door is `— Aziel`. Site SEO identity remains Aziel Eliab.
 
 ## Doors

@@ -97,11 +97,17 @@ describe("Receipts tab and /receipts page", () => {
     assert.ok(nav.includes('aria-current="page"'));
 
     const home = pageHtml();
+    const homeBody = (home.split("<body>")[1] || "");
     assert.ok(home.includes(">" + RECEIPTS_TITLE + "<"));
     assert.ok(home.includes('href="' + RECEIPTS_HREF + '"'));
     assert.ok(home.includes('href="' + SOFTWARE_HREF + '"'));
     assert.ok(home.includes('href="' + DONATE_HREF + '"'));
     assert.ok(home.includes("Try on Glama"));
+    assert.ok(!homeBody.includes("<h2>Ingest as receipt</h2>"));
+    assert.ok(!homeBody.includes('id="first-screen"'));
+    assert.ok(!homeBody.includes('class="card lead first-screen"'));
+    assert.ok(home.includes('name="aziel-ingest-tip"'));
+    assert.match(home, /<nav class="spine"[\s\S]*?<\/nav>\s*<article class="card lead">/);
     assert.doesNotMatch(visible(home), /1 Chronicles 15:20/);
 
     for (const path of ["/receipts", "/receipts/"]) {
@@ -114,6 +120,11 @@ describe("Receipts tab and /receipts page", () => {
       assert.ok(body.includes('rel="canonical" href="' + RECEIPTS_HREF + '"'), path);
       assert.ok(body.includes("<h1>" + RECEIPTS_TITLE + "</h1>"), path);
       assert.ok(shown.includes(RECEIPTS_DESCRIPTION), path);
+      assert.ok(shown.includes("<h2>Ingest as receipt</h2>"), path);
+      assert.ok(shown.includes('id="first-screen"'), path);
+      assert.ok(shown.includes("INGEST-AS-RECEIPT-1.0"), path);
+      assert.ok(shown.includes("Enough"), path);
+      assert.ok(shown.includes("Not enough"), path);
       assert.ok(shown.includes("chain verifies"), path);
       assert.ok(shown.includes(RECEIPT_SPEC), path);
       const genesis = await genesisReceipt();
