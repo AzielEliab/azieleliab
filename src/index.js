@@ -47,6 +47,21 @@ import {
   whoIsTxt,
 } from "./identity.js";
 import { aiTxt, citeDoc, CONTENT_SIGNAL, llmsTxt, robotsTxt, sitemapXml } from "./seo.js";
+import {
+  azGeneratorCallRefuse,
+  azGeneratorCite,
+  cap7ResolveInjectRefuse,
+  doiInjectionRefuse,
+  foldlockTipFoldLooksLike,
+  foldlockTipFoldRefuse,
+  looksLikeCap7ResolveInject,
+  meshGetEnableRefuse,
+  meshGetLooksLikeEnable,
+  bodyHasTokenKey,
+  tokenBodyRefuse,
+  tokenPresentedInSearch,
+  tokenQueryRefuse,
+} from "./redline.js";
 import { SHELVES_JSON_PATH, SHELVES_PATH, shelvesDoc } from "./shelves.js";
 import { incrementViews, isBot, readViews, viewsBody } from "./views.js";
 
@@ -93,6 +108,82 @@ function json(doc, cache) {
     cache: cache || "no-store",
     cors: true,
   });
+}
+
+function refuseJson(doc, status = 400) {
+  return new Response(JSON.stringify(doc) + "\n", {
+    status,
+    headers: {
+      "content-type": "application/json; charset=utf-8",
+      "cache-control": "no-store",
+      "Content-Signal": CONTENT_SIGNAL,
+      ...SECURITY,
+      ...CORS,
+    },
+  });
+}
+
+function meshDoorPath(path) {
+  return (
+    path === "/v1/mesh" ||
+    path === MESH_STATUS_PATH ||
+    path === MESH_NODES_PATH ||
+    path === "/v1/mesh/az-generator"
+  );
+}
+
+function machineCitePath(path) {
+  return path === "/cite.json" || path === SHELVES_PATH || path === SHELVES_JSON_PATH || path === "/v1/mesh/az-generator";
+}
+
+async function attackSimRefuse(request, url, path) {
+  if (tokenPresentedInSearch(url.searchParams)) {
+    return refuseJson(tokenQueryRefuse());
+  }
+
+  if (request.method === "POST" || request.method === "PUT") {
+    const ctype = String(request.headers.get("content-type") || "");
+    if (/\bapplication\/json\b/i.test(ctype)) {
+      let body = null;
+      try {
+        body = await request.clone().json();
+      } catch {
+        body = null;
+      }
+      if (bodyHasTokenKey(body)) return refuseJson(tokenBodyRefuse());
+      if (meshGetLooksLikeEnable(url.searchParams, body) && meshDoorPath(path)) {
+        return refuseJson(meshGetEnableRefuse());
+      }
+      if (looksLikeCap7ResolveInject(url.searchParams, body) && machineCitePath(path)) {
+        return refuseJson(cap7ResolveInjectRefuse());
+      }
+      if (foldlockTipFoldLooksLike(url.searchParams, body) && machineCitePath(path)) {
+        return refuseJson(foldlockTipFoldRefuse());
+      }
+      if (path === "/v1/mesh/az-generator") return refuseJson(azGeneratorCallRefuse());
+      if (path === "/v1/mesh/enable") return refuseJson(meshGetEnableRefuse({ code: "MESH-GET-NEVER-ENABLES" }));
+    } else if (path === "/v1/mesh/az-generator") {
+      return refuseJson(azGeneratorCallRefuse());
+    }
+  }
+
+  if (meshDoorPath(path) && meshGetLooksLikeEnable(url.searchParams)) {
+    return refuseJson(meshGetEnableRefuse());
+  }
+  if (machineCitePath(path) && looksLikeCap7ResolveInject(url.searchParams)) {
+    return refuseJson(cap7ResolveInjectRefuse());
+  }
+  if (machineCitePath(path) && foldlockTipFoldLooksLike(url.searchParams)) {
+    return refuseJson(foldlockTipFoldRefuse());
+  }
+  if (path === "/cite.json") {
+    const doiRefuse = doiInjectionRefuse(url.searchParams.get("doi"));
+    if (doiRefuse) return refuseJson(doiRefuse);
+  }
+  if (path === "/v1/mesh/az-generator" && (request.method === "GET" || request.method === "HEAD")) {
+    return json(azGeneratorCite(), SEO_CACHE);
+  }
+  return null;
 }
 
 // Door-index files stay off the Worker Cache API so a deploy cannot
@@ -147,12 +238,14 @@ export async function handleRequest(request, env = {}, ctx) {
     return Response.redirect(toWww, 301);
   }
 
+  const path = routePath(url.pathname);
+  const attack = await attackSimRefuse(request, url, path);
+  if (attack) return attack;
+
   if (isRuntimeRequest(url.pathname)) {
     const runtime = await handleRuntimeRoot(request, url, env, ctx);
     if (runtime) return runtime;
   }
-
-  const path = routePath(url.pathname);
   const jsonGet = new Set([
     "/v1/view",
     "/v1/stats",
