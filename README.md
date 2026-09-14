@@ -82,7 +82,7 @@ Cloudflare Worker `azieleliab-com` serves the literary landing, crawl files, and
 | `/who-is-aziel-eliab.txt` · `/who-is` | Machine who-is text + 7 model rules + public work |
 | `/.well-known/aziel.json` | `person_id`, `sameAs`, empty `zenodo_dois`, `openalex: null`, mission, Hebrew forms, stats URLs |
 | `/ai.txt` | Crawl policy (includes COLD-MULTI-SHELF planes) |
-| `/cite.json` | Citation record (includes `cold_multi_shelf` + Cap-7 `design_of` only) |
+| `/cite.json` | Citation record (`cold_multi_shelf`, `REDLINE-2026-09-14`, Cap-7 `design_of` + `resolves_to_hub: false`, attack-surface refuse, FoldLock tip-safe) |
 | `/sitemap.xml` | Canonical urlset |
 | `/runtime` · `/runtime/*` | Same-origin aziel-runtime / FragGate proxy (AI background) |
 | `GET /runtime/v1/uses` | This host's `/runtime` API use stats (local KV; not proxied) |
