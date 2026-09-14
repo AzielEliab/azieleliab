@@ -726,9 +726,7 @@ export function firstScreenHtml(opts = {}) {
     a(INGEST_BYTES_HREF, "page bytes") +
     "</p>";
   const form =
-    '<form class="verify" action="' +
-    attr(VERIFY_HREF) +
-    '" method="get">' +
+    '<form class="verify" action="/verify" method="get">' +
     '<label>Paste hash<input name="hash" inputmode="text" autocomplete="off" spellcheck="false" aria-label="Paste hash"></label>' +
     '<button type="submit">Verify</button></form>';
   const lists = compact
@@ -1002,7 +1000,7 @@ ${brandRow()}
     <p class="verify-answer">${esc(answer)}</p>
     <p class="tip"><code>${esc(check.published_tip)}</code></p>
     <p>Pasted ${esc(check.pasted || "(empty)")}.</p>
-    <form class="verify" action="${attr(VERIFY_HREF)}" method="get">
+    <form class="verify" action="/verify" method="get">
       <label>Paste hash<input name="hash" value="${attr(check.pasted)}" inputmode="text" autocomplete="off" spellcheck="false" aria-label="Paste hash"></label>
       <button type="submit">Verify</button>
     </form>
