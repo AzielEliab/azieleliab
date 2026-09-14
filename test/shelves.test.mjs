@@ -8,8 +8,14 @@ import { VISIBLE_LOCK_LINE } from "../src/identity.js";
 import { canonicalPageBytes } from "../src/ingest.js";
 import {
   ARCHIVE_ORG_DOWNLOAD,
+  ARCHIVE_ORG_DOWNLOAD_202609,
   ARCHIVE_ORG_IDENTIFIER,
+  ARCHIVE_ORG_IDENTIFIER_202609,
   ARCHIVE_ORG_TIP_PACK,
+  ARCHIVE_ORG_TIP_PACK_202609,
+  ARCHIVE_ORG_TIP_PACKS,
+  ARCHIVE_ORG_ZIP_202609,
+  ARCHIVE_ORG_ZIP_ALT_202609,
   CAP7_BRIDGE,
   CODEBERG_PACK_SHA256,
   CODEBERG_TIP_PACK,
@@ -29,6 +35,7 @@ import {
   SHELVES_REGISTRY,
   TIP_PACK_SHA256,
   cap7Cite,
+  shelvesCite,
   shelvesDoc,
 } from "../src/shelves.js";
 
@@ -118,6 +125,13 @@ describe("COLD-MULTI-SHELF-1.0 AZindex gate", () => {
     assert.equal(b.archive_org.pack_sha256, TIP_PACK_SHA256);
     assert.equal(b.archive_org.hash_verify, "pass");
     assert.equal(b.archive_org.live_ready, false);
+    assert.equal(b.working_targets.filter((t) => t === "archive.org").length, 1);
+    assert.equal(b.archive_org.secondary_items.length, 1);
+    assert.equal(b.archive_org.secondary_items[0].url, ARCHIVE_ORG_TIP_PACK_202609);
+    assert.equal(b.archive_org.secondary_items[0].independent_shelf, false);
+    assert.equal(b.archive_org.secondary_items[0].wrap, "zip");
+    assert.equal(b.archive_org.secondary_items[0].ia_flat_sha256, null);
+    assert.equal(b.archive_org.secondary_items[0].sha256sums_flat_check, "incomplete");
     assert.equal(b.gitflic.required, false);
     assert.equal(b.gitflic.refuse, "CNS-GITFLIC-EMAIL");
     assert.equal(b.gitlab.required, false);
@@ -127,6 +141,7 @@ describe("COLD-MULTI-SHELF-1.0 AZindex gate", () => {
     const shelves = shelvesDoc().registry.shelves;
     const codeberg = shelves.find((row) => row.id === "plane-b-codeberg-tip-pack");
     const archive = shelves.find((row) => row.id === "plane-b-archive-org-tip-pack");
+    const archive202609 = shelves.find((row) => row.id === "plane-b-archive-org-tip-pack-202609");
     const framagit = shelves.find((row) => row.id === "plane-b-framagit-tip-pack");
     const gitlab = shelves.find((row) => row.id === "plane-b-gitlab-tip-pack");
     const gitflic = shelves.find((row) => row.id === "plane-b-gitflic-ru-tip-pack");
@@ -137,6 +152,28 @@ describe("COLD-MULTI-SHELF-1.0 AZindex gate", () => {
     assert.equal(archive.url, ARCHIVE_ORG_TIP_PACK);
     assert.equal(archive.hash_verify, "pass");
     assert.equal(archive.pack_sha256, TIP_PACK_SHA256);
+    assert.equal(archive.independent, true);
+    assert.equal(archive.blast_radius, "archive-org");
+    assert.equal(archive.secondary_items[0].url, ARCHIVE_ORG_TIP_PACK_202609);
+    assert.equal(archive.secondary_items[0].identifier, ARCHIVE_ORG_IDENTIFIER_202609);
+    assert.equal(archive.secondary_items[0].independent_shelf, false);
+    assert.equal(archive202609.status, "slot");
+    assert.equal(archive202609.url, ARCHIVE_ORG_TIP_PACK_202609);
+    assert.equal(archive202609.identifier, ARCHIVE_ORG_IDENTIFIER_202609);
+    assert.equal(archive202609.download_base, ARCHIVE_ORG_DOWNLOAD_202609);
+    assert.equal(archive202609.zip, ARCHIVE_ORG_ZIP_202609);
+    assert.equal(archive202609.zip_alt, ARCHIVE_ORG_ZIP_ALT_202609);
+    assert.equal(archive202609.wrap, "zip");
+    assert.equal(archive202609.ia_flat_sha256, null);
+    assert.equal(archive202609.sha256sums_flat_check, "incomplete");
+    assert.equal(archive202609.inner_pack, "aziel-tip-pack.tar");
+    assert.equal(archive202609.pack_sha256, TIP_PACK_SHA256);
+    assert.equal(archive202609.hash_verify, "pass");
+    assert.equal(archive202609.independent, false);
+    assert.equal(archive202609.blast_radius, "archive-org");
+    assert.equal(archive202609.live_ready, false);
+    assert.equal(archive202609.same_pack_as, "plane-b-archive-org-tip-pack");
+    assert.equal(archive202609.required_for_plane_b_live, false);
     assert.equal(framagit.status, "slot");
     assert.equal(framagit.url, null);
     assert.equal(framagit.required, true);
@@ -149,7 +186,13 @@ describe("COLD-MULTI-SHELF-1.0 AZindex gate", () => {
     assert.ok(gitflic.refuse.includes("CNS-GITFLIC-EMAIL"));
     assert.ok(shelvesDoc().registry.refused.includes("plane-b-gitflic-ru-tip-pack"));
     assert.ok(shelvesDoc().registry.refused.includes("plane-b-gitlab-tip-pack"));
+    assert.ok(shelvesDoc().registry.slot.includes("plane-b-archive-org-tip-pack-202609"));
     assert.ok(shelvesDoc().registry.slot.includes("plane-b-framagit-tip-pack"));
+    assert.ok(!shelvesDoc().registry.live.includes("plane-b-archive-org-tip-pack-202609"));
+    assert.equal(shelvesDoc().registry.independent_live_count, 1);
+    assert.deepEqual(shelvesCite().archive_org_tip_packs, ARCHIVE_ORG_TIP_PACKS);
+    assert.equal(citeDoc().cold_multi_shelf.archive_org_tip_packs.length, 2);
+    assert.ok(citeDoc().cold_multi_shelf.archive_org_tip_packs.includes(ARCHIVE_ORG_TIP_PACK_202609));
     assert.ok(!shelvesDoc().registry.slot.includes("plane-b-gitflic-ru-tip-pack"));
     assert.ok(!shelvesDoc().registry.slot.includes("plane-b-gitlab-tip-pack"));
     assert.equal(zenodo.status, "refused");
@@ -249,6 +292,8 @@ describe("COLD-MULTI-SHELF-1.0 AZindex gate", () => {
       assert.ok(text.includes(SHELVES_REGISTRY), name);
       assert.ok(text.includes(CODEBERG_TIP_PACK), name);
       assert.ok(text.includes(ARCHIVE_ORG_TIP_PACK), name);
+      assert.ok(text.includes(ARCHIVE_ORG_TIP_PACK_202609), name);
+      assert.ok(text.includes("same blast_radius"), name);
       assert.ok(text.includes(CODEBERG_PACK_SHA256), name);
       assert.ok(text.includes("until Framagit verifies"), name);
       assert.doesNotMatch(text, /Framagit OR GitLab/, name);
