@@ -87,6 +87,9 @@ import {
   VERIFY_HREF,
   ingestLlmsBlock,
   ingestRecord,
+  nolieCite,
+  survivalCite,
+  survivalLlmsBlock,
 } from "./ingest.js";
 import { MESH_NOTE, QNM_COMPANION, QNM_ENABLE_BEARER, QNM_SPEC, QNS_CD, QNS_CD_SPEC } from "./mesh.js";
 
@@ -532,6 +535,8 @@ export function citeDoc(software = SOFTWARE, runtimeVersion = RUNTIME_VERSION) {
     tip: ingest.tip,
     ingest_as_receipt: ingest,
     cite_dont_merge: CITE_DONT_MERGE,
+    cross_network_survival: survivalCite(),
+    no_lie_no_rewrite: nolieCite(),
   };
 }
 
@@ -796,6 +801,8 @@ export function aiTxt() {
     "- Re-expand law: " + REEXPAND_HREF + " (crawlers do not re-expand)",
     "- Tip: " + ingestRecord().tip,
     "- " + CITE_DONT_MERGE,
+    "",
+    survivalLlmsBlock(),
     "- Software catalog: " + CANON_ORIGIN + "/v1/software",
     "- FragGate list: " + RUNTIME_LOCAL + "/v1/fraggate/list",
     "- FragGate Worker: " + FRAGGATE,
