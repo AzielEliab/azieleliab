@@ -70,7 +70,8 @@ Cloudflare Worker `azieleliab-com` serves the literary landing, crawl files, and
 | `/embryolock` · `/embryolock/` | EmbryoLock secondary local page (Softwares door is catalog `worker_home`) |
 | `/sigil.png` | Hosted rose-star brand mark (Donate / brandrow do not fetch the corpus) |
 | `/robots.txt` | `Allow: /` plus AI crawlers and `/runtime` |
-| `/llms.txt` | Door index for models (identity lock prepended; catalog kept; ingest tip + cite, don't merge) |
+| `/llms.txt` | Door index for models (identity lock prepended; catalog kept; ingest tip + cite, don't merge; COLD-MULTI-SHELF planes) |
+| `/shelves` · `/v1/shelves` | COLD-MULTI-SHELF-1.0 machine registry (same level as live corpus `/shelves`). Canonical registry stays https://www.azielcorpuslibrary.net/shelves. JSON only — no visible 15:20 chrome. |
 | `/receipts` | ACT-RECEIPT-1.0 Receipts tab (kept) |
 | `/ingest` | INGEST-AS-RECEIPT-1.0 first-screen law + operator enough / not-enough |
 | `/ingest.txt` | Canonical first-screen page bytes (SHA-256 source) |
@@ -80,8 +81,8 @@ Cloudflare Worker `azieleliab-com` serves the literary landing, crawl files, and
 | `/graph.jsonld` | Person + FAQPage + four hub WebSites + Runtime + stats Dataset |
 | `/who-is-aziel-eliab.txt` · `/who-is` | Machine who-is text + 7 model rules + public work |
 | `/.well-known/aziel.json` | `person_id`, `sameAs`, empty `zenodo_dois`, `openalex: null`, mission, Hebrew forms, stats URLs |
-| `/ai.txt` | Crawl policy |
-| `/cite.json` | Citation record |
+| `/ai.txt` | Crawl policy (includes COLD-MULTI-SHELF planes) |
+| `/cite.json` | Citation record (includes `cold_multi_shelf` + Cap-7 `design_of` only) |
 | `/sitemap.xml` | Canonical urlset |
 | `/runtime` · `/runtime/*` | Same-origin aziel-runtime / FragGate proxy (AI background) |
 | `GET /runtime/v1/uses` | This host's `/runtime` API use stats (local KV; not proxied) |
@@ -144,7 +145,7 @@ Public HTML and crawl files used to send `Cache-Control: no-store`, so every rep
 
 - Landing HTML: `public` + short `s-maxage` (`max-age=0`) so title/meta/JSON-LD stay fresh for crawlers. The packed Software catalog snapshot is separate and still auto-refreshes. Body copy and Software doors stay the same.
 - Donate HTML (`/donate?v=png`): `no-store, max-age=0, must-revalidate`. Bare `/donate` 302s to `?v=png` so a stale CF HIT of stroke-SVG HTML cannot stick.
-- `/robots.txt`, `/llms.txt`, `/ai.txt`, `/cite.json`, `/sitemap.xml`: long public cache, full documents, never throttled.
+- `/robots.txt`, `/llms.txt`, `/ai.txt`, `/cite.json`, `/shelves`, `/v1/shelves`, `/sitemap.xml`: long public cache, full documents, never throttled.
 - Live Software catalog is **one packed snapshot** (Cache API + KV key `software:catalog:v2` on the existing `VIEWS` namespace). Warm HIT does not fetch runtime. Static `SOFTWARE` remains last resort.
 - Soft caps on `/v1/update/check` and mesh origin refresh apply only when someone hammers those fan-out doors after the snapshot is cold. They return the last full JSON (or the quiet pointer / Live Nodes · 0 body) — not a soft-404, login wall, or thin page. **Rate limit here means cost/abuse protection, not content rationing.**
 - Optional `OPERATOR_TOKEN` (header `X-Aziel-Runtime-Token` or `Authorization: Bearer`) is uncapped. Do not add Node Gate / IP UI.

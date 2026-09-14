@@ -482,6 +482,8 @@ function discoveryLinks() {
       ["application/json", "/cite.json", "cite.json"],
       ["text/plain", "/llms.txt", "llms.txt"],
       ["text/plain", "/ai.txt", "ai.txt"],
+      ["application/json", "/shelves", "shelves"],
+      ["application/json", "/v1/shelves", "shelves json"],
       ["text/plain", "/ingest.txt", "ingest page bytes"],
       ["application/json", "/verify", "verify tip"],
       ["application/json", "/reexpand", "re-expand law"],

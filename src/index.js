@@ -47,6 +47,7 @@ import {
   whoIsTxt,
 } from "./identity.js";
 import { aiTxt, citeDoc, CONTENT_SIGNAL, llmsTxt, robotsTxt, sitemapXml } from "./seo.js";
+import { SHELVES_JSON_PATH, SHELVES_PATH, shelvesDoc } from "./shelves.js";
 import { incrementViews, isBot, readViews, viewsBody } from "./views.js";
 
 const SECURITY = {
@@ -281,8 +282,13 @@ export async function handleRequest(request, env = {}, ctx) {
     res = text(whoIsTxt(), "text/plain", { cache: SEO_CACHE });
   } else if (path === "/.well-known/aziel.json") {
     res = text(prettyJson(wellKnownAziel()), "application/json", { cache: SEO_CACHE, cors: true });
-  } else if (path === "/ai.txt") res = text(aiTxt(), "text/plain", { cache: SEO_CACHE });
-  else if (path === "/cite.json") {
+  }   else if (path === "/ai.txt") res = text(aiTxt(), "text/plain", { cache: SEO_CACHE });
+  else if (path === SHELVES_PATH || path === SHELVES_JSON_PATH) {
+    res = text(JSON.stringify(shelvesDoc(), null, 1) + "\n", "application/json", {
+      cache: SEO_CACHE,
+      cors: true,
+    });
+  } else if (path === "/cite.json") {
     res = text(JSON.stringify(citeDoc(doors, live && live.version), null, 1) + "\n", "application/json", { cache: SEO_CACHE });
   } else if (path === "/sitemap.xml") {
     res = text(sitemapXml(new Date(), doors), "application/xml", { cache: SEO_CACHE });

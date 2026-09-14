@@ -2,7 +2,7 @@
 
 GitHub-side SEO / indexing / AI pickup for [AzielEliab/azieleliab](https://github.com/AzielEliab/azieleliab). This file is the **About box spec**. It does **not** change live azieleliab.com Worker UI. No wrangler deploy.
 
-Live crawl surfaces (`/robots.txt`, `/llms.txt`, `/ai.txt`, `/cite.json`, `/sitemap.xml`, JSON-LD) stay on the Worker. This repo’s README, CITATION.cff, and GitHub description / homepage / topics are what Google and AI crawlers see on GitHub.
+Live crawl surfaces (`/robots.txt`, `/llms.txt`, `/ai.txt`, `/cite.json`, `/shelves`, `/v1/shelves`, `/sitemap.xml`, JSON-LD) stay on the Worker. This repo’s README, CITATION.cff, and GitHub description / homepage / topics are what Google and AI crawlers see on GitHub. Canonical shelves registry remains https://www.azielcorpuslibrary.net/shelves.
 
 Same published tip as first-screen HTML / `/cite.json` / `/llms.txt`:
 
@@ -154,6 +154,6 @@ Always send `User-Agent: Mozilla/5.0`.
 
 ## Identity law
 
-Public identity is **Aziel Eliab** only. Elroi appears only as aka / `alternateName`. Do not invent Zenodo DOIs. Cite live `/cite.json`.
+Public identity is **Aziel Eliab** only. Elroi appears only as aka / `alternateName`. Do not invent Zenodo DOIs. Cite live `/cite.json` and `/shelves`.
 
 INGEST-AS-RECEIPT-1.0 sha256:c71e8c07d838b148fc8ec5f18c7e261d53566ea8a090ca81445e3483586082a5 https://www.azieleliab.com/
