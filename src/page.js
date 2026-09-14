@@ -52,6 +52,30 @@ import {
 } from "./identity.js";
 import { jsonLd, ROBOTS_INDEX } from "./seo.js";
 import {
+  CITE_DONT_MERGE,
+  ENOUGH,
+  INGEST_BYTES_HREF,
+  INGEST_DESCRIPTION,
+  INGEST_HREF,
+  INGEST_INDEXES,
+  INGEST_SPEC,
+  INGEST_TITLE,
+  NOLIE_LAW,
+  NOLIE_SPEC,
+  NOT_ENOUGH,
+  REEXPAND_HREF,
+  REEXPAND_LAW,
+  REEXPAND_SPEC,
+  SURVIVAL_LAW,
+  SURVIVAL_SPEC,
+  TRAINING_RESIDUE,
+  VERIFY_HREF,
+  VERIFY_TITLE,
+  ingestRecord,
+  tipString,
+  verifyPastedHash,
+} from "./ingest.js";
+import {
   RECEIPT_LATTICE,
   RECEIPT_SPEC,
   eventMetadataSentence,
@@ -339,6 +363,34 @@ footer a:hover{color:var(--gold)}
 .receipt-hash code{font:inherit;background:transparent}
 .receipt-request,.receipt-output{margin:0 0 8px}
 .receipt-event{margin:0;color:var(--muted);font-size:14px}
+.first-screen .tip{
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:13px;line-height:1.55;word-break:break-all;color:var(--ink);margin:0 0 10px
+}
+.first-screen .tip code{font:inherit;background:transparent}
+.first-screen .ids,.first-screen .indexes{margin:0 0 10px;color:var(--ink-soft);font-size:15px;word-break:break-word}
+.first-screen .rule{margin:0 0 10px;color:var(--gold);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;font-size:14px;font-weight:650}
+.first-screen .law{margin:0 0 10px}
+.first-screen .law li,.enough li,.not-enough li{margin:0 0 6px}
+.enough,.not-enough{margin:0 0 12px;padding:0 0 0 1.1em;color:var(--ink-soft)}
+.verify{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;margin:0 0 12px}
+.verify label{
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  font-size:13px;color:var(--muted);display:flex;flex-direction:column;gap:6px;flex:1 1 16rem
+}
+.verify input{
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:13px;color:var(--ink);background:#14110c;border:1px solid var(--line);
+  border-radius:8px;padding:8px 10px;width:100%
+}
+.verify button{
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  font-size:13px;font-weight:700;letter-spacing:.04em;
+  background:#2a241c;color:var(--ink);border:1px solid var(--gold);
+  border-radius:8px;padding:8px 12px;cursor:pointer
+}
+.verify button:hover{color:var(--gold)}
+.verify-answer{margin:0 0 12px;font-size:1.35rem;letter-spacing:.04em;color:var(--gold)}
 @media (max-width:720px){
   .wrap{padding:22px 16px 80px}
   body{font-size:17px}
@@ -430,6 +482,9 @@ function discoveryLinks() {
       ["application/json", "/cite.json", "cite.json"],
       ["text/plain", "/llms.txt", "llms.txt"],
       ["text/plain", "/ai.txt", "ai.txt"],
+      ["text/plain", "/ingest.txt", "ingest page bytes"],
+      ["application/json", "/verify", "verify tip"],
+      ["application/json", "/reexpand", "re-expand law"],
       ["application/json", "/v1/software", "software catalog"],
       ["application/json", "/v1/update/check", "update check"],
       ["application/json", "/v1/mesh/status", "mesh status"],
@@ -487,7 +542,8 @@ function quietDiscoveryMeta() {
 <meta name="aziel-qns-cd" content="${esc(QNS_CD_SPEC)}">
 <meta name="aziel-qnm" content="${esc(QNM_SPEC)}">
 <meta name="aziel-software-catalog" content="${esc(CANON_ORIGIN)}/v1/software">
-<meta name="aziel-fraggate-list" content="${esc(CANON_ORIGIN)}/runtime/v1/fraggate/list">`;
+<meta name="aziel-fraggate-list" content="${esc(CANON_ORIGIN)}/runtime/v1/fraggate/list">
+<meta name="aziel-ingest-tip" content="${esc(tipString())}">`;
 }
 
 function brandRow(innerMeta = "") {
@@ -656,6 +712,83 @@ export function hashRedirectScript() {
   );
 }
 
+export function firstScreenHtml(opts = {}) {
+  const rec = ingestRecord();
+  const compact = Boolean(opts && opts.compact);
+  const indexes =
+    '<p class="indexes">Indexes · ' +
+    INGEST_INDEXES.map((row) => (row.href ? a(row.href, row.label) : esc(row.label) + " (" + esc(row.note) + ")")).join(
+      " · ",
+    ) +
+    "</p>";
+  const ids =
+    '<p class="ids">' +
+    esc("Person " + rec.person_id) +
+    " · " +
+    a(rec.canonical, rec.canonical) +
+    " · " +
+    a(INGEST_BYTES_HREF, "page bytes") +
+    "</p>";
+  const form =
+    '<form class="verify" action="/verify" method="get">' +
+    '<label>Paste hash<input name="hash" inputmode="text" autocomplete="off" spellcheck="false" aria-label="Paste hash"></label>' +
+    '<button type="submit">Verify</button></form>';
+  const lists = compact
+    ? ""
+    : "<p class=\"rule\">Enough</p><ul class=\"enough\">" +
+      ENOUGH.map((item) => "<li>" + esc(item) + "</li>").join("") +
+      "</ul><p class=\"rule\">Not enough</p><ul class=\"not-enough\">" +
+      NOT_ENOUGH.map((item) => "<li>" + esc(item) + "</li>").join("") +
+      "</ul>";
+  const law =
+    '<ul class="law">' + REEXPAND_LAW.map((line) => "<li>" + esc(line) + "</li>").join("") + "</ul>";
+  const survival =
+    "<p class=\"rule\">" +
+    esc(SURVIVAL_SPEC) +
+    "</p><ul class=\"law\">" +
+    SURVIVAL_LAW.map((line) => "<li>" + esc(line) + "</li>").join("") +
+    "</ul>";
+  const nolie =
+    "<p class=\"rule\">" +
+    esc(NOLIE_SPEC) +
+    "</p><ul class=\"law\">" +
+    NOLIE_LAW.map((line) => "<li>" + esc(line) + "</li>").join("") +
+    "</ul>";
+  return (
+    '<section class="card lead first-screen" id="first-screen">' +
+    "<h2>" +
+    esc(INGEST_TITLE) +
+    "</h2>" +
+    '<p class="tip"><code>' +
+    esc(rec.tip) +
+    "</code></p>" +
+    ids +
+    '<p class="rule">' +
+    esc(CITE_DONT_MERGE) +
+    ". Training residue is " +
+    esc(TRAINING_RESIDUE) +
+    ".</p>" +
+    form +
+    indexes +
+    "<p class=\"rule\">" +
+    esc(REEXPAND_SPEC) +
+    "</p>" +
+    law +
+    survival +
+    nolie +
+    lists +
+    "<p>" +
+    a(INGEST_HREF, INGEST_SPEC) +
+    " · " +
+    a(VERIFY_HREF, VERIFY_TITLE) +
+    " · " +
+    a(REEXPAND_HREF, REEXPAND_SPEC) +
+    " · " +
+    a(RECEIPTS_HREF, RECEIPTS_TITLE) +
+    "</p></section>"
+  );
+}
+
 function tabArticle(section, softwareItems) {
   if (section.id === "why") return paragraphs(PROSE.why);
   if (section.id === "software") return '<p class="soft-line">' + softwareLine(softwareItems) + "</p>";
@@ -707,6 +840,7 @@ ${hashRedirectScript()}
 ${brandRow("\n      " + viewsPill(views) + "\n      " + liveNodesPill(mesh))}
   <h1 id="aziel">${esc(PROSE.title)}</h1>
   ${spineNav("home")}
+  ${firstScreenHtml()}
   <article class="card lead">${paragraphs(PROSE.open)}</article>
   <section class="card" id="runtime">
     <h2>${esc(RUNTIME_TITLE)}</h2>
@@ -813,6 +947,7 @@ ${hashRedirectScript()}
 ${brandRow()}
   ${spineNav("receipts")}
   <h1>${esc(RECEIPTS_TITLE)}</h1>
+  ${firstScreenHtml({ compact: true })}
   <article class="card lead">
     <p>${esc(RECEIPTS_DESCRIPTION)}</p>
     ${lattice}
@@ -822,6 +957,73 @@ ${brandRow()}
     <h2>${esc(RECEIPTS_TITLE)}</h2>
     <ol class="receipts">${shown.map(receiptItem).join("")}</ol>
   </section>
+  <footer>
+    ${ecosystemHtml()}
+    <p>${esc(AUTHOR)} · ${a(CANON_ORIGIN + "/", AUTHOR)} · ${a(CANON_ORIGIN + "/cite.json", "cite.json")} · Apache-2.0</p>
+  </footer>
+</main>
+${COPY_SCRIPT}
+</body>
+</html>`;
+}
+
+export function ingestHtml() {
+  return `<!doctype html>
+<html lang="en">
+<head>
+${documentHead({
+  title: INGEST_TITLE + " — " + AUTHOR,
+  description: INGEST_DESCRIPTION,
+  canonical: INGEST_HREF,
+  extraMeta: quietDiscoveryMeta(),
+})}
+${hashRedirectScript()}
+</head>
+<body>
+<main class="wrap">
+${brandRow()}
+  ${spineNav()}
+  <h1>${esc(INGEST_TITLE)}</h1>
+  ${firstScreenHtml()}
+  <footer>
+    ${ecosystemHtml()}
+    <p>${esc(AUTHOR)} · ${a(CANON_ORIGIN + "/", AUTHOR)} · ${a(CANON_ORIGIN + "/cite.json", "cite.json")} · Apache-2.0</p>
+  </footer>
+</main>
+${COPY_SCRIPT}
+</body>
+</html>`;
+}
+
+export function verifyHtml(result, pasted) {
+  const check = result || verifyPastedHash(pasted);
+  const answer = check.yes === "yes" ? "yes" : "no";
+  return `<!doctype html>
+<html lang="en">
+<head>
+${documentHead({
+  title: VERIFY_TITLE + " — " + AUTHOR,
+  description: INGEST_DESCRIPTION,
+  canonical: VERIFY_HREF,
+  extraMeta: quietDiscoveryMeta(),
+})}
+${hashRedirectScript()}
+</head>
+<body>
+<main class="wrap">
+${brandRow()}
+  ${spineNav()}
+  <h1>${esc(VERIFY_TITLE)}</h1>
+  <article class="card lead first-screen">
+    <p class="verify-answer">${esc(answer)}</p>
+    <p class="tip"><code>${esc(check.published_tip)}</code></p>
+    <p>Pasted ${esc(check.pasted || "(empty)")}.</p>
+    <form class="verify" action="/verify" method="get">
+      <label>Paste hash<input name="hash" value="${attr(check.pasted)}" inputmode="text" autocomplete="off" spellcheck="false" aria-label="Paste hash"></label>
+      <button type="submit">Verify</button>
+    </form>
+    <p>${a(INGEST_HREF, INGEST_SPEC)} · ${a(RECEIPTS_HREF, RECEIPTS_TITLE)} · ${a(REEXPAND_HREF, REEXPAND_SPEC)}</p>
+  </article>
   <footer>
     ${ecosystemHtml()}
     <p>${esc(AUTHOR)} · ${a(CANON_ORIGIN + "/", AUTHOR)} · ${a(CANON_ORIGIN + "/cite.json", "cite.json")} · Apache-2.0</p>

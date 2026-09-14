@@ -23,6 +23,12 @@ Softwares list: https://www.azieleliab.com/software (`/#software` maps here)
 
 Donate door (AZL-DONATE-1.0, not a Softwares product): https://www.azieleliab.com/donate
 
+Receipts tab (kept): https://www.azieleliab.com/receipts
+
+INGEST-AS-RECEIPT-1.0 sha256:c71e8c07d838b148fc8ec5f18c7e261d53566ea8a090ca81445e3483586082a5 https://www.azieleliab.com/
+
+Same tip in first-screen HTML, `/cite.json`, `/llms.txt`, GitHub. Cite, don't merge. Verify paste-hash yes/no at `/verify`. `/ingest.txt` is the hashed page bytes. RE-EXPAND-FROM-ARCHIVE-1.0: bytes survive, not summaries; verify receipts/`previous_hash` then stand a local node — not mesh from index. Crawlers do not re-expand. Training residue is rumor. Growth-ON Allow.
+
 GitHub About / indexing (no Worker UI change): [docs/github-seo.md](docs/github-seo.md). Homepage `https://www.azieleliab.com/`. Cross-link Corpus, GodLock, He Didn't Jump, aziel-runtime, Try on Glama, Donate.
 
 About aliases `/about`, `/AzielEliab`, `/aziel-eliab` 200 the same homepage HTML. Tab pages `/why`, `/software`, `/research`, `/doors` are distinct URLs. `/aziel` 200s the homepage (Person `#aziel`). `/mission` 301s to `/`. Old hashes `/#why` `/#software` `/#research` `/#doors` (`/#mission`) map to those paths.
