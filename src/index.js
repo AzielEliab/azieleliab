@@ -24,7 +24,18 @@ import {
   MESH_STATUS_PATH,
   meshSnapshot,
 } from "./mesh.js";
-import { donateHtml, embryoLockHtml, notFoundHtml, pageHtml, receiptsHtml, sectionPageHtml, whoHtml } from "./page.js";
+import {
+  CITE_DONT_MERGE,
+  INGEST_BYTES_PATH,
+  INGEST_PATH,
+  REEXPAND_PATH,
+  VERIFY_PATH,
+  canonicalPageBytes,
+  ingestRecord,
+  reexpandDoc,
+  verifyPastedHash,
+} from "./ingest.js";
+import { donateHtml, embryoLockHtml, ingestHtml, notFoundHtml, pageHtml, receiptsHtml, sectionPageHtml, verifyHtml, whoHtml } from "./page.js";
 import { donateQrResponse } from "./qr.js";
 import { sigilResponse } from "./sigil.js";
 import { handleRuntimeRoot, isRuntimeRequest } from "./runtimeRoot.js";
@@ -154,6 +165,8 @@ export async function handleRequest(request, env = {}, ctx) {
     "/graph.jsonld",
     "/.well-known/aziel.json",
     "/.well-known/person.jsonld",
+    REEXPAND_PATH,
+    VERIFY_PATH,
   ]);
   if (request.method === "OPTIONS" && jsonGet.has(path)) {
     return new Response(null, { status: 204, headers: { ...SECURITY, ...CORS } });
@@ -241,7 +254,20 @@ export async function handleRequest(request, env = {}, ctx) {
   } else if (tab) {
     res = html(sectionPageHtml(tab, await readViews(env), doors, meshStatus, live && live.version));
   } else if (path === "/receipts") res = html(await receiptsHtml());
-  else if (path === "/donate") res = html(donateHtml(), 200, DONATE_HTML_CACHE);
+  else if (path === INGEST_PATH) res = html(ingestHtml());
+  else if (path === INGEST_BYTES_PATH) res = text(canonicalPageBytes(), "text/plain", { cache: SEO_CACHE });
+  else if (path === VERIFY_PATH) {
+    const pasted = url.searchParams.get("hash") || url.searchParams.get("h") || "";
+    const result = verifyPastedHash(pasted);
+    const accept = String(request.headers.get("accept") || "");
+    const wantJson =
+      url.searchParams.get("format") === "json" || /\bapplication\/json\b/i.test(accept);
+    res = wantJson
+      ? json({ ok: true, author: AUTHOR, cite_dont_merge: CITE_DONT_MERGE, ...result, tip: ingestRecord().tip })
+      : html(verifyHtml(result, pasted));
+  } else if (path === REEXPAND_PATH) {
+    res = json(reexpandDoc(), SEO_CACHE);
+  } else if (path === "/donate") res = html(donateHtml(), 200, DONATE_HTML_CACHE);
   else if (path === "/embryolock") res = html(embryoLockHtml(), 200, STUB_HTML_CACHE);
   else if (path === "/robots.txt") res = text(robotsTxt(), "text/plain", { cache: SEO_CACHE });
   else if (path === "/llms.txt") res = text(llmsTxt(doors), "text/plain", { cache: SEO_CACHE });
