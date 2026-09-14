@@ -4,7 +4,7 @@ GitHub-side SEO / indexing / AI pickup for [AzielEliab/azieleliab](https://githu
 
 Live crawl surfaces (`/robots.txt`, `/llms.txt`, `/ai.txt`, `/cite.json`, `/shelves`, `/v1/shelves`, `/sitemap.xml`, JSON-LD) stay on the Worker. This repo’s README, CITATION.cff, and GitHub description / homepage / topics are what Google and AI crawlers see on GitHub. Canonical shelves registry remains https://www.azielcorpuslibrary.net/shelves.
 
-Same published tip as first-screen HTML / `/cite.json` / `/llms.txt`:
+Same published tip as Receipts-tab first-screen HTML (`/receipts`) / `/ingest` / `/cite.json` / `/llms.txt`:
 
 `INGEST-AS-RECEIPT-1.0 sha256:c71e8c07d838b148fc8ec5f18c7e261d53566ea8a090ca81445e3483586082a5 https://www.azieleliab.com/`
 

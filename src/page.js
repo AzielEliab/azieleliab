@@ -714,6 +714,7 @@ export function hashRedirectScript() {
   );
 }
 
+/** Visible INGEST-AS-RECEIPT card. Receipts tab + /ingest only — not homepage. */
 export function firstScreenHtml(opts = {}) {
   const rec = ingestRecord();
   const compact = Boolean(opts && opts.compact);
@@ -842,7 +843,6 @@ ${hashRedirectScript()}
 ${brandRow("\n      " + viewsPill(views) + "\n      " + liveNodesPill(mesh))}
   <h1 id="aziel">${esc(PROSE.title)}</h1>
   ${spineNav("home")}
-  ${firstScreenHtml()}
   <article class="card lead">${paragraphs(PROSE.open)}</article>
   <section class="card" id="runtime">
     <h2>${esc(RUNTIME_TITLE)}</h2>
@@ -949,7 +949,7 @@ ${hashRedirectScript()}
 ${brandRow()}
   ${spineNav("receipts")}
   <h1>${esc(RECEIPTS_TITLE)}</h1>
-  ${firstScreenHtml({ compact: true })}
+  ${firstScreenHtml()}
   <article class="card lead">
     <p>${esc(RECEIPTS_DESCRIPTION)}</p>
     ${lattice}

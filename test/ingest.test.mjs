@@ -86,12 +86,15 @@ describe("INGEST-AS-RECEIPT-1.0", () => {
     assert.ok(!bytes.includes(NOLIE_SPEC));
   });
 
-  it("keeps the same tip in HTML, cite, llms, and GitHub", () => {
-    const home = visible(pageHtml());
+  it("keeps the same tip in Receipts / ingest HTML, cite, llms, and GitHub", async () => {
+    const home = pageHtml();
+    const receipts = visible(await receiptsHtml());
     const ingest = visible(ingestHtml());
     const cite = citeDoc();
     const llms = llmsTxt();
+    assert.ok(home.includes('name="aziel-ingest-tip"'));
     assert.ok(home.includes(TIP));
+    assert.ok(receipts.includes(TIP));
     assert.ok(ingest.includes(TIP));
     assert.equal(cite.tip, TIP);
     assert.equal(cite.ingest_as_receipt.tip, TIP);
@@ -225,13 +228,18 @@ describe("CROSS-NETWORK-SURVIVAL-1.0 and NO-LIE / NO-REWRITE chrome", () => {
     assert.ok(!bytes.includes("independent shelves"));
     assert.ok(!bytes.includes("rewrite key"));
 
-    const home = visible(pageHtml());
+    const home = pageHtml();
+    const receipts = visible(await receiptsHtml());
     const ingest = visible(ingestHtml());
     const cite = citeDoc();
     const llms = llmsTxt();
     const ai = aiTxt();
+    const homeBody = home.split("<body>")[1] || "";
+    assert.ok(!homeBody.includes("<h2>Ingest as receipt</h2>"));
+    assert.ok(!homeBody.includes('id="first-screen"'));
+    assert.ok(home.includes('name="aziel-ingest-tip"'));
     for (const [name, text] of [
-      ["home", home],
+      ["receipts", receipts],
       ["ingest", ingest],
       ["llms", llms],
       ["ai", ai],
@@ -241,7 +249,8 @@ describe("CROSS-NETWORK-SURVIVAL-1.0 and NO-LIE / NO-REWRITE chrome", () => {
       for (const line of SURVIVAL_LAW) assert.ok(text.includes(line), name + " " + line);
       for (const line of NOLIE_LAW) assert.ok(text.includes(line), name + " " + line);
     }
-    assert.doesNotMatch(home, /1 Chronicles 15:20/);
+    assert.doesNotMatch(homeBody, /1 Chronicles 15:20/);
+    assert.doesNotMatch(receipts, /1 Chronicles 15:20/);
     assert.doesNotMatch(ingest, /1 Chronicles 15:20/);
     assert.equal(cite.cross_network_survival.spec, SURVIVAL_SPEC);
     assert.equal(cite.no_lie_no_rewrite.spec, NOLIE_SPEC);
