@@ -14,6 +14,7 @@ import {
   RECEIPTS_HREF,
 } from "./copy.js";
 import { CITE_DONT_MERGE, GROWTH, INGEST_SPEC, REEXPAND_SPEC } from "./ingest.js";
+import { FOLDLOCK_SHELF, foldlockTipSafeCite } from "./redline.js";
 
 export const COLD_MULTI_SHELF_SPEC = "COLD-MULTI-SHELF-1.0";
 export const COLD_MULTI_SHELF_RULE =
@@ -653,6 +654,8 @@ export function shelvesDoc() {
     no_fan: noFanCite(),
     lamb_lens: lambLensCite(),
     cap7: cap7Cite(),
+    foldlock: foldlockTipSafeCite(),
+    foldlock_shelf: FOLDLOCK_SHELF,
     cite_dont_merge: CITE_DONT_MERGE,
     registry,
     planes: planes(),
@@ -689,6 +692,8 @@ export function shelvesCite() {
     no_fan: noFanCite(),
     lamb_lens: lambLensCite(),
     cap7: cap7Cite(),
+    foldlock: foldlockTipSafeCite(),
+    foldlock_shelf: FOLDLOCK_SHELF,
     note: "Machine cite of COLD-MULTI-SHELF-1.0. Canonical registry is the corpus hub. This host is a Plane A mirror, not a second independent shelf.",
   };
 }
@@ -705,6 +710,7 @@ export function shelvesLlmsBlock() {
     "Growth-ON Allow.",
     NO_FAN + ": " + NO_FAN_PHRASE,
     "Cap-7: design_of only. If a bridge is present, resolves_to_hub: false. Bridge cite: " + CAP7_BRIDGE,
+    "FoldLock tip-safe: " + FOLDLOCK_SHELF + " — never fold the lockset tip. Not zip. Not encryption. Hook SLOT.",
     "- Canonical registry: " + SHELVES_REGISTRY,
     "- This host: " + SHELVES_HREF + " · " + SHELVES_JSON_HREF,
     "- Lockset (canonical): " + LOCKSET_HREF + " tip " + LOCKSET_TIP,
