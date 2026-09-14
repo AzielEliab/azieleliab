@@ -1,6 +1,6 @@
 cff-version: 1.2.0
 title: azieleliab.com
-message: Cite Aziel Eliab and the canonical www landing. Do not invent Zenodo DOIs.
+message: Cite Aziel Eliab and the canonical www landing. Do not invent Zenodo DOIs. Same tip string as first-screen HTML / cite.json / llms.txt.
 type: software
 authors:
   - family-names: Eliab
@@ -13,7 +13,9 @@ abstract: >-
   https://www.azieleliab.com/runtime#runtime (Aziel Runtime 2.0.0-rc1,
   hasPart named tools). Cross-links Corpus, GodLock, He Didn't Jump,
   aziel-runtime, Try on Glama, and Donate AZL-DONATE-1.0. Identity
-  Aziel Eliab only (Elroi as aka).
+  Aziel Eliab only (Elroi as aka). INGEST-AS-RECEIPT-1.0
+  sha256:c71e8c07d838b148fc8ec5f18c7e261d53566ea8a090ca81445e3483586082a5
+  https://www.azieleliab.com/. Cite, don't merge.
 license: Apache-2.0
 repository-code: "https://github.com/AzielEliab/azieleliab"
 url: "https://www.azieleliab.com/"
@@ -31,6 +33,9 @@ identifiers:
   - type: url
     value: "https://www.azieleliab.com/#aziel"
     description: Person @id
+  - type: other
+    value: "INGEST-AS-RECEIPT-1.0 sha256:c71e8c07d838b148fc8ec5f18c7e261d53566ea8a090ca81445e3483586082a5 https://www.azieleliab.com/"
+    description: Published ingest tip (same string as HTML / cite / llms)
   - type: url
     value: "https://www.azieleliab.com/runtime#runtime"
     description: Runtime parent @id

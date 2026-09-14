@@ -9,6 +9,8 @@ Identity is **Aziel Eliab** only. Aka only: Aziel Elroi Eliab, AzielEliab, Aziel
 Canonical: [https://www.azieleliab.com/](https://www.azieleliab.com/)  
 Apex `https://azieleliab.com/` 301s to www.
 
+INGEST-AS-RECEIPT-1.0 sha256:c71e8c07d838b148fc8ec5f18c7e261d53566ea8a090ca81445e3483586082a5 https://www.azieleliab.com/
+
 GitHub About (Google + AI crawlers): homepage **https://www.azieleliab.com/** — apply description and topics from [docs/github-seo.md](docs/github-seo.md).
 
 ## Identity / entity graph
@@ -68,7 +70,12 @@ Cloudflare Worker `azieleliab-com` serves the literary landing, crawl files, and
 | `/embryolock` · `/embryolock/` | EmbryoLock secondary local page (Softwares door is catalog `worker_home`) |
 | `/sigil.png` | Hosted rose-star brand mark (Donate / brandrow do not fetch the corpus) |
 | `/robots.txt` | `Allow: /` plus AI crawlers and `/runtime` |
-| `/llms.txt` | Door index for models (identity lock prepended; catalog kept) |
+| `/llms.txt` | Door index for models (identity lock prepended; catalog kept; ingest tip + cite, don't merge) |
+| `/receipts` | ACT-RECEIPT-1.0 Receipts tab (kept) |
+| `/ingest` | INGEST-AS-RECEIPT-1.0 first-screen law + operator enough / not-enough |
+| `/ingest.txt` | Canonical first-screen page bytes (SHA-256 source) |
+| `/verify` | Paste-hash yes/no vs published tip (`?hash=` or `?format=json`) |
+| `/reexpand` | RE-EXPAND-FROM-ARCHIVE-1.0 law + refuse (crawlers do not re-expand) |
 | `/person.jsonld` · `/identity.jsonld` · `/.well-known/person.jsonld` | Identical Person JSON-LD (`application/ld+json`) |
 | `/graph.jsonld` | Person + FAQPage + four hub WebSites + Runtime + stats Dataset |
 | `/who-is-aziel-eliab.txt` · `/who-is` | Machine who-is text + 7 model rules + public work |
@@ -85,7 +92,7 @@ Cloudflare Worker `azieleliab-com` serves the literary landing, crawl files, and
 | `GET /v1/update` · `/v1/update/check` | Quiet installer pointer at runtime `/v1/update/check` |
 | `GET /v1/mesh/status` · `/v1/mesh/nodes` | Suite node mesh (read-only suite presence is on; display from runtime) |
 
-JSON-LD: `Person` `@id` `https://www.azieleliab.com/#aziel` (one Person only; Aziel Eliab; `alternateName` keeps compact Hebrew + misspelling AZindex tethers plus aka Aziel Elroi Eliab / AzielEliab / AzielElroiEliab / The Revealer of The Sealed / Revealer of The Sealed; `description` is the living researcher / software designer lock and names both Levitical musicians Aziel and Eliab in 1 Chronicles 15:20; `disambiguatingDescription` names those two musicians + 15:20 and keeps euaziel.site / Aziel S. machine NOT; `sameAs` GitHub AzielEliab + secondary source + Glama + hub + Corpus + GodLock + He Didn't Jump + X — never euaziel.site; no invented Glama UUIDs) + `FAQPage` titled “Who is Aziel Eliab?” (who-is + “two musicians named in 1 Chronicles 15:20?”) + `WebSite` `#website` (publisher/creator Person) + `AboutPage` + indexable section `WebPage`s (`/why`, `/software`, `/research`, `/doors`, `/aziel`) + Runtime parent `SoftwareApplication` `@id` `https://www.azieleliab.com/runtime#runtime` (`hasPart` named tools only — not MCP ops; Worker is related/endpoint; `sameAs` GitHub repo + Glama) + one named-tool `SoftwareApplication` per Runtime component (`/runtime#<slug>`) + Software `ItemList` / `CollectionPage` + one catalog `SoftwareApplication` per Softwares name + Donate `WebPage` / `DonateAction`. The 15:20 lock line stays on machine surfaces (person.jsonld, FAQ, llms, who-is txt) and is not rendered in visible `/` or `/who` HTML. No invented biography. Homepage title stays **Aziel Eliab**. Canonical host is always `https://www.azieleliab.com/` (self-referencing only). Softwares is the distinct `/software` page (heading → list). Footer chrome: **Part of the Aziel Eliab ecosystem**. Donate canonical is `/donate?v=png`. hreflang `en` + `x-default` point at each page’s www canonical.
+JSON-LD: `Person` `@id` `https://www.azieleliab.com/#aziel` (one Person only; Aziel Eliab; `alternateName` keeps compact Hebrew + misspelling AZindex tethers plus aka Aziel Elroi Eliab / AzielEliab / AzielElroiEliab / The Revealer of The Sealed / Revealer of The Sealed; `description` is the living researcher / software designer lock and names both Levitical musicians Aziel and Eliab in 1 Chronicles 15:20; `disambiguatingDescription` names those two musicians + 15:20 and keeps euaziel.site / Aziel S. machine NOT; `sameAs` GitHub AzielEliab + secondary source + Glama + hub + Corpus + GodLock + He Didn't Jump + X — never euaziel.site; no invented Glama UUIDs) + `FAQPage` titled “Who is Aziel Eliab?” (who-is + “two musicians named in 1 Chronicles 15:20?”) + `WebSite` `#website` (publisher/creator Person) + `AboutPage` + indexable section `WebPage`s (`/why`, `/software`, `/research`, `/doors`, `/aziel`) + Runtime parent `SoftwareApplication` `@id` `https://www.azieleliab.com/runtime#runtime` (`hasPart` named tools only — not MCP ops; Worker is related/endpoint; `sameAs` GitHub repo + Glama) + one named-tool `SoftwareApplication` per Runtime component (`/runtime#<slug>`) + Software `ItemList` / `CollectionPage` + one catalog `SoftwareApplication` per Softwares name + Donate `WebPage` / `DonateAction`. The 15:20 lock line stays on machine surfaces (person.jsonld, FAQ, llms, who-is txt) and is not rendered in visible `/` or `/who` HTML. First-screen ingest chrome is the tip string + verify + re-expand law — not 15:20 identity-lock chrome. No invented biography. Homepage title stays **Aziel Eliab**. Canonical host is always `https://www.azieleliab.com/` (self-referencing only). Softwares is the distinct `/software` page (heading → list). Footer chrome: **Part of the Aziel Eliab ecosystem**. Donate canonical is `/donate?v=png`. hreflang `en` + `x-default` point at each page’s www canonical.
 
 ### Research
 
@@ -235,7 +242,20 @@ This host is the **hub cite** surface for **QNS-CD-1.0** (photon QNS1 packet tra
 
 ## Donate
 
-Primary canonical door: [https://www.azieleliab.com/donate](https://www.azieleliab.com/donate) (AZL-DONATE-1.0). Homepage spine: Why / Software / Research / Doors / Donate — each a real path (`/why`, `/software`, `/research`, `/doors`, `/donate`). Label is **Donate**. No Donate section on the homepage. No Mission tab. Static HTML — no Worker KV, no email capture, no thank-you wall. Rails: BTC, ETH, LTC, XRP, DOGE. Disclaimer: Donations buy no privilege. Signature on this door is `— Aziel`. Site SEO identity remains Aziel Eliab.
+Primary canonical door: [https://www.azieleliab.com/donate](https://www.azieleliab.com/donate) (AZL-DONATE-1.0). Homepage spine: Why / Software / Research / Doors / Receipts / Donate — each a real path (`/why`, `/software`, `/research`, `/doors`, `/receipts`, `/donate`). Receipts tab is kept. Label is **Donate**. No Donate section on the homepage. No Mission tab.
+
+## Ingest as receipt / re-expand
+
+Same tip string in first-screen HTML, `/cite.json`, `/llms.txt`, and GitHub:
+
+`INGEST-AS-RECEIPT-1.0 sha256:c71e8c07d838b148fc8ec5f18c7e261d53566ea8a090ca81445e3483586082a5 https://www.azieleliab.com/`
+
+- Receipt, not only story: stable IDs, canonical URL, SHA-256 of canonical first-screen page bytes (`GET /ingest.txt`).
+- Public verify: paste a hash at `/verify` — yes/no vs the published tip.
+- Many indexes, one tip: this host, Corpus, GodLock, He Didn't Jump, GitHub. DOI none — do not invent.
+- Training is lossy. First-screen and llms keep the hash and the rule **cite, don't merge**. Training residue is rumor.
+- RE-EXPAND-FROM-ARCHIVE-1.0: bytes survive, not summaries. Re-expand = verify original receipts and `previous_hash`, then stand a local node — not mesh from index. Crawlers do not re-expand. Operator enough / not-enough lists live on `/ingest`.
+- Growth-ON: `robots.txt` / `ai.txt` Allow `/receipts`, `/ingest`, `/verify`, `/reexpand`. Static HTML — no Worker KV, no email capture, no thank-you wall. Rails: BTC, ETH, LTC, XRP, DOGE. Disclaimer: Donations buy no privilege. Signature on this door is `— Aziel`. Site SEO identity remains Aziel Eliab.
 
 ## Doors
 
