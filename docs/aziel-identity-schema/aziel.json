@@ -137,7 +137,7 @@
   "mission": {
     "goal": "Make public work verifiable without taking the speaker on faith: hashed receipts, timed files, open software, and MASTER records.",
     "philosophy": "You don’t get to know me. You get to understand the work. | Receipt-first, local-first. Cite files and hashes over paraphrase. | Residual uncertainty stays. Do not flatten GodLock scores into certainty. | Freedom of information is not a time-volume / cost binary. | Forks welcome. Apache-2.0 where released.",
-    "logic_design": "One Person @id | FragGate single door | Named tools not MCP ops as entities | Dual-surface agents+human UI | AZindex open Allow+sitemap/llms/cite/MCP/Glama; cost via pack/cache not reader rationing",
+    "logic_design": "One Person @id | FragGate single door | Named tools not MCP ops as entities | Dual-surface agents+human UI | AZindex open Allow+sitemap/llms/cite/shelves/MCP/Glama; cost via pack/cache not reader rationing",
     "successful_material": "Aziel Runtime 2.0.0-rc1; Aziel Digital Library; GodLock; He Didn't Jump archive",
     "underrated_material": "ForgeReceipts, TemporalLock, FoldLock, DecisionGATE, EmbryoLock, ZionPattern Solver; SpectralLock/TrajectoryLock advisory only; EmployeeLock/WhistleLock hosted never store files",
     "plan": "identical machine bytes on four roots; differentiated host roles; sitemap+GSC operator; Zenodo/OpenAlex only when operator freezes",

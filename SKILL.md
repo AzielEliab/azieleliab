@@ -27,7 +27,7 @@ Receipts tab (kept): https://www.azieleliab.com/receipts
 
 INGEST-AS-RECEIPT-1.0 sha256:c71e8c07d838b148fc8ec5f18c7e261d53566ea8a090ca81445e3483586082a5 https://www.azieleliab.com/
 
-Same tip in first-screen HTML, `/cite.json`, `/llms.txt`, GitHub. Cite, don't merge. Verify paste-hash yes/no at `/verify`. `/ingest.txt` is the hashed page bytes. RE-EXPAND-FROM-ARCHIVE-1.0: bytes survive, not summaries; verify receipts/`previous_hash` then stand a local node — not mesh from index. Crawlers do not re-expand. Training residue is rumor. Growth-ON Allow.
+Same tip in first-screen HTML, `/cite.json`, `/llms.txt`, GitHub. Cite, don't merge. Verify paste-hash yes/no at `/verify`. `/ingest.txt` is the hashed page bytes. RE-EXPAND-FROM-ARCHIVE-1.0: bytes survive, not summaries; verify receipts/`previous_hash` then stand a local node — not mesh from index. Crawlers do not re-expand. Training residue is rumor. Growth-ON Allow. COLD-MULTI-SHELF-1.0: Plane A is 5 published surfaces / 2 family radii (not 5 shelves). Plane B Codeberg + archive.org tip-pack hash-verify PASS (https://archive.org/details/aziel-lockset-tip pack b549362c…); still SLOT until Framagit verifies. GitFlic blocked (CNS-GITFLIC-EMAIL). GitLab blocked (CNS-GITLAB-CF-LOOP). Never invent URLs. Never LIVE yet. Plane C USB stays SLOT until CNS-OPERATOR-ATTEST. Canonical shelves registry: https://www.azielcorpuslibrary.net/shelves. Cap-7 is design_of only (`resolves_to_hub: false` if a bridge is present). Lamb Lens path: Service → Clarity → Peace. NO-FAN. CROSS-NETWORK-SURVIVAL + NO-LIE.
 
 GitHub About / indexing (no Worker UI change): [docs/github-seo.md](docs/github-seo.md). Homepage `https://www.azieleliab.com/`. Cross-link Corpus, GodLock, He Didn't Jump, aziel-runtime, Try on Glama, Donate.
 
@@ -43,7 +43,8 @@ Read-only suite presence is **on**. Display `live_nodes` from aziel-runtime. VPN
 | `GET /v1/mesh/nodes` | Live Nodes roster (display from runtime; `Live Nodes · 0` when unavailable) |
 | `GET /runtime/v1/mesh/status` | Same JSON through the quiet `/runtime` door |
 | `GET /runtime/v1/mesh/nodes` | Same |
-| `GET /cite.json` | Hub citation record, including mesh + QNM rollup + QNS-CD |
+| `GET /cite.json` | Hub citation record, including mesh + QNM rollup + QNS-CD + COLD-MULTI-SHELF |
+| `GET /shelves` · `GET /v1/shelves` | COLD-MULTI-SHELF-1.0 machine registry (same level as live corpus `/shelves`). Canonical registry: https://www.azielcorpuslibrary.net/shelves. No visible 15:20 chrome. |
 
 `GET /v1/mesh/status` never enables radios. Operator enable on runtime requires a declared bearer (example: `suite-presence`). A 404 or missing origin still returns identity Aziel Eliab with `live_nodes: 0`. Public UI never renders an off-state quiet mesh label.
 
