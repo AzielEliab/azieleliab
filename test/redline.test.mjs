@@ -271,7 +271,7 @@ describe("REDLINE attack-sim refuses", () => {
     const files = walkFiles(root);
     const secretAssign = /(?:CLOUDFLARE_API_TOKEN|OPERATOR_TOKEN|RUNTIME_TOKEN|GATE_TOKEN)\s*=\s*['\"]?(?!\$\{)[A-Za-z0-9_\-]{12,}/;
     for (const file of files) {
-      const rel = relative(root.pathname, file);
+      const rel = relative(root, file);
       if (rel.endsWith(".test.mjs")) continue;
       const text = readFileSync(file, "utf8");
       assert.doesNotMatch(text, secretAssign, rel);
