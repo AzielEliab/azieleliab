@@ -21,10 +21,14 @@ import {
   INGEST_BYTES_HREF,
   INGEST_HREF,
   INGEST_SPEC,
+  NOLIE_LAW,
+  NOLIE_SPEC,
   NOT_ENOUGH,
   REEXPAND_HREF,
   REEXPAND_LAW,
   REEXPAND_SPEC,
+  SURVIVAL_LAW,
+  SURVIVAL_SPEC,
   TRAINING_RESIDUE,
   VERIFY_HREF,
   canonicalPageBytes,
@@ -78,6 +82,8 @@ describe("INGEST-AS-RECEIPT-1.0", () => {
     assert.ok(bytes.includes(GENESIS_PREVIOUS_HASH));
     assert.ok(bytes.includes(CITE_DONT_MERGE));
     assert.ok(!bytes.includes(hash));
+    assert.ok(!bytes.includes(SURVIVAL_SPEC));
+    assert.ok(!bytes.includes(NOLIE_SPEC));
   });
 
   it("keeps the same tip in HTML, cite, llms, and GitHub", () => {
@@ -206,5 +212,52 @@ describe("Growth-ON Allow and public doors", () => {
       assert.ok(!shown.includes(VISIBLE_LOCK_LINE));
     }
     assert.ok(!visible(whoHtml()).includes(VISIBLE_LOCK_LINE));
+  });
+});
+
+describe("CROSS-NETWORK-SURVIVAL-1.0 and NO-LIE / NO-REWRITE chrome", () => {
+  it("cites both laws on first-screen, cite, llms, and ai — outside hashed tip bytes", async () => {
+    assert.equal(pageBytesSha256(), "c71e8c07d838b148fc8ec5f18c7e261d53566ea8a090ca81445e3483586082a5");
+    assert.equal(tipString(), TIP);
+    const bytes = canonicalPageBytes();
+    assert.ok(!bytes.includes(SURVIVAL_SPEC));
+    assert.ok(!bytes.includes(NOLIE_SPEC));
+    assert.ok(!bytes.includes("independent shelves"));
+    assert.ok(!bytes.includes("rewrite key"));
+
+    const home = visible(pageHtml());
+    const ingest = visible(ingestHtml());
+    const cite = citeDoc();
+    const llms = llmsTxt();
+    const ai = aiTxt();
+    for (const [name, text] of [
+      ["home", home],
+      ["ingest", ingest],
+      ["llms", llms],
+      ["ai", ai],
+    ]) {
+      assert.ok(text.includes(SURVIVAL_SPEC), name + " survival spec");
+      assert.ok(text.includes(NOLIE_SPEC), name + " nolie spec");
+      for (const line of SURVIVAL_LAW) assert.ok(text.includes(line), name + " " + line);
+      for (const line of NOLIE_LAW) assert.ok(text.includes(line), name + " " + line);
+    }
+    assert.doesNotMatch(home, /1 Chronicles 15:20/);
+    assert.doesNotMatch(ingest, /1 Chronicles 15:20/);
+    assert.equal(cite.cross_network_survival.spec, SURVIVAL_SPEC);
+    assert.equal(cite.no_lie_no_rewrite.spec, NOLIE_SPEC);
+    assert.equal(cite.ingest_as_receipt.cross_network_survival.spec, SURVIVAL_SPEC);
+    assert.equal(cite.cross_network_survival.software_tab, false);
+    assert.equal(cite.no_lie_no_rewrite.rewrite_key, false);
+    assert.equal(cite.no_lie_no_rewrite.network_never_lies, true);
+    assert.deepEqual(cite.cross_network_survival.law, SURVIVAL_LAW);
+    assert.deepEqual(cite.no_lie_no_rewrite.law, NOLIE_LAW);
+
+    const servedCite = await (await fetchPath("/cite.json")).json();
+    assert.equal(servedCite.tip, TIP);
+    assert.equal(servedCite.cross_network_survival.spec, SURVIVAL_SPEC);
+    assert.equal(servedCite.no_lie_no_rewrite.spec, NOLIE_SPEC);
+    const servedBytes = await (await fetchPath("/ingest.txt")).text();
+    assert.equal(servedBytes, bytes);
+    assert.equal(createHash("sha256").update(servedBytes, "utf8").digest("hex"), pageBytesSha256());
   });
 });

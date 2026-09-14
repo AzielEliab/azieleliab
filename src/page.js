@@ -60,10 +60,14 @@ import {
   INGEST_INDEXES,
   INGEST_SPEC,
   INGEST_TITLE,
+  NOLIE_LAW,
+  NOLIE_SPEC,
   NOT_ENOUGH,
   REEXPAND_HREF,
   REEXPAND_LAW,
   REEXPAND_SPEC,
+  SURVIVAL_LAW,
+  SURVIVAL_SPEC,
   TRAINING_RESIDUE,
   VERIFY_HREF,
   VERIFY_TITLE,
@@ -738,6 +742,18 @@ export function firstScreenHtml(opts = {}) {
       "</ul>";
   const law =
     '<ul class="law">' + REEXPAND_LAW.map((line) => "<li>" + esc(line) + "</li>").join("") + "</ul>";
+  const survival =
+    "<p class=\"rule\">" +
+    esc(SURVIVAL_SPEC) +
+    "</p><ul class=\"law\">" +
+    SURVIVAL_LAW.map((line) => "<li>" + esc(line) + "</li>").join("") +
+    "</ul>";
+  const nolie =
+    "<p class=\"rule\">" +
+    esc(NOLIE_SPEC) +
+    "</p><ul class=\"law\">" +
+    NOLIE_LAW.map((line) => "<li>" + esc(line) + "</li>").join("") +
+    "</ul>";
   return (
     '<section class="card lead first-screen" id="first-screen">' +
     "<h2>" +
@@ -758,6 +774,8 @@ export function firstScreenHtml(opts = {}) {
     esc(REEXPAND_SPEC) +
     "</p>" +
     law +
+    survival +
+    nolie +
     lists +
     "<p>" +
     a(INGEST_HREF, INGEST_SPEC) +

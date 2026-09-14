@@ -83,6 +83,69 @@ export const NOT_ENOUGH = [
   "Merged identity",
 ];
 
+/**
+ * Chrome only — not inside canonicalPageBytes / tip hash.
+ * CROSS-NETWORK-SURVIVAL-1.0 + NO-LIE / NO-REWRITE.
+ */
+export const SURVIVAL_SPEC = "CROSS-NETWORK-SURVIVAL-1.0";
+export const NOLIE_SPEC = "NO-LIE / NO-REWRITE";
+
+export const SURVIVAL_LAW = [
+  "If the network and live data die tomorrow, the chain still survives via cold copies across independent shelves.",
+  "Survival is bytes↔hash.",
+  "Crawlers are extra shelves, not resurrection.",
+];
+
+export const NOLIE_LAW = [
+  "Receipts still hash.",
+  "Copies are not all on one tunnel.",
+  "Verify without the author's voice.",
+  "No rewrite key.",
+  "The network never lies even to stay alive, adapt, or prevent death.",
+];
+
+export function survivalCite() {
+  return {
+    spec: SURVIVAL_SPEC,
+    author: AUTHOR,
+    software_tab: false,
+    survival: "bytes↔hash",
+    crawlers: "extra shelves, not resurrection",
+    law: SURVIVAL_LAW.slice(),
+    note: "Chrome cite. Outside hashed /ingest.txt tip bytes. Not a Softwares product.",
+  };
+}
+
+export function nolieCite() {
+  return {
+    spec: NOLIE_SPEC,
+    author: AUTHOR,
+    software_tab: false,
+    receipts_still_hash: true,
+    one_tunnel: false,
+    rewrite_key: false,
+    author_voice_required: false,
+    network_never_lies: true,
+    law: NOLIE_LAW.slice(),
+    note: "Chrome cite. Outside hashed /ingest.txt tip bytes. Not a Softwares product.",
+  };
+}
+
+export function survivalLlmsBlock() {
+  return [
+    "## " + SURVIVAL_SPEC,
+    "",
+    ...SURVIVAL_LAW.map((line) => "- " + line),
+    "- Not a Softwares product. Outside hashed tip bytes.",
+    "",
+    "## " + NOLIE_SPEC,
+    "",
+    ...NOLIE_LAW.map((line) => "- " + line),
+    "- Not a Softwares product. Outside hashed tip bytes.",
+    "",
+  ].join("\n");
+}
+
 export function ingestIndexesCite() {
   return INGEST_INDEXES.map((row) => {
     const out = { label: row.label };
@@ -211,6 +274,8 @@ export function ingestRecord() {
     reexpand_path: REEXPAND_HREF,
     receipts: RECEIPTS_HREF,
     github: GITHUB_SITE,
+    cross_network_survival: survivalCite(),
+    no_lie_no_rewrite: nolieCite(),
   };
 }
 
@@ -240,5 +305,6 @@ export function ingestLlmsBlock() {
     "- Not enough: " + NOT_ENOUGH.join(" · "),
     "- GET " + REEXPAND_HREF + "  (law + refuse; crawlers do not re-expand)",
     "",
+    survivalLlmsBlock(),
   ].join("\n");
 }
