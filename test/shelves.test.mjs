@@ -170,9 +170,16 @@ describe("COLD-MULTI-SHELF-1.0 AZindex gate", () => {
       ["embryolock", embryo],
       ["receipts", receipts],
     ]) {
-      assert.doesNotMatch(shown, /1 Chronicles 15:20/, name);
       assert.ok(!shown.includes(VISIBLE_LOCK_LINE), name);
       assert.doesNotMatch(shown, />shelves</, name);
+    }
+    for (const [name, shown] of [
+      ["home", home],
+      ["donate", donate],
+      ["embryolock", embryo],
+      ["receipts", receipts],
+    ]) {
+      assert.doesNotMatch(shown, /1 Chronicles 15:20/, name);
     }
     assert.ok(pageHtml().includes('href="/shelves"'));
     assert.ok(!home.includes("COLD-MULTI-SHELF-1.0"));
