@@ -10,6 +10,26 @@ Same published tip as Receipts-tab first-screen HTML (`/receipts`) / `/ingest` /
 
 Cite, don't merge. Training residue is rumor. Crawlers do not re-expand.
 
+## Public websites (Google AI / LLM / SEO)
+
+Every public website on the Aziel Eliab profile. One-line what/why. Hub About boxes are already set; this table is the GitHub-side list for crawlers.
+
+| URL | What |
+|-----|------|
+| https://www.azieleliab.com/ | Official Person hub / Softwares / research landing |
+| https://www.azielcorpuslibrary.net/ | Digital Library MASTER |
+| https://godlock.uk/ | GodLock challenge/score product (not a VPN; GodLock ≠ identity) |
+| https://www.hedidntjump.com/ | Zioncheck 7 Aug 1936 archive (not a verdict) |
+| https://aziel-runtime.vibelock.workers.dev/ | Aziel Runtime / FragGate MCP Softwares door |
+| https://glama.ai/mcp/servers/AzielEliab/aziel-runtime | Try on Glama |
+| https://github.com/AzielEliab | GitHub user / public source |
+
+Machine who-is (not a biography): https://www.azieleliab.com/who-is
+
+Hub crawl routes (`/person.jsonld` · `/cite.json` · `/llms.txt` · `/ai.txt` · `/sitemap.xml` · `/who-is`) plus Runtime `/openapi.json` and `POST /mcp`. Pack copy: [github-profile-readme/](github-profile-readme/).
+
+GitHub **cannot** create special repo `AzielEliab/AzielEliab` — the name case-collides with this Worker. Keep the pack as the GitHub-side index, or copy `github-profile-readme/README.md` to another public surface. Do not rename this repo.
+
 ## Apply on GitHub
 
 Coordinator (repo admin) after merge:
@@ -128,7 +148,7 @@ Not MCP ops (`fraggate_call`, `runtime_run`, …). Child `@id` is `https://www.a
 
 Sister product SEO template: [aziel-runtime/docs/PRODUCT_SEO.md](https://github.com/AzielEliab/aziel-runtime/blob/main/docs/PRODUCT_SEO.md).
 
-Profile README (special repo `AzielEliab/AzielEliab`, so https://github.com/AzielEliab lists every public website): file pack + operator create steps in [github-profile-readme/](github-profile-readme/). Do not rename this Worker repo from that pack. GitHub treats `azieleliab` and `AzielEliab` as the same repo name.
+Profile README pack (GitHub-side index; `AzielEliab/AzielEliab` cannot exist): [github-profile-readme/](github-profile-readme/) · [OPERATOR.md](github-profile-readme/OPERATOR.md).
 
 ## Compatible AI clients
 
