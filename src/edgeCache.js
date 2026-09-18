@@ -10,6 +10,7 @@ export const CATALOG_CACHE_URL = "https://www.azieleliab.com/__cache/software-ca
 export const MESH_STATUS_CACHE_URL = "https://www.azieleliab.com/__cache/mesh-status-v1";
 export const MESH_NODES_CACHE_URL = "https://www.azieleliab.com/__cache/mesh-nodes-v1";
 export const UPDATE_CHECK_CACHE_URL = "https://www.azieleliab.com/__cache/update-check-v1";
+export const SURVIVAL_CACHE_URL = "https://www.azieleliab.com/__cache/survival-v1";
 
 export const CATALOG_TTL_SEC = 30;
 export const CATALOG_FALLBACK_TTL_SEC = 15;
@@ -17,6 +18,8 @@ export const CATALOG_FALLBACK_TTL_SEC = 15;
 export const CATALOG_HTTP_CACHE = "public, max-age=0, s-maxage=30, stale-while-revalidate=30";
 export const MESH_TTL_SEC = 60;
 export const UPDATE_TTL_SEC = 60;
+/** Pull runtime /survival — short TTL, do not hardcode live doors. */
+export const SURVIVAL_TTL_SEC = 60;
 /** Short HTML TTL so title/meta/JSON-LD stay indexable; catalog snapshot is separate. */
 export const HTML_CACHE = "public, max-age=0, s-maxage=60, stale-while-revalidate=300";
 export const STUB_HTML_CACHE = "public, max-age=300, s-maxage=3600, stale-while-revalidate=86400";

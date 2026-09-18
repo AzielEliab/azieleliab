@@ -64,6 +64,7 @@ import {
   tokenQueryRefuse,
 } from "./redline.js";
 import { SHELVES_JSON_PATH, SHELVES_PATH, shelvesDoc } from "./shelves.js";
+import { SURVIVAL_JSON_PATH, SURVIVAL_PATH, loadSurvival } from "./survival.js";
 import { incrementViews, isBot, readViews, viewsBody } from "./views.js";
 
 const SECURITY = {
@@ -134,7 +135,14 @@ function meshDoorPath(path) {
 }
 
 function machineCitePath(path) {
-  return path === "/cite.json" || path === SHELVES_PATH || path === SHELVES_JSON_PATH || path === "/v1/mesh/az-generator";
+  return (
+    path === "/cite.json" ||
+    path === SHELVES_PATH ||
+    path === SHELVES_JSON_PATH ||
+    path === "/v1/mesh/az-generator" ||
+    path === SURVIVAL_PATH ||
+    path === SURVIVAL_JSON_PATH
+  );
 }
 
 async function attackSimRefuse(request, url, path) {
@@ -255,6 +263,8 @@ export async function handleRequest(request, env = {}, ctx) {
     UPDATE_CHECK_PATH,
     MESH_STATUS_PATH,
     MESH_NODES_PATH,
+    SURVIVAL_PATH,
+    SURVIVAL_JSON_PATH,
     "/person.jsonld",
     "/identity.jsonld",
     "/graph.jsonld",
@@ -323,9 +333,18 @@ export async function handleRequest(request, env = {}, ctx) {
     path === "/sitemap.xml" ||
     path === "/v1/software";
   const needsMesh = homeLike || path === "/v1/software";
-  const [live, meshStatus] = await Promise.all([
+  const needsSurvival =
+    path === "/llms.txt" ||
+    path === "/ai.txt" ||
+    path === "/cite.json" ||
+    path === "/who-is" ||
+    path === "/who-is-aziel-eliab.txt" ||
+    path === SURVIVAL_PATH ||
+    path === SURVIVAL_JSON_PATH;
+  const [live, meshStatus, survival] = await Promise.all([
     needsLive ? loadLiveSoftware(env, ctx) : Promise.resolve(null),
     needsMesh ? loadMeshStatus(env, ctx) : Promise.resolve(null),
+    needsSurvival ? loadSurvival(env, ctx) : Promise.resolve(null),
   ]);
   const doors = live && live.software;
   const mesh = meshStatus ? meshSnapshot(meshStatus.origin) : null;
@@ -365,7 +384,7 @@ export async function handleRequest(request, env = {}, ctx) {
   } else if (path === "/donate") res = html(donateHtml(), 200, DONATE_HTML_CACHE);
   else if (path === "/embryolock") res = html(embryoLockHtml(), 200, STUB_HTML_CACHE);
   else if (path === "/robots.txt") res = text(robotsTxt(), "text/plain", { cache: SEO_CACHE });
-  else if (path === "/llms.txt") res = text(llmsTxt(doors), "text/plain", { cache: SEO_CACHE });
+  else if (path === "/llms.txt") res = text(llmsTxt(doors, survival), "text/plain", { cache: SEO_CACHE });
   else if (path === "/person.jsonld" || path === "/identity.jsonld" || path === "/.well-known/person.jsonld") {
     res = text(prettyJson(personJsonLd()), "application/ld+json", { cache: SEO_CACHE, cors: true });
   } else if (path === "/graph.jsonld") {
@@ -373,17 +392,20 @@ export async function handleRequest(request, env = {}, ctx) {
   } else if (path === "/who") {
     res = html(whoHtml());
   } else if (path === "/who-is-aziel-eliab.txt" || path === "/who-is") {
-    res = text(whoIsTxt(), "text/plain", { cache: SEO_CACHE });
+    res = text(whoIsTxt(survival), "text/plain", { cache: SEO_CACHE });
   } else if (path === "/.well-known/aziel.json") {
     res = text(prettyJson(wellKnownAziel()), "application/json", { cache: SEO_CACHE, cors: true });
-  }   else if (path === "/ai.txt") res = text(aiTxt(), "text/plain", { cache: SEO_CACHE });
+  } else if (path === "/ai.txt") res = text(aiTxt(survival), "text/plain", { cache: SEO_CACHE });
+  else if (path === SURVIVAL_PATH || path === SURVIVAL_JSON_PATH) {
+    res = json(survival || (await loadSurvival(env, ctx, { request })), JSON_SHORT_CACHE);
+  }
   else if (path === SHELVES_PATH || path === SHELVES_JSON_PATH) {
     res = text(JSON.stringify(shelvesDoc(), null, 1) + "\n", "application/json", {
       cache: SEO_CACHE,
       cors: true,
     });
   } else if (path === "/cite.json") {
-    res = text(JSON.stringify(citeDoc(doors, live && live.version), null, 1) + "\n", "application/json", { cache: SEO_CACHE });
+    res = text(JSON.stringify(citeDoc(doors, live && live.version, survival), null, 1) + "\n", "application/json", { cache: SEO_CACHE });
   } else if (path === "/sitemap.xml") {
     res = text(sitemapXml(new Date(), doors), "application/xml", { cache: SEO_CACHE });
   } else if (path === "/v1/software") {

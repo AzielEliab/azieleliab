@@ -28,6 +28,7 @@ import {
   WHO_HREF,
   WHO_TITLE,
 } from "./copy.js";
+import { SURVIVAL_LOCAL, survivalLlmsBlock } from "./survival.js";
 
 export const IDENTITY_LOCK = "GROKBOT-FIX 1.1";
 
@@ -751,7 +752,7 @@ export function graphJsonLd() {
   };
 }
 
-export function whoIsTxt() {
+export function whoIsTxt(survival = null) {
   return [
     VISIBLE_LOCK_LINE,
     "",
@@ -826,6 +827,8 @@ export function whoIsTxt() {
       return row.fallback ? line + " (fallback " + row.fallback + ")" : line;
     }),
     "",
+    survivalLlmsBlock(survival).trim(),
+    "",
     "Canonical person: " + PERSON_ID,
     "sameAs: " + PERSON_SAME_AS.join(" · "),
     "",
@@ -871,6 +874,10 @@ export function wellKnownAziel() {
       }),
     },
     mission: { ...MISSION },
+    survival: SURVIVAL_LOCAL,
+    godlock_is_product_not_identity: true,
+    mesh_live_nodes_are_api: false,
+    visible_1520: false,
   };
 }
 

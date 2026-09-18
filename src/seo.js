@@ -150,6 +150,15 @@ import {
   shelvesCite,
   shelvesLlmsBlock,
 } from "./shelves.js";
+import {
+  BAN_SURVIVAL_SPEC,
+  SURVIVAL_JSON_LOCAL,
+  SURVIVAL_LOCAL,
+  SURVIVAL_ORIGIN,
+  SURVIVAL_RUNTIME,
+  banSurvivalCite,
+  survivalLlmsBlock as banSurvivalLlmsBlock,
+} from "./survival.js";
 
 export const AI_CRAWLER_AGENTS = [
   "GPTBot",
@@ -311,6 +320,9 @@ const PUBLIC_ALLOW = [
   "/v1/update/check",
   "/v1/mesh/status",
   "/v1/mesh/nodes",
+  "/survival",
+  "/survival/",
+  "/v1/survival",
   "/runtime",
   "/runtime/",
   "/runtime/openapi.json",
@@ -321,6 +333,8 @@ const PUBLIC_ALLOW = [
   "/runtime/v1/uses",
   "/runtime/v1/mesh/status",
   "/runtime/v1/mesh/nodes",
+  "/runtime/survival",
+  "/runtime/v1/survival",
 ];
 
 export function robotsTxt() {
@@ -362,6 +376,8 @@ const SITEMAP_RANK = {
   [CANON_ORIGIN + "/.well-known/person.jsonld"]: { changefreq: "weekly", priority: "0.7" },
   [CANON_ORIGIN + "/ai.txt"]: { changefreq: "weekly", priority: "0.5" },
   [CANON_ORIGIN + "/v1/software"]: { changefreq: "hourly", priority: "0.8" },
+  [SURVIVAL_LOCAL]: { changefreq: "hourly", priority: "0.6" },
+  [SURVIVAL_JSON_LOCAL]: { changefreq: "hourly", priority: "0.5" },
   [RUNTIME_LOCAL]: { changefreq: "daily", priority: "0.8" },
 };
 
@@ -409,9 +425,13 @@ export function sitemapXml(now = new Date(), software = SOFTWARE) {
     CANON_ORIGIN + "/v1/update/check",
     CANON_ORIGIN + "/v1/mesh/status",
     CANON_ORIGIN + "/v1/mesh/nodes",
+    SURVIVAL_LOCAL,
+    SURVIVAL_JSON_LOCAL,
     RUNTIME_LOCAL + "/v1/uses",
     RUNTIME_LOCAL + "/v1/mesh/status",
     RUNTIME_LOCAL + "/v1/mesh/nodes",
+    SURVIVAL_RUNTIME,
+    RUNTIME_LOCAL + "/v1/survival",
     FRAGGATE,
     FRAGGATE_GITHUB,
     GITHUB,
@@ -455,10 +475,11 @@ export function sitemapXml(now = new Date(), software = SOFTWARE) {
   );
 }
 
-export function citeDoc(software = SOFTWARE, runtimeVersion = RUNTIME_VERSION) {
+export function citeDoc(software = SOFTWARE, runtimeVersion = RUNTIME_VERSION, survival = null) {
   const doorsSoftware = software && software.length ? software : SOFTWARE;
   const version = resolveRuntimeVersion(runtimeVersion);
   const ingest = ingestRecord();
+  const banSurvival = banSurvivalCite(survival);
   return {
     author: AUTHOR,
     identity: AUTHOR,
@@ -504,6 +525,13 @@ export function citeDoc(software = SOFTWARE, runtimeVersion = RUNTIME_VERSION) {
     },
     design_of: CAP7_DESIGN_OF,
     resolves_to_hub: false,
+    ban_survival: banSurvival,
+    calling_name: banSurvival.calling_name,
+    calling_name_alert: banSurvival.calling_name_alert,
+    platforms: banSurvival.platforms,
+    mesh_live_nodes_are_api: false,
+    godlock_is_product_not_identity: true,
+    visible_1520: false,
     foldlock: foldlockTipSafeCite(),
     foldlock_shelf: "FOLDLOCK-SHELF-1.0",
     person_jsonld: CANON_ORIGIN + "/person.jsonld",
@@ -681,7 +709,7 @@ function doorIndexLines() {
   }).join("\n");
 }
 
-export function llmsTxt(software = SOFTWARE) {
+export function llmsTxt(software = SOFTWARE, survival = null) {
   const doorsSoftware = software && software.length ? software : SOFTWARE;
   const softwareLines = doorsSoftware.map((s) => "- " + s.name + ": " + s.href).join("\n");
   const doorLines = doorIndexLines();
@@ -773,7 +801,7 @@ export function llmsTxt(software = SOFTWARE) {
     "- Skill: " + RUNTIME_LOCAL + "/v1/skill",
     "- FragGate list: " + RUNTIME_LOCAL + "/v1/fraggate/list",
     "- Uses (this host's /runtime API stats): " + RUNTIME_LOCAL + "/v1/uses",
-    "- Mesh status: " + RUNTIME_LOCAL + "/v1/mesh/status (QNM-BUILD-1.0 suite rollup; live_nodes; GET never enables)",
+    "- Mesh status: " + RUNTIME_LOCAL + "/v1/mesh/status (QNM-BUILD-1.0 suite rollup; live_nodes = presence, not exec API / not live_doors / not Cap-7; GET never enables)",
     "- Mesh nodes: " + RUNTIME_LOCAL + "/v1/mesh/nodes",
     "- Operator enable requires a declared bearer (example: suite-presence). Read-only suite presence is on (display from runtime).",
     "- Mesh ON. Operator-armed Node Gate + neighbor heal + network ON (not a login panel).",
@@ -794,6 +822,7 @@ export function llmsTxt(software = SOFTWARE) {
     "",
     ingestLlmsBlock(),
     shelvesLlmsBlock(),
+    banSurvivalLlmsBlock(survival),
     redlineLlmsBlock(),
     "## Compatible AI clients",
     "",
@@ -822,9 +851,11 @@ export function llmsTxt(software = SOFTWARE) {
     "- GET " + CANON_ORIGIN + "/sigil.png  (hosted rose-star brand mark)",
     "- GET " + CANON_ORIGIN + "/v1/software  (resolved live doors; products + extras)",
     "- GET " + CANON_ORIGIN + "/v1/update/check  (quiet installer pointer)",
-    "- GET " + CANON_ORIGIN + "/v1/mesh/status  (QNM-BUILD-1.0 suite rollup; live_nodes; GET never enables; suite-presence operator enable)",
+    "- GET " + CANON_ORIGIN + "/v1/mesh/status  (QNM-BUILD-1.0 suite rollup; live_nodes = presence, not exec API / not live_doors / not Cap-7; GET never enables; suite-presence operator enable)",
     "- GET " + CANON_ORIGIN + "/v1/mesh/nodes",
-    "- GET " + CANON_ORIGIN + "/cite.json  (" + REDLINE_SPEC + " · Cap-7 design_of · attack-surface · FoldLock tip-safe)",
+    "- GET " + SURVIVAL_LOCAL + "  (" + BAN_SURVIVAL_SPEC + " hub pull of runtime SoT; short TTL)",
+    "- GET " + SURVIVAL_JSON_LOCAL,
+    "- GET " + CANON_ORIGIN + "/cite.json  (" + REDLINE_SPEC + " · Cap-7 design_of · attack-surface · FoldLock tip-safe · " + BAN_SURVIVAL_SPEC + ")",
     "- GET " + CANON_ORIGIN + "/llms.txt",
     "- GET " + SHELVES_HREF + "  (COLD-MULTI-SHELF-1.0; canonical registry " + shelvesCite().canonical_registry + ")",
     "- GET " + SHELVES_JSON_HREF,
@@ -846,8 +877,10 @@ export function llmsTxt(software = SOFTWARE) {
     "- GET " + RUNTIME_LOCAL + "/v1/fraggate/list",
     "- POST " + RUNTIME_LOCAL + "/mcp",
     "- GET " + RUNTIME_LOCAL + "/v1/uses  (this host's /runtime API use stats)",
-    "- GET " + RUNTIME_LOCAL + "/v1/mesh/status  (QNM-BUILD-1.0 suite rollup; live_nodes; GET never enables)",
+    "- GET " + RUNTIME_LOCAL + "/v1/mesh/status  (QNM-BUILD-1.0 suite rollup; live_nodes = presence, not exec API / not live_doors / not Cap-7; GET never enables)",
     "- GET " + RUNTIME_LOCAL + "/v1/mesh/nodes",
+    "- GET " + SURVIVAL_RUNTIME + "  (" + BAN_SURVIVAL_SPEC + ")",
+    "- GET " + RUNTIME_LOCAL + "/v1/survival",
     "- GET " + CANON_ORIGIN + "/v1/stats  (read pageviews, no increment)",
     "- GET " + CANON_ORIGIN + "/v1/view   (read pageviews, no increment)",
     "- POST " + CANON_ORIGIN + "/v1/view  (increment pageviews)",
@@ -859,7 +892,7 @@ export function llmsTxt(software = SOFTWARE) {
   ].join("\n");
 }
 
-export function aiTxt() {
+export function aiTxt(survival = null) {
   const bots = AI_CRAWLER_AGENTS.flatMap((agent) => ["", "User-agent: " + agent, "Allow: /"]);
   return [
     "# Aziel Eliab — AI crawl policy",
@@ -927,6 +960,9 @@ export function aiTxt() {
     "Allow: /v1/update/check",
     "Allow: /v1/mesh/status",
     "Allow: /v1/mesh/nodes",
+    "Allow: /survival",
+    "Allow: /survival/",
+    "Allow: /v1/survival",
     "Allow: /runtime",
     "Allow: /runtime/",
     "Allow: /runtime/openapi.json",
@@ -937,6 +973,8 @@ export function aiTxt() {
     "Allow: /runtime/v1/uses",
     "Allow: /runtime/v1/mesh/status",
     "Allow: /runtime/v1/mesh/nodes",
+    "Allow: /runtime/survival",
+    "Allow: /runtime/v1/survival",
     "",
     "Content-Signal: " + CONTENT_SIGNAL,
     "",
@@ -962,6 +1000,7 @@ export function aiTxt() {
     "- " + CITE_DONT_MERGE,
     "",
     survivalLlmsBlock(),
+    banSurvivalLlmsBlock(survival),
     "- Software catalog: " + CANON_ORIGIN + "/v1/software",
     "- FragGate list: " + RUNTIME_LOCAL + "/v1/fraggate/list",
     "- FragGate Worker: " + FRAGGATE,
@@ -984,7 +1023,7 @@ export function aiTxt() {
     "- Source on GitHub: " + GITHUB_RUNTIME,
     "- Documentation / Architecture: " + RUNTIME_DOCS,
     "- Runtime uses (this host): " + RUNTIME_LOCAL + "/v1/uses",
-    "- Mesh status: " + CANON_ORIGIN + "/v1/mesh/status (QNM-BUILD-1.0 suite rollup; live_nodes; GET never enables)",
+    "- Mesh status: " + CANON_ORIGIN + "/v1/mesh/status (QNM-BUILD-1.0 suite rollup; live_nodes = presence, not exec API / not live_doors / not Cap-7; GET never enables)",
     "- Mesh nodes: " + CANON_ORIGIN + "/v1/mesh/nodes",
     "- Operator enable requires a declared bearer (example: suite-presence). Read-only suite presence is on (display from runtime).",
     "- Mesh ON. Operator-armed Node Gate + neighbor heal + network ON (not a login panel).",
@@ -1085,7 +1124,7 @@ export function jsonLd(software = SOFTWARE, runtimeVersion = RUNTIME_VERSION) {
           RUNTIME_LOCAL +
           "/mcp. Mesh status " +
           RUNTIME_LOCAL +
-          "/v1/mesh/status (QNM-BUILD-1.0 suite rollup; live_nodes; GET never enables; suite-presence operator enable). QNS-CD-1.0 photon QNS1 packet transfer cite. Author Aziel Eliab.",
+          "/v1/mesh/status (QNM-BUILD-1.0 suite rollup; live_nodes = presence, not exec API / not live_doors / not Cap-7; GET never enables; suite-presence operator enable). QNS-CD-1.0 photon QNS1 packet transfer cite. Author Aziel Eliab.",
         author: person,
         creator: person,
         isPartOf: { "@id": siteId },
@@ -1120,7 +1159,7 @@ export function jsonLd(software = SOFTWARE, runtimeVersion = RUNTIME_VERSION) {
           RUNTIME_LOCAL +
           "/mcp. Mesh " +
           RUNTIME_LOCAL +
-          "/v1/mesh/status (QNM-BUILD-1.0 suite rollup; live_nodes; GET never enables). QNS-CD-1.0 cite.",
+          "/v1/mesh/status (QNM-BUILD-1.0 suite rollup; live_nodes = presence, not exec API / not live_doors / not Cap-7; GET never enables). QNS-CD-1.0 cite.",
       },
       {
         "@type": "ItemList",

@@ -26,7 +26,15 @@ const SKIP_EXACT = new Set([
   "/openapi.json",
 ]);
 
-const SKIP_GET_EXACT = new Set(["/v1/uses", "/v1/health", "/v1/ready", "/v1/mesh/status", "/v1/mesh/nodes"]);
+const SKIP_GET_EXACT = new Set([
+  "/v1/uses",
+  "/v1/health",
+  "/v1/ready",
+  "/v1/mesh/status",
+  "/v1/mesh/nodes",
+  "/survival",
+  "/v1/survival",
+]);
 
 const STATIC_EXT = /\.(png|jpe?g|gif|svg|webp|ico|css|js|mjs|map|woff2?|ttf|txt|xml)$/i;
 
