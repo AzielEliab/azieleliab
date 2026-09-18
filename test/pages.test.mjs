@@ -3,7 +3,8 @@ import assert from "node:assert/strict";
 import worker, { apexRedirect, donateCacheBustLocation, handleRequest } from "../src/index.js";
 import { donateHtml, embryoLockHtml, ecosystemHtml, hashRedirectScript, notFoundHtml, pageHtml, receiptsHtml, sectionPageHtml, spineNav, whoHtml } from "../src/page.js";
 import { incrementViews, memoryKv } from "../src/views.js";
-import { DONATE_HTML_CACHE, HTML_CACHE, SEO_CACHE, memoryCache } from "../src/edgeCache.js";
+import { CATALOG_KV_KEY, DONATE_HTML_CACHE, HTML_CACHE, SEO_CACHE, memoryCache } from "../src/edgeCache.js";
+import { catalogFromLiveDoc, liveProductHref, softwareIndexBody } from "../src/liveCatalog.js";
 import { FANOUT_MAX, allowOriginRefresh, isOperator } from "../src/costGuard.js";
 import { aiTxt, citeDoc, jsonLd, llmsTxt, robotsTxt, sitemapXml, softwareNodeId } from "../src/seo.js";
 import {
@@ -19,6 +20,10 @@ import {
   CATALOG_SOFTWARE,
   catalogHref,
   catalogSoftwareFromSlugs,
+  CATALOG_RUNTIME_PLACEMENT,
+  IN_RUNTIME_PLACEMENTS,
+  isInRuntimePlacement,
+  runtimeTaskHome,
   DONATE_COPY,
   DONATE_DESCRIPTION,
   DONATE_DISCLAIMER,
@@ -406,6 +411,10 @@ describe("software doors", () => {
     assert.equal(catalogHref("mmconsensus"), CATALOG_RUNTIME_HOME.mmconsensus);
     assert.equal(catalogHref("toolbench"), CATALOG_RUNTIME_HOME.toolbench);
     assert.equal(catalogHref("zkattest"), CATALOG_RUNTIME_HOME.zkattest);
+    assert.equal(runtimeTaskHome("azvpn"), CATALOG_RUNTIME_HOME.azvpn);
+    assert.equal(isInRuntimePlacement({ slug: "azvpn", worker_home: null, github: GITHUB_RUNTIME }, "azvpn"), true);
+    assert.equal(CATALOG_RUNTIME_PLACEMENT.azvpn, "tunnel-concentrator");
+    assert.ok(IN_RUNTIME_PLACEMENTS.includes("tool-playground"));
     assert.ok(!String(catalogHref("azvpn")).includes("azvpn-download-tracker"));
     assert.ok(citeDoc().software_names.some((s) => s.name === "AZVPN" && s.url === CATALOG_RUNTIME_HOME.azvpn));
   });
@@ -2317,6 +2326,14 @@ describe("live software catalog", () => {
     assert.ok(doc.extras.some((s) => s.slug === "mesh" && s.enabled_default === false));
     assert.equal(doc.software.length, SOFTWARE.length);
     assert.equal(doc.products.length, SOFTWARE.length);
+    assert.equal(doc.count, 41);
+    assert.equal(CATALOG_SLUGS.length, 41);
+    assert.equal(CATALOG_KV_KEY, "software:catalog:v3");
+    assert.equal(doc., false);
+    assert.ok(doc.tab_placement_slugs.includes("azvpn"));
+    assert.ok(doc.tab_placement_slugs.includes("mmconsensus"));
+    assert.ok(doc.tab_placement_slugs.includes("toolbench"));
+    assert.ok(doc.tab_placement_slugs.includes("zkattest"));
     assert.equal(doc.mesh.enabled, false);
     assert.equal(doc.mesh.default, "on");
     assert.equal(doc.mesh.mesh, "off");
@@ -2325,6 +2342,182 @@ describe("live software catalog", () => {
     assert.equal(doc.mesh.nodes, CANON_ORIGIN + "/v1/mesh/nodes");
     assert.equal(doc.mesh.qns_cd_spec, "QNS-CD-1.0");
     assert.equal(doc.mesh.qns_cd.public_proxy, false);
+  });
+
+  it("maps live in-runtime placements with null worker_home onto #task-* Softwares doors", async () => {
+    const env = catalogEnv(async (req) => {
+      const path = new URL(req.url).pathname;
+      if (path === "/v1/software") {
+        return new Response(
+          JSON.stringify({
+            ok: true,
+            author: "Aziel Eliab",
+            version: "2.0.0-rc1",
+            git_sha: "6a3798af3a94bfba3ed2e7aaadeed8777ea32bb4",
+            sort_law: "plain A–Z → gate A–Z → lock A–Z (Clock ≠ Lock)",
+            tab_placement_slugs: [
+              "azinterface",
+              "decisiongate",
+              "forgereceipts",
+              "azcoherence",
+              "zkattest",
+              "mmconsensus",
+              "toolbench",
+              "azvpn",
+              "newplace",
+            ],
+            software: [
+              { slug: "azai", name: "AZAI", status: "live", worker_home: "https://azai-download-tracker.vibelock.workers.dev/" },
+              {
+                slug: "azvpn",
+                name: "AZVPN",
+                status: "live",
+                worker_home: null,
+                github: GITHUB_RUNTIME,
+                placement: "tunnel-concentrator",
+              },
+              {
+                slug: "mmconsensus",
+                name: "MMConsensus",
+                status: "live",
+                worker_home: null,
+                github: GITHUB_RUNTIME,
+                placement: "consensus-review",
+              },
+              {
+                slug: "toolbench",
+                name: "ToolBench",
+                status: "live",
+                worker_home: null,
+                github: GITHUB_RUNTIME,
+                placement: "tool-playground",
+              },
+              {
+                slug: "zkattest",
+                name: "ZKAttest",
+                status: "live",
+                worker_home: null,
+                github: GITHUB_RUNTIME,
+                placement: "receipt-attest",
+              },
+              {
+                slug: "newplace",
+                name: "NewPlace",
+                status: "live",
+                worker_home: null,
+                github: GITHUB_RUNTIME,
+                placement: "tool-playground",
+              },
+              { slug: "staticclock", name: "StaticClock", status: "live", worker_home: "https://staticclock-download-tracker.vibelock.workers.dev/" },
+              { slug: "decisiongate", name: "DecisionGATE", status: "live", worker_home: "https://decisiongate-download-tracker.vibelock.workers.dev/" },
+              { slug: "veillock", name: "VeilLock", status: "local_only", worker_home: "https://veillock-download-tracker.vibelock.workers.dev/" },
+            ],
+          }),
+          { status: 200, headers: { "Content-Type": "application/json" } },
+        );
+      }
+      return new Response(JSON.stringify({ error: "not found" }), { status: 404 });
+    });
+
+    const software = await fetchPath("/software", {}, env);
+    const html = await software.text();
+    assert.match(html, /<h2>Software<\/h2>\s*<p class="soft-line">/);
+    for (const name of ["AZAI", "AZVPN", "MMConsensus", "StaticClock", "ToolBench", "ZKAttest", "NewPlace", "DecisionGATE", "VeilLock"]) {
+      assert.ok(html.includes(">" + name + "<"), name);
+    }
+    assert.ok(html.includes('href="' + RUNTIME + '/#task-azvpn"'));
+    assert.ok(html.includes('href="' + RUNTIME + '/#task-mmconsensus"'));
+    assert.ok(html.includes('href="' + RUNTIME + '/#task-toolbench"'));
+    assert.ok(html.includes('href="' + RUNTIME + '/#task-zkattest"'));
+    assert.ok(html.includes('href="' + RUNTIME + '/#task-newplace"'));
+    assert.doesNotMatch(html, /azvpn-download-tracker|mmconsensus-download-tracker|toolbench-download-tracker|zkattest-download-tracker|newplace-download-tracker/);
+    const idx = (name) => html.indexOf(">" + name + "<");
+    assert.ok(idx("AZAI") < idx("StaticClock"));
+    assert.ok(idx("StaticClock") < idx("DecisionGATE"));
+    assert.ok(idx("DecisionGATE") < idx("VeilLock"));
+    assert.equal(softwareBucket("StaticClock"), 0);
+
+    const index = await fetchPath("/v1/software", {}, env);
+    const doc = await index.json();
+    assert.equal(doc.source, "live");
+    assert.equal(doc.count, 9);
+    assert.equal(doc., false);
+    assert.deepEqual(doc.tab_placement_slugs.slice(0, 4), ["azinterface", "decisiongate", "forgereceipts", "azcoherence"]);
+    const azvpn = doc.products.find((s) => s.slug === "azvpn");
+    assert.equal(azvpn.url, RUNTIME + "/#task-azvpn");
+    assert.equal(azvpn.worker_home, RUNTIME + "/#task-azvpn");
+    assert.equal(azvpn.placement, "tunnel-concentrator");
+    const neu = doc.products.find((s) => s.slug === "newplace");
+    assert.equal(neu.url, RUNTIME + "/#task-newplace");
+    assert.equal(liveProductHref({ slug: "azvpn", worker_home: null, github: GITHUB_RUNTIME }), RUNTIME + "/#task-azvpn");
+  });
+
+  it("keeps fallback CATALOG_SLUGS aligned with live 6a3798a /v1/software SoT (41)", () => {
+    const liveSot = [
+      "4dmap",
+      "ark",
+      "azai",
+      "azbot",
+      "azbrowser",
+      "azchat",
+      "azclce",
+      "azcoherence",
+      "azhub",
+      "aziel-corpus",
+      "azieltether",
+      "azinterface",
+      "azmail",
+      "aznet",
+      "azos",
+      "azvpn",
+      "chronolock",
+      "codelock",
+      "decisiongate",
+      "embryolock",
+      "employeelock",
+      "foldlock",
+      "forgereceipts",
+      "glossafilter",
+      "godlock",
+      "mialock",
+      "miragegrid",
+      "mmconsensus",
+      "peacelock",
+      "postking",
+      "shadowlock",
+      "spectrallock",
+      "staticclock",
+      "temporallock",
+      "toolbench",
+      "trajectorylock",
+      "veillock",
+      "vibelock",
+      "whistlelock",
+      "zkattest",
+      "zsolver",
+    ];
+    assert.deepEqual([...CATALOG_SLUGS].sort(), [...liveSot].sort());
+    const packed = catalogFromLiveDoc({
+      software: liveSot.map((slug) => ({
+        slug,
+        name: CATALOG_NAMES[slug],
+        worker_home: ["azvpn", "mmconsensus", "toolbench", "zkattest"].includes(slug) ? null : undefined,
+        github: ["azvpn", "mmconsensus", "toolbench", "zkattest"].includes(slug) ? GITHUB_RUNTIME : undefined,
+      })),
+      tab_placement_slugs: ["azvpn", "mmconsensus", "toolbench", "zkattest"],
+    });
+    assert.equal(packed.products.length, 41);
+    const html = softwareHtml(packed.products);
+    assert.match(html, /<h2>Software<\/h2>\s*<p class="soft-line">/);
+    for (const slug of liveSot) {
+      assert.ok(html.includes(">" + CATALOG_NAMES[slug] + "<"), slug);
+    }
+    const body = softwareIndexBody(packed);
+    assert.equal(body.count, 41);
+    assert.equal(body., false);
+    assert.ok(body.products.every((p) => p.url && /^https?:\/\//i.test(p.url)));
+    assert.ok(body.products.some((p) => p.slug === "azvpn" && p.url === RUNTIME + "/#task-azvpn"));
+    assert.ok(!body.products.some((p) => /azvpn-download-tracker/.test(p.url || "")));
   });
 
   it("serves a quiet /v1/update/check pointer at the runtime authority", async () => {

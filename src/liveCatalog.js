@@ -1,6 +1,6 @@
 /**
  * Software doors from the live aziel-runtime catalog.
- * Prefer a packed snapshot (Cache API + KV `software:catalog:v2`).
+ * Prefer a packed snapshot (Cache API + KV `software:catalog:v3`).
  * On miss: GET /v1/software once; fall back to GET /v1/fraggate/list.
  * Static SOFTWARE is last resort so the landing still renders.
  * Author: Aziel Eliab.
@@ -9,6 +9,7 @@ import {
   AUTHOR,
   CANON_ORIGIN,
   CATALOG_NAMES,
+  CATALOG_RUNTIME_HOME,
   EMBRYOLOCK_WORKER,
   FRAGGATE_WORKER,
   LIBRARY,
@@ -29,7 +30,9 @@ import {
   catalogHref,
   catalogWorkerHome,
   displaySoftwareName,
+  isInRuntimePlacement,
   isSoftwareExtra,
+  runtimeTaskHome,
   sortSoftware,
 } from "./copy.js";
 import { allowOriginRefresh } from "./costGuard.js";
@@ -99,15 +102,16 @@ function firstHttpUrl(product, keys) {
 export function liveProductHref(product) {
   if (!product || typeof product !== "object") return "";
   const fromLive = firstHttpUrl(product, ["worker_home", "href", "home", "url"]);
-  if (fromLive) return fromLive;
   const slug = String(product.slug || "").trim();
+  if (isInRuntimePlacement(product, slug)) return runtimeTaskHome(slug) || fromLive;
+  if (fromLive) return fromLive;
   if (slug === "embryolock") return EMBRYOLOCK_WORKER;
   if (slug === "aziel-corpus") return LIBRARY + "/";
   if (slug === RUNTIME_SLUG || slug === "runtime") return RUNTIME_LOCAL;
   if (slug === "fraggate") return FRAGGATE_WORKER;
-  if (slug && CATALOG_NAMES[slug]) return catalogHref(slug);
+  if (slug && CATALOG_NAMES[slug]) return catalogHref(slug, product);
   if (typeof product.github === "string" && /^https?:\/\//i.test(product.github)) return product.github;
-  if (slug) return catalogWorkerHome(slug);
+  if (slug) return catalogWorkerHome(slug, product);
   return "";
 }
 
@@ -127,6 +131,8 @@ export function catalogDoorRow(item) {
   if (item.github) row.github = item.github;
   if (item.bucket) row.bucket = item.bucket;
   if (item.download_url) row.download_url = item.download_url;
+  if (item.placement) row.placement = item.placement;
+  if (item.mcp) row.mcp = item.mcp;
   if (item.surface) row.surface = item.surface;
   if (item.kind) row.kind = item.kind;
   if (item.software_tab === false) row.software_tab = false;
@@ -167,6 +173,8 @@ function mapLiveItem(row) {
   if (row.github) item.github = row.github;
   if (row.bucket) item.bucket = row.bucket;
   if (row.download_url) item.download_url = row.download_url;
+  if (row.placement) item.placement = row.placement;
+  if (row.mcp) item.mcp = row.mcp;
   if (row.surface) item.surface = row.surface;
   if (row.kind) item.kind = row.kind;
   if (row.software_tab === false) item.software_tab = false;
@@ -233,7 +241,19 @@ export function catalogFromLiveDoc(doc) {
 
   const addProduct = (row) => {
     const item = mapLiveItem(row);
-    if (!item || !item.name || !item.href) return;
+    if (!item || !item.name) return;
+    if (!item.href) {
+      const slug = item.slug || String((row && row.slug) || "").trim();
+      const href = slug
+        ? isInRuntimePlacement(row, slug)
+          ? runtimeTaskHome(slug)
+          : item.github || catalogWorkerHome(slug, row)
+        : "";
+      if (!href) return;
+      item.href = href;
+      item.url = href;
+      if (!item.worker_home) item.worker_home = href;
+    }
     if (isSoftwareExtra(item.slug, item.name)) return;
     const key = doorKey(item);
     if (!key || seenProducts.has(key)) return;
@@ -244,10 +264,11 @@ export function catalogFromLiveDoc(doc) {
   for (const row of products) addProduct(row);
 
   const extras = extrasFromLiveDoc(doc, seenExtras);
+  const tabPlacement = firstArray(doc && doc.tab_placement_slugs) || productOut.filter((item) => isInRuntimePlacement(item, item.slug)).map((item) => item.slug);
   if (!productOut.length) {
-    return { products: SOFTWARE, extras };
+    return { products: SOFTWARE, extras, tab_placement_slugs: tabPlacement };
   }
-  return { products: sortSoftware(productOut), extras };
+  return { products: sortSoftware(productOut), extras, tab_placement_slugs: tabPlacement };
 }
 
 async function cancelBody(res) {
@@ -304,19 +325,14 @@ function catalogTtlSec(live) {
 }
 
 function fallbackCatalog(source, via) {
-  return {
-    software: SOFTWARE,
-    products: SOFTWARE,
-    extras: SOFTWARE_EXTRAS,
-    source,
-    via,
-    version: RUNTIME_VERSION,
-  };
+  return packedCatalog(SOFTWARE, SOFTWARE_EXTRAS, source, via, RUNTIME_VERSION, {
+    tab_placement_slugs: Object.keys(CATALOG_RUNTIME_HOME),
+  });
 }
 
-function packedCatalog(products, extras, source, via, version) {
+function packedCatalog(products, extras, source, via, version, extra) {
   const doors = products && products.length ? products : SOFTWARE;
-  return {
+  const packed = {
     software: doors,
     products: doors,
     extras: extras && extras.length ? extras : SOFTWARE_EXTRAS,
@@ -324,6 +340,9 @@ function packedCatalog(products, extras, source, via, version) {
     via,
     version: resolveRuntimeVersion(version),
   };
+  const tabs = extra && extra.tab_placement_slugs;
+  if (Array.isArray(tabs) && tabs.length) packed.tab_placement_slugs = tabs;
+  return packed;
 }
 
 export async function fetchFreshSoftware(env) {
@@ -337,6 +356,7 @@ export async function fetchFreshSoftware(env) {
         "live",
         SOFTWARE_CATALOG_PATH,
         softwareDoc.version,
+        { tab_placement_slugs: packed.tab_placement_slugs },
       );
     }
   }
@@ -350,6 +370,7 @@ export async function fetchFreshSoftware(env) {
         "fraggate-list",
         FRAGGATE_LIST_PATH,
         listDoc.version,
+        { tab_placement_slugs: packed.tab_placement_slugs },
       );
     }
   }
@@ -390,7 +411,9 @@ function normalizePacked(packed) {
       ? packed.software
       : SOFTWARE;
   const extras = Array.isArray(packed.extras) ? packed.extras : SOFTWARE_EXTRAS;
-  return packedCatalog(products, extras, packed.source || "fallback", packed.via || null, packed.version);
+  return packedCatalog(products, extras, packed.source || "fallback", packed.via || null, packed.version, {
+    tab_placement_slugs: packed.tab_placement_slugs,
+  });
 }
 
 export function softwareIndexBody(live, mesh) {
@@ -409,6 +432,10 @@ export function softwareIndexBody(live, mesh) {
     products,
     extras,
     software: products,
+    count: products.length,
+    tab_placement_slugs: Array.isArray(packed.tab_placement_slugs)
+      ? packed.tab_placement_slugs
+      : products.filter((item) => isInRuntimePlacement(item, item && item.slug)).map((item) => item.slug),
     version: resolveRuntimeVersion(packed.version),
     git_sha: RUNTIME_GIT_SHA,
     git_short: RUNTIME_GIT_SHORT,
