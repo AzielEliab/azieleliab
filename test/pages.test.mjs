@@ -4,7 +4,7 @@ import worker, { apexRedirect, donateCacheBustLocation, handleRequest } from "..
 import { donateHtml, embryoLockHtml, ecosystemHtml, hashRedirectScript, notFoundHtml, pageHtml, receiptsHtml, sectionPageHtml, spineNav, whoHtml } from "../src/page.js";
 import { incrementViews, memoryKv } from "../src/views.js";
 import { CATALOG_KV_KEY, DONATE_HTML_CACHE, HTML_CACHE, SEO_CACHE, memoryCache } from "../src/edgeCache.js";
-import { catalogFromLiveDoc, liveProductHref, softwareIndexBody } from "../src/liveCatalog.js";
+import { catalogFromLiveDoc, catalogHasThisIs, liveProductHref, softwareIndexBody } from "../src/liveCatalog.js";
 import { FANOUT_MAX, allowOriginRefresh, isOperator } from "../src/costGuard.js";
 import { aiTxt, citeDoc, jsonLd, llmsTxt, robotsTxt, sitemapXml, softwareNodeId } from "../src/seo.js";
 import {
@@ -2233,6 +2233,48 @@ describe("live software catalog", () => {
     assert.ok(lastPlain < firstGate && lastGate < firstLock);
   });
 
+  it("refreshes /v1/software from Worker SSoT git_sha and drops THIS-IS snapshots", async () => {
+    const liveSha = "4f92f3b02a8480c9aca534b3d927007287a6e2ff";
+    const env = catalogEnv(async (req) => {
+      const path = new URL(req.url).pathname;
+      if (path === "/v1/software") {
+        return new Response(
+          JSON.stringify({
+            ok: true,
+            version: "2.0.0-rc1",
+            git_sha: liveSha,
+            products: [
+              {
+                slug: "azai",
+                name: "AZAI",
+                one_line: "Run a local OpenAI-compatible stack or a hosted Lamb ethics check.",
+                worker_home: "https://azai-download-tracker.vibelock.workers.dev/",
+              },
+            ],
+          }),
+          { status: 200, headers: { "Content-Type": "application/json" } },
+        );
+      }
+      return new Response(JSON.stringify({ error: "not found" }), { status: 404 });
+    });
+
+    const index = await fetchPath("/v1/software", {}, env);
+    const doc = await index.json();
+    assert.equal(doc.source, "live");
+    assert.equal(doc.git_sha, liveSha);
+    assert.equal(doc.git_short, "4f92f3b");
+    assert.equal(doc.products[0].one_line, "Run a local OpenAI-compatible stack or a hosted Lamb ethics check.");
+    assert.doesNotMatch(JSON.stringify(doc.products), /THIS-IS|THIS IS:/);
+
+    const stale = {
+      source: "live",
+      software: [{ slug: "azai", name: "AZAI", one_line: "THIS-IS: stale catalog blurb." }],
+      products: [{ slug: "azai", name: "AZAI", one_line: "THIS-IS: stale catalog blurb." }],
+    };
+    assert.equal(catalogHasThisIs(stale), true);
+    assert.equal(catalogHasThisIs(doc), false);
+  });
+
   it("normalizes mashed live runtime names to aziel-runtime and keeps Plain→Gate→Lock", async () => {
     const env = catalogEnv(async (req) => {
       const path = new URL(req.url).pathname;
@@ -2335,7 +2377,7 @@ describe("live software catalog", () => {
     assert.equal(doc.products.length, SOFTWARE.length);
     assert.equal(doc.count, 41);
     assert.equal(CATALOG_SLUGS.length, 41);
-    assert.equal(CATALOG_KV_KEY, "software:catalog:v3");
+    assert.equal(CATALOG_KV_KEY, "software:catalog:v4");
     assert.equal(doc.fielded_100, false);
     assert.ok(doc.tab_placement_slugs.includes("azvpn"));
     assert.ok(doc.tab_placement_slugs.includes("mmconsensus"));

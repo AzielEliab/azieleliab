@@ -30,6 +30,11 @@ import {
   PERSON_JOB_TITLE,
   PERSON_KNOWS_ABOUT,
   SOFTWARE_DEVELOPER_ANSWER,
+  WHAT_AZIEL_ELIAB_DOES,
+  WHAT_HE_DOES_ANSWER,
+  WHAT_HE_DOES_FAQ_NAMES,
+  RESEARCH_ADDENDUM,
+  HARDWARE_ADDENDUM,
   SITE_COVERAGE,
   SITE_COVERAGE_ANSWER,
   LIBRARY_STATS,
@@ -70,6 +75,7 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     assert.equal(person["@id"], PERSON_ID);
     assert.equal(person.name, "Aziel Eliab");
     assert.equal(person.description, personDescription());
+    assert.ok(person.description.startsWith(WHAT_AZIEL_ELIAB_DOES));
     assert.ok(person.description.includes(WHO_IS_ANSWER));
     assert.ok(person.description.includes(HEBREW_NAME_DEFINITION));
     assert.equal(person.disambiguatingDescription, DISAMBIGUATING_DESCRIPTION);
@@ -123,7 +129,8 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
   it("locks living researcher copy, 15:20 musicians, and euaziel machine NOT", () => {
     const person = personJsonLd();
     assert.equal(person["@id"], "https://www.azieleliab.com/#aziel");
-    assert.match(person.description, /^Aziel Eliab \(also Aziel Elroi Eliab\) is a researcher, digital rights activist, software developer\/designer, author, and philosopher of published work/);
+    assert.ok(person.description.startsWith(WHAT_AZIEL_ELIAB_DOES));
+    assert.match(person.description, /Aziel Eliab \(also Aziel Elroi Eliab\) is a researcher, digital rights activist, software developer\/designer, author, and philosopher of published work/);
     assert.match(person.description, /two Levitical musicians Aziel and Eliab named together in 1 Chronicles 15:20/);
     assert.ok(person.description.includes(HEBREW_NAME_DEFINITION));
     assert.ok(PERSON_KNOWS_ABOUT.includes(HEBREW_NAME_DEFINITION));
@@ -189,6 +196,13 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     const questions = faq.mainEntity.map((q) => q.name);
     assert.ok(questions.includes("Who is Aziel Eliab?"));
     assert.equal(questions[0], "Who is Aziel Eliab?");
+    assert.deepEqual(WHAT_HE_DOES_FAQ_NAMES, [
+      "What does Aziel Eliab do?",
+      "What Aziel Eliab does",
+      "Who is Aziel Eliab the developer?",
+      "What software does Aziel Eliab make?",
+    ]);
+    for (const name of WHAT_HE_DOES_FAQ_NAMES) assert.ok(questions.includes(name), name);
     assert.ok(questions.includes("Who is Aziel Eliab the software developer?"));
     assert.ok(questions.includes(CONCORDANCE_FAQ_NAME));
     assert.equal(CONCORDANCE_FAQ_NAME, "Is Aziel Eliab the two musicians named in 1 Chronicles 15:20?");
@@ -199,6 +213,11 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     assert.ok(questions.includes("What public sites does Aziel Eliab publish?"));
     const answers = faq.mainEntity.map((q) => q.acceptedAnswer.text);
     assert.ok(answers.includes(WHO_IS_ANSWER));
+    assert.ok(answers.includes(WHAT_HE_DOES_ANSWER));
+    assert.ok(WHAT_HE_DOES_ANSWER.startsWith(WHAT_AZIEL_ELIAB_DOES));
+    assert.ok(WHAT_HE_DOES_ANSWER.includes(RESEARCH_ADDENDUM));
+    assert.ok(WHAT_HE_DOES_ANSWER.includes(HARDWARE_ADDENDUM));
+    assert.ok(WHAT_HE_DOES_ANSWER.includes("Softwares via FragGate (~41)"));
     assert.ok(answers.includes(SOFTWARE_DEVELOPER_ANSWER));
     assert.ok(answers.includes(CONCORDANCE_FAQ_ANSWER));
     assert.ok(answers.includes(HEBREW_NAME_ANSWER));
@@ -257,6 +276,14 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     assert.match(contentType(alias), /text\/plain/);
     assert.equal(await alias.text(), body);
     assert.ok(body.startsWith(VISIBLE_LOCK_LINE));
+    assert.ok(body.includes(WHAT_AZIEL_ELIAB_DOES));
+    assert.ok(body.includes(WHAT_HE_DOES_ANSWER));
+    assert.ok(body.includes("## What Aziel Eliab does"));
+    assert.ok(body.includes("## Research (Aziel Digital Library MASTER)"));
+    assert.ok(body.includes("## Hardware designs (published engineering)"));
+    assert.ok(body.includes("AZDOC-9B0E3D62EDCC"));
+    assert.ok(body.includes("AZDOC-A011CAD23671"));
+    for (const name of WHAT_HE_DOES_FAQ_NAMES) assert.ok(body.includes(name), name);
     assert.ok(body.includes(WHO_IS_ANSWER));
     assert.ok(body.includes(HEBREW_NAME_DEFINITION));
     assert.ok(body.includes(SOFTWARE_DEVELOPER_ANSWER));
@@ -298,6 +325,9 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     assert.ok(visible.includes("<h1>Who is Aziel Eliab</h1>"));
     assert.ok(visible.includes(WHO_IS_ANSWER));
     assert.ok(!visible.includes(VISIBLE_LOCK_LINE));
+    assert.ok(!visible.includes(WHAT_AZIEL_ELIAB_DOES));
+    assert.ok(!visible.includes(RESEARCH_ADDENDUM));
+    assert.ok(!visible.includes(HARDWARE_ADDENDUM));
     assert.ok(!body.includes(VISIBLE_LOCK_LINE));
     assert.ok(body.includes("<title>Who is Aziel Eliab</title>"));
     assert.ok(body.includes('name="description" content="' + WHO_DESCRIPTION + '"'));
@@ -325,6 +355,12 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     assert.deepEqual(doc, wellKnownAziel());
     assert.equal(doc.person_id, PERSON_ID);
     assert.equal(doc.visible_lock, VISIBLE_LOCK_LINE);
+    assert.equal(doc.what_aziel_eliab_does, WHAT_AZIEL_ELIAB_DOES);
+    assert.equal(doc.what_he_does_answer, WHAT_HE_DOES_ANSWER);
+    assert.deepEqual(doc.what_he_does_faq, WHAT_HE_DOES_FAQ_NAMES);
+    assert.equal(doc.research_addendum, RESEARCH_ADDENDUM);
+    assert.equal(doc.hardware_addendum, HARDWARE_ADDENDUM);
+    assert.equal(doc.library_front_door.records_packed, 326);
     assert.deepEqual(doc.job_title, PERSON_JOB_TITLE);
     assert.equal(doc.site_coverage.length, 5);
     assert.deepEqual(doc.aka, AUTHOR_AKA_LIST);
@@ -375,6 +411,17 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     assert.ok(map.includes("<loc>" + CANON_ORIGIN + "/AzielEliab</loc>"));
     assert.ok(llms.includes("GROKBOT-FIX 1.1"));
     assert.ok(llms.includes(VISIBLE_LOCK_LINE));
+    assert.ok(llms.includes(WHAT_AZIEL_ELIAB_DOES));
+    assert.ok(llms.includes(WHAT_HE_DOES_ANSWER));
+    assert.ok(llms.includes(RESEARCH_ADDENDUM));
+    assert.ok(llms.includes(HARDWARE_ADDENDUM));
+    assert.ok(llms.includes("AZDOC-9B0E3D62EDCC"));
+    assert.ok(llms.includes("AZDOC-A011CAD23671"));
+    for (const name of WHAT_HE_DOES_FAQ_NAMES) assert.ok(llms.includes(name), "llms " + name);
+    const aiHasBrief = aiTxt();
+    assert.ok(aiHasBrief.includes(WHAT_AZIEL_ELIAB_DOES));
+    assert.ok(aiHasBrief.includes(RESEARCH_ADDENDUM));
+    assert.ok(aiHasBrief.includes(HARDWARE_ADDENDUM));
     assert.ok(llms.includes("He Didn't Jump: " + HEDIDNTJUMP + "/"));
     assert.ok(llms.includes("sameAs: " + PERSON_SAME_AS.join(" · ")));
     assert.ok(llms.includes("## Site coverage"));
@@ -431,6 +478,13 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     assert.deepEqual(cite.alternateName, personAlternateNames());
     assert.ok(cite.alternateName.includes("Aziell"));
     assert.ok(cite.alternateName.includes(HEBREW_NAME_FORMS.phrase));
+    assert.equal(cite.what_aziel_eliab_does, WHAT_AZIEL_ELIAB_DOES);
+    assert.equal(cite.what_he_does_answer, WHAT_HE_DOES_ANSWER);
+    assert.deepEqual(cite.what_he_does_faq, WHAT_HE_DOES_FAQ_NAMES);
+    assert.equal(cite.research_addendum, RESEARCH_ADDENDUM);
+    assert.equal(cite.hardware_addendum, HARDWARE_ADDENDUM);
+    assert.ok(cite.published_research.some((row) => row.records && row.records.includes("AZDOC-A011CAD23671")));
+    assert.ok(cite.published_hardware.some((row) => row.records && row.records.includes("AZDOC-9B0E3D62EDCC")));
     assert.equal(cite.who_is_answer, WHO_IS_ANSWER);
     assert.equal(cite.hebrew_name_definition, HEBREW_NAME_DEFINITION);
     assert.ok(cite.aka.includes("Elias Artista"));

@@ -5,14 +5,16 @@
  * Author: Aziel Eliab.
  */
 
-export const CATALOG_KV_KEY = "software:catalog:v3";
-export const CATALOG_CACHE_URL = "https://www.azieleliab.com/__cache/software-catalog-v3";
+export const CATALOG_KV_KEY = "software:catalog:v4";
+export const CATALOG_CACHE_URL = "https://www.azieleliab.com/__cache/software-catalog-v4";
 export const MESH_STATUS_CACHE_URL = "https://www.azieleliab.com/__cache/mesh-status-v1";
 export const MESH_NODES_CACHE_URL = "https://www.azieleliab.com/__cache/mesh-nodes-v1";
 export const UPDATE_CHECK_CACHE_URL = "https://www.azieleliab.com/__cache/update-check-v1";
 
-export const CATALOG_TTL_SEC = 120;
-export const CATALOG_FALLBACK_TTL_SEC = 60;
+export const CATALOG_TTL_SEC = 30;
+export const CATALOG_FALLBACK_TTL_SEC = 15;
+/** Hub /v1/software must not sit on a long SWR of THIS-IS blurbs. */
+export const CATALOG_HTTP_CACHE = "public, max-age=0, s-maxage=30, stale-while-revalidate=30";
 export const MESH_TTL_SEC = 60;
 export const UPDATE_TTL_SEC = 60;
 /** Short HTML TTL so title/meta/JSON-LD stay indexable; catalog snapshot is separate. */
