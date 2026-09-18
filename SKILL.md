@@ -72,4 +72,4 @@ ChatGPT (GPT Actions / OpenAI), Grok (xAI), Venice, Claude (Anthropic Desktop / 
 
 Always send `User-Agent: Mozilla/5.0`. Author: **Aziel Eliab** only. Elroi / AzielEliab / AzielElroiEliab / The Revealer of The Sealed / Revealer of The Sealed are aka / `alternateName` only.
 
-Identity lock (GROKBOT-FIX 1.1): `GET /who` is visible HTML (H1 `Who is Aziel Eliab` + who-answer). The 15:20 lock line is machine-only. Machine: `GET /person.jsonld`, `/identity.jsonld`, `/graph.jsonld`, `/who-is-aziel-eliab.txt`, `/.well-known/aziel.json`. Mirror: [docs/aziel-identity-schema/](docs/aziel-identity-schema/). Person `@id` stays `https://www.azieleliab.com/#aziel`.
+Identity lock (GROKBOT-FIX 1.1): `GET /who` is visible HTML (H1 `Who is Aziel Eliab` + who-answer). The 15:20 lock line is machine-only. Machine “What Aziel Eliab does” brief (Softwares + research MASTER + public hardware) is on `/llms.txt`, `/ai.txt`, `/cite.json`, `/who-is`, `/person.jsonld`, `/graph.jsonld` FAQPage. Mirror: [docs/aziel-identity-schema/](docs/aziel-identity-schema/). Person `@id` stays `https://www.azieleliab.com/#aziel`.

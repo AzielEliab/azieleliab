@@ -1,6 +1,6 @@
 /**
  * Software doors from the live aziel-runtime catalog.
- * Prefer a packed snapshot (Cache API + KV `software:catalog:v3`).
+ * Prefer a packed snapshot (Cache API + KV `software:catalog:v4`).
  * On miss: GET /v1/software once; fall back to GET /v1/fraggate/list.
  * Static SOFTWARE is last resort so the landing still renders.
  * Author: Aziel Eliab.
@@ -324,6 +324,32 @@ function catalogTtlSec(live) {
   return live && live.source && live.source !== "fallback" ? CATALOG_TTL_SEC : CATALOG_FALLBACK_TTL_SEC;
 }
 
+export function catalogHasThisIs(doc) {
+  if (!doc || typeof doc !== "object") return false;
+  const rows = []
+    .concat(Array.isArray(doc.products) ? doc.products : [])
+    .concat(Array.isArray(doc.software) ? doc.software : []);
+  return rows.some((row) => /THIS-IS|THIS IS:/i.test(String((row && row.one_line) || "")));
+}
+
+function isUsableLiveCatalog(packed) {
+  if (!packed || typeof packed !== "object") return false;
+  const doors = Array.isArray(packed.software)
+    ? packed.software
+    : Array.isArray(packed.products)
+      ? packed.products
+      : [];
+  if (!doors.length) return false;
+  if (catalogHasThisIs(packed)) return false;
+  return true;
+}
+
+function catalogGit(extra, packed) {
+  const sha = String((extra && extra.git_sha) || (packed && packed.git_sha) || "").trim();
+  if (!sha) return {};
+  return { git_sha: sha, git_short: sha.slice(0, 7) };
+}
+
 function fallbackCatalog(source, via) {
   return packedCatalog(SOFTWARE, SOFTWARE_EXTRAS, source, via, RUNTIME_VERSION, {
     tab_placement_slugs: Object.keys(CATALOG_RUNTIME_HOME),
@@ -339,6 +365,7 @@ function packedCatalog(products, extras, source, via, version, extra) {
     source,
     via,
     version: resolveRuntimeVersion(version),
+    ...catalogGit(extra),
   };
   const tabs = extra && extra.tab_placement_slugs;
   if (Array.isArray(tabs) && tabs.length) packed.tab_placement_slugs = tabs;
@@ -349,28 +376,28 @@ export async function fetchFreshSoftware(env) {
   const softwareDoc = await fetchRuntimeJson(SOFTWARE_CATALOG_PATH, env);
   if (softwareDoc) {
     const packed = catalogFromLiveDoc(softwareDoc);
-    if (packed.products.length) {
+    if (packed.products.length && !catalogHasThisIs(packed)) {
       return packedCatalog(
         packed.products,
         packed.extras,
         "live",
         SOFTWARE_CATALOG_PATH,
         softwareDoc.version,
-        { tab_placement_slugs: packed.tab_placement_slugs },
+        { tab_placement_slugs: packed.tab_placement_slugs, git_sha: softwareDoc.git_sha },
       );
     }
   }
   const listDoc = await fetchRuntimeJson(FRAGGATE_LIST_PATH, env);
   if (listDoc) {
     const packed = catalogFromLiveDoc(listDoc);
-    if (packed.products.length) {
+    if (packed.products.length && !catalogHasThisIs(packed)) {
       return packedCatalog(
         packed.products,
         packed.extras,
         "fraggate-list",
         FRAGGATE_LIST_PATH,
         listDoc.version,
-        { tab_placement_slugs: packed.tab_placement_slugs },
+        { tab_placement_slugs: packed.tab_placement_slugs, git_sha: listDoc.git_sha },
       );
     }
   }
@@ -379,13 +406,13 @@ export async function fetchFreshSoftware(env) {
 
 export async function loadLiveSoftware(env, ctx) {
   const mem = recalledCatalog(env, CATALOG_TTL_SEC * 1000);
-  if (mem && mem.software && mem.software.length) return normalizePacked(mem);
+  if (isUsableLiveCatalog(mem)) return normalizePacked(mem);
   const packed = await readJsonSnapshot(env, {
     cacheUrl: CATALOG_CACHE_URL,
     kvKey: CATALOG_KV_KEY,
     cacheTtl: CATALOG_TTL_SEC,
   });
-  if (packed && Array.isArray(packed.software) && packed.software.length) {
+  if (isUsableLiveCatalog(packed)) {
     const live = normalizePacked(packed);
     rememberCatalog(env, live);
     return live;
@@ -393,13 +420,15 @@ export async function loadLiveSoftware(env, ctx) {
 
   const live = await fetchFreshSoftware(env);
   rememberCatalog(env, live);
-  const write = writeJsonSnapshot(
-    env,
-    ctx,
-    { cacheUrl: CATALOG_CACHE_URL, kvKey: CATALOG_KV_KEY, ttlSec: catalogTtlSec(live) },
-    live,
-  );
-  if (write && typeof write.then === "function") await write;
+  if (!catalogHasThisIs(live)) {
+    const write = writeJsonSnapshot(
+      env,
+      ctx,
+      { cacheUrl: CATALOG_CACHE_URL, kvKey: CATALOG_KV_KEY, ttlSec: catalogTtlSec(live) },
+      live,
+    );
+    if (write && typeof write.then === "function") await write;
+  }
   return live;
 }
 
@@ -413,6 +442,7 @@ function normalizePacked(packed) {
   const extras = Array.isArray(packed.extras) ? packed.extras : SOFTWARE_EXTRAS;
   return packedCatalog(products, extras, packed.source || "fallback", packed.via || null, packed.version, {
     tab_placement_slugs: packed.tab_placement_slugs,
+    git_sha: packed.git_sha,
   });
 }
 
@@ -437,8 +467,8 @@ export function softwareIndexBody(live, mesh) {
       ? packed.tab_placement_slugs
       : products.filter((item) => isInRuntimePlacement(item, item && item.slug)).map((item) => item.slug),
     version: resolveRuntimeVersion(packed.version),
-    git_sha: RUNTIME_GIT_SHA,
-    git_short: RUNTIME_GIT_SHORT,
+    git_sha: packed.git_sha || RUNTIME_GIT_SHA,
+    git_short: packed.git_short || (packed.git_sha ? String(packed.git_sha).slice(0, 7) : RUNTIME_GIT_SHORT),
     version_id: RUNTIME_VERSION_ID,
     suite_download: RUNTIME_DOWNLOAD,
     door: "fraggate",
