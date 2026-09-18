@@ -1,0 +1,34 @@
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "@id": "https://www.azieleliab.com/#aziel",
+  "name": "Aziel Eliab",
+  "alternateName": [
+    "Aziel Elroi Eliab"
+  ],
+  "url": "https://www.azieleliab.com/",
+  "identifier": "Aziel Eliab",
+  "jobTitle": [
+    "researcher",
+    "digital rights activist",
+    "software developer",
+    "author",
+    "philosopher"
+  ],
+  "sameAs": [
+    "https://github.com/AzielEliab",
+    "https://www.azieleliab.com/",
+    "https://www.azielcorpuslibrary.net/",
+    "https://godlock.uk/",
+    "https://www.hedidntjump.com/",
+    "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime"
+  ],
+  "mainEntityOfPage": "https://www.azieleliab.com/who",
+  "subjectOf": [
+    "https://www.azieleliab.com/person.jsonld",
+    "https://www.azielcorpuslibrary.net/person.jsonld",
+    "https://godlock.uk/person.jsonld",
+    "https://www.hedidntjump.com/person.jsonld",
+    "https://aziel-runtime.vibelock.workers.dev/person.jsonld"
+  ]
+}
