@@ -78,6 +78,8 @@ import {
   LIBRARY_STATS,
   LIBRARY_STATS_FALLBACK,
   NAME_MISSPELLINGS,
+  PERSON_JOB_TITLE,
+  SITE_COVERAGE,
   SOFTWARE_DEVELOPER_ANSWER,
   STATS_COUNTERS,
   STATS_NOTE,
@@ -89,6 +91,7 @@ import {
   personNode,
   faqPageNode,
   sectionPageNodes,
+  siteCoverageLines,
 } from "./identity.js";
 import {
   CITE_DONT_MERGE,
@@ -508,6 +511,12 @@ export function citeDoc(software = SOFTWARE, runtimeVersion = RUNTIME_VERSION) {
     who_is_answer: WHO_IS_ANSWER,
     software_developer_answer: SOFTWARE_DEVELOPER_ANSWER,
     disambiguatingDescription: DISAMBIGUATING_DESCRIPTION,
+    job_title: PERSON_JOB_TITLE.slice(),
+    site_coverage: SITE_COVERAGE.map((row) => {
+      const out = { id: row.id, label: row.label, name: row.name, url: row.url, blurb: row.blurb };
+      if (row.also) out.also = row.also.slice();
+      return out;
+    }),
     stats: {
       note: STATS_NOTE,
       counters: STATS_COUNTERS.map((row) => {
@@ -690,6 +699,11 @@ export function llmsTxt(software = SOFTWARE) {
     "- Runtime parent @id: " + RUNTIME_ID,
     "- Named tools (not MCP ops): " + RUNTIME_NAMED_TOOLS.map((t) => t.name).join(", "),
     "- sameAs: " + PERSON_SAME_AS.join(" · "),
+    "- jobTitle: " + PERSON_JOB_TITLE.join(" | "),
+    "",
+    "## Site coverage",
+    "",
+    ...siteCoverageLines(),
     "",
     "## Mission",
     "",
@@ -973,6 +987,11 @@ export function aiTxt() {
     "",
     "Primary author Aziel Eliab. Alternate name / aka: " + AUTHOR_AKA_LIST.join(" | ") + ". Public identity Aziel Eliab only.",
     "- sameAs: " + PERSON_SAME_AS.join(" · "),
+    "- jobTitle: " + PERSON_JOB_TITLE.join(" | "),
+    "",
+    "## Site coverage",
+    "",
+    ...siteCoverageLines(),
     "",
     "## Doors",
     "",

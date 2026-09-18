@@ -3,7 +3,7 @@ import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import worker from "../src/index.js";
 import { donateHtml, embryoLockHtml, pageHtml, sectionPageHtml, whoHtml } from "../src/page.js";
-import { citeDoc, jsonLd, llmsTxt, robotsTxt, sitemapXml } from "../src/seo.js";
+import { aiTxt, citeDoc, jsonLd, llmsTxt, robotsTxt, sitemapXml } from "../src/seo.js";
 import {
   AUTHOR_AKA_LIST,
   CANON_ORIGIN,
@@ -30,6 +30,8 @@ import {
   PERSON_JOB_TITLE,
   PERSON_KNOWS_ABOUT,
   SOFTWARE_DEVELOPER_ANSWER,
+  SITE_COVERAGE,
+  SITE_COVERAGE_ANSWER,
   LIBRARY_STATS,
   LIBRARY_STATS_FALLBACK,
   STATS_COUNTERS,
@@ -121,7 +123,7 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
   it("locks living researcher copy, 15:20 musicians, and euaziel machine NOT", () => {
     const person = personJsonLd();
     assert.equal(person["@id"], "https://www.azieleliab.com/#aziel");
-    assert.match(person.description, /^Aziel Eliab \(also Aziel Elroi Eliab\) is an independent researcher, software designer, developer, and historian/);
+    assert.match(person.description, /^Aziel Eliab \(also Aziel Elroi Eliab\) is a researcher, digital rights activist, software developer\/designer, author, and philosopher of published work/);
     assert.match(person.description, /two Levitical musicians Aziel and Eliab named together in 1 Chronicles 15:20/);
     assert.ok(person.description.includes(HEBREW_NAME_DEFINITION));
     assert.ok(PERSON_KNOWS_ABOUT.includes(HEBREW_NAME_DEFINITION));
@@ -194,6 +196,7 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     assert.ok(questions.some((q) => /Hebrew/i.test(q)));
     assert.ok(questions.some((q) => /misspell/i.test(q)));
     assert.ok(questions.includes("What does the published About say?"));
+    assert.ok(questions.includes("What public sites does Aziel Eliab publish?"));
     const answers = faq.mainEntity.map((q) => q.acceptedAnswer.text);
     assert.ok(answers.includes(WHO_IS_ANSWER));
     assert.ok(answers.includes(SOFTWARE_DEVELOPER_ANSWER));
@@ -201,6 +204,7 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     assert.ok(answers.includes(HEBREW_NAME_ANSWER));
     assert.ok(answers.includes(MISSPELLINGS_ANSWER));
     assert.ok(answers.includes(ABOUT_PUBLISHED_ANSWER));
+    assert.ok(answers.includes(SITE_COVERAGE_ANSWER));
     assert.match(WHO_IS_ANSWER, /two Levitical musicians Aziel and Eliab named together in 1 Chronicles 15:20/);
     assert.match(CONCORDANCE_FAQ_ANSWER, /two Levitical musicians/);
     assert.match(CONCORDANCE_FAQ_ANSWER, /1 Chronicles 15:20/);
@@ -272,6 +276,14 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     assert.ok(!body.includes(LIBRARY + "/v1/stats"));
     assert.ok(body.includes(HEDIDNTJUMP + "/api/stats"));
     assert.ok(body.includes("## Published About (work, not biography)"));
+    assert.ok(body.includes("## Site coverage"));
+    assert.equal(SITE_COVERAGE.length, 5);
+    assert.deepEqual(SITE_COVERAGE.map((row) => row.id), ["ae", "corpus", "godlock", "hedidntjump", "runtime"]);
+    for (const row of SITE_COVERAGE) {
+      assert.ok(body.includes(row.label), row.label);
+      assert.ok(body.includes(row.url), row.url);
+      assert.ok(body.includes(row.blurb), row.blurb);
+    }
     for (const line of ABOUT_PUBLISHED_LINES) assert.ok(body.includes(line), line);
     assert.ok(body.includes("You don’t get to know me. You get to understand the work."));
     assert.ok(body.includes("If the work holds, the name was only a handle on the door."));
@@ -313,6 +325,8 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     assert.deepEqual(doc, wellKnownAziel());
     assert.equal(doc.person_id, PERSON_ID);
     assert.equal(doc.visible_lock, VISIBLE_LOCK_LINE);
+    assert.deepEqual(doc.job_title, PERSON_JOB_TITLE);
+    assert.equal(doc.site_coverage.length, 5);
     assert.deepEqual(doc.aka, AUTHOR_AKA_LIST);
     assert.ok(doc.aka.includes("Elias Artista"));
     assert.equal(doc.hebrew_name_definition, HEBREW_NAME_DEFINITION);
@@ -363,6 +377,13 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     assert.ok(llms.includes(VISIBLE_LOCK_LINE));
     assert.ok(llms.includes("He Didn't Jump: " + HEDIDNTJUMP + "/"));
     assert.ok(llms.includes("sameAs: " + PERSON_SAME_AS.join(" · ")));
+    assert.ok(llms.includes("## Site coverage"));
+    assert.ok(llms.includes("ae (this hub)"));
+    assert.ok(llms.includes("aziel-runtime FragGate/MCP"));
+    const ai = aiTxt();
+    assert.ok(ai.includes("## Site coverage"));
+    assert.ok(ai.includes("ae (this hub)"));
+    assert.ok(ai.includes("aziel-runtime FragGate/MCP"));
     assert.ok(llms.includes("## Software"));
     assert.ok(llms.includes("## Aziel Runtime"));
     assert.ok(llms.includes(HEBREW_NAME_FORMS.phrase));
@@ -421,6 +442,9 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     assert.equal(cite.github_secondary, "https://github.com/azieltherevealerofthesealed-arch");
     assert.equal(cite.software_developer_answer, SOFTWARE_DEVELOPER_ANSWER);
     assert.equal(cite.disambiguatingDescription, DISAMBIGUATING_DESCRIPTION);
+    assert.deepEqual(cite.job_title, PERSON_JOB_TITLE);
+    assert.equal(cite.site_coverage.length, 5);
+    assert.ok(cite.site_coverage.every((row) => row.id && row.label && row.url && row.blurb));
     assert.equal(cite.who, WHO_HREF);
     assert.equal(cite.visible_lock, VISIBLE_LOCK_LINE);
     assert.match(cite.who_is_answer, /1 Chronicles 15:20/);
