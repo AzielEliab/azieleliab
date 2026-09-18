@@ -220,7 +220,7 @@ function extrasFromLiveDoc(doc, seen) {
       enabled_default: doc.mesh.enabled_default === true ? true : false,
       path: doc.mesh.path || "/v1/mesh",
       spec: doc.mesh.spec || "QNM-BUILD-1.0",
-      note: doc.mesh.note || "Suite rollup. Not a Softwares-tab product. Read-only suite presence is on (display from runtime). GET never enables. Operator-armed Node Gate + neighbor heal + network ON. AZVPN auto_use + vpn:true. Channel plane ON cites; worker_hardware:false.",
+      note: doc.mesh.note || "Suite rollup. live_nodes is presence — not an exec API, not live_doors, not Cap-7. Not a Softwares-tab product. Read-only suite presence is on (display from runtime). GET never enables. Operator-armed Node Gate + neighbor heal + network ON. AZVPN auto_use + vpn:true. Channel plane ON cites; worker_hardware:false.",
     });
   }
 

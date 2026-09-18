@@ -28,11 +28,11 @@ Live routes only. Do not invent tips or DOIs. Cite the hub files.
 
 **Each hub** (`azieleliab.com`, `azielcorpuslibrary.net`, `godlock.uk`, `hedidntjump.com`):
 
-- `/person.jsonld` · `/cite.json` · `/llms.txt` · `/ai.txt` · `/sitemap.xml` · `/who-is`
+- `/person.jsonld` · `/cite.json` · `/llms.txt` · `/ai.txt` · `/sitemap.xml` · `/who-is` · `/survival`
 
 **Runtime** (`aziel-runtime.vibelock.workers.dev`):
 
-- `/person.jsonld` · `/who-is` · `/cite.json` · `/llms.txt` · `/openapi.json` · `POST /mcp`
+- `/person.jsonld` · `/who-is` · `/cite.json` · `/llms.txt` · `/openapi.json` · `/survival` · `POST /mcp`
 
 Raw pointers in this repo: [person.jsonld](person.jsonld) · [llms.txt](llms.txt) · [cite.json](cite.json)
 

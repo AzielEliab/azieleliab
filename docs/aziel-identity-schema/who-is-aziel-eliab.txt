@@ -108,5 +108,21 @@ Also publishes hardware/prototype designs in the library — Adaptive AI Dog Lea
 - azielcorpuslibrary.net/stats: https://www.azielcorpuslibrary.net/stats (fallback https://aziel-corpus-download-tracker.vibelock.workers.dev/stats)
 - hedidntjump.com/api/stats: https://www.hedidntjump.com/api/stats
 
+## BAN-SURVIVAL-1.0
+
+BAN-SURVIVAL-1.0 hub pull of runtime GET /survival (short TTL). Mutual backup: cold shelves back death-by-ban; live_doors back cold-shelf death. Keep both. Never invent a live door. Live Nodes is QNM presence — not an exec API and not live_doors. Cap-7 shuffle via MirageGrid; resolves_to_hub: false. Hosted Cap-7 exec SLOT. Platforms all LIVE (browser / PWA / Worker / MCP) — not native store binaries. Calling-name rotation: mesh pull *new name alert: <name> from GET /survival. Identity Aziel Eliab only. GodLock is a product, not identity. Lamb Lens: Service → Clarity → Peace. NO-LIE. visible_1520: false.
+- GET https://www.azieleliab.com/survival  (hub pull of runtime SoT; short TTL)
+- GET https://www.azieleliab.com/v1/survival
+- Origin: https://aziel-runtime.vibelock.workers.dev/survival · https://aziel-runtime.vibelock.workers.dev/v1/survival
+- Runtime door: https://www.azieleliab.com/runtime/survival
+- Mutual backup: shelves → death-by-ban; live_doors → cold-shelf-death. Keep both.
+- Live doors listed only from pulled SoT (never invented). Live Nodes ≠ live_doors ≠ Cap-7.
+- Cap-7 shuffle via MirageGrid: https://miragegrid.vibelock.workers.dev (https://miragegrid.vibelock.workers.dev/v1/health · https://miragegrid.vibelock.workers.dev/bridge · https://miragegrid.vibelock.workers.dev/v1/shuffle). resolves_to_hub: false.
+- Platforms all LIVE: windows, mac, linux, android, ios. native_app_store: false.
+- Calling name: Aziel Runtime (BAN-CALLING-NAME-1.0). Identity Aziel Eliab unchanged.
+- Rotation awareness: *new name alert: <name> (none while rotated:false)
+- GodLock is a product, not identity. Person @id: https://www.azieleliab.com/#aziel
+- Lamb Lens: Service → Clarity → Peace. NO-LIE. visible_1520: false.
+
 Canonical person: https://www.azieleliab.com/#aziel
 sameAs: https://github.com/AzielEliab · https://github.com/azieltherevealerofthesealed-arch · https://glama.ai/mcp/servers/AzielEliab/aziel-runtime · https://www.azieleliab.com/ · https://www.azielcorpuslibrary.net/ · https://godlock.uk/ · https://www.hedidntjump.com/ · https://x.com/AzielElroiEliab · https://x.com/azieleliab

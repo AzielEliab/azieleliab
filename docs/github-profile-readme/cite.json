@@ -29,6 +29,20 @@
     "hedidntjump.com": "https://www.hedidntjump.com/cite.json",
     "aziel-runtime": "https://aziel-runtime.vibelock.workers.dev/cite.json"
   },
+  "survival": {
+    "spec": "BAN-SURVIVAL-1.0",
+    "azieleliab.com": "https://www.azieleliab.com/survival",
+    "aziel-runtime": "https://aziel-runtime.vibelock.workers.dev/survival",
+    "miragegrid": "https://miragegrid.vibelock.workers.dev",
+    "miragegrid_health": "https://miragegrid.vibelock.workers.dev/v1/health",
+    "miragegrid_bridge": "https://miragegrid.vibelock.workers.dev/bridge",
+    "miragegrid_shuffle": "https://miragegrid.vibelock.workers.dev/v1/shuffle",
+    "resolves_to_hub": false,
+    "platforms_all_live": true,
+    "calling_name_alert": "*new name alert:",
+    "godlock_is_product_not_identity": true,
+    "person_id": "https://www.azieleliab.com/#aziel"
+  },
   "person_jsonld": {
     "azieleliab.com": "https://www.azieleliab.com/person.jsonld",
     "azielcorpuslibrary.net": "https://www.azielcorpuslibrary.net/person.jsonld",

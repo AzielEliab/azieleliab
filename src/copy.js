@@ -197,6 +197,12 @@ export const AZHUB_WORKER = "https://azhub-download-tracker.vibelock.workers.dev
 export const AZHUB_GITHUB = "https://github.com/AzielEliab/azhub";
 export const AZINTERFACE_WORKER = "https://azinterface-download-tracker.vibelock.workers.dev/";
 export const AZINTERFACE_GITHUB = "https://github.com/AzielEliab/azinterface";
+/** Cap-7 shuffle app Worker (LIVE). Download-tracker stays the counted Softwares plane. */
+export const MIRAGEGRID = "https://miragegrid.vibelock.workers.dev";
+export const MIRAGEGRID_HEALTH = MIRAGEGRID + "/v1/health";
+export const MIRAGEGRID_BRIDGE = MIRAGEGRID + "/bridge";
+export const MIRAGEGRID_SHUFFLE = MIRAGEGRID + "/v1/shuffle";
+export const MIRAGEGRID_DOWNLOAD = "https://miragegrid-download-tracker.vibelock.workers.dev";
 
 export const DESCRIPTION =
   "Aziel Eliab. You don’t get to know me. You get to understand the work. Public identity Aziel Eliab only.";
