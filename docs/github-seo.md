@@ -128,6 +128,8 @@ Not MCP ops (`fraggate_call`, `runtime_run`, …). Child `@id` is `https://www.a
 
 Sister product SEO template: [aziel-runtime/docs/PRODUCT_SEO.md](https://github.com/AzielEliab/aziel-runtime/blob/main/docs/PRODUCT_SEO.md).
 
+Profile README (special repo `AzielEliab/AzielEliab`, so https://github.com/AzielEliab lists every public website): file pack + operator create steps in [github-profile-readme/](github-profile-readme/). Do not rename this Worker repo from that pack. GitHub treats `azieleliab` and `AzielEliab` as the same repo name.
+
 ## Compatible AI clients
 
 Full set (do not shrink to Grok / ChatGPT / Venice only):
