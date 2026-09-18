@@ -10,6 +10,11 @@ import {
   GODLOCK,
   HEDIDNTJUMP,
   LIBRARY,
+  MIRAGEGRID,
+  MIRAGEGRID_BRIDGE,
+  MIRAGEGRID_DOWNLOAD,
+  MIRAGEGRID_HEALTH,
+  MIRAGEGRID_SHUFFLE,
   PERSON_ID,
   RECEIPTS_HREF,
 } from "./copy.js";
@@ -81,6 +86,7 @@ export const LAMB_LENS_CORPUS = LIBRARY + "/corpus";
 
 export const CAP7_SPEC = "CAP-7-BRIDGE-CITE-1.0";
 export const CAP7_BRIDGE = LIBRARY + "/bridge.json";
+export const CAP7_SHUFFLE_SPEC = "CAP7-SHUFFLE-1.0";
 
 export const CROSS_NETWORK_SURVIVAL = "CROSS-NETWORK-SURVIVAL";
 export const CROSS_NETWORK_SURVIVAL_RULE =
@@ -187,7 +193,7 @@ export function planes() {
   return { A: planeA(), B: planeB(), C: planeC() };
 }
 
-/** Cap-7 is design_of only. Bridge is cited, not hosted. resolves_to_hub stays false. */
+/** Cap-7 is design_of only. Shuffle is MirageGrid LIVE. resolves_to_hub stays false. */
 export function cap7Cite() {
   return {
     spec: CAP7_SPEC,
@@ -198,6 +204,27 @@ export function cap7Cite() {
     public_icann: false,
     fifth_product: false,
     visible_1520_chrome: false,
+    software_tab: false,
+    factory: "miragegrid",
+    miragegrid: MIRAGEGRID,
+    miragegrid_health: MIRAGEGRID_HEALTH,
+    miragegrid_bridge: MIRAGEGRID_BRIDGE,
+    miragegrid_shuffle: MIRAGEGRID_SHUFFLE,
+    miragegrid_download: MIRAGEGRID_DOWNLOAD,
+    shuffle: {
+      spec: CAP7_SHUFFLE_SPEC,
+      factory: "miragegrid",
+      public_worker: "live",
+      app_worker: MIRAGEGRID,
+      health: MIRAGEGRID_HEALTH,
+      bridge: MIRAGEGRID_BRIDGE,
+      shuffle: MIRAGEGRID_SHUFFLE,
+      download_worker: MIRAGEGRID_DOWNLOAD,
+      resolves_to_hub: false,
+      hosted_endpoints: "slot",
+      hardcoded_single_host: false,
+      path: "ping → land → that-round update",
+    },
     sites: {
       azeliab: {
         design_of: CANON_ORIGIN + "/",
@@ -220,7 +247,9 @@ export function cap7Cite() {
         resolves_to_hub: false,
       },
     },
-    note: "Cap-7 names inherit design_of the four hubs only. If a bridge is present, resolves_to_hub stays false. Not aliases, not CNAME/redirect, not hub hostnames. This hub does not host /bridge.json.",
+    note: "Cap-7 names inherit design_of the four hubs only. Shuffle via MirageGrid LIVE Worker " +
+      MIRAGEGRID +
+      " (/v1/health · /bridge · /v1/shuffle). If a bridge is present, resolves_to_hub stays false. Not aliases, not CNAME/redirect, not hub hostnames. Hosted Cap-7 exec SLOT. GodLock is a product, not identity. This hub does not host /bridge.json.",
   };
 }
 
@@ -785,7 +814,10 @@ export function shelvesLlmsBlock() {
     "Lamb Lens: " + LAMB_LENS_PATH + " (Corpus / Lamb Lens UI " + LAMB_LENS_CORPUS + "; this hub cites only)",
     "Growth-ON Allow.",
     NO_FAN + ": " + NO_FAN_PHRASE,
-    "Cap-7: design_of only. If a bridge is present, resolves_to_hub: false. Bridge cite: " + CAP7_BRIDGE,
+    "Cap-7: design_of only. Shuffle via MirageGrid " +
+      MIRAGEGRID +
+      " (/v1/health · /bridge · /v1/shuffle). If a bridge is present, resolves_to_hub: false. Bridge cite: " +
+      CAP7_BRIDGE,
     "FoldLock tip-safe: " + FOLDLOCK_SHELF + " — never fold the lockset tip. Not zip. Not encryption. Hook SLOT.",
     "- Canonical registry: " + SHELVES_REGISTRY,
     "- This host: " + SHELVES_HREF + " · " + SHELVES_JSON_HREF,

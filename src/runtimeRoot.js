@@ -6,6 +6,7 @@
 import { AUTHOR, LIBRARY_RUNTIME, RUNTIME, RUNTIME_LOCAL, RUNTIME_PATH } from "./copy.js";
 import { injectPersonJsonLd } from "./identity.js";
 import { injectMeshDiscovery, loadMeshNodes, loadMeshStatus, MESH_NODES_PATH } from "./mesh.js";
+import { injectSurvivalDiscovery, isSurvivalPath, loadSurvival } from "./survival.js";
 import {
   fetchOriginUses,
   isLocalMeshPath,
@@ -46,6 +47,7 @@ const PREFIX_PATHS = [
   "/p/",
   "/sigil.png",
   "/glama.json",
+  "/survival",
 ];
 
 export function isRuntimeRequest(pathname) {
@@ -193,7 +195,11 @@ async function finishProxy(request, res, via, destPathAndQuery) {
   }
   const text = await res.text();
   const destPath = String(destPathAndQuery || "").split("?")[0];
-  let rewritten = injectMeshDiscovery(rewriteRuntimeBody(text, ct), ct, destPath);
+  let rewritten = injectSurvivalDiscovery(
+    injectMeshDiscovery(rewriteRuntimeBody(text, ct), ct, destPath),
+    ct,
+    destPath,
+  );
   if (ct.toLowerCase().includes("html")) rewritten = injectPersonJsonLd(rewritten);
   headers.delete("content-length");
   return new Response(rewritten, { status: res.status, statusText: res.statusText, headers });
@@ -246,6 +252,9 @@ export async function handleRuntimeRoot(request, url, env, ctx) {
         ? await loadMeshNodes(env, ctx, { request })
         : await loadMeshStatus(env, ctx, { request });
     return usesResponse(doc, request.method);
+  }
+  if (isSurvivalPath(runtimeDestPath(url.pathname)) && (request.method === "GET" || request.method === "HEAD")) {
+    return usesResponse(await loadSurvival(env, ctx, { request }), request.method);
   }
   const dest = destFromRuntimePath(url.pathname, url.search);
   if (dest == null) return null;
