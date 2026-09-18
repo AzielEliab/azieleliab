@@ -6,8 +6,10 @@ description: >-
   (display from runtime). GET never enables.
   QNS-CD-1.0 is hub cite / mesh.js cross-map only (photon QNS1 packet
   transfer). Local qnsd is AzielEliab/qnm-node. Runtime cites live in
-  AzielEliab/aziel-runtime. AZInterface has pair custody. No Node Gate.
-  No public qnsd proxy. Not a Softwares-tab product. Identity Aziel Eliab only.
+  AzielEliab/aziel-runtime. AZInterface has pair custody. QNS-CD is not
+  Node Gate. Mesh Node Gate is operator-armed (2026-09-17), not a login
+  panel. No public qnsd proxy. Not a Softwares-tab product. Identity
+  Aziel Eliab only.
 ---
 
 # Aziel Eliab hub cite
@@ -18,6 +20,7 @@ Canonical: https://www.azieleliab.com/
 Person `@id`: https://www.azieleliab.com/#aziel (www, not apex; `#aziel` not `#aziel-eliab`)
 Runtime parent `@id`: https://www.azieleliab.com/runtime#runtime (`hasPart` named tools only; not MCP ops)
 Runtime version: **2.0.0-rc1**
+Runtime SoT LIVE: main **6a3798a** / version_id **105fa1ee** / 2.0.0-rc1 at https://aziel-runtime.vibelock.workers.dev
 
 Softwares list: https://www.azieleliab.com/software (`/#software` maps here)
 
@@ -35,7 +38,7 @@ About aliases `/about`, `/AzielEliab`, `/aziel-eliab` 200 the same homepage HTML
 
 ## Mesh (read-only ON)
 
-Read-only suite presence is **on**. Display `live_nodes` from aziel-runtime. VPN/hop mesh is not claimed. No Node Gate. Display only.
+Read-only suite presence is **on**. Display `live_nodes` from aziel-runtime. Mesh ON. Operator-armed Node Gate + neighbor heal + network ON (not a login-recovery / IP panel). AZVPN auto_use + vpn:true (HTTPS/WS REAL; WireGuard/OpenVPN SLOT; GET cites only). Channel plane wifi/bluetooth/rf/photon ON cites; worker_hardware:false. Softwares via fraggate_call only; master_33:false; FragGate sole door. Never fielded_100.
 
 | Path | What |
 |------|------|

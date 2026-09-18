@@ -47,6 +47,44 @@ export const RUNTIME_NAME = "aziel-runtime";
 export const RUNTIME_TITLE = "Aziel Runtime";
 /** Certification-freeze cite. Prefer live GET /v1/health.version when it answers. */
 export const RUNTIME_VERSION = "2.0.0-rc1";
+/** Operator SoT LIVE: main 6a3798a. Live GET /v1/software.git_sha when it answers. */
+export const RUNTIME_GIT_SHA = "6a3798af3a94bfba3ed2e7aaadeed8777ea32bb4";
+export const RUNTIME_GIT_SHORT = "6a3798a";
+/** Operator SoT LIVE version_id. Do not invent a different id. */
+export const RUNTIME_VERSION_ID = "105fa1ee";
+export const RUNTIME_BRANCH = "main";
+export const FIELD_100 = false;
+export const MASTER_33_MCP = false;
+/** Counted suite pack on the runtime Worker. Not fielded_100. */
+export const RUNTIME_DOWNLOAD = RUNTIME + "/download";
+export const RUNTIME_DOWNLOAD_V1 = RUNTIME + "/v1/suite/download";
+export const RUNTIME_DOWNLOAD_NOTE =
+  "One-click suite pack JSON (REAL catalog + FoldLock tip + mesh cite). Worker wasm / WireGuard / OpenVPN SLOT. Counted GET /download. Not fielded_100.";
+/** Human UI hashes live on the runtime Worker — not this hub homepage. */
+export const RUNTIME_HUMAN_UI = Object.freeze({
+  host: RUNTIME + "/",
+  op_panel: RUNTIME + "/#op-panel",
+  dashboard: RUNTIME + "/#dashboard",
+  fg_console: RUNTIME + "/#fg-console",
+  tasks: RUNTIME + "/#task-*",
+  about_aziel: RUNTIME + "/about",
+  about_aziel_v1: RUNTIME + "/v1/about",
+  download: RUNTIME_DOWNLOAD,
+  hashtags: true,
+  note:
+    "Human software on aziel-runtime: #op-panel / #dashboard / #fg-console + #task-* + About Aziel + per-product hashtags + GET /download suite pack. This hub cites those hashes; it does not host the panels. Agent MCP has no technical UI chrome.",
+});
+/** Dual-surface law. Softwares exec is fraggate_call only. */
+export const DUAL_SURFACE = Object.freeze({
+  agent:
+    "MCP Softwares via fraggate_call only. FragGate is THE single door. master_33:false — MASTER-33 is the locked pipeline cite, not an MCP tool.",
+  human:
+    "Complete human UI stays on the runtime Worker (panels, About Aziel, per-product hashtags, counted /download).",
+  door: "fraggate",
+  softwares: "fraggate_call only",
+  master_33: MASTER_33_MCP,
+  fielded_100: FIELD_100,
+});
 /** Verified Glama listing (owner/repo path). Do not invent a server id. */
 export const GLAMA_RUNTIME = "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime";
 export const RUNTIME_DOCS = "https://github.com/AzielEliab/aziel-runtime/tree/main/docs/2.0";
@@ -126,6 +164,7 @@ export const RUNTIME_NAMED_LINE =
 export const RUNTIME_DOORS = [
   { label: "Try on Glama", href: GLAMA_RUNTIME, primary: true },
   { label: "Official Runtime", href: RUNTIME + "/" },
+  { label: "Suite pack", href: RUNTIME_DOWNLOAD },
   { label: "Source on GitHub", href: GITHUB_RUNTIME },
   { label: "Documentation / Architecture", href: RUNTIME_DOCS },
 ];
@@ -299,6 +338,7 @@ export const CATALOG_SLUGS = [
   "azmail",
   "aznet",
   "azos",
+  "azvpn",
   "chronolock",
   "codelock",
   "decisiongate",
@@ -310,16 +350,19 @@ export const CATALOG_SLUGS = [
   "godlock",
   "mialock",
   "miragegrid",
+  "mmconsensus",
   "peacelock",
   "postking",
   "shadowlock",
   "spectrallock",
   "staticclock",
   "temporallock",
+  "toolbench",
   "trajectorylock",
   "veillock",
   "vibelock",
   "whistlelock",
+  "zkattest",
   "zsolver",
 ];
 
@@ -340,6 +383,7 @@ export const CATALOG_NAMES = {
   azmail: "AZMail",
   aznet: "AZNet",
   azos: "AZ-OS",
+  azvpn: "AZVPN",
   chronolock: "ChronoLock",
   codelock: "CodeLock",
   decisiongate: "DecisionGATE",
@@ -351,18 +395,32 @@ export const CATALOG_NAMES = {
   godlock: "GodLock",
   mialock: "M.I.A.Lock",
   miragegrid: "MirageGrid",
+  mmconsensus: "MMConsensus",
   peacelock: "PeaceLock",
   postking: "Post-King Chess",
   shadowlock: "ShadowLock",
   spectrallock: "SpectralLock",
   staticclock: "StaticClock",
   temporallock: "TemporalLock",
+  toolbench: "ToolBench",
   trajectorylock: "TrajectoryLock",
   veillock: "VeilLock",
   vibelock: "VibeLock",
   whistlelock: "WhistleLock",
+  zkattest: "ZKAttest",
   zsolver: "ZionPattern Solver",
 };
+
+/**
+ * In-process placements without a download-tracker Worker.
+ * Door is the runtime human UI (#task-*), not an invented tracker URL.
+ */
+export const CATALOG_RUNTIME_HOME = Object.freeze({
+  azvpn: RUNTIME + "/#task-azvpn",
+  mmconsensus: RUNTIME + "/#task-mmconsensus",
+  toolbench: RUNTIME + "/#task-toolbench",
+  zkattest: RUNTIME + "/#task-zkattest",
+});
 
 /** Not in the documented catalog yet. Do not invent a landing door. */
 export const CATALOG_LATER_SLUGS = [];
@@ -375,6 +433,7 @@ export const PEACELOCK_GITHUB = "https://github.com/AzielEliab/peacelock";
 export const CATALOG_GITHUB_FALLBACK = new Set();
 
 export function catalogGithub(slug) {
+  if (CATALOG_RUNTIME_HOME[slug]) return GITHUB_RUNTIME;
   return "https://github.com/AzielEliab/" + slug;
 }
 
@@ -382,6 +441,7 @@ export function catalogWorkerHome(slug) {
   if (slug === "aziel-corpus") return LIBRARY + "/";
   if (slug === "azmail") return AZMAIL_WORKER;
   if (slug === "peacelock") return PEACELOCK_WORKER;
+  if (CATALOG_RUNTIME_HOME[slug]) return CATALOG_RUNTIME_HOME[slug];
   return "https://" + slug + "-download-tracker.vibelock.workers.dev/";
 }
 
@@ -441,6 +501,7 @@ export function catalogSoftwareFromSlugs(slugs = CATALOG_SLUGS, liveProducts = [
     if (live.version) item.version = live.version;
     if (live.one_line) item.one_line = live.one_line;
     if (live.github) item.github = live.github;
+    else if (CATALOG_RUNTIME_HOME[slug]) item.github = GITHUB_RUNTIME;
     if (live.bucket) item.bucket = live.bucket;
     if (live.surface) item.surface = live.surface;
     out.push(item);
@@ -521,7 +582,7 @@ export const SOFTWARE_EXTRAS = [
     enabled_default: false,
     path: "/v1/mesh",
     spec: "QNM-BUILD-1.0",
-    note: "Suite rollup. Not a Softwares-tab product. Read-only suite presence is on (display from runtime). GET never enables.",
+    note: "Suite rollup. Not a Softwares-tab product. Read-only suite presence is on (display from runtime). GET never enables. Operator-armed Node Gate / neighbor heal / network ON. AZVPN auto_use + vpn:true (HTTPS/WS REAL; WG/OpenVPN SLOT). Channel plane wifi/bt/rf/photon ON cites; worker_hardware:false.",
   },
 ];
 export const EXTRA_SOFTWARE = SOFTWARE_EXTRAS;
