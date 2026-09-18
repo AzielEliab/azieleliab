@@ -48,6 +48,8 @@ import {
   AZINTERFACE_WORKER,
   AZMAIL_WORKER,
   AZNET_WORKER,
+  ARK_DOWNLOAD,
+  ARK_WORKER,
   EMBRYOLOCK_COPY,
   EMBRYOLOCK_HREF,
   EMBRYOLOCK_PATH,
@@ -387,6 +389,9 @@ describe("software doors", () => {
     assert.ok(names.includes("AZInterface"));
     assert.ok(names.includes("AZNet"));
     assert.ok(names.includes("EmbryoLock"));
+    assert.ok(names.includes("The ARK"));
+    assert.equal(CATALOG_NAMES.ark, "The ARK");
+    assert.equal(catalogHref("ark"), ARK_WORKER);
     assert.ok(!names.includes("aziel-runtime"));
     assert.ok(!names.includes("FragGate"));
     assert.ok(!names.includes("Ask Jeeves"));
@@ -469,6 +474,9 @@ describe("software doors", () => {
     assert.doesNotMatch(html, />Lumen</);
     assert.ok(!citeDoc().software_names.some((s) => s.name === "Lumen"));
     assert.ok(citeDoc().software_names.some((s) => s.name === "EmbryoLock" && s.url === EMBRYOLOCK_WORKER));
+    assert.ok(citeDoc().software_names.some((s) => s.name === "The ARK" && s.url === ARK_WORKER));
+    assert.equal(citeDoc().softwares_addendum.includes(ARK_DOWNLOAD), true);
+    assert.equal(citeDoc().what_he_does_softwares, "Softwares via FragGate (~41).");
     assert.ok(citeDoc().software_names.some((s) => s.name === "PeaceLock"));
     const stub = embryoLockHtml();
     assert.ok(stub.includes('rel="canonical" href="' + EMBRYOLOCK_HREF + '"'));
@@ -901,6 +909,16 @@ describe("SEO routes", () => {
     assert.ok(llmsBody.includes("EmbryoLock"));
     assert.ok(llmsBody.includes(EMBRYOLOCK_HREF));
     assert.ok(llmsBody.includes(EMBRYOLOCK_WORKER));
+    assert.ok(llmsBody.includes("The ARK"));
+    assert.ok(llmsBody.includes(ARK_DOWNLOAD));
+    assert.ok(llmsBody.includes("Softwares note:"));
+    assert.ok(llmsBody.includes("local deniable vault"));
+    assert.ok(llmsBody.includes("Not a hosted unlock"));
+    assert.ok(llmsBody.includes("Whitestone: ephemeral pro se; not a lawyer"));
+    assert.ok(aiBody.includes("Softwares via FragGate (~41)."));
+    assert.ok(aiBody.includes("Softwares note:"));
+    assert.ok(aiBody.includes(ARK_DOWNLOAD));
+    assert.ok(aiBody.includes("Whitestone: ephemeral pro se; not a lawyer"));
     assert.ok(llmsBody.includes("PeaceLock"));
     assert.ok(llmsBody.includes(PEACELOCK_WORKER));
     assert.ok(llmsBody.includes("AZMail"));

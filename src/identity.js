@@ -2,6 +2,7 @@
 import {
   ABOUT_HREF,
   ABOUT_PATHS,
+  ARK_DOWNLOAD,
   AUTHOR,
   AUTHOR_AKA,
   AUTHOR_AKA_LIST,
@@ -61,6 +62,12 @@ export const WHAT_HE_DOES_ROLES =
 
 export const WHAT_HE_DOES_SOFTWARES = "Softwares via FragGate (~41).";
 
+/** Machine Softwares list. Locked short sentence stays unforked. No invented counts. */
+export const SOFTWARES_ADDENDUM =
+  "The ARK: local deniable vault; one phrase opens one vault; counted download via " +
+  ARK_DOWNLOAD +
+  " (worker_home same host). Not a hosted unlock. Whitestone: ephemeral pro se; not a lawyer.";
+
 export const RESEARCH_ADDENDUM =
   "Outside Softwares, publishes via Aziel Digital Library MASTER (~326 records) \u2014 Book of the Knowledge, Blemmyes/Ewaipanoma hypothesis packets, Libro Method, PPIN, Lenses as Viewpoint Constraints, ABAD Copper Scroll, evidence/integrity, HDJ Zioncheck archive. Cite AZDOC ids; no invented DOIs.";
 
@@ -71,6 +78,7 @@ export const WHAT_HE_DOES_ANSWER = [
   WHAT_AZIEL_ELIAB_DOES,
   WHAT_HE_DOES_ROLES,
   WHAT_HE_DOES_SOFTWARES,
+  SOFTWARES_ADDENDUM,
   RESEARCH_ADDENDUM,
   HARDWARE_ADDENDUM,
 ].join(" ");
@@ -788,6 +796,13 @@ export function whoIsTxt() {
     "",
     ...PUBLIC_WORK.map((row) => "- " + row),
     "",
+    "## Softwares",
+    "",
+    WHAT_HE_DOES_SOFTWARES,
+    SOFTWARES_ADDENDUM,
+    "- The ARK — " + ARK_DOWNLOAD + " (worker_home same host). Not a hosted unlock.",
+    "- Whitestone — ephemeral pro se; not a lawyer.",
+    "",
     "## Research (Aziel Digital Library MASTER)",
     "",
     RESEARCH_ADDENDUM,
@@ -830,6 +845,8 @@ export function wellKnownAziel() {
     what_aziel_eliab_does: WHAT_AZIEL_ELIAB_DOES,
     what_he_does_answer: WHAT_HE_DOES_ANSWER,
     what_he_does_faq: WHAT_HE_DOES_FAQ_NAMES.slice(),
+    what_he_does_softwares: WHAT_HE_DOES_SOFTWARES,
+    softwares_addendum: SOFTWARES_ADDENDUM,
     research_addendum: RESEARCH_ADDENDUM,
     hardware_addendum: HARDWARE_ADDENDUM,
     published_research: PUBLISHED_RESEARCH.map((row) => ({ ...row, records: (row.records || []).slice() })),
@@ -886,6 +903,13 @@ export function identityLockBlock() {
     "## Site coverage",
     "",
     ...siteCoverageLines(),
+    "",
+    "## Softwares",
+    "",
+    WHAT_HE_DOES_SOFTWARES,
+    "- Softwares note: " + SOFTWARES_ADDENDUM,
+    "- The ARK — " + ARK_DOWNLOAD + " (worker_home same host). Not a hosted unlock.",
+    "- Whitestone — ephemeral pro se; not a lawyer.",
     "",
     "## Research (Aziel Digital Library MASTER)",
     "",

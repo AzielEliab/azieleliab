@@ -5,6 +5,7 @@ import worker from "../src/index.js";
 import { donateHtml, embryoLockHtml, pageHtml, sectionPageHtml, whoHtml } from "../src/page.js";
 import { aiTxt, citeDoc, jsonLd, llmsTxt, robotsTxt, sitemapXml } from "../src/seo.js";
 import {
+  ARK_DOWNLOAD,
   AUTHOR_AKA_LIST,
   CANON_ORIGIN,
   HEDIDNTJUMP,
@@ -33,6 +34,8 @@ import {
   WHAT_AZIEL_ELIAB_DOES,
   WHAT_HE_DOES_ANSWER,
   WHAT_HE_DOES_FAQ_NAMES,
+  WHAT_HE_DOES_SOFTWARES,
+  SOFTWARES_ADDENDUM,
   RESEARCH_ADDENDUM,
   HARDWARE_ADDENDUM,
   SITE_COVERAGE,
@@ -217,7 +220,21 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     assert.ok(WHAT_HE_DOES_ANSWER.startsWith(WHAT_AZIEL_ELIAB_DOES));
     assert.ok(WHAT_HE_DOES_ANSWER.includes(RESEARCH_ADDENDUM));
     assert.ok(WHAT_HE_DOES_ANSWER.includes(HARDWARE_ADDENDUM));
-    assert.ok(WHAT_HE_DOES_ANSWER.includes("Softwares via FragGate (~41)"));
+    assert.equal(WHAT_HE_DOES_SOFTWARES, "Softwares via FragGate (~41).");
+    assert.ok(WHAT_HE_DOES_ANSWER.includes(WHAT_HE_DOES_SOFTWARES));
+    assert.ok(WHAT_HE_DOES_ANSWER.includes(SOFTWARES_ADDENDUM));
+    assert.ok(SOFTWARES_ADDENDUM.includes("The ARK"));
+    assert.ok(SOFTWARES_ADDENDUM.includes("local deniable vault"));
+    assert.ok(SOFTWARES_ADDENDUM.includes("one phrase opens one vault"));
+    assert.ok(SOFTWARES_ADDENDUM.includes(ARK_DOWNLOAD));
+    assert.ok(SOFTWARES_ADDENDUM.includes("worker_home same host"));
+    assert.ok(SOFTWARES_ADDENDUM.includes("Not a hosted unlock"));
+    assert.ok(SOFTWARES_ADDENDUM.includes("Whitestone: ephemeral pro se; not a lawyer"));
+    assert.doesNotMatch(SOFTWARES_ADDENDUM, /\bviews?\b|\bdownloads?\s+\d|\bcount\s+\d/i);
+    const softwareFaq = faq.mainEntity.find((q) => q.name === "What software does Aziel Eliab make?");
+    assert.ok(softwareFaq);
+    assert.equal(softwareFaq.acceptedAnswer.text, WHAT_HE_DOES_ANSWER);
+    assert.ok(softwareFaq.acceptedAnswer.text.includes("The ARK"));
     assert.ok(answers.includes(SOFTWARE_DEVELOPER_ANSWER));
     assert.ok(answers.includes(CONCORDANCE_FAQ_ANSWER));
     assert.ok(answers.includes(HEBREW_NAME_ANSWER));
@@ -279,6 +296,11 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     assert.ok(body.includes(WHAT_AZIEL_ELIAB_DOES));
     assert.ok(body.includes(WHAT_HE_DOES_ANSWER));
     assert.ok(body.includes("## What Aziel Eliab does"));
+    assert.ok(body.includes("## Softwares"));
+    assert.ok(body.includes(WHAT_HE_DOES_SOFTWARES));
+    assert.ok(body.includes(SOFTWARES_ADDENDUM));
+    assert.ok(body.includes(ARK_DOWNLOAD));
+    assert.ok(body.includes("Whitestone — ephemeral pro se; not a lawyer"));
     assert.ok(body.includes("## Research (Aziel Digital Library MASTER)"));
     assert.ok(body.includes("## Hardware designs (published engineering)"));
     assert.ok(body.includes("AZDOC-9B0E3D62EDCC"));
@@ -328,6 +350,9 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     assert.ok(!visible.includes(WHAT_AZIEL_ELIAB_DOES));
     assert.ok(!visible.includes(RESEARCH_ADDENDUM));
     assert.ok(!visible.includes(HARDWARE_ADDENDUM));
+    assert.ok(!visible.includes(SOFTWARES_ADDENDUM));
+    assert.ok(!visible.includes("deniable vault"));
+    assert.ok(!visible.includes(ARK_DOWNLOAD));
     assert.ok(!body.includes(VISIBLE_LOCK_LINE));
     assert.ok(body.includes("<title>Who is Aziel Eliab</title>"));
     assert.ok(body.includes('name="description" content="' + WHO_DESCRIPTION + '"'));
@@ -358,6 +383,8 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     assert.equal(doc.what_aziel_eliab_does, WHAT_AZIEL_ELIAB_DOES);
     assert.equal(doc.what_he_does_answer, WHAT_HE_DOES_ANSWER);
     assert.deepEqual(doc.what_he_does_faq, WHAT_HE_DOES_FAQ_NAMES);
+    assert.equal(doc.what_he_does_softwares, WHAT_HE_DOES_SOFTWARES);
+    assert.equal(doc.softwares_addendum, SOFTWARES_ADDENDUM);
     assert.equal(doc.research_addendum, RESEARCH_ADDENDUM);
     assert.equal(doc.hardware_addendum, HARDWARE_ADDENDUM);
     assert.equal(doc.library_front_door.records_packed, 326);
@@ -413,6 +440,9 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     assert.ok(llms.includes(VISIBLE_LOCK_LINE));
     assert.ok(llms.includes(WHAT_AZIEL_ELIAB_DOES));
     assert.ok(llms.includes(WHAT_HE_DOES_ANSWER));
+    assert.ok(llms.includes(WHAT_HE_DOES_SOFTWARES));
+    assert.ok(llms.includes(SOFTWARES_ADDENDUM));
+    assert.ok(llms.includes("Softwares note: " + SOFTWARES_ADDENDUM));
     assert.ok(llms.includes(RESEARCH_ADDENDUM));
     assert.ok(llms.includes(HARDWARE_ADDENDUM));
     assert.ok(llms.includes("AZDOC-9B0E3D62EDCC"));
@@ -420,6 +450,9 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     for (const name of WHAT_HE_DOES_FAQ_NAMES) assert.ok(llms.includes(name), "llms " + name);
     const aiHasBrief = aiTxt();
     assert.ok(aiHasBrief.includes(WHAT_AZIEL_ELIAB_DOES));
+    assert.ok(aiHasBrief.includes(WHAT_HE_DOES_SOFTWARES));
+    assert.ok(aiHasBrief.includes(SOFTWARES_ADDENDUM));
+    assert.ok(aiHasBrief.includes("Softwares note: " + SOFTWARES_ADDENDUM));
     assert.ok(aiHasBrief.includes(RESEARCH_ADDENDUM));
     assert.ok(aiHasBrief.includes(HARDWARE_ADDENDUM));
     assert.ok(llms.includes("He Didn't Jump: " + HEDIDNTJUMP + "/"));
@@ -453,6 +486,10 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     assert.ok(!html.includes(VISIBLE_LOCK_LINE));
     const visibleBody = html.split("<body>")[1] || "";
     assert.ok(!visibleBody.includes(VISIBLE_LOCK_LINE));
+    assert.ok(!visibleBody.includes(SOFTWARES_ADDENDUM));
+    assert.ok(!visibleBody.includes("deniable vault"));
+    assert.ok(!visibleBody.includes(ARK_DOWNLOAD));
+    assert.ok(!visibleBody.includes("Whitestone"));
     assert.ok(visibleBody.includes("You don’t get to know me."));
     assert.ok(html.includes('href="/.well-known/aziel.json"'));
     assert.ok(!html.includes('id="mission"'));
@@ -481,6 +518,8 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     assert.equal(cite.what_aziel_eliab_does, WHAT_AZIEL_ELIAB_DOES);
     assert.equal(cite.what_he_does_answer, WHAT_HE_DOES_ANSWER);
     assert.deepEqual(cite.what_he_does_faq, WHAT_HE_DOES_FAQ_NAMES);
+    assert.equal(cite.what_he_does_softwares, WHAT_HE_DOES_SOFTWARES);
+    assert.equal(cite.softwares_addendum, SOFTWARES_ADDENDUM);
     assert.equal(cite.research_addendum, RESEARCH_ADDENDUM);
     assert.equal(cite.hardware_addendum, HARDWARE_ADDENDUM);
     assert.ok(cite.published_research.some((row) => row.records && row.records.includes("AZDOC-A011CAD23671")));
