@@ -51,7 +51,7 @@ Read-only suite presence is **on**. Display `live_nodes` from aziel-runtime. Mes
 
 `GET /v1/mesh/status` never enables radios. Operator enable on runtime requires a declared bearer (example: `suite-presence`). A 404 or missing origin still returns identity Aziel Eliab with `live_nodes: 0`. Public UI never renders an off-state quiet mesh label.
 
-Homepage brandrow shows `Live Nodes · N` (sister-hub pill) from origin `live_nodes`. Softwares list rules unchanged.
+Homepage brandrow shows `Live Nodes · N` (sister-hub pill) from origin `live_nodes`. Softwares list: live `GET /v1/software` (41 true-engine slugs after main 6a3798a; VeilLock local_only). In-runtime placements AZVPN / MMConsensus / ToolBench / ZKAttest door to `#task-*`. Heading → list only. Plain A–Z → Gate A–Z → Lock A–Z (StaticClock is Plain).
 
 Agent skill for the runtime door: https://www.azieleliab.com/runtime/v1/skill  
 Origin skill: https://aziel-runtime.vibelock.workers.dev/v1/skill
