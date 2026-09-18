@@ -2,6 +2,7 @@
 import { aboutAliasPath, APEX_HOST, AUTHOR, CANON_ORIGIN, DESCRIPTION, isMissionPath, tabPage } from "./copy.js";
 import {
   DONATE_CACHE_BUST,
+  CATALOG_HTTP_CACHE,
   DONATE_HTML_CACHE,
   HTML_CACHE,
   JSON_SHORT_CACHE,
@@ -386,7 +387,7 @@ export async function handleRequest(request, env = {}, ctx) {
   } else if (path === "/sitemap.xml") {
     res = text(sitemapXml(new Date(), doors), "application/xml", { cache: SEO_CACHE });
   } else if (path === "/v1/software") {
-    res = json(softwareIndexBody(live, mesh), JSON_SHORT_CACHE);
+    res = json(softwareIndexBody(live, mesh), CATALOG_HTTP_CACHE);
   } else if (path === MESH_STATUS_PATH) {
     res = json(meshStatus || (await loadMeshStatus(env, ctx, { request })), JSON_SHORT_CACHE);
   } else if (path === MESH_NODES_PATH) {

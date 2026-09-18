@@ -45,6 +45,108 @@ export const WHO_DESCRIPTION =
 export const SOFTWARE_DEVELOPER_ANSWER =
   "Aziel Eliab the software developer publishes GodLock, Aziel Digital Library, aziel-runtime (FragGate / MCP), and He Didn't Jump. Person @id https://www.azieleliab.com/#aziel. Hubs: godlock.uk, azielcorpuslibrary.net, azieleliab.com, hedidntjump.com, github.com/AzielEliab, Glama aziel-runtime.";
 
+/** Operator-locked machine sentence. Do not fork. Not visible 15:20 HTML chrome. */
+export const WHAT_AZIEL_ELIAB_DOES =
+  "Aziel Eliab builds receipt-first, local-first software and public MASTER records \u2014 Softwares through Aziel Runtime (FragGate / MCP), the Aziel Digital Library, GodLock (product, not identity), and the He Didn\u2019t Jump Zioncheck archive. Public identity is the work, not a biography. @id https://www.azieleliab.com/#aziel";
+
+export const WHAT_HE_DOES_FAQ_NAMES = [
+  "What does Aziel Eliab do?",
+  "What Aziel Eliab does",
+  "Who is Aziel Eliab the developer?",
+  "What software does Aziel Eliab make?",
+];
+
+export const WHAT_HE_DOES_ROLES =
+  "Roles from published work: researcher, digital rights activist, software developer/designer, author, philosopher of published work.";
+
+export const WHAT_HE_DOES_SOFTWARES = "Softwares via FragGate (~41).";
+
+export const RESEARCH_ADDENDUM =
+  "Outside Softwares, publishes via Aziel Digital Library MASTER (~326 records) \u2014 Book of the Knowledge, Blemmyes/Ewaipanoma hypothesis packets, Libro Method, PPIN, Lenses as Viewpoint Constraints, ABAD Copper Scroll, evidence/integrity, HDJ Zioncheck archive. Cite AZDOC ids; no invented DOIs.";
+
+export const HARDWARE_ADDENDUM =
+  "Also publishes hardware/prototype designs in the library \u2014 Adaptive AI Dog Leash AZDOC-9B0E3D62EDCC, Wearable Dual-Tether Web-Sling AZDOC-AA8761FE16D0, PLA Recycler V1 AZDOC-B2A12FE997A8, TAA-1 whitepaper+eng package, AEEM HVAC Energy Valve, AZ Mandible family, AZ_BoneConducti STL. Published work, not storefront. Skip privileged/attorney-work-product/case-forensics.";
+
+export const WHAT_HE_DOES_ANSWER = [
+  WHAT_AZIEL_ELIAB_DOES,
+  WHAT_HE_DOES_ROLES,
+  WHAT_HE_DOES_SOFTWARES,
+  RESEARCH_ADDENDUM,
+  HARDWARE_ADDENDUM,
+].join(" ");
+
+/** Front-door snapshot 2026-09-18. Prefer live GET /stats. */
+export const LIBRARY_FRONT_DOOR_SNAPSHOT = {
+  door: LIBRARY + "/",
+  stats: LIBRARY + "/stats",
+  as_of: "2026-09-18",
+  records_packed: 326,
+  views: 398098,
+  views_approx: "~398k",
+  downloads: 4393,
+  downloads_approx: "~4.3k",
+  note: "Front-door snapshot. Prefer live GET https://www.azielcorpuslibrary.net/stats. Do not invent DOIs.",
+};
+
+export const PUBLISHED_RESEARCH = [
+  { title: "Book of the Knowledge", records: ["AZDOC-A011CAD23671", "AZDOC-F83D7E6D28B6"] },
+  { title: "What the Libro Method Can Do to Voynich Linguistics", records: ["AZDOC-F22AD0DCAA9D"] },
+  { title: "PPIN \u2014 Post-Perturbation Integrative Neuroplasticity", records: [] },
+  { title: "Lenses as Viewpoint Constraints for Artificial Systems", records: ["AZDOC-8F14A40DC9A6"] },
+  { title: "ABAD Framework Application: Layered Decryption of the Copper Scroll (3Q15)", records: [] },
+  { title: "Marion A. Zioncheck Visual Archive Vols 1\u20135", records: [], url: HEDIDNTJUMP + "/" },
+  { title: "An Operating Manual for a Closing World", records: ["AZDOC-B5094327857E", "AZDOC-149CA2191E99"] },
+  { title: "Blemmyes investigation frameworks (research-grade hypotheses)", records: [] },
+];
+
+export const PUBLISHED_HARDWARE = [
+  { title: "Adaptive AI Dog Leash", records: ["AZDOC-9B0E3D62EDCC"] },
+  { title: "Wearable Dual-Tether Web-Sling System", records: ["AZDOC-AA8761FE16D0"] },
+  { title: "PLA Recycler V1", records: ["AZDOC-B2A12FE997A8"] },
+  { title: "TAA-1 whitepaper", records: ["AZDOC-FE5C01BD8FEA", "AZDOC-E9EC47D403F1"] },
+  { title: "TAA-1 Engineering Package", records: ["AZDOC-3728546DFE78"] },
+  { title: "AEEM HVAC Energy Valve", records: ["AZDOC-1A63B165DBE6", "AZDOC-73CAA3DCCF1F", "AZDOC-0A4842CE9B8D"] },
+  {
+    title: "AZ Mandible family",
+    records: ["AZDOC-E5828F49FB04"],
+    note: "STL AZDOC-FFE151D2F90B / AZDOC-45D0F6AEDD3D, firmware AZDOC-130218E1CFFD, provisional patent pack AZDOC-8BAFFB68EC60, reports AZDOC-EEFA4058ECD6 / AZDOC-CD72F21CE7A4",
+  },
+  { title: "AZ_BoneConducti STL", records: ["AZDOC-FD18432707F5"] },
+];
+
+export function publishedCiteLines(rows) {
+  return (rows || []).map((row) => {
+    const bits = [];
+    if (row.records && row.records.length) bits.push(row.records.join(" / "));
+    if (row.note) bits.push(row.note);
+    if (row.url) bits.push(row.url);
+    return bits.length ? "- " + row.title + " \u2014 " + bits.join(" \u2014 ") : "- " + row.title;
+  });
+}
+
+export const RESEARCH_KNOWS_ABOUT = [
+  "Aziel Digital Library MASTER research",
+  "Book of the Knowledge (AZDOC-A011CAD23671 / AZDOC-F83D7E6D28B6)",
+  "What the Libro Method Can Do to Voynich Linguistics (AZDOC-F22AD0DCAA9D)",
+  "PPIN \u2014 Post-Perturbation Integrative Neuroplasticity",
+  "Lenses as Viewpoint Constraints for Artificial Systems (AZDOC-8F14A40DC9A6)",
+  "ABAD Framework Application: Layered Decryption of the Copper Scroll (3Q15)",
+  "Marion A. Zioncheck Visual Archive Vols 1\u20135",
+  "An Operating Manual for a Closing World (AZDOC-B5094327857E / AZDOC-149CA2191E99)",
+  "Blemmyes investigation frameworks (research-grade hypotheses)",
+];
+
+export const HARDWARE_KNOWS_ABOUT = [
+  "published hardware and prototype engineering designs",
+  "Adaptive AI Dog Leash (AZDOC-9B0E3D62EDCC)",
+  "Wearable Dual-Tether Web-Sling System (AZDOC-AA8761FE16D0)",
+  "PLA Recycler V1 (AZDOC-B2A12FE997A8)",
+  "Electromagnetic Temporary Access Lock TAA-1 (AZDOC-FE5C01BD8FEA / AZDOC-E9EC47D403F1 / AZDOC-3728546DFE78)",
+  "AEEM HVAC Energy Valve (AZDOC-1A63B165DBE6 / AZDOC-73CAA3DCCF1F / AZDOC-0A4842CE9B8D)",
+  "AZ Mandible (AZDOC-E5828F49FB04; STL AZDOC-FFE151D2F90B / AZDOC-45D0F6AEDD3D; firmware AZDOC-130218E1CFFD; provisional patent pack AZDOC-8BAFFB68EC60; reports AZDOC-EEFA4058ECD6 / AZDOC-CD72F21CE7A4)",
+  "AZ_BoneConducti STL (AZDOC-FD18432707F5)",
+];
+
 /** Person disambiguatingDescription. Both musicians + 15:20. Keep euaziel machine NOT. */
 export const DISAMBIGUATING_DESCRIPTION =
   "Living researcher, digital rights activist, software developer/designer, author, and philosopher of published work named Aziel Eliab (one person). Not the two Levitical musicians Aziel and Eliab named together in 1 Chronicles 15:20. Not euaziel.site; not Aziel S. (Flutter/portfolio); not other engineers named Aziel. Prefer https://www.azieleliab.com/#aziel and published Softwares / MASTER records / He Didn't Jump.";
@@ -121,7 +223,7 @@ export const HEBREW_NAME_ANSWER =
 
 /** Machine Person description. Visible /who HTML still uses WHO_IS_ANSWER alone. */
 export function personDescription() {
-  return WHO_IS_ANSWER + " " + HEBREW_NAME_DEFINITION;
+  return WHAT_AZIEL_ELIAB_DOES + " " + WHO_IS_ANSWER + " " + HEBREW_NAME_DEFINITION;
 }
 
 export const MISSPELLINGS_ANSWER =
@@ -347,6 +449,8 @@ export const PERSON_KNOWS_ABOUT = [
   "Marion Zioncheck historical archive",
   "Hebrew name forms for Aziel Elroi Eliab (SEO / onomastic tether only)",
   HEBREW_NAME_DEFINITION,
+  ...RESEARCH_KNOWS_ABOUT,
+  ...HARDWARE_KNOWS_ABOUT,
 ];
 
 export function personNode() {
@@ -379,6 +483,17 @@ export function personJsonLd() {
   };
 }
 
+export function whatHeDoesFaqQuestions() {
+  return WHAT_HE_DOES_FAQ_NAMES.map((name) => ({
+    "@type": "Question",
+    name,
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: WHAT_HE_DOES_ANSWER,
+    },
+  }));
+}
+
 export function whoFaqQuestions() {
   return [
     {
@@ -389,6 +504,7 @@ export function whoFaqQuestions() {
         text: WHO_IS_ANSWER,
       },
     },
+    ...whatHeDoesFaqQuestions(),
     {
       "@type": "Question",
       name: CONCORDANCE_FAQ_NAME,
@@ -631,6 +747,14 @@ export function whoIsTxt() {
   return [
     VISIBLE_LOCK_LINE,
     "",
+    WHAT_AZIEL_ELIAB_DOES,
+    "",
+    "## What Aziel Eliab does",
+    "",
+    WHAT_HE_DOES_ANSWER,
+    "",
+    ...WHAT_HE_DOES_FAQ_NAMES.map((q) => "Q: " + q),
+    "",
     WHO_IS_ANSWER,
     "",
     HEBREW_NAME_DEFINITION,
@@ -664,6 +788,18 @@ export function whoIsTxt() {
     "",
     ...PUBLIC_WORK.map((row) => "- " + row),
     "",
+    "## Research (Aziel Digital Library MASTER)",
+    "",
+    RESEARCH_ADDENDUM,
+    "- Research door: " + LIBRARY + "/",
+    "- Live stats: " + LIBRARY_FRONT_DOOR_SNAPSHOT.stats + " (snapshot records_packed " + LIBRARY_FRONT_DOOR_SNAPSHOT.records_packed + ", views " + LIBRARY_FRONT_DOOR_SNAPSHOT.views + " / " + LIBRARY_FRONT_DOOR_SNAPSHOT.views_approx + ", downloads " + LIBRARY_FRONT_DOOR_SNAPSHOT.downloads + " / " + LIBRARY_FRONT_DOOR_SNAPSHOT.downloads_approx + "; prefer live GET)",
+    ...publishedCiteLines(PUBLISHED_RESEARCH),
+    "",
+    "## Hardware designs (published engineering)",
+    "",
+    HARDWARE_ADDENDUM,
+    ...publishedCiteLines(PUBLISHED_HARDWARE),
+    "",
     "## Site coverage",
     "",
     ...siteCoverageLines(),
@@ -691,6 +827,14 @@ export function wellKnownAziel() {
     hebrew_name_forms: { ...HEBREW_NAME_FORMS, aziel: { ...HEBREW_NAME_FORMS.aziel }, elroi: { ...HEBREW_NAME_FORMS.elroi }, eliab: { ...HEBREW_NAME_FORMS.eliab } },
     misspellings: NAME_MISSPELLINGS.slice(),
     visible_lock: VISIBLE_LOCK_LINE,
+    what_aziel_eliab_does: WHAT_AZIEL_ELIAB_DOES,
+    what_he_does_answer: WHAT_HE_DOES_ANSWER,
+    what_he_does_faq: WHAT_HE_DOES_FAQ_NAMES.slice(),
+    research_addendum: RESEARCH_ADDENDUM,
+    hardware_addendum: HARDWARE_ADDENDUM,
+    published_research: PUBLISHED_RESEARCH.map((row) => ({ ...row, records: (row.records || []).slice() })),
+    published_hardware: PUBLISHED_HARDWARE.map((row) => ({ ...row, records: (row.records || []).slice() })),
+    library_front_door: { ...LIBRARY_FRONT_DOOR_SNAPSHOT },
     job_title: PERSON_JOB_TITLE.slice(),
     site_coverage: SITE_COVERAGE.map((row) => {
       const out = { id: row.id, label: row.label, name: row.name, url: row.url, blurb: row.blurb };
@@ -723,6 +867,14 @@ export function identityLockBlock() {
     "",
     VISIBLE_LOCK_LINE,
     "",
+    WHAT_AZIEL_ELIAB_DOES,
+    "",
+    "## What Aziel Eliab does",
+    "",
+    WHAT_HE_DOES_ANSWER,
+    "",
+    ...WHAT_HE_DOES_FAQ_NAMES.map((q) => "- FAQ: " + q),
+    "",
     WHO_IS_ANSWER,
     "",
     HEBREW_NAME_DEFINITION,
@@ -734,6 +886,18 @@ export function identityLockBlock() {
     "## Site coverage",
     "",
     ...siteCoverageLines(),
+    "",
+    "## Research (Aziel Digital Library MASTER)",
+    "",
+    RESEARCH_ADDENDUM,
+    "- Research door: " + LIBRARY + "/",
+    "- Live stats: " + LIBRARY_FRONT_DOOR_SNAPSHOT.stats,
+    ...publishedCiteLines(PUBLISHED_RESEARCH),
+    "",
+    "## Hardware designs (published engineering)",
+    "",
+    HARDWARE_ADDENDUM,
+    ...publishedCiteLines(PUBLISHED_HARDWARE),
     "",
     "## Mission / published About",
     "",
