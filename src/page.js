@@ -25,10 +25,12 @@ import {
   RECEIPTS_HREF,
   RECEIPTS_TITLE,
   RUNTIME_DOORS,
+  RUNTIME_GIT_SHORT,
   RUNTIME_NAME,
   RUNTIME_NAMED_LINE,
   RUNTIME_TITLE,
   RUNTIME_VERSION,
+  RUNTIME_VERSION_ID,
   SIGIL,
   SOFTWARE,
   SOFTWARE_SECTION,
@@ -581,7 +583,7 @@ export function liveNodesPill(mesh) {
   return (
     '<a class="pill" id="aziel-live-nodes" href="/v1/mesh/status" title="' +
     attr(
-      "Quantum Node Mesh rollup. GET never enables. Operator enable requires a declared bearer (example: suite-presence). Author Aziel Eliab.",
+      "Quantum Node Mesh rollup. GET never enables. Operator-armed Node Gate + neighbor heal + network ON (not a login panel). AZVPN auto_use cite. Author Aziel Eliab.",
     ) +
     '">' +
     esc(liveNodesLabel(mesh)) +
@@ -685,7 +687,12 @@ export function runtimeCiteHtml(version) {
     esc(RUNTIME_NAME) +
     " · <span id=\"aziel-runtime-version\">" +
     esc(ver) +
-    "</span></p>"
+    "</span>" +
+    " · main " +
+    esc(RUNTIME_GIT_SHORT) +
+    " · version_id " +
+    esc(RUNTIME_VERSION_ID) +
+    "</p>"
   );
 }
 

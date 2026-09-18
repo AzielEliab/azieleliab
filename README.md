@@ -27,7 +27,7 @@ Person `sameAs` lattice (AZindex): [GitHub AzielEliab](https://github.com/AzielE
 
 Machine identity (mirror copies in [docs/aziel-identity-schema/](docs/aziel-identity-schema/)): [`/person.jsonld`](https://www.azieleliab.com/person.jsonld) · [`/identity.jsonld`](https://www.azieleliab.com/identity.jsonld) · [`/graph.jsonld`](https://www.azieleliab.com/graph.jsonld) · [`/who`](https://www.azieleliab.com/who) · [`/who-is-aziel-eliab.txt`](https://www.azieleliab.com/who-is-aziel-eliab.txt) · [`/.well-known/aziel.json`](https://www.azieleliab.com/.well-known/aziel.json).
 
-Runtime `SoftwareApplication` `sameAs`: [AzielEliab/aziel-runtime](https://github.com/AzielEliab/aziel-runtime) + [Try on Glama](https://glama.ai/mcp/servers/AzielEliab/aziel-runtime). Worker origin is `relatedLink` / endpoint, not the identity page. Version cite **2.0.0-rc1**.
+Runtime `SoftwareApplication` `sameAs`: [AzielEliab/aziel-runtime](https://github.com/AzielEliab/aziel-runtime) + [Try on Glama](https://glama.ai/mcp/servers/AzielEliab/aziel-runtime). Worker origin is `relatedLink` / endpoint, not the identity page. Version cite **2.0.0-rc1**. SoT LIVE: main **6a3798a** / version_id **105fa1ee**.
 
 `hasPart` is **named tools only** — not MCP ops/methods/verbs. Each child is `https://www.azieleliab.com/runtime#<slug>`:
 
@@ -43,7 +43,7 @@ Part of the Aziel Eliab ecosystem. Cross-links for humans, Google, and AI crawle
 | Corpus | [https://www.azielcorpuslibrary.net/](https://www.azielcorpuslibrary.net/) · [Aziel Eliab](https://www.azielcorpuslibrary.net/AzielEliab) · [Software](https://www.azielcorpuslibrary.net/software) · [Runtime front door](https://www.azielcorpuslibrary.net/runtime) |
 | GodLock | [https://godlock.uk/](https://godlock.uk/) · [Aziel Eliab](https://godlock.uk/AzielEliab) · [repo](https://github.com/AzielEliab/godlock) |
 | He Didn't Jump | [https://www.hedidntjump.com/](https://www.hedidntjump.com/) |
-| aziel-runtime **2.0.0-rc1** | [GitHub](https://github.com/AzielEliab/aziel-runtime) · [Official Runtime](https://aziel-runtime.vibelock.workers.dev/) · [docs/2.0](https://github.com/AzielEliab/aziel-runtime/tree/main/docs/2.0) |
+| aziel-runtime **2.0.0-rc1** | [GitHub](https://github.com/AzielEliab/aziel-runtime) · [Official Runtime](https://aziel-runtime.vibelock.workers.dev/) · [Suite pack](https://aziel-runtime.vibelock.workers.dev/download) · [docs/2.0](https://github.com/AzielEliab/aziel-runtime/tree/main/docs/2.0) · SoT main `6a3798a` / version_id `105fa1ee` |
 | Try on Glama | [https://glama.ai/mcp/servers/AzielEliab/aziel-runtime](https://glama.ai/mcp/servers/AzielEliab/aziel-runtime) (primary Runtime CTA; verified listing) |
 | Donate AZL-DONATE-1.0 | [https://www.azieleliab.com/donate](https://www.azieleliab.com/donate) |
 
@@ -112,7 +112,7 @@ Discovery:
 - Mesh status: https://www.azieleliab.com/runtime/v1/mesh/status
 - Mesh nodes: https://www.azieleliab.com/runtime/v1/mesh/nodes
 
-Same JSON also lives at same-origin `/v1/mesh/status` and `/v1/mesh/nodes` (Software door). Both fetch `https://aziel-runtime.vibelock.workers.dev/v1/mesh/status` and `/v1/mesh/nodes` via service binding `AZIEL_RUNTIME` (HTTPS origin fallback). **Read-only suite presence is on** — display from runtime. A 404 or missing origin still returns identity Aziel Eliab with `live_nodes: 0` (brandrow/footer show `Live Nodes · 0`; they omit the quiet mesh label rather than an off-state string). VPN/hop mesh is not claimed. **GET never enables.** Operator enable on runtime requires a declared bearer (example: `suite-presence`). The landing brandrow shows a Digital Library–style `Live Nodes · N` pill fed from origin `live_nodes` (QNM-BUILD-1.0 rollup). The footer keeps the quiet `mesh on` link when runtime reports enabled, and omits that quiet label when status is unavailable. OpenAPI / cite / llms list the paths. Not Node Gate. Softwares list rules unchanged.
+Same JSON also lives at same-origin `/v1/mesh/status` and `/v1/mesh/nodes` (Software door). Both fetch `https://aziel-runtime.vibelock.workers.dev/v1/mesh/status` and `/v1/mesh/nodes` via service binding `AZIEL_RUNTIME` (HTTPS origin fallback). **Read-only suite presence is on** — display from runtime. A 404 or missing origin still returns identity Aziel Eliab with `live_nodes: 0` (brandrow/footer show `Live Nodes · 0`; they omit the quiet mesh label rather than an off-state string). Mesh ON. Operator-armed Node Gate + neighbor heal + network ON (not a login-recovery / IP panel). AZVPN auto_use + vpn:true (HTTPS/WS REAL; WireGuard/OpenVPN SLOT; GET cites only, never opens a session). Channel plane wifi/bluetooth/rf/photon ON cites; worker_hardware:false. **GET never enables.** Operator enable on runtime requires a declared bearer (example: `suite-presence`). The landing brandrow shows a Digital Library–style `Live Nodes · N` pill fed from origin `live_nodes` (QNM-BUILD-1.0 rollup). The footer keeps the quiet `mesh on` link when runtime reports enabled, and omits that quiet label when status is unavailable. OpenAPI / cite / llms list the paths. Softwares list rules unchanged. MCP Softwares via `fraggate_call` only; `master_33:false`; FragGate sole door. Never `fielded_100`.
 
 Outbound proxy requests are stamped `X-Aziel-Runtime-Via: azieleliab.com` and `X-Aziel-Runtime-Host: www.azieleliab.com` so origin can attribute the hop if it has a uses store.
 
@@ -199,9 +199,11 @@ Fallback snapshot (used only when live catalog is unreachable):
 | AZInterface | https://azinterface-download-tracker.vibelock.workers.dev/ |
 | AZMail | https://azmail-download-tracker.vibelock.workers.dev/ |
 | AZNet | https://aznet-download-tracker.vibelock.workers.dev/ |
+| AZVPN | https://aziel-runtime.vibelock.workers.dev/#task-azvpn |
 | ForgeReceipts | https://forgereceipts-download-tracker.vibelock.workers.dev/ |
 | Glossa Filter | https://glossafilter-download-tracker.vibelock.workers.dev/ |
 | MirageGrid | https://miragegrid-download-tracker.vibelock.workers.dev/ |
+| MMConsensus | https://aziel-runtime.vibelock.workers.dev/#task-mmconsensus |
 | Post-King Chess | https://postking-download-tracker.vibelock.workers.dev/ |
 | StaticClock | https://staticclock-download-tracker.vibelock.workers.dev/ |
 | The ARK | https://ark-download-tracker.vibelock.workers.dev/ |
@@ -218,16 +220,18 @@ Fallback snapshot (used only when live catalog is unreachable):
 | ShadowLock | https://shadowlock-download-tracker.vibelock.workers.dev/ |
 | SpectralLock | https://spectrallock-download-tracker.vibelock.workers.dev/ |
 | TemporalLock | https://temporallock-download-tracker.vibelock.workers.dev/ |
+| ToolBench | https://aziel-runtime.vibelock.workers.dev/#task-toolbench |
 | TrajectoryLock | https://trajectorylock-download-tracker.vibelock.workers.dev/ |
 | VeilLock | https://veillock-download-tracker.vibelock.workers.dev/ |
 | VibeLock | https://vibelock-download-tracker.vibelock.workers.dev/ |
 | WhistleLock | https://whistlelock-download-tracker.vibelock.workers.dev/ |
+| ZKAttest | https://aziel-runtime.vibelock.workers.dev/#task-zkattest |
 
 EmbryoLock Softwares door is catalog `worker_home` (`https://embryolock-download-tracker.vibelock.workers.dev/`). `/embryolock` remains a secondary local page. FragGate, mesh, and same-origin `aziel-runtime` are extras / doors — not Softwares `products[]` cards. Read-only suite presence is on (display from runtime). GET never enables.
 
 Quiet installer meta: `GET /v1/update/check` (alias `/v1/update`) points at runtime `GET /v1/update/check`. The landing also ships `<meta name="aziel-update-check">`.
 
-Quiet mesh meta: `GET /v1/mesh/status` and `GET /v1/mesh/nodes` (also `/runtime/v1/mesh/status` · `/runtime/v1/mesh/nodes`) point at runtime mesh authority. The landing ships `<meta name="aziel-mesh-status">`, `<meta name="aziel-qns-cd">`, `<meta name="aziel-qnm">` (`QNM-BUILD-1.0`), a brandrow Live Nodes pill, and a muted footer status. `/v1/software` includes a `mesh` snapshot with `live_nodes` and a `extras` mesh cite. **Read-only suite presence is on (display from runtime). GET never enables.** Operator enable requires a declared bearer (example: suite-presence). No Node Gate. No public qnsd proxy. Softwares UI is heading → list only.
+Quiet mesh meta: `GET /v1/mesh/status` and `GET /v1/mesh/nodes` (also `/runtime/v1/mesh/status` · `/runtime/v1/mesh/nodes`) point at runtime mesh authority. The landing ships `<meta name="aziel-mesh-status">`, `<meta name="aziel-qns-cd">`, `<meta name="aziel-qnm">` (`QNM-BUILD-1.0`), a brandrow Live Nodes pill, and a muted footer status. `/v1/software` includes a `mesh` snapshot with `live_nodes` and a `extras` mesh cite. **Read-only suite presence is on (display from runtime). GET never enables.** Operator enable requires a declared bearer (example: suite-presence). Operator-armed Node Gate + neighbor heal + network ON (not a login panel). AZVPN auto_use + vpn:true. Channel plane ON cites; worker_hardware:false. No public qnsd proxy. Softwares UI is heading → list only. Try on Glama is the primary Runtime CTA.
 
 ### QNS-CD-1.0 hub cite (mesh cross-map)
 
@@ -268,9 +272,10 @@ Every label and URL is hyperlinked.
 - Research → https://www.azielcorpuslibrary.net/ · also https://www.azielcorpuslibrary.net/AzielEliab
 - GodLock → https://godlock.uk/
 - He Didn't Jump → https://www.hedidntjump.com/
-- Runtime → https://www.azieleliab.com/runtime · also https://aziel-runtime.vibelock.workers.dev/ (**2.0.0-rc1**)
+- Runtime → https://www.azieleliab.com/runtime · also https://aziel-runtime.vibelock.workers.dev/ (**2.0.0-rc1**, SoT main `6a3798a` / version_id `105fa1ee`)
 - Try on Glama → https://glama.ai/mcp/servers/AzielEliab/aziel-runtime (primary Runtime CTA; verified Glama listing for AzielEliab/aziel-runtime — not an invented server id)
 - Official Runtime → https://aziel-runtime.vibelock.workers.dev/ (secondary Worker link)
+- Suite pack → https://aziel-runtime.vibelock.workers.dev/download (GET /download; not fielded_100)
 - Source on GitHub → https://github.com/AzielEliab/aziel-runtime
 - Documentation / Architecture → https://github.com/AzielEliab/aziel-runtime/tree/main/docs/2.0
 - X → https://x.com/azieleliab
