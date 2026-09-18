@@ -13,6 +13,17 @@ const HEDIDNTJUMP = "https://www.hedidntjump.com/";
 const RUNTIME_REPO = "https://github.com/AzielEliab/aziel-runtime";
 const GLAMA = "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime";
 const DONATE = "https://www.azieleliab.com/donate";
+const RUNTIME_WORKER = "https://aziel-runtime.vibelock.workers.dev/";
+const GITHUB_USER = "https://github.com/AzielEliab";
+const PUBLIC_WEBSITES = [
+  CANON,
+  CORPUS,
+  GODLOCK,
+  HEDIDNTJUMP,
+  RUNTIME_WORKER,
+  GLAMA,
+  GITHUB_USER,
+];
 
 const AI_CLIENTS = [
   "ChatGPT",
@@ -160,5 +171,46 @@ describe("GitHub-side SEO / ecosystem docs", () => {
     assert.match(pkg.description, /2\.0\.0-rc1|#aziel/);
     assert.ok(funding.includes(DONATE));
     assert.match(funding, /AZL-DONATE-1\.0/);
+  });
+
+  it("ships a profile README pack that lists every public website", () => {
+    const profile = read("docs/github-profile-readme/README.md");
+    const profileCite = read("docs/github-profile-readme/cite.json");
+    const profileLlms = read("docs/github-profile-readme/llms.txt");
+    const profilePerson = read("docs/github-profile-readme/person.jsonld");
+    const profileCff = read("docs/github-profile-readme/CITATION.cff");
+    const operator = read("docs/github-profile-readme/OPERATOR.md");
+    for (const [name, text] of [
+      ["docs/github-seo.md", docs],
+      ["profile README", profile],
+      ["profile llms.txt", profileLlms],
+      ["profile cite.json", profileCite],
+      ["profile CITATION.cff", profileCff],
+    ]) {
+      assert.ok(text.includes(PERSON_ID), name + " Person @id");
+      for (const url of PUBLIC_WEBSITES) {
+        assert.ok(text.includes(url), name + " " + url);
+      }
+    }
+    assert.ok(profilePerson.includes(PERSON_ID));
+    assert.match(profile, /researcher/);
+    assert.match(profile, /digital rights activist/);
+    assert.match(profile, /software developer/);
+    assert.match(profile, /author/);
+    assert.match(profile, /philosopher/);
+    assert.match(profile, /User-Agent: Mozilla\/5\.0/);
+    assert.match(profile, /not a VPN/);
+    assert.match(profile, /not a verdict/);
+    assert.match(profile, /who-is/);
+    assert.doesNotMatch(profile, /1 Chronicles 15:20/);
+    assert.doesNotMatch(profile + profileLlms + profileCite + profileCff, /10\.\d{4,9}\/[\w.-]+/);
+    assert.match(profileCff, /alias: Aziel Elroi Eliab/);
+    assert.match(profileCff, /repository-code: "https:\/\/github\.com\/AzielEliab\/azieleliab"/);
+    assert.match(operator, /Website = `https:\/\/www\.azieleliab\.com\/`/);
+    assert.match(operator, /GitHub-side index/);
+    assert.match(operator, /cannot\*\* create `AzielEliab\/AzielEliab`/);
+    assert.match(docs, /Public websites \(Google AI \/ LLM \/ SEO\)/);
+    assert.ok(readme.includes("docs/github-profile-readme/"));
+    assert.ok(docs.includes("github-profile-readme/"));
   });
 });
