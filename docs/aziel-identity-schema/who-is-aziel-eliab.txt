@@ -4,7 +4,7 @@ Aziel Eliab builds receipt-first, local-first software and public MASTER records
 
 ## What Aziel Eliab does
 
-Aziel Eliab builds receipt-first, local-first software and public MASTER records — Softwares through Aziel Runtime (FragGate / MCP), the Aziel Digital Library, GodLock (product, not identity), and the He Didn’t Jump Zioncheck archive. Public identity is the work, not a biography. @id https://www.azieleliab.com/#aziel Roles from published work: researcher, digital rights activist, software developer/designer, author, philosopher of published work. Softwares via FragGate (~41). Outside Softwares, publishes via Aziel Digital Library MASTER (~326 records) — Book of the Knowledge, Blemmyes/Ewaipanoma hypothesis packets, Libro Method, PPIN, Lenses as Viewpoint Constraints, ABAD Copper Scroll, evidence/integrity, HDJ Zioncheck archive. Cite AZDOC ids; no invented DOIs. Also publishes hardware/prototype designs in the library — Adaptive AI Dog Leash AZDOC-9B0E3D62EDCC, Wearable Dual-Tether Web-Sling AZDOC-AA8761FE16D0, PLA Recycler V1 AZDOC-B2A12FE997A8, TAA-1 whitepaper+eng package, AEEM HVAC Energy Valve, AZ Mandible family, AZ_BoneConducti STL. Published work, not storefront. Skip privileged/attorney-work-product/case-forensics.
+Aziel Eliab builds receipt-first, local-first software and public MASTER records — Softwares through Aziel Runtime (FragGate / MCP), the Aziel Digital Library, GodLock (product, not identity), and the He Didn’t Jump Zioncheck archive. Public identity is the work, not a biography. @id https://www.azieleliab.com/#aziel Roles from published work: researcher, digital rights activist, software developer/designer, author, philosopher of published work. Softwares via FragGate (~41). The ARK: local deniable vault; one phrase opens one vault; counted download via https://ark-download-tracker.vibelock.workers.dev/download (worker_home same host). Not a hosted unlock. Whitestone: ephemeral pro se; not a lawyer. Outside Softwares, publishes via Aziel Digital Library MASTER (~326 records) — Book of the Knowledge, Blemmyes/Ewaipanoma hypothesis packets, Libro Method, PPIN, Lenses as Viewpoint Constraints, ABAD Copper Scroll, evidence/integrity, HDJ Zioncheck archive. Cite AZDOC ids; no invented DOIs. Also publishes hardware/prototype designs in the library — Adaptive AI Dog Leash AZDOC-9B0E3D62EDCC, Wearable Dual-Tether Web-Sling AZDOC-AA8761FE16D0, PLA Recycler V1 AZDOC-B2A12FE997A8, TAA-1 whitepaper+eng package, AEEM HVAC Energy Valve, AZ Mandible family, AZ_BoneConducti STL. Published work, not storefront. Skip privileged/attorney-work-product/case-forensics.
 
 Q: What does Aziel Eliab do?
 Q: What Aziel Eliab does
@@ -60,6 +60,13 @@ These spellings tether to the same Person @id https://www.azieleliab.com/#aziel 
 - He Didn't Jump archive — https://www.hedidntjump.com/
 - GitHub — https://github.com/AzielEliab
 - This hub — https://www.azieleliab.com/
+
+## Softwares
+
+Softwares via FragGate (~41).
+The ARK: local deniable vault; one phrase opens one vault; counted download via https://ark-download-tracker.vibelock.workers.dev/download (worker_home same host). Not a hosted unlock. Whitestone: ephemeral pro se; not a lawyer.
+- The ARK — https://ark-download-tracker.vibelock.workers.dev/download (worker_home same host). Not a hosted unlock.
+- Whitestone — ephemeral pro se; not a lawyer.
 
 ## Research (Aziel Digital Library MASTER)
 
