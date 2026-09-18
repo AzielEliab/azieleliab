@@ -127,6 +127,7 @@ import {
   USES_HOST,
   USES_VIA,
 } from "../src/runtimeUses.js";
+import { VISIBLE_LOCK_LINE } from "../src/identity.js";
 
 function isolatedEnv(extra) {
   return {
@@ -196,11 +197,9 @@ describe("landing copy", () => {
     }
     assert.ok(home.includes("Aziel Eliab"));
     assert.ok(home.includes("azieleliab.com"));
-    const lock =
-      "Aziel Eliab is a living researcher and software designer. Not the two Levitical musicians Aziel and Eliab named together in 1 Chronicles 15:20.";
     const visible = home.split("<body>")[1] || "";
-    assert.ok(!visible.includes(lock));
-    assert.ok(!home.includes(lock));
+    assert.ok(!visible.includes(VISIBLE_LOCK_LINE));
+    assert.ok(!home.includes(VISIBLE_LOCK_LINE));
     assert.ok(visible.includes("You don’t get to know me."));
     assert.ok(home.includes("<title>Aziel Eliab</title>"));
   });
@@ -751,6 +750,9 @@ describe("doors", () => {
     assert.ok(aiTxt().includes("He Didn't Jump: " + HEDIDNTJUMP + "/"));
     assert.ok(llmsTxt().includes("sameAs: " + PERSON_SAME_AS.join(" · ")));
     assert.ok(aiTxt().includes("sameAs: " + PERSON_SAME_AS.join(" · ")));
+    assert.ok(llmsTxt().includes("## Site coverage"));
+    assert.ok(aiTxt().includes("## Site coverage"));
+    assert.ok(cite.site_coverage.length === 5);
     assert.match(llmsTxt(), /## Doors[\s\S]*He Didn't Jump: https:\/\/www\.hedidntjump\.com\//);
     assert.match(aiTxt(), /## Doors[\s\S]*He Didn't Jump: https:\/\/www\.hedidntjump\.com\//);
     assert.ok(sitemapXml().includes("<loc>" + HEDIDNTJUMP + "/</loc>"));
@@ -1098,7 +1100,14 @@ describe("SEO routes", () => {
     );
     assert.match(ld["@graph"][0].disambiguatingDescription, /Not euaziel\.site/);
     assert.ok(ld["@graph"][0].description.includes("1 Chronicles 15:20"));
-    assert.ok(ld["@graph"][0].description.includes("independent researcher, software designer, developer, and historian"));
+    assert.ok(ld["@graph"][0].description.includes("researcher, digital rights activist, software developer/designer, author, and philosopher of published work"));
+    assert.deepEqual(ld["@graph"][0].jobTitle, [
+      "researcher",
+      "digital rights activist",
+      "software developer/designer",
+      "author",
+      "philosopher of published work",
+    ]);
     assert.ok(ld["@graph"][0].knowsLanguage.includes("he"));
     assert.equal(ld["@graph"][0].additionalName, "Elroi");
     assert.ok(!("givenName" in ld["@graph"][0]));
@@ -1783,16 +1792,14 @@ describe("worker routing", () => {
   });
 
   it("200s /who with H1 Who is Aziel Eliab and the who-answer only", async () => {
-    const lock =
-      "Aziel Eliab is a living researcher and software designer. Not the two Levitical musicians Aziel and Eliab named together in 1 Chronicles 15:20.";
     const res = await fetchPath("/who");
     assert.equal(res.status, 200);
     assert.match(res.headers.get("content-type"), /text\/html/);
     const body = await res.text();
     const visible = body.replace(/<script[\s\S]*?<\/script>/g, "").replace(/<style>[\s\S]*?<\/style>/g, "");
     assert.ok(visible.includes("<h1>Who is Aziel Eliab</h1>"));
-    assert.ok(!visible.includes(lock));
-    assert.ok(!body.includes(lock));
+    assert.ok(!visible.includes(VISIBLE_LOCK_LINE));
+    assert.ok(!body.includes(VISIBLE_LOCK_LINE));
     assert.ok(body.includes("<title>Who is Aziel Eliab</title>"));
     assert.equal(whoHtml(), body);
     const robots = await fetchPath("/robots.txt");
