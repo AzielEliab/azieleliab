@@ -414,6 +414,7 @@ export const CATALOG_NAMES = {
 /**
  * In-process placements without a download-tracker Worker.
  * Door is the runtime human UI (#task-*), not an invented tracker URL.
+ * Live GET /v1/software may send worker_home: null for these.
  */
 export const CATALOG_RUNTIME_HOME = Object.freeze({
   azvpn: RUNTIME + "/#task-azvpn",
@@ -421,6 +422,55 @@ export const CATALOG_RUNTIME_HOME = Object.freeze({
   toolbench: RUNTIME + "/#task-toolbench",
   zkattest: RUNTIME + "/#task-zkattest",
 });
+
+/** Live `placement` values that mean in-runtime (no product Worker). */
+export const IN_RUNTIME_PLACEMENTS = Object.freeze([
+  "tunnel-concentrator",
+  "consensus-review",
+  "tool-playground",
+  "receipt-attest",
+]);
+
+export const CATALOG_RUNTIME_PLACEMENT = Object.freeze({
+  azvpn: "tunnel-concentrator",
+  mmconsensus: "consensus-review",
+  toolbench: "tool-playground",
+  zkattest: "receipt-attest",
+});
+
+export function runtimeTaskHome(slug) {
+  const s = String(slug || "")
+    .trim()
+    .toLowerCase();
+  return s ? RUNTIME + "/#task-" + s : "";
+}
+
+function firstCatalogHome(product) {
+  if (!product || typeof product !== "object") return "";
+  for (const key of ["worker_home", "href", "url", "home"]) {
+    const value = product[key];
+    if (typeof value === "string" && /^https?:\/\//i.test(value)) return value;
+  }
+  return "";
+}
+
+/** True when live catalog doors this slug on runtime #task-* (no invented tracker). */
+export function isInRuntimePlacement(product, slug) {
+  const row = product && typeof product === "object" ? product : null;
+  const s = String((row && row.slug) || slug || "")
+    .trim()
+    .toLowerCase();
+  if (s && Object.prototype.hasOwnProperty.call(CATALOG_RUNTIME_HOME, s)) return true;
+  if (!row) return false;
+  if (firstCatalogHome(row)) return false;
+  const placement = String(row.placement || "").trim();
+  if (IN_RUNTIME_PLACEMENTS.includes(placement)) return true;
+  const github = String(row.github || "").trim();
+  if (github === GITHUB_RUNTIME || github.startsWith(GITHUB_RUNTIME + "/") || github.startsWith(GITHUB_RUNTIME + "#")) {
+    return true;
+  }
+  return false;
+}
 
 /** Not in the documented catalog yet. Do not invent a landing door. */
 export const CATALOG_LATER_SLUGS = [];
@@ -437,19 +487,20 @@ export function catalogGithub(slug) {
   return "https://github.com/AzielEliab/" + slug;
 }
 
-export function catalogWorkerHome(slug) {
+export function catalogWorkerHome(slug, product) {
   if (slug === "aziel-corpus") return LIBRARY + "/";
   if (slug === "azmail") return AZMAIL_WORKER;
   if (slug === "peacelock") return PEACELOCK_WORKER;
+  if (isInRuntimePlacement(product, slug)) return runtimeTaskHome(slug);
   if (CATALOG_RUNTIME_HOME[slug]) return CATALOG_RUNTIME_HOME[slug];
   return "https://" + slug + "-download-tracker.vibelock.workers.dev/";
 }
 
 /** Prefer worker_home; GitHub if the tracker is not ready; library hub last. */
-export function catalogHref(slug) {
+export function catalogHref(slug, product) {
   if (slug === "aziel-corpus") return LIBRARY + "/";
   if (CATALOG_GITHUB_FALLBACK.has(slug)) return catalogGithub(slug);
-  return catalogWorkerHome(slug);
+  return catalogWorkerHome(slug, product);
 }
 
 /** True for aziel-runtime, including catalog mash like "runtime 1.6.15 FragGate". */
@@ -504,6 +555,9 @@ export function catalogSoftwareFromSlugs(slugs = CATALOG_SLUGS, liveProducts = [
     else if (CATALOG_RUNTIME_HOME[slug]) item.github = GITHUB_RUNTIME;
     if (live.bucket) item.bucket = live.bucket;
     if (live.surface) item.surface = live.surface;
+    if (live.placement) item.placement = live.placement;
+    else if (CATALOG_RUNTIME_PLACEMENT[slug]) item.placement = CATALOG_RUNTIME_PLACEMENT[slug];
+    if (live.mcp) item.mcp = live.mcp;
     out.push(item);
   };
   for (const slug of slugs || []) add(slug);
