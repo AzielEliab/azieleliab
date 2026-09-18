@@ -184,6 +184,9 @@ export const SOFTWARE_DESCRIPTION =
 export const EMBRYOLOCK_PATH = "/embryolock";
 export const EMBRYOLOCK_HREF = CANON_ORIGIN + EMBRYOLOCK_PATH;
 export const EMBRYOLOCK_WORKER = "https://embryolock-download-tracker.vibelock.workers.dev/";
+/** Softwares worker_home. Counted download is same host /download. Not a hosted unlock. */
+export const ARK_WORKER = "https://ark-download-tracker.vibelock.workers.dev/";
+export const ARK_DOWNLOAD = "https://ark-download-tracker.vibelock.workers.dev/download";
 export const FRAGGATE_WORKER = "https://fraggate-download-tracker.vibelock.workers.dev/";
 export const FRAGGATE_GITHUB = "https://github.com/AzielEliab/fraggate";
 /** Primary FragGate door is the Worker UI. GitHub remains the source repo. */
