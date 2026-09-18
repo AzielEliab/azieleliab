@@ -1,0 +1,50 @@
+cff-version: 1.2.0
+title: Aziel Eliab
+message: Cite Aziel Eliab and the canonical Person hub. Do not invent Zenodo DOIs or tips.
+type: software
+authors:
+  - family-names: Eliab
+    given-names: Aziel
+    alias: Aziel Elroi Eliab
+    website: "https://www.azieleliab.com/"
+abstract: >-
+  GitHub profile README for Aziel Eliab. Person @id
+  https://www.azieleliab.com/#aziel. Primary site
+  https://www.azieleliab.com/. Sister sites: Aziel Digital
+  Library, GodLock, He Didn't Jump, Aziel Runtime, Try on
+  Glama. Identity Aziel Eliab only (Elroi as aka).
+license: Apache-2.0
+repository-code: "https://github.com/AzielEliab/AzielEliab"
+url: "https://www.azieleliab.com/"
+keywords:
+  - Aziel Eliab
+  - profile-readme
+  - azieleliab
+  - aziel-runtime
+  - GodLock
+  - He Didn't Jump
+  - Corpus
+  - Glama
+  - MCP
+identifiers:
+  - type: url
+    value: "https://www.azieleliab.com/#aziel"
+    description: Person @id
+  - type: url
+    value: "https://www.azieleliab.com/"
+    description: Official Person hub
+  - type: url
+    value: "https://www.azielcorpuslibrary.net/"
+    description: Digital Library MASTER
+  - type: url
+    value: "https://godlock.uk/"
+    description: GodLock (product, not identity)
+  - type: url
+    value: "https://www.hedidntjump.com/"
+    description: He Didn't Jump archive
+  - type: url
+    value: "https://aziel-runtime.vibelock.workers.dev/"
+    description: Aziel Runtime / FragGate MCP door
+  - type: url
+    value: "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime"
+    description: Try on Glama
