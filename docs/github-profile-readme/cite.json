@@ -1,0 +1,41 @@
+{
+  "author": "Aziel Eliab",
+  "identity": "Aziel Eliab",
+  "aka": "Aziel Elroi Eliab",
+  "person_id": "https://www.azieleliab.com/#aziel",
+  "url": "https://www.azieleliab.com/",
+  "repository": "https://github.com/AzielEliab/AzielEliab",
+  "note": "GitHub profile README citation index. Live cite records are on each hub. Do not invent tips or DOIs.",
+  "roles": [
+    "researcher",
+    "digital rights activist",
+    "software developer",
+    "author",
+    "philosopher"
+  ],
+  "websites": {
+    "azieleliab.com": "https://www.azieleliab.com/",
+    "azielcorpuslibrary.net": "https://www.azielcorpuslibrary.net/",
+    "godlock.uk": "https://godlock.uk/",
+    "hedidntjump.com": "https://www.hedidntjump.com/",
+    "aziel-runtime": "https://aziel-runtime.vibelock.workers.dev/",
+    "glama": "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime",
+    "github": "https://github.com/AzielEliab"
+  },
+  "cite": {
+    "azieleliab.com": "https://www.azieleliab.com/cite.json",
+    "azielcorpuslibrary.net": "https://www.azielcorpuslibrary.net/cite.json",
+    "godlock.uk": "https://godlock.uk/cite.json",
+    "hedidntjump.com": "https://www.hedidntjump.com/cite.json",
+    "aziel-runtime": "https://aziel-runtime.vibelock.workers.dev/cite.json"
+  },
+  "person_jsonld": {
+    "azieleliab.com": "https://www.azieleliab.com/person.jsonld",
+    "azielcorpuslibrary.net": "https://www.azielcorpuslibrary.net/person.jsonld",
+    "godlock.uk": "https://godlock.uk/person.jsonld",
+    "hedidntjump.com": "https://www.hedidntjump.com/person.jsonld",
+    "aziel-runtime": "https://aziel-runtime.vibelock.workers.dev/person.jsonld"
+  },
+  "zenodo_dois": [],
+  "openalex": null
+}

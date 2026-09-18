@@ -161,4 +161,52 @@ describe("GitHub-side SEO / ecosystem docs", () => {
     assert.ok(funding.includes(DONATE));
     assert.match(funding, /AZL-DONATE-1\.0/);
   });
+
+  it("ships a profile README pack that lists every public website", () => {
+    const profile = read("docs/github-profile-readme/README.md");
+    const profileCite = read("docs/github-profile-readme/cite.json");
+    const profileLlms = read("docs/github-profile-readme/llms.txt");
+    const profilePerson = read("docs/github-profile-readme/person.jsonld");
+    const profileCff = read("docs/github-profile-readme/CITATION.cff");
+    const operator = read("docs/github-profile-readme/OPERATOR.md");
+    const runtimeWorker = "https://aziel-runtime.vibelock.workers.dev/";
+    const sites = [
+      CANON,
+      CORPUS,
+      GODLOCK,
+      HEDIDNTJUMP,
+      runtimeWorker,
+      GLAMA,
+      "https://github.com/AzielEliab",
+    ];
+    for (const [name, text] of [
+      ["profile README", profile],
+      ["profile llms.txt", profileLlms],
+      ["profile cite.json", profileCite],
+      ["profile CITATION.cff", profileCff],
+    ]) {
+      assert.ok(text.includes(PERSON_ID), name + " Person @id");
+      for (const url of sites) {
+        assert.ok(text.includes(url), name + " " + url);
+      }
+    }
+    assert.ok(profilePerson.includes(PERSON_ID));
+    assert.match(profile, /researcher/);
+    assert.match(profile, /digital rights activist/);
+    assert.match(profile, /software developer/);
+    assert.match(profile, /author/);
+    assert.match(profile, /philosopher/);
+    assert.match(profile, /User-Agent: Mozilla\/5\.0/);
+    assert.match(profile, /not a VPN/);
+    assert.match(profile, /not a verdict/);
+    assert.match(profile, /who-is/);
+    assert.doesNotMatch(profile, /1 Chronicles 15:20/);
+    assert.doesNotMatch(profile + profileLlms + profileCite + profileCff, /10\.\d{4,9}\/[\w.-]+/);
+    assert.match(profileCff, /alias: Aziel Elroi Eliab/);
+    assert.match(profileCff, /repository-code: "https:\/\/github\.com\/AzielEliab\/AzielEliab"/);
+    assert.match(operator, /Website = `https:\/\/www\.azieleliab\.com\/`/);
+    assert.match(operator, /profile-readme/);
+    assert.ok(readme.includes("docs/github-profile-readme/"));
+    assert.ok(docs.includes("github-profile-readme/"));
+  });
 });
