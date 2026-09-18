@@ -30,7 +30,7 @@ Receipts tab (kept): https://www.azieleliab.com/receipts
 
 INGEST-AS-RECEIPT-1.0 sha256:c71e8c07d838b148fc8ec5f18c7e261d53566ea8a090ca81445e3483586082a5 https://www.azieleliab.com/
 
-Same tip in Receipts-tab first-screen HTML (`/receipts`), `/ingest`, `/cite.json`, `/llms.txt`, GitHub. Not a visible homepage card. Cite, don't merge. Verify paste-hash yes/no at `/verify`. `/ingest.txt` is the hashed page bytes. RE-EXPAND-FROM-ARCHIVE-1.0: bytes survive, not summaries; verify receipts/`previous_hash` then stand a local node — not mesh from index. Crawlers do not re-expand. Training residue is rumor. Growth-ON Allow. COLD-MULTI-SHELF-1.0: Plane A is 5 published surfaces / 2 family radii (not 5 shelves). Plane B Codeberg + archive.org tip-pack hash-verify PASS (https://archive.org/details/aziel-lockset-tip and https://archive.org/details/aziel-lockset-tip_202609, same blast_radius, pack b549362c…; zip wrap on 202609 — flat IA sha256 may be null; inner tar hash-verifies); still SLOT until Framagit verifies. Not two independent shelves. GitFlic blocked (CNS-GITFLIC-EMAIL). GitLab blocked (CNS-GITLAB-CF-LOOP). Never invent URLs. Never LIVE yet. Plane C USB stays SLOT until CNS-OPERATOR-ATTEST. Canonical shelves registry: https://www.azielcorpuslibrary.net/shelves. Cap-7 is design_of only (`resolves_to_hub: false` if a bridge is present). `/cite.json` pointers: REDLINE-2026-09-14, Cap-7 `design_of` + `resolves_to_hub: false`, attack-sim refuse, FoldLock tip-safe (never fold the lockset tip). Lamb Lens path: Service → Clarity → Peace. NO-FAN. CROSS-NETWORK-SURVIVAL + NO-LIE.
+Same tip in Receipts-tab first-screen HTML (`/receipts`), `/ingest`, `/cite.json`, `/llms.txt`, GitHub. Not a visible homepage card. Cite, don't merge. Verify paste-hash yes/no at `/verify`. `/ingest.txt` is the hashed page bytes. RE-EXPAND-FROM-ARCHIVE-1.0: bytes survive, not summaries; verify receipts/`previous_hash` then stand a local node — not mesh from index. Crawlers do not re-expand. Training residue is rumor. Growth-ON Allow. COLD-MULTI-SHELF-1.0: Plane A is 5 published surfaces / 2 family radii (not 5 shelves). Plane B Codeberg + archive.org tip-pack hash-verify PASS (https://archive.org/details/aziel-lockset-tip and https://archive.org/details/aziel-lockset-tip_202609, same blast_radius, pack b549362c…; zip wrap on 202609 — flat IA sha256 may be null; inner tar hash-verifies); still SLOT until Framagit verifies. Not two independent shelves. GitFlic blocked (CNS-GITFLIC-EMAIL). GitLab blocked (CNS-GITLAB-CF-LOOP). Never invent URLs. Never LIVE yet. Plane C USB stays SLOT until CNS-OPERATOR-ATTEST. Canonical shelves registry: https://www.azielcorpuslibrary.net/shelves. Cap-7 is design_of only (`resolves_to_hub: false` if a bridge is present). Shuffle via MirageGrid LIVE `https://miragegrid.vibelock.workers.dev` (`/v1/health` · `/bridge` · `/v1/shuffle`). `/cite.json` pointers: REDLINE-2026-09-14, Cap-7 `design_of` + `resolves_to_hub: false`, BAN-SURVIVAL-1.0 pull of runtime `/survival`, attack-sim refuse, FoldLock tip-safe (never fold the lockset tip). Lamb Lens path: Service → Clarity → Peace. NO-FAN. CROSS-NETWORK-SURVIVAL + NO-LIE.
 
 GitHub About / indexing (no Worker UI change): [docs/github-seo.md](docs/github-seo.md). Homepage `https://www.azieleliab.com/`. Cross-link Corpus, GodLock, He Didn't Jump, aziel-runtime, Try on Glama, Donate.
 
@@ -42,16 +42,18 @@ Read-only suite presence is **on**. Display `live_nodes` from aziel-runtime. Mes
 
 | Path | What |
 |------|------|
-| `GET /v1/mesh/status` | Same-origin QNM-BUILD-1.0 rollup (runtime via `AZIEL_RUNTIME`, else HTTPS). Hoists `live_nodes`. |
+| `GET /v1/mesh/status` | Same-origin QNM-BUILD-1.0 rollup (runtime via `AZIEL_RUNTIME`, else HTTPS). Hoists `live_nodes` (presence — not exec API, not live_doors, not Cap-7). |
 | `GET /v1/mesh/nodes` | Live Nodes roster (display from runtime; `Live Nodes · 0` when unavailable) |
 | `GET /runtime/v1/mesh/status` | Same JSON through the quiet `/runtime` door |
 | `GET /runtime/v1/mesh/nodes` | Same |
-| `GET /cite.json` | Hub citation record, including mesh + QNM rollup + QNS-CD + COLD-MULTI-SHELF |
+| `GET /survival` · `GET /v1/survival` | BAN-SURVIVAL-1.0 hub pull of runtime `GET /survival` (short TTL). Mutual backup, live_doors, platforms.all_live, calling_name, cap7_aznet. No visible 15:20 chrome. |
+| `GET /runtime/survival` · `GET /runtime/v1/survival` | Same JSON through the quiet `/runtime` door |
+| `GET /cite.json` | Hub citation record, including mesh + QNM rollup + QNS-CD + COLD-MULTI-SHELF + BAN-SURVIVAL |
 | `GET /shelves` · `GET /v1/shelves` | COLD-MULTI-SHELF-1.0 machine registry (same level as live corpus `/shelves`). Canonical registry: https://www.azielcorpuslibrary.net/shelves. No visible 15:20 chrome. |
 
 `GET /v1/mesh/status` never enables radios. Operator enable on runtime requires a declared bearer (example: `suite-presence`). A 404 or missing origin still returns identity Aziel Eliab with `live_nodes: 0`. Public UI never renders an off-state quiet mesh label.
 
-Homepage brandrow shows `Live Nodes · N` (sister-hub pill) from origin `live_nodes`. Softwares list: live `GET /v1/software` (41 true-engine slugs after main 6a3798a; VeilLock local_only). In-runtime placements AZVPN / MMConsensus / ToolBench / ZKAttest door to `#task-*`. Heading → list only. Plain A–Z → Gate A–Z → Lock A–Z (StaticClock is Plain).
+Homepage brandrow shows `Live Nodes · N` (sister-hub pill) from origin `live_nodes` (QNM presence only). Softwares list: live `GET /v1/software` (41 true-engine slugs after main 6a3798a; VeilLock local_only). In-runtime placements AZVPN / MMConsensus / ToolBench / ZKAttest door to `#task-*`. Heading → list only. Plain A–Z → Gate A–Z → Lock A–Z (StaticClock is Plain). Cap-7 shuffle is MirageGrid LIVE (`https://miragegrid.vibelock.workers.dev` `/v1/health` · `/bridge` · `/v1/shuffle`); `resolves_to_hub: false`. Not a Softwares-tab door.
 
 Agent skill for the runtime door: https://www.azieleliab.com/runtime/v1/skill  
 Origin skill: https://aziel-runtime.vibelock.workers.dev/v1/skill

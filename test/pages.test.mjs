@@ -807,8 +807,12 @@ describe("SEO routes", () => {
     assert.ok(body.includes("Allow: /v1/update/check"));
     assert.ok(body.includes("Allow: /v1/mesh/status"));
     assert.ok(body.includes("Allow: /v1/mesh/nodes"));
+    assert.ok(body.includes("Allow: /survival"));
+    assert.ok(body.includes("Allow: /v1/survival"));
     assert.ok(body.includes("Allow: /runtime/v1/mesh/status"));
     assert.ok(body.includes("Allow: /runtime/v1/mesh/nodes"));
+    assert.ok(body.includes("Allow: /runtime/survival"));
+    assert.ok(body.includes("Allow: /runtime/v1/survival"));
     assert.ok(body.includes("Sitemap: " + CANON_ORIGIN + "/sitemap.xml"));
     assert.ok(body.includes("User-agent: GPTBot"));
     assert.ok(body.includes("User-agent: ChatGPT-User"));
@@ -954,6 +958,8 @@ describe("SEO routes", () => {
     assert.ok(aiBody.includes("Allow: /v1/update/check"));
     assert.ok(aiBody.includes("Allow: /v1/mesh/status"));
     assert.ok(aiBody.includes("Allow: /v1/mesh/nodes"));
+    assert.ok(aiBody.includes("Allow: /survival"));
+    assert.ok(aiBody.includes("Allow: /v1/survival"));
     assert.ok(aiBody.includes("Allow: /runtime"));
     assert.ok(aiBody.includes("Allow: /runtime/v1/uses"));
     assert.ok(aiBody.includes("Allow: /runtime/v1/mesh/status"));
@@ -1058,7 +1064,10 @@ describe("SEO routes", () => {
     assert.ok(mapBody.includes("<loc>" + CANON_ORIGIN + "/v1/update/check</loc>"));
     assert.ok(mapBody.includes("<loc>" + CANON_ORIGIN + "/v1/mesh/status</loc>"));
     assert.ok(mapBody.includes("<loc>" + CANON_ORIGIN + "/v1/mesh/nodes</loc>"));
+    assert.ok(mapBody.includes("<loc>" + CANON_ORIGIN + "/survival</loc>"));
+    assert.ok(mapBody.includes("<loc>" + CANON_ORIGIN + "/v1/survival</loc>"));
     assert.ok(mapBody.includes("<loc>" + RUNTIME_LOCAL + "/v1/mesh/status</loc>"));
+    assert.ok(mapBody.includes("<loc>" + RUNTIME_LOCAL + "/survival</loc>"));
     assert.equal(llmsTxt().trim(), llmsBody.trim());
     assert.equal(aiTxt().trim(), aiBody.trim());
     assert.deepEqual(citeBody, citeDoc());
@@ -1159,6 +1168,7 @@ describe("SEO routes", () => {
     assert.ok(html.includes('href="/v1/mesh/status"'));
     assert.ok(html.includes('href="/v1/mesh/nodes"'));
     assert.ok(html.includes('name="aziel-mesh-status"'));
+    assert.ok(html.includes('name="aziel-survival"'));
     assert.ok(html.includes('name="aziel-qns-cd"'));
     assert.ok(html.includes('content="QNS-CD-1.0"'));
     assert.ok(html.includes('name="aziel-qnm"'));
@@ -1463,6 +1473,8 @@ describe("runtime path mapping", () => {
     assert.equal(isRuntimeRequest("/runtime/v1/skill"), true);
     assert.equal(isRuntimeRequest("/runtime/v1/mesh/status"), true);
     assert.equal(isRuntimeRequest("/runtime/v1/mesh/nodes"), true);
+    assert.equal(isRuntimeRequest("/runtime/survival"), true);
+    assert.equal(isRuntimeRequest("/runtime/v1/survival"), true);
     assert.equal(isRuntimeRequest("/runtime/openapi.json"), true);
     assert.equal(isRuntimeRequest("/"), false);
     assert.equal(isRuntimeRequest("/v1/stats"), false);
@@ -1470,6 +1482,8 @@ describe("runtime path mapping", () => {
     assert.equal(destFromRuntimePath("/runtime/", ""), "/");
     assert.equal(destFromRuntimePath("/runtime/v1/health", ""), "/v1/health");
     assert.equal(destFromRuntimePath("/runtime/v1/mesh/status", ""), "/v1/mesh/status");
+    assert.equal(destFromRuntimePath("/runtime/survival", ""), "/survival");
+    assert.equal(destFromRuntimePath("/runtime/v1/survival", ""), "/v1/survival");
     assert.equal(destFromRuntimePath("/runtime/openapi.json", ""), "/openapi.json");
     assert.equal(destFromRuntimePath("/runtime/mcp", ""), "/mcp");
     assert.equal(destFromRuntimePath("/software", ""), null);
@@ -1517,6 +1531,8 @@ describe("runtime use tracker", () => {
     assert.equal(shouldTrackRuntimeUse("/runtime/v1/uses", "GET"), false);
     assert.equal(shouldTrackRuntimeUse("/runtime/v1/mesh/status", "GET"), false);
     assert.equal(shouldTrackRuntimeUse("/runtime/v1/mesh/nodes", "GET"), false);
+    assert.equal(shouldTrackRuntimeUse("/runtime/survival", "GET"), false);
+    assert.equal(shouldTrackRuntimeUse("/runtime/v1/survival", "GET"), false);
     assert.equal(shouldTrackRuntimeUse("/runtime/robots.txt", "GET"), false);
     assert.equal(shouldTrackRuntimeUse("/runtime/sitemap.xml", "GET"), false);
     assert.equal(shouldTrackRuntimeUse("/runtime/llms.txt", "GET"), false);

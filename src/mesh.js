@@ -129,7 +129,7 @@ export const VPN_CITE = Object.freeze({
 export const MESH_DEFAULT = "on";
 
 export const MESH_NOTE =
-  "QNM-BUILD-1.0 suite rollup (live/locked/isolated). Read-only suite presence is on — display from runtime. GET never enables. Operator enable requires a declared bearer (example: suite-presence). Mesh ON. Operator-armed Node Gate + neighbor heal + network ON (2026-09-17) — not a login-recovery / IP panel. AZVPN auto_use + vpn:true (HTTPS/WS REAL; WireGuard/OpenVPN SLOT; GET cites only, never opens a session). Channel plane wifi/bluetooth/rf/photon ON cites; worker_hardware:false. Not a Softwares-tab product. Cross-map QNS-CD-1.0 (photon QNS1 packet transfer). Local qnsd is qnm-node only — no public proxy. Author Aziel Eliab only.";
+  "QNM-BUILD-1.0 suite rollup (live/locked/isolated). live_nodes is presence size — not an exec API, not BAN-SURVIVAL live_doors, not Cap-7. Read-only suite presence is on — display from runtime. GET never enables. Operator enable requires a declared bearer (example: suite-presence). Mesh ON. Operator-armed Node Gate + neighbor heal + network ON (2026-09-17) — not a login-recovery / IP panel. AZVPN auto_use + vpn:true (HTTPS/WS REAL; WireGuard/OpenVPN SLOT; GET cites only, never opens a session). Channel plane wifi/bluetooth/rf/photon ON cites; worker_hardware:false. Not a Softwares-tab product. Cross-map QNS-CD-1.0 (photon QNS1 packet transfer). Local qnsd is qnm-node only — no public proxy. Author Aziel Eliab only.";
 
 function qnsCiteFields() {
   return {
@@ -152,6 +152,8 @@ function qnsCiteFields() {
     channel_plane: CHANNEL_PLANE,
     vpn: VPN_CITE,
     fielded_100: false,
+    mesh_live_nodes_are_api: false,
+    live_nodes_are_not_live_doors: true,
   };
 }
 
@@ -227,7 +229,7 @@ const MESH_OPENAPI_GET = (summary, description) => ({
 export const MESH_OPENAPI_PATHS = {
   [MESH_STATUS_PATH]: MESH_OPENAPI_GET(
     "mesh status",
-    "QNM-BUILD-1.0 suite rollup status (live_nodes). Read-only suite presence is on (display from runtime). GET never enables. Operator enable requires a declared bearer (example: suite-presence). Operator-armed Node Gate + neighbor heal + network ON. AZVPN auto_use + vpn:true (HTTPS/WS REAL; WG/OpenVPN SLOT). Channel plane wifi/bt/rf/photon ON cites; worker_hardware:false. Cites QNS-CD-1.0. No public qnsd proxy. Author Aziel Eliab.",
+    "QNM-BUILD-1.0 suite rollup status (live_nodes = presence, not exec API / not live_doors / not Cap-7). Read-only suite presence is on (display from runtime). GET never enables. Operator enable requires a declared bearer (example: suite-presence). Operator-armed Node Gate + neighbor heal + network ON. AZVPN auto_use + vpn:true (HTTPS/WS REAL; WG/OpenVPN SLOT). Channel plane wifi/bt/rf/photon ON cites; worker_hardware:false. Cites QNS-CD-1.0. No public qnsd proxy. Author Aziel Eliab.",
   ),
   [MESH_NODES_PATH]: MESH_OPENAPI_GET(
     "mesh nodes",
@@ -373,6 +375,8 @@ export function injectMeshCite(doc) {
   if (doc.vpn == null) doc.vpn = VPN_CITE;
   if (doc.fielded_100 == null) doc.fielded_100 = false;
   if (doc.login_mesh == null) doc.login_mesh = false;
+  if (doc.mesh_live_nodes_are_api == null) doc.mesh_live_nodes_are_api = false;
+  if (doc.live_nodes_are_not_live_doors == null) doc.live_nodes_are_not_live_doors = true;
   return doc;
 }
 
@@ -380,8 +384,8 @@ const MESH_LLMS_BLOCK = [
   "",
   "## Mesh",
   "",
-  "- GET " + MESH_STATUS_RUNTIME + "  (QNM-BUILD-1.0 suite rollup; live_nodes; GET never enables; read-only suite presence is on)",
-  "- GET " + MESH_NODES_RUNTIME + "  (suite node list / Live Nodes; display from runtime)",
+  "- GET " + MESH_STATUS_RUNTIME + "  (QNM-BUILD-1.0 suite rollup; live_nodes = presence, not exec API / not live_doors / not Cap-7; GET never enables; read-only suite presence is on)",
+  "- GET " + MESH_NODES_RUNTIME + "  (suite node list / Live Nodes; display from runtime; not BAN-SURVIVAL live_doors)",
   "- Origin: " + MESH_STATUS_ORIGIN + " · " + MESH_NODES_ORIGIN,
   "- Operator enable requires a declared bearer (example: suite-presence). Read-only suite presence is on (display from runtime).",
   "- Mesh ON. Operator-armed Node Gate + neighbor heal + network ON (not a login panel).",

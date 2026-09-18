@@ -26,7 +26,7 @@ Every public website on the Aziel Eliab profile. One-line what/why. Hub About bo
 
 Machine who-is (not a biography): https://www.azieleliab.com/who-is
 
-Hub crawl routes (`/person.jsonld` · `/cite.json` · `/llms.txt` · `/ai.txt` · `/sitemap.xml` · `/who-is`) plus Runtime `/openapi.json` and `POST /mcp`. Pack copy: [github-profile-readme/](github-profile-readme/).
+Hub crawl routes (`/person.jsonld` · `/cite.json` · `/llms.txt` · `/ai.txt` · `/sitemap.xml` · `/who-is` · `/survival`) plus Runtime `/openapi.json` and `POST /mcp`. Pack copy: [github-profile-readme/](github-profile-readme/).
 
 GitHub **cannot** create special repo `AzielEliab/AzielEliab` — the name case-collides with this Worker. Keep the pack as the GitHub-side index, or copy `github-profile-readme/README.md` to another public surface. Do not rename this repo.
 

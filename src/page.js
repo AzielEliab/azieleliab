@@ -43,6 +43,7 @@ import {
 } from "./copy.js";
 import { qrImg } from "./qr.js";
 import { MESH_STATUS_LOCAL, QNM_SPEC, QNS_CD_SPEC, liveNodesLabel, meshQuietLabel } from "./mesh.js";
+import { SURVIVAL_LOCAL } from "./survival.js";
 import {
   identityDiscoveryLinks,
   personJsonLd,
@@ -543,6 +544,7 @@ ${extraMeta}
 function quietDiscoveryMeta() {
   return `<meta name="aziel-update-check" content="${esc(CANON_ORIGIN)}/v1/update/check">
 <meta name="aziel-mesh-status" content="${esc(MESH_STATUS_LOCAL)}">
+<meta name="aziel-survival" content="${esc(SURVIVAL_LOCAL)}">
 <meta name="aziel-qns-cd" content="${esc(QNS_CD_SPEC)}">
 <meta name="aziel-qnm" content="${esc(QNM_SPEC)}">
 <meta name="aziel-software-catalog" content="${esc(CANON_ORIGIN)}/v1/software">
@@ -583,7 +585,7 @@ export function liveNodesPill(mesh) {
   return (
     '<a class="pill" id="aziel-live-nodes" href="/v1/mesh/status" title="' +
     attr(
-      "Quantum Node Mesh rollup. GET never enables. Operator-armed Node Gate + neighbor heal + network ON (not a login panel). AZVPN auto_use cite. Author Aziel Eliab.",
+      "QNM presence count. Not an exec API, not BAN-SURVIVAL live_doors, not Cap-7. GET never enables. Operator-armed Node Gate + neighbor heal + network ON (not a login panel). AZVPN auto_use cite. Author Aziel Eliab.",
     ) +
     '">' +
     esc(liveNodesLabel(mesh)) +
