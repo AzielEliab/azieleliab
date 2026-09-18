@@ -107,7 +107,9 @@ describe("GitHub-side SEO / ecosystem docs", () => {
       assert.ok(readme.includes(name), "README named tool " + name);
       assert.ok(docs.includes(name), "docs named tool " + name);
     }
-    assert.doesNotMatch(readme, /fraggate_call|runtime_run/);
+    assert.match(readme, /Softwares via `fraggate_call` only/);
+    assert.doesNotMatch(readme, /hasPart[\s\S]{0,800}fraggate_call/);
+    assert.doesNotMatch(readme, /runtime_run/);
     assert.doesNotMatch(docs, /as schema entities[\s\S]*fraggate_call/);
   });
 

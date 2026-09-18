@@ -14,6 +14,7 @@ import {
   CATALOG_LATER_SLUGS,
   CATALOG_NAMES,
   CATALOG_ONLY,
+  CATALOG_RUNTIME_HOME,
   CATALOG_SLUGS,
   CATALOG_SOFTWARE,
   catalogHref,
@@ -266,8 +267,8 @@ describe("landing copy", () => {
 describe("software doors", () => {
   it("hyperlinks every SOFTWARE name to a verified URL", () => {
     const html = softwareHtml();
-    assert.equal(CATALOG_SOFTWARE.length, 37);
-    assert.equal(SOFTWARE.length, 37);
+    assert.equal(CATALOG_SOFTWARE.length, 41);
+    assert.equal(SOFTWARE.length, 41);
     for (const item of SOFTWARE) {
       const needle = 'href="' + item.href + '"';
       assert.ok(html.includes(needle), "missing href for " + item.name);
@@ -280,7 +281,7 @@ describe("software doors", () => {
     const softwareCard = html.match(/<section class="card lead" id="software">[\s\S]*?<\/section>/);
     assert.ok(softwareCard);
     assert.match(softwareCard[0], /<h2>Software<\/h2>\s*<p class="soft-line">/);
-    assert.doesNotMatch(softwareCard[0], /Official Runtime|Try on Glama|Try \/ Deploy on Glama|Documentation \/ Architecture|named components|Ask Jeeves/);
+    assert.doesNotMatch(softwareCard[0], /Official Runtime|Try on Glama|Try \/ Deploy on Glama|Documentation \/ Architecture|Suite pack|named components|Ask Jeeves/);
     assert.doesNotMatch(softwareCard[0], /2\.0\.0-rc1/);
   });
 
@@ -290,7 +291,7 @@ describe("software doors", () => {
     assert.equal(RUNTIME_DOCS, "https://github.com/AzielEliab/aziel-runtime/tree/main/docs/2.0");
     assert.deepEqual(
       RUNTIME_DOORS.map((d) => d.label),
-      ["Try on Glama", "Official Runtime", "Source on GitHub", "Documentation / Architecture"],
+      ["Try on Glama", "Official Runtime", "Suite pack", "Source on GitHub", "Documentation / Architecture"],
     );
     assert.equal(RUNTIME_DOORS[0].label, "Try on Glama");
     assert.equal(RUNTIME_DOORS[0].href, GLAMA_RUNTIME);
@@ -315,7 +316,8 @@ describe("software doors", () => {
     assert.doesNotMatch(runtimeCard[0], /class="runtime-cta"[^>]*>Official Runtime</);
     assert.match(runtimeCard[0], /class="runtime-secondary"/);
     assert.ok(runtimeCard[0].indexOf("Try on Glama") < runtimeCard[0].indexOf("Official Runtime"));
-    assert.ok(runtimeCard[0].indexOf("Official Runtime") < runtimeCard[0].indexOf("Source on GitHub"));
+    assert.ok(runtimeCard[0].indexOf("Official Runtime") < runtimeCard[0].indexOf("Suite pack"));
+    assert.ok(runtimeCard[0].indexOf("Suite pack") < runtimeCard[0].indexOf("Source on GitHub"));
     assert.doesNotMatch(html, /runtime 2\.0\.0-rc1 FragGate/i);
     const ld = jsonLd();
     assert.equal(ld["@graph"][2].softwareVersion, "2.0.0-rc1");
@@ -324,12 +326,24 @@ describe("software doors", () => {
     assert.equal(cite.runtime_version, "2.0.0-rc1");
     assert.equal(cite.glama_runtime, GLAMA_RUNTIME);
     assert.equal(cite.runtime_docs, RUNTIME_DOCS);
-    assert.equal(cite.runtime_doors.length, 4);
+    assert.equal(cite.runtime_doors.length, 5);
     assert.equal(cite.runtime_doors[0].label, "Try on Glama");
     assert.equal(cite.runtime_doors[0].url, GLAMA_RUNTIME);
     assert.equal(cite.runtime_doors[0].primary, true);
     assert.equal(cite.runtime_doors[1].label, "Official Runtime");
     assert.equal(cite.runtime_doors[1].primary, false);
+    assert.equal(cite.runtime_doors[2].label, "Suite pack");
+    assert.equal(cite.runtime_sot.git_short, "6a3798a");
+    assert.equal(cite.runtime_sot.version_id, "105fa1ee");
+    assert.equal(cite., false);
+    assert.equal(cite.master_33, false);
+    assert.equal(cite.mcp.softwares, "fraggate_call only");
+    assert.equal(cite.node_gate, true);
+    assert.equal(cite.neighbor_heal, true);
+    assert.equal(cite.network, true);
+    assert.equal(cite.vpn.auto_use, true);
+    assert.equal(cite.channel_plane.wifi, "on");
+    assert.equal(cite.worker_hardware, false);
   });
 
   it("names aziel-runtime / Aziel Runtime and refuses version+FragGate mash", () => {
@@ -376,10 +390,24 @@ describe("software doors", () => {
     assert.ok(names.includes("4DMap"));
     assert.ok(names.includes("AZChat"));
     assert.ok(names.includes("AZCoherence"));
+    assert.ok(names.includes("AZVPN"));
+    assert.ok(names.includes("MMConsensus"));
+    assert.ok(names.includes("ToolBench"));
+    assert.ok(names.includes("ZKAttest"));
     assert.ok(SOFTWARE_EXTRAS.some((s) => s.name === "FragGate"));
     assert.ok(SOFTWARE_EXTRAS.some((s) => s.slug === "mesh" && s.software_tab === false));
     assert.ok(!names.includes("Lumen"));
     assert.deepEqual(CATALOG_LATER_SLUGS, []);
+    assert.equal(softwareBucket("AZVPN"), 0);
+    assert.equal(softwareBucket("MMConsensus"), 0);
+    assert.equal(softwareBucket("ToolBench"), 0);
+    assert.equal(softwareBucket("ZKAttest"), 0);
+    assert.equal(catalogHref("azvpn"), CATALOG_RUNTIME_HOME.azvpn);
+    assert.equal(catalogHref("mmconsensus"), CATALOG_RUNTIME_HOME.mmconsensus);
+    assert.equal(catalogHref("toolbench"), CATALOG_RUNTIME_HOME.toolbench);
+    assert.equal(catalogHref("zkattest"), CATALOG_RUNTIME_HOME.zkattest);
+    assert.ok(!String(catalogHref("azvpn")).includes("azvpn-download-tracker"));
+    assert.ok(citeDoc().software_names.some((s) => s.name === "AZVPN" && s.url === CATALOG_RUNTIME_HOME.azvpn));
   });
 
   it("lists PeaceLock in Lock and uses PEACELOCK_WORKER now that the tracker is live", () => {
@@ -937,6 +965,22 @@ describe("SEO routes", () => {
     assert.equal(citeBody.qns_cd.software_tab, false);
     assert.equal(citeBody.qns_cd.public_proxy, false);
     assert.equal(citeBody.qns_cd.node_gate, false);
+    assert.equal(citeBody.node_gate, true);
+    assert.equal(citeBody.get_is_node_gate, true);
+    assert.equal(citeBody.neighbor_heal, true);
+    assert.equal(citeBody.network, true);
+    assert.equal(citeBody.vpn.vpn, true);
+    assert.equal(citeBody.vpn.kinds.https_ws, "REAL");
+    assert.equal(citeBody.vpn.kinds.wireguard, "SLOT");
+    assert.equal(citeBody.channel_plane.photon, "on");
+    assert.equal(citeBody.worker_hardware, false);
+    assert.equal(citeBody., false);
+    assert.equal(citeBody.master_33, false);
+    assert.equal(citeBody.runtime_version_id, "105fa1ee");
+    assert.equal(citeBody.runtime_git_short, "6a3798a");
+    assert.equal(citeBody.runtime_download, "https://aziel-runtime.vibelock.workers.dev/download");
+    assert.equal(citeBody.mcp.door, "fraggate");
+    assert.equal(citeBody.dual_surface.master_33, false);
     assert.equal(citeBody.qns_cd.qnm_node, GITHUB_QNM_NODE);
     assert.equal(citeBody.qns_cd.runtime, GITHUB_RUNTIME);
     assert.match(citeBody.mesh_note, /QNS-CD-1\.0/);
@@ -2350,8 +2394,18 @@ describe("suite node mesh", () => {
     assert.doesNotMatch(off.note, /[Dd]efault off/);
     assert.match(off.note, /GET never enables/);
     assert.match(off.note, /suite-presence/);
-    assert.match(off.note, /VPN\/hop mesh is not claimed/);
+    assert.match(off.note, /Node Gate/);
+    assert.match(off.note, /AZVPN/);
+    assert.match(off.note, /wifi\/bluetooth\/rf\/photon/);
     assert.match(off.note, /QNS-CD-1\.0/);
+    assert.equal(off.node_gate, true);
+    assert.equal(off.neighbor_heal, true);
+    assert.equal(off.network, true);
+    assert.equal(off.vpn.auto_use, true);
+    assert.equal(off.channel_plane.wifi, "on");
+    assert.equal(off.worker_hardware, false);
+    assert.equal(off., false);
+    assert.equal(off.login_mesh, false);
     assert.match(MESH_NOTE, /QNS-CD-1\.0/);
     assert.match(MESH_NOTE, /GET never enables/);
     assert.match(MESH_NOTE, /suite-presence/);
@@ -2362,6 +2416,7 @@ describe("suite node mesh", () => {
     assert.equal(QNS_CD.packet, "QNS1");
     assert.equal(QNS_CD.software_tab, false);
     assert.equal(QNS_CD.node_gate, false);
+    assert.match(QNS_CD.note, /QNS-CD is not Node Gate/);
     assert.equal(QNS_CD.public_proxy, false);
     assert.equal(QNS_CD.qnsd, "local");
     assert.equal(QNS_CD.mesh_default, "on");

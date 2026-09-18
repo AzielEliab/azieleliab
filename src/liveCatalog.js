@@ -12,10 +12,16 @@ import {
   EMBRYOLOCK_WORKER,
   FRAGGATE_WORKER,
   LIBRARY,
+  CLAIM_COMPLETE,
+  MASTER_33_MCP,
   RUNTIME,
+  RUNTIME_DOWNLOAD,
+  RUNTIME_GIT_SHA,
+  RUNTIME_GIT_SHORT,
   RUNTIME_LOCAL,
   RUNTIME_SLUG,
   RUNTIME_VERSION,
+  RUNTIME_VERSION_ID,
   SOFTWARE,
   SOFTWARE_EXTRAS,
   resolveRuntimeVersion,
@@ -206,7 +212,7 @@ function extrasFromLiveDoc(doc, seen) {
       enabled_default: doc.mesh.enabled_default === true ? true : false,
       path: doc.mesh.path || "/v1/mesh",
       spec: doc.mesh.spec || "QNM-BUILD-1.0",
-      note: doc.mesh.note || "Suite rollup. Not a Softwares-tab product. Read-only suite presence is on (display from runtime). GET never enables.",
+      note: doc.mesh.note || "Suite rollup. Not a Softwares-tab product. Read-only suite presence is on (display from runtime). GET never enables. Operator-armed Node Gate + neighbor heal + network ON. AZVPN auto_use + vpn:true. Channel plane ON cites; worker_hardware:false.",
     });
   }
 
@@ -404,6 +410,19 @@ export function softwareIndexBody(live, mesh) {
     extras,
     software: products,
     version: resolveRuntimeVersion(packed.version),
+    git_sha: RUNTIME_GIT_SHA,
+    git_short: RUNTIME_GIT_SHORT,
+    version_id: RUNTIME_VERSION_ID,
+    suite_download: RUNTIME_DOWNLOAD,
+    door: "fraggate",
+    sort_law: "plain A–Z → gate A–Z → lock A–Z (Clock ≠ Lock)",
+    : CLAIM_COMPLETE,
+    master_33: MASTER_33_MCP,
+    mcp: {
+      door: "fraggate",
+      softwares: "fraggate_call only",
+      master_33: MASTER_33_MCP,
+    },
   };
 }
 
