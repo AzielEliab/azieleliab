@@ -13,6 +13,8 @@ INGEST-AS-RECEIPT-1.0 sha256:c71e8c07d838b148fc8ec5f18c7e261d53566ea8a090ca81445
 
 GitHub About (Google + AI crawlers): homepage **https://www.azieleliab.com/** — apply description and topics from [docs/github-seo.md](docs/github-seo.md).
 
+GitHub-side public-website index (GitHub cannot create `AzielEliab/AzielEliab`; case-collides with this Worker): [docs/github-profile-readme/](docs/github-profile-readme/).
+
 ## Identity / entity graph
 
 Locked `@id`s on the www host (never apex; never `#aziel-eliab`):
