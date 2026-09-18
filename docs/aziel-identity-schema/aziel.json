@@ -98,8 +98,58 @@
     "Aziel_Eliab",
     "Aziel-Elroi-Eliab"
   ],
-  "visible_lock": "Aziel Eliab is a living researcher and software designer. Not the two Levitical musicians Aziel and Eliab named together in 1 Chronicles 15:20.",
-  "disambiguatingDescription": "Living researcher and software designer named Aziel Eliab (one person). Not the two Levitical musicians Aziel and Eliab named together in 1 Chronicles 15:20. Not euaziel.site; not Aziel S. (Flutter/portfolio); not other engineers named Aziel. Prefer https://www.azieleliab.com/#aziel and published Softwares / MASTER records / He Didn't Jump.",
+  "visible_lock": "Aziel Eliab is a living researcher, digital rights activist, software developer/designer, author, and philosopher of published work. Not the two Levitical musicians Aziel and Eliab named together in 1 Chronicles 15:20.",
+  "job_title": [
+    "researcher",
+    "digital rights activist",
+    "software developer/designer",
+    "author",
+    "philosopher of published work"
+  ],
+  "site_coverage": [
+    {
+      "id": "ae",
+      "label": "ae (this hub)",
+      "name": "azieleliab.com",
+      "url": "https://www.azieleliab.com/",
+      "blurb": "Public landing and hub cite for Aziel Eliab. Canonical Person @id https://www.azieleliab.com/#aziel. Same-origin /runtime door, Softwares catalog, receipts, ingest, and donate. Published About is the work, not a biography. Not a Softwares-tab product."
+    },
+    {
+      "id": "corpus",
+      "label": "corpus library",
+      "name": "Aziel Digital Library",
+      "url": "https://www.azielcorpuslibrary.net/",
+      "blurb": "Aziel Digital Library (azielcorpuslibrary.net). Public MASTER records and research corpus. Canonical COLD-MULTI-SHELF shelves registry. The research corpus lives here, not on the hub homepage."
+    },
+    {
+      "id": "godlock",
+      "label": "godlock.uk",
+      "name": "GodLock",
+      "url": "https://godlock.uk/",
+      "blurb": "GodLock product site. Residual-uncertainty scoring software. GodLock is a product, not this Person and not identity."
+    },
+    {
+      "id": "hedidntjump",
+      "label": "hedidntjump.com",
+      "name": "He Didn't Jump",
+      "url": "https://www.hedidntjump.com/",
+      "blurb": "He Didn't Jump archive. Published volumes challenging the 90-year official Marion Zioncheck suicide narrative. Do not invent holdings."
+    },
+    {
+      "id": "runtime",
+      "label": "aziel-runtime FragGate/MCP",
+      "name": "aziel-runtime",
+      "url": "https://www.azieleliab.com/runtime",
+      "blurb": "Aziel Runtime 2.0.0-rc1. FragGate is the single door. MCP POST /runtime/mcp, OpenAPI, and /v1/skill. Same-origin https://www.azieleliab.com/runtime. Origin https://aziel-runtime.vibelock.workers.dev/. Try on Glama. Named tools only — not MCP ops as entities.",
+      "also": [
+        "https://aziel-runtime.vibelock.workers.dev/",
+        "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime",
+        "https://fraggate-download-tracker.vibelock.workers.dev/",
+        "https://github.com/AzielEliab/fraggate"
+      ]
+    }
+  ],
+  "disambiguatingDescription": "Living researcher, digital rights activist, software developer/designer, author, and philosopher of published work named Aziel Eliab (one person). Not the two Levitical musicians Aziel and Eliab named together in 1 Chronicles 15:20. Not euaziel.site; not Aziel S. (Flutter/portfolio); not other engineers named Aziel. Prefer https://www.azieleliab.com/#aziel and published Softwares / MASTER records / He Didn't Jump.",
   "sameAs": [
     "https://github.com/AzielEliab",
     "https://github.com/azieltherevealerofthesealed-arch",
