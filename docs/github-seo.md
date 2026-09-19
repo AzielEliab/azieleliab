@@ -122,7 +122,7 @@ Not MCP ops (`fraggate_call`, `runtime_run`, …). Child `@id` is `https://www.a
 | azmail | AZMail |
 | azhub | AZHub |
 | azinterface | AZInterface |
-| spectrallock | SpectralLock |
+| spectrallock | SpectralLock — leftover-bytes recover; opaque rewrite refuses SL-UNREDACT-OPAQUE; heatmap ≠ transcript; inject ON is paint not pigment; never OCR-from-black-box; Worker GET\|POST /v1/unredact (not a FragGate door op) |
 | shadowlock | ShadowLock |
 | foldlock | FoldLock |
 | codelock | CodeLock |
