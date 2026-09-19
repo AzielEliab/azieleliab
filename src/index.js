@@ -48,6 +48,7 @@ import {
   whoIsTxt,
 } from "./identity.js";
 import { aiTxt, citeDoc, CONTENT_SIGNAL, llmsTxt, robotsTxt, sitemapXml } from "./seo.js";
+import { helpBody, isHelpPath } from "./help.js";
 import {
   azGeneratorCallRefuse,
   azGeneratorCite,
@@ -396,6 +397,7 @@ export async function handleRequest(request, env = {}, ctx) {
   } else if (path === "/.well-known/aziel.json") {
     res = text(prettyJson(wellKnownAziel()), "application/json", { cache: SEO_CACHE, cors: true });
   } else if (path === "/ai.txt") res = text(aiTxt(survival), "text/plain", { cache: SEO_CACHE });
+  else if (isHelpPath(path)) res = text(helpBody(path), "text/plain", { cache: SEO_CACHE });
   else if (path === SURVIVAL_PATH || path === SURVIVAL_JSON_PATH) {
     res = json(survival || (await loadSurvival(env, ctx, { request })), JSON_SHORT_CACHE);
   }
