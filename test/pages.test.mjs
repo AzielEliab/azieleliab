@@ -96,7 +96,9 @@ import {
   sortSoftware,
   SPECTRALLOCK_DESCRIPTION,
   SPECTRALLOCK_DIGEST,
+  SPECTRALLOCK_HANDWRITING,
   SPECTRALLOCK_ONE_LINE,
+  SPECTRALLOCK_RECOVER,
   SPECTRALLOCK_UNREDACT,
   SPECTRALLOCK_WORKER,
   spectrallockCite,
@@ -2324,14 +2326,35 @@ describe("live software catalog", () => {
     assert.equal(fallback.worker_home, SPECTRALLOCK_WORKER);
     assert.match(fallback.one_line, /leftover container bytes recover honestly/);
     assert.match(fallback.description, /SL-UNREDACT-OPAQUE/);
-    assert.match(fallback.description, /not a catalog FragGate door op/);
+    assert.match(fallback.description, /not catalog FragGate door ops/);
+    assert.match(fallback.description, /revision_graph/);
+    assert.match(fallback.description, /\/v1\/recover/);
+    assert.match(fallback.description, /\/v1\/handwriting/);
+    assert.match(fallback.description, /not lab, not ESDA, not a court finding/);
     assert.doesNotMatch(fallback.description, /FragGate door op[\s\S]*unredact as LIVE_OP/i);
 
     const cite = spectrallockCite();
     assert.equal(cite.fraggate_unredact_door_op, false);
+    assert.equal(cite.fraggate_recover_door_op, false);
+    assert.equal(cite.fraggate_handwriting_door_op, false);
     assert.deepEqual(cite.ops, ["locate", "lift", "recover", "refuse"]);
     assert.ok(!cite.fraggate_live_ops.includes("unredact"));
+    assert.ok(!cite.fraggate_live_ops.includes("recover"));
+    assert.ok(!cite.fraggate_live_ops.includes("handwriting"));
     assert.equal(cite.unredact, SPECTRALLOCK_UNREDACT);
+    assert.equal(cite.recover, SPECTRALLOCK_RECOVER);
+    assert.equal(cite.handwriting, SPECTRALLOCK_HANDWRITING);
+    assert.equal(cite.sot, "spectrallock#13 LIVE (merge 4af8fcb)");
+    assert.equal(cite.revision_graph, true);
+    assert.equal(cite.esda, false);
+
+    const softwareVisible = softwareHtml().match(/<p class="soft-line">[\s\S]*?<\/p>/);
+    assert.ok(softwareVisible);
+    assert.ok(softwareVisible[0].includes(">SpectralLock<"));
+    assert.ok(!softwareVisible[0].includes("/v1/recover"));
+    assert.ok(!softwareVisible[0].includes("/v1/handwriting"));
+    assert.ok(!softwareVisible[0].includes("revision_graph"));
+    assert.ok(!softwareVisible[0].includes("ESDA"));
 
     const env = catalogEnv(async (req) => {
       const path = new URL(req.url).pathname;
@@ -2371,17 +2394,24 @@ describe("live software catalog", () => {
     assert.equal(spectral.description, SPECTRALLOCK_DESCRIPTION);
     assert.equal(spectral.engine_digest, SPECTRALLOCK_DIGEST);
     assert.match(spectral.description, /leftover-bytes recover is honest/);
+    assert.match(spectral.description, /revision_graph/);
+    assert.match(spectral.description, /\/v1\/recover/);
+    assert.match(spectral.description, /\/v1\/handwriting/);
     assert.ok(!spectral.fraggate_live_ops);
 
     const llms = llmsTxt(doc.products);
     assert.ok(llms.includes(SPECTRALLOCK_ONE_LINE));
     assert.ok(llms.includes("SL-UNREDACT-OPAQUE"));
+    assert.ok(llms.includes(SPECTRALLOCK_RECOVER));
+    assert.ok(llms.includes(SPECTRALLOCK_HANDWRITING));
     const ld = jsonLd(doc.products);
     const spectralApp = ld["@graph"].find((n) => n["@id"] === softwareNodeId(spectral));
     assert.equal(spectralApp.description, SPECTRALLOCK_DESCRIPTION);
     const namedSpectral = ld["@graph"].find((n) => n["@id"] === "https://www.azieleliab.com/runtime#spectrallock");
     assert.ok(namedSpectral.description.includes("leftover container bytes recover honestly"));
     assert.ok(namedSpectral.description.includes("Never OCR-from-black-box"));
+    assert.ok(namedSpectral.description.includes("/v1/recover"));
+    assert.ok(namedSpectral.description.includes("not ESDA"));
   });
 
   it("normalizes mashed live runtime names to aziel-runtime and keeps Plain→Gate→Lock", async () => {
