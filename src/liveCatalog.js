@@ -29,6 +29,7 @@ import {
   TRADES_RUNTIME_SLUG,
   resolveRuntimeVersion,
   sisterProductsCite,
+  applyCatalogBlurb,
   canonicalSoftwareSlug,
   catalogHref,
   catalogWorkerHome,
@@ -132,6 +133,8 @@ export function catalogDoorRow(item) {
   if (item.status) row.status = item.status;
   if (item.version) row.version = item.version;
   if (item.one_line) row.one_line = item.one_line;
+  if (item.description) row.description = item.description;
+  if (item.engine_digest) row.engine_digest = item.engine_digest;
   if (item.github) row.github = item.github;
   if (item.bucket) row.bucket = item.bucket;
   if (item.download_url) row.download_url = item.download_url;
@@ -180,6 +183,8 @@ function mapLiveItem(row) {
   if (row.status) item.status = row.status;
   if (row.version) item.version = row.version;
   if (row.one_line) item.one_line = row.one_line;
+  if (row.description) item.description = row.description;
+  if (row.engine_digest) item.engine_digest = row.engine_digest;
   if (row.github) item.github = row.github;
   if (row.bucket) item.bucket = row.bucket;
   if (row.download_url) item.download_url = row.download_url;
@@ -201,7 +206,7 @@ function mapLiveItem(row) {
   if (row.local_destructive_boundary != null) {
     item.local_destructive_boundary = row.local_destructive_boundary;
   }
-  return item;
+  return applyCatalogBlurb(item, slug);
 }
 
 function extrasFromLiveDoc(doc, seen) {
@@ -359,7 +364,11 @@ export function catalogHasThisIs(doc) {
   const rows = []
     .concat(Array.isArray(doc.products) ? doc.products : [])
     .concat(Array.isArray(doc.software) ? doc.software : []);
-  return rows.some((row) => /THIS-IS|THIS IS:/i.test(String((row && row.one_line) || "")));
+  return rows.some(
+    (row) =>
+      /THIS-IS|THIS IS:/i.test(String((row && row.one_line) || "")) ||
+      /THIS-IS|THIS IS:/i.test(String((row && row.description) || "")),
+  );
 }
 
 function isUsableLiveCatalog(packed) {
@@ -528,6 +537,8 @@ function extraCiteRow(item) {
   if (item.github) row.github = item.github;
   if (item.download) row.download = item.download;
   if (item.one_line) row.one_line = item.one_line;
+  if (item.description) row.description = item.description;
+  if (item.engine_digest) row.engine_digest = item.engine_digest;
   if (item.engine === false) row.engine = false;
   if (item.fraggate_engine === false) row.fraggate_engine = false;
   if (item.fraggate_call === false) row.fraggate_call = false;
