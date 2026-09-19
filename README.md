@@ -46,6 +46,7 @@ Part of the Aziel Eliab ecosystem. Cross-links for humans, Google, and AI crawle
 | GodLock | [https://godlock.uk/](https://godlock.uk/) · [Aziel Eliab](https://godlock.uk/AzielEliab) · [repo](https://github.com/AzielEliab/godlock) |
 | He Didn't Jump | [https://www.hedidntjump.com/](https://www.hedidntjump.com/) |
 | aziel-runtime **2.0.0-rc1** | [GitHub](https://github.com/AzielEliab/aziel-runtime) · [Official Runtime](https://aziel-runtime.vibelock.workers.dev/) · [Suite pack](https://aziel-runtime.vibelock.workers.dev/download) · [docs/2.0](https://github.com/AzielEliab/aziel-runtime/tree/main/docs/2.0) · SoT main `6a3798a` / version_id `105fa1ee` |
+| Trades-Runtime 0.3.3 | Sister product extra (local-first BYO HVAC/plumbing/electrical/sewer/cross-trades; not FragGate exec; live_backends false) · [Worker](https://trades-runtime.vibelock.workers.dev/) · [GitHub](https://github.com/AzielEliab/trades-runtime) · [download](https://trades-runtime.vibelock.workers.dev/download) · [OpenAPI](https://trades-runtime.vibelock.workers.dev/openapi.json) · [MCP](https://trades-runtime.vibelock.workers.dev/mcp) · [cite](https://trades-runtime.vibelock.workers.dev/cite.json) · [llms](https://trades-runtime.vibelock.workers.dev/llms.txt) |
 | Try on Glama | [https://glama.ai/mcp/servers/AzielEliab/aziel-runtime](https://glama.ai/mcp/servers/AzielEliab/aziel-runtime) (primary Runtime CTA; verified listing) |
 | Donate AZL-DONATE-1.0 | [https://www.azieleliab.com/donate](https://www.azieleliab.com/donate) |
 
@@ -92,7 +93,7 @@ Cloudflare Worker `azieleliab-com` serves the literary landing, crawl files, and
 | `GET /v1/stats` | Pageviews (no increment) |
 | `GET /v1/view` | Same as stats |
 | `POST /v1/view` | Increment pageviews |
-| `GET /v1/software` | Resolved Softwares catalog (`products` enriched from aziel-runtime; `extras` for FragGate / mesh / aziel-runtime; short edge TTL). Runtime version cite is **2.0.0-rc1** (or live `/v1/health`) |
+| `GET /v1/software` | Resolved Softwares catalog (`products` enriched from aziel-runtime; `extras` for FragGate / mesh / aziel-runtime / trades-runtime sister product; `sister_products` cite-only). Runtime version cite is **2.0.0-rc1** (or live `/v1/health`) |
 | `GET /v1/update` · `/v1/update/check` | Quiet installer pointer at runtime `/v1/update/check` |
 | `GET /v1/mesh/status` · `/v1/mesh/nodes` | Suite node mesh (read-only suite presence is on; display from runtime). `live_nodes` is presence — not an exec API, not live_doors, not Cap-7. |
 | `GET /survival` · `/v1/survival` | BAN-SURVIVAL-1.0 hub pull (runtime SoT; short TTL) |
@@ -232,7 +233,7 @@ Fallback snapshot (used only when live catalog is unreachable):
 | VibeLock | https://vibelock-download-tracker.vibelock.workers.dev/ |
 | WhistleLock | https://whistlelock-download-tracker.vibelock.workers.dev/ |
 
-EmbryoLock Softwares door is catalog `worker_home` (`https://embryolock-download-tracker.vibelock.workers.dev/`). `/embryolock` remains a secondary local page. FragGate, mesh, and same-origin `aziel-runtime` are extras / doors — not Softwares `products[]` cards. Read-only suite presence is on (display from runtime). GET never enables.
+EmbryoLock Softwares door is catalog `worker_home` (`https://embryolock-download-tracker.vibelock.workers.dev/`). `/embryolock` remains a secondary local page. FragGate, mesh, same-origin `aziel-runtime`, and sister product Trades-Runtime are extras / doors — not Softwares `products[]` cards. Trades-Runtime is local-first BYO field trades (`live_backends` false). `fraggate_call` does not execute company ops. Read-only suite presence is on (display from runtime). GET never enables.
 
 Quiet installer meta: `GET /v1/update/check` (alias `/v1/update`) points at runtime `GET /v1/update/check`. The landing also ships `<meta name="aziel-update-check">`.
 
@@ -280,6 +281,7 @@ Every label and URL is hyperlinked.
 - Runtime → https://www.azieleliab.com/runtime · also https://aziel-runtime.vibelock.workers.dev/ (**2.0.0-rc1**, SoT main `6a3798a` / version_id `105fa1ee`)
 - Try on Glama → https://glama.ai/mcp/servers/AzielEliab/aziel-runtime (primary Runtime CTA; verified Glama listing for AzielEliab/aziel-runtime — not an invented server id)
 - Official Runtime → https://aziel-runtime.vibelock.workers.dev/ (secondary Worker link)
+- Trades-Runtime → https://trades-runtime.vibelock.workers.dev/ (sister product extra; not FragGate exec; live_backends false)
 - Suite pack → https://aziel-runtime.vibelock.workers.dev/download (GET /download; not )
 - Source on GitHub → https://github.com/AzielEliab/aziel-runtime
 - Documentation / Architecture → https://github.com/AzielEliab/aziel-runtime/tree/main/docs/2.0

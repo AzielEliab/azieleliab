@@ -17,6 +17,8 @@ Machine who-is (not a biography): [https://www.azieleliab.com/who-is](https://ww
 | [https://godlock.uk/](https://godlock.uk/) | GodLock challenge/score product (not a VPN; GodLock ≠ identity) |
 | [https://www.hedidntjump.com/](https://www.hedidntjump.com/) | Zioncheck 7 Aug 1936 archive (not a verdict) |
 | [https://aziel-runtime.vibelock.workers.dev/](https://aziel-runtime.vibelock.workers.dev/) | Aziel Runtime / FragGate MCP Softwares door |
+| [https://trades-runtime.vibelock.workers.dev/](https://trades-runtime.vibelock.workers.dev/) | Trades-Runtime sister product (local-first BYO field trades; not FragGate exec; live_backends false) |
+| [https://github.com/AzielEliab/trades-runtime](https://github.com/AzielEliab/trades-runtime) | Trades-Runtime source |
 | [https://glama.ai/mcp/servers/AzielEliab/aziel-runtime](https://glama.ai/mcp/servers/AzielEliab/aziel-runtime) | Try on Glama |
 | [https://github.com/AzielEliab](https://github.com/AzielEliab) | GitHub user / public source |
 
@@ -33,6 +35,10 @@ Live routes only. Do not invent tips or DOIs. Cite the hub files.
 **Runtime** (`aziel-runtime.vibelock.workers.dev`):
 
 - `/person.jsonld` · `/who-is` · `/cite.json` · `/llms.txt` · `/openapi.json` · `/survival` · `POST /mcp`
+
+**Trades-Runtime** (`trades-runtime.vibelock.workers.dev`) — sister product extra, not a FragGate door:
+
+- `/` · `/download` · `/openapi.json` · `POST /mcp` · `/cite.json` · `/llms.txt` · `/v1/skill`
 
 Raw pointers in this repo: [person.jsonld](person.jsonld) · [llms.txt](llms.txt) · [cite.json](cite.json)
 

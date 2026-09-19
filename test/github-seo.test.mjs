@@ -14,6 +14,8 @@ const RUNTIME_REPO = "https://github.com/AzielEliab/aziel-runtime";
 const GLAMA = "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime";
 const DONATE = "https://www.azieleliab.com/donate";
 const RUNTIME_WORKER = "https://aziel-runtime.vibelock.workers.dev/";
+const TRADES_WORKER = "https://trades-runtime.vibelock.workers.dev/";
+const TRADES_REPO = "https://github.com/AzielEliab/trades-runtime";
 const GITHUB_USER = "https://github.com/AzielEliab";
 const PUBLIC_WEBSITES = [
   CANON,
@@ -105,6 +107,10 @@ describe("GitHub-side SEO / ecosystem docs", () => {
       assert.match(text, /Try on Glama/, name);
       assert.ok(text.includes(DONATE), name + " Donate");
       assert.match(text, /AZL-DONATE-1\.0/, name);
+      assert.ok(text.includes(TRADES_WORKER), name + " Trades-Runtime Worker");
+      assert.ok(text.includes(TRADES_REPO), name + " Trades-Runtime GitHub");
+      assert.match(text, /live_backends false/, name);
+      assert.match(text, /not FragGate exec/, name);
     }
   });
 
@@ -202,6 +208,12 @@ describe("GitHub-side SEO / ecosystem docs", () => {
     assert.match(profile, /not a VPN/);
     assert.match(profile, /not a verdict/);
     assert.match(profile, /who-is/);
+    assert.ok(profile.includes(TRADES_WORKER));
+    assert.ok(profile.includes(TRADES_REPO));
+    assert.ok(profileLlms.includes(TRADES_WORKER));
+    assert.ok(profileCite.includes(TRADES_WORKER));
+    assert.match(profileLlms, /Sister products/);
+    assert.match(profileCite, /sister_products/);
     assert.doesNotMatch(profile, /1 Chronicles 15:20/);
     assert.doesNotMatch(profile + profileLlms + profileCite + profileCff, /10\.\d{4,9}\/[\w.-]+/);
     assert.match(profileCff, /alias: Aziel Elroi Eliab/);

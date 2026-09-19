@@ -21,6 +21,8 @@ Every public website on the Aziel Eliab profile. One-line what/why. Hub About bo
 | https://godlock.uk/ | GodLock challenge/score product (not a VPN; GodLock ≠ identity) |
 | https://www.hedidntjump.com/ | Zioncheck 7 Aug 1936 archive (not a verdict) |
 | https://aziel-runtime.vibelock.workers.dev/ | Aziel Runtime / FragGate MCP Softwares door |
+| https://trades-runtime.vibelock.workers.dev/ | Trades-Runtime sister product (local-first BYO field trades; not FragGate exec; live_backends false) |
+| https://github.com/AzielEliab/trades-runtime | Trades-Runtime source |
 | https://glama.ai/mcp/servers/AzielEliab/aziel-runtime | Try on Glama |
 | https://github.com/AzielEliab | GitHub user / public source |
 
