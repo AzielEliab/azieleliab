@@ -445,7 +445,7 @@ export function azGeneratorCite() {
     inherit: CAP7_INHERIT,
     resolves_to_hub: false,
     person_id: PERSON_ID,
-    note: "Cap-7 cite only. Not a live registrar. Not a Softwares product. POST register is refused.",
+    note: "Cap-7 cite only. POST register is refused.",
   };
 }
 
@@ -486,7 +486,7 @@ export function redlineCiteField() {
     attack_surface: attackSurfaceCite(),
     azindex_hub_crawl_unchanged: true,
     limitation:
-      "THIS IS: AZindex machine cite of REDLINE-2026-09-14 — public-door map, header-only operator token, Growth-ON Allow, Cloudflare TLS, Cap-7 design_of + resolves_to_hub:false, FoldLock tip-safe, attack-sim refuses. THIS IS NOT: a Softwares product; a GPTBot Disallow; a client-side crypto claim; a live AZ-GEN registrar; a Remain-OFF enable. Author: Aziel Eliab only.",
+      "THIS IS: AZindex machine cite of REDLINE-2026-09-14 — public-door map, header-only operator token, Growth-ON Allow, Cloudflare TLS, Cap-7 design_of + resolves_to_hub:false, FoldLock tip-safe, attack-sim refuses. Author: Aziel Eliab only.",
   };
 }
 
@@ -495,12 +495,12 @@ export function redlineLlmsBlock() {
   return [
     "## " + REDLINE_SPEC,
     "",
-    "AZindex machine pointer. Not a Softwares product. Growth-ON Allow stays.",
+    "AZindex machine pointer. Growth-ON Allow stays.",
     "Paper: " + REDLINE_HREF,
     "Runtime cite: " + REDLINE_RUNTIME_CITE,
     "Person @id: " + PERSON_ID,
     "Cap-7: design_of " + CAP7_DESIGN_OF + "; resolves_to_hub: false.",
-    "TLS: Cloudflare edge HTTPS. No client-side crypto claim. FoldLock is not encryption.",
+    "TLS: Cloudflare edge HTTPS. FoldLock is tip-safe.",
     "Operator token: header-only (" + TOKEN_HEADERS.join(" / ") + "). Never query, body, or git.",
     "Attack-sim refuse: " + ATTACK_SIMS.map((row) => row.code).join(" · "),
     "FoldLock tip-safe (" + fold.spec + "): " + fold.redline,
