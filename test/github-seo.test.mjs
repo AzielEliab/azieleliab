@@ -225,4 +225,45 @@ describe("GitHub-side SEO / ecosystem docs", () => {
     assert.ok(readme.includes("docs/github-profile-readme/"));
     assert.ok(docs.includes("github-profile-readme/"));
   });
+
+  it("drops scoreboard / survival copy from tip SEO/docs/README", () => {
+    const SCOREBOARD = [
+      //i,
+      //i,
+      /durable/i,
+      /hard to kill/i,
+      /survival/i,
+      /unkillable/i,
+      //i,
+      /fielded[_-]?100/i,
+      /fielded 100/i,
+      /69\/100/,
+      //,
+      /80\+/,
+      //i,
+      /scoreboard/i,
+      /preempt toward/i,
+      /never publish fielded/i,
+      /never fielded/i,
+    ];
+    const files = [
+      ["README.md", readme],
+      ["docs/github-seo.md", docs],
+      ["SKILL.md", skill],
+      ["docs/github-profile-readme/README.md", read("docs/github-profile-readme/README.md")],
+      ["docs/github-profile-readme/llms.txt", read("docs/github-profile-readme/llms.txt")],
+      ["docs/github-profile-readme/cite.json", read("docs/github-profile-readme/cite.json")],
+      ["docs/aziel-identity-schema/README.md", read("docs/aziel-identity-schema/README.md")],
+      ["docs/aziel-identity-schema/who-is-aziel-eliab.txt", read("docs/aziel-identity-schema/who-is-aziel-eliab.txt")],
+    ];
+    for (const [name, text] of files) {
+      for (const ban of SCOREBOARD) {
+        assert.doesNotMatch(text, ban, name + " " + ban);
+      }
+    }
+    assert.match(readme, /COLD-MULTI-SHELF|Plane B|SLOT/);
+    assert.match(skill, /Plane A/);
+    assert.match(skill, /Plane B/);
+    assert.match(skill, /SLOT/);
+  });
 });

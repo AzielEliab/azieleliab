@@ -53,13 +53,12 @@ export const RUNTIME_GIT_SHORT = "6a3798a";
 /** Operator SoT LIVE version_id. Do not invent a different id. */
 export const RUNTIME_VERSION_ID = "105fa1ee";
 export const RUNTIME_BRANCH = "main";
-export const CLAIM_COMPLETE = false;
 export const MASTER_33_MCP = false;
-/** Counted suite pack on the runtime Worker. Not . */
+/** Counted suite pack on the runtime Worker. */
 export const RUNTIME_DOWNLOAD = RUNTIME + "/download";
 export const RUNTIME_DOWNLOAD_V1 = RUNTIME + "/v1/suite/download";
 export const RUNTIME_DOWNLOAD_NOTE =
-  "One-click suite pack JSON (REAL catalog + FoldLock tip + mesh cite). Worker wasm / WireGuard / OpenVPN SLOT. Counted GET /download. Not .";
+  "One-click suite pack JSON (REAL catalog + FoldLock tip + mesh cite). Worker wasm / WireGuard / OpenVPN SLOT. Counted GET /download.";
 /** Human UI hashes live on the runtime Worker — not this hub homepage. */
 export const RUNTIME_HUMAN_UI = Object.freeze({
   host: RUNTIME + "/",
@@ -83,7 +82,6 @@ export const DUAL_SURFACE = Object.freeze({
   door: "fraggate",
   softwares: "fraggate_call only",
   master_33: MASTER_33_MCP,
-  : CLAIM_COMPLETE,
 });
 /** Verified Glama listing (owner/repo path). Do not invent a server id. */
 export const GLAMA_RUNTIME = "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime";
