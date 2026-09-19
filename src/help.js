@@ -144,7 +144,9 @@ export function helpTxt() {
     "",
     "## Receipts",
     "",
-    "Receipts are hashed action records (" + RECEIPT_SPEC + "). " + RECEIPTS_DESCRIPTION,
+    "Receipts are hashed action records (" +
+      RECEIPT_SPEC +
+      "). This host’s action-receipt chain carries a hash, a request sentence, an output sentence, and event metadata. Newest first.",
     "- " + RECEIPTS_TITLE + ": " + RECEIPTS_HREF,
     "- " + INGEST_SPEC + ": " + INGEST_HREF,
     "- " + VERIFY_TITLE + ": " + VERIFY_HREF,
@@ -283,7 +285,8 @@ export function helpReceiptsTxt() {
   return [
     "# Receipts — " + AUTHOR,
     "",
-    RECEIPT_SPEC + ". " + RECEIPTS_DESCRIPTION,
+    RECEIPT_SPEC +
+      ". This host’s action-receipt chain carries a hash, a request sentence, an output sentence, and event metadata. Newest first.",
     "",
     "A receipt is a hashed action record. Cite files and hashes. The chain on this host begins at " +
       RECEIPTS_HREF +
