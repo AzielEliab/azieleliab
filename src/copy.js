@@ -278,21 +278,26 @@ export const EMBRYOLOCK_WORKER = "https://embryolock-download-tracker.vibelock.w
 /** Softwares worker_home. Counted download is same host /download. Not a hosted unlock. */
 export const ARK_WORKER = "https://ark-download-tracker.vibelock.workers.dev/";
 export const ARK_DOWNLOAD = "https://ark-download-tracker.vibelock.workers.dev/download";
-/** SpectralLock leftover-bytes honesty after spectrallock#12 + aziel-runtime#137. */
+/** SpectralLock Worker honesty after spectrallock#13 LIVE (merge 4af8fcb). Overlay digest not rehashed. */
 export const SPECTRALLOCK_SLUG = "spectrallock";
 export const SPECTRALLOCK_NAME = "SpectralLock";
 export const SPECTRALLOCK_VERSION = "0.3.0";
+export const SPECTRALLOCK_SOT = "spectrallock#13 LIVE (merge 4af8fcb)";
 export const SPECTRALLOCK_WORKER = "https://spectrallock-download-tracker.vibelock.workers.dev/";
 export const SPECTRALLOCK_UNREDACT = SPECTRALLOCK_WORKER + "v1/unredact";
+export const SPECTRALLOCK_RECOVER = SPECTRALLOCK_WORKER + "v1/recover";
+export const SPECTRALLOCK_HANDWRITING = SPECTRALLOCK_WORKER + "v1/handwriting";
 export const SPECTRALLOCK_GITHUB = "https://github.com/AzielEliab/spectrallock";
-/** Runtime catalog digest after aziel-runtime#137. Hasher on disk — not invented. */
+/** Runtime catalog digest after aziel-runtime#137. Hasher on disk — not invented. Overlay digest not rehashed in #13. */
 export const SPECTRALLOCK_DIGEST = "3427dbcf2932b6bf4c6cf80735efd171b75519066e013db6d0df275c65989fb4";
 export const SPECTRALLOCK_ONE_LINE =
   "Preview a small overlay on an image; leftover container bytes recover honestly, opaque rewrite refuses.";
 export const SPECTRALLOCK_DESCRIPTION =
-  "Use SpectralLock for a 256-pixel overlay preview with an optional inject true|false color switch, plus a metadata-hash check. Inject ON paints membership; it does not recover pigment. Locate / lift / recover / refuse live in the vendored overlay (product Worker /v1/unredact) — leftover-bytes recover is honest (object id / offset / stream); opaque replace with no leftover bytes refuses SL-UNREDACT-OPAQUE; heatmaps are not transcripts; never invent letters; never OCR-from-black-box. It exists as a hosted preview, not a spectrometer or forensic instrument. Unredact is not a catalog FragGate door op.";
+  "Use SpectralLock for a 256-pixel overlay preview with an optional inject true|false color switch, plus a metadata-hash check. Inject ON paints membership; it does not recover pigment. Locate / lift / recover / refuse live in the vendored overlay (product Worker /v1/unredact) — leftover-bytes recover is honest (object id / offset / stream); opaque replace with no leftover bytes refuses SL-UNREDACT-OPAQUE; heatmaps are not transcripts; never invent letters; never OCR-from-black-box. After spectrallock#13 LIVE (merge 4af8fcb): GET|POST /v1/unredact is deep PDF + revision_graph + per-revision copies; GET|POST /v1/recover is universal artifact recover (NO-LIE; LIVE vs SLOT); GET|POST /v1/handwriting is physical ink scan heuristics — not lab, not ESDA, not a court finding. OCR only after structural recovery; never reconstructs covered letters from context. Hosted preview is 256 px PNG; the full pipeline is the Python package. It exists as a hosted preview, not a spectrometer or forensic instrument. Unredact / recover / handwriting are not catalog FragGate door ops.";
 export const SPECTRALLOCK_NOTE =
-  "Leftover container bytes = honest recover path (leftover_bytes, recovered_from). Opaque rewrite with nothing left refuses SL-UNREDACT-OPAQUE — do not invent letters. Locate / lift / recover / refuse. Heatmap ≠ transcript. Inject ON is paint, not pigment. Worker LIVE GET|POST /v1/unredact. Unredact is not a catalog FragGate door op. FragGate LIVE_OPS stay health / modes / targets / overlay / verify / doctor / skill. Never OCR-from-black-box. Lamb Lens: Service → Clarity → Peace. Author Aziel Eliab only. NO-LIE.";
+  "Leftover container bytes = honest recover path (leftover_bytes, recovered_from). Opaque rewrite with nothing left refuses SL-UNREDACT-OPAQUE — do not invent letters. Locate / lift / recover / refuse. Heatmap ≠ transcript. Inject ON is paint, not pigment. Worker LIVE after spectrallock#13 (merge 4af8fcb): GET|POST /v1/unredact (deep PDF + revision_graph + per-revision copies); GET|POST /v1/recover (universal artifact recover; NO-LIE; LIVE vs SLOT); GET|POST /v1/handwriting (physical ink scan heuristics; NOT lab/ESDA/court). Unredact / recover / handwriting are not catalog FragGate door ops. FragGate LIVE_OPS stay health / modes / targets / overlay / verify / doctor / skill. OCR after structural only. Never OCR-from-black-box. Never reconstruct covered letters from context. Lamb Lens: Service → Clarity → Peace. Author Aziel Eliab only. NO-LIE.";
+export const SPECTRALLOCK_OCR_NOTE =
+  "OCR runs only after structural recovery and never reconstructs covered letters from context. Context guesses are not recovery. Heatmaps are not transcripts. Never OCR-from-black-box. Never claim pigment recovery, ESDA, chemical, lab, or forensic certification. Author Aziel Eliab. NO-LIE.";
 export const SPECTRALLOCK_FRAGGATE_OPS = Object.freeze([
   "health",
   "modes",
@@ -303,6 +308,39 @@ export const SPECTRALLOCK_FRAGGATE_OPS = Object.freeze([
   "skill",
 ]);
 export const SPECTRALLOCK_UNREDACT_OPS = Object.freeze(["locate", "lift", "recover", "refuse"]);
+export const SPECTRALLOCK_RECOVER_OPS = Object.freeze([
+  "locate",
+  "deep-recover",
+  "revision-graph",
+  "cross-compare",
+  "extract-embedded",
+  "scan-orphans",
+  "scan-metadata",
+  "scan-sidecars",
+  "scan-history",
+  "refuse",
+]);
+export const SPECTRALLOCK_HANDWRITING_OPS = Object.freeze([
+  "analyze",
+  "compare",
+  "side-by-side",
+  "graph",
+  "forgery-indicators",
+  "refuse",
+]);
+export const SPECTRALLOCK_RECOVER_LIVE_KINDS = Object.freeze([
+  "pdf",
+  "json",
+  "xml",
+  "html",
+  "svg",
+  "txt",
+  "eml",
+  "zip",
+  "png",
+  "jpeg",
+]);
+export const SPECTRALLOCK_RECOVER_SLOT_KINDS = Object.freeze(["7z", "heic", "heif"]);
 export const FRAGGATE_WORKER = "https://fraggate-download-tracker.vibelock.workers.dev/";
 export const FRAGGATE_GITHUB = "https://github.com/AzielEliab/fraggate";
 /** Primary FragGate door is the Worker UI. GitHub remains the source repo. */
@@ -652,7 +690,7 @@ export function canonicalSoftwareSlug(slug, name) {
   return s || undefined;
 }
 
-/** Fallback Softwares blurbs when live /v1/software is down. Spectrallock leftover-bytes after #137. */
+/** Fallback Softwares blurbs when live /v1/software is down. Spectrallock Worker honesty after #13. */
 export const CATALOG_BLURBS = Object.freeze({
   spectrallock: {
     one_line: SPECTRALLOCK_ONE_LINE,
@@ -682,6 +720,7 @@ export function spectrallockCite() {
     slug: SPECTRALLOCK_SLUG,
     name: SPECTRALLOCK_NAME,
     version: SPECTRALLOCK_VERSION,
+    sot: SPECTRALLOCK_SOT,
     author: AUTHOR,
     identity: AUTHOR,
     one_line: SPECTRALLOCK_ONE_LINE,
@@ -689,27 +728,52 @@ export function spectrallockCite() {
     leftover_bytes: true,
     leftover_bytes_recovery: true,
     recovered_from: true,
+    deep_history: true,
+    revision_graph: true,
+    revision_copies: true,
     pigment_recovery: false,
     guessed_letters: false,
     heatmap_is_transcript: false,
+    heatmap_is_court_finding: false,
     ocr_from_black_box: false,
+    ocr_after_structural_only: true,
+    covered_letters_from_context: false,
+    esda: false,
+    forensic_certification: false,
+    chemical_ink_dating: false,
+    writer_identification_as_fact: false,
     inject_on: "paint",
     inject_on_is_pigment: false,
     opaque_rewrite_refuse: "SL-UNREDACT-OPAQUE",
     refuse_code: "SL-UNREDACT-OPAQUE",
     ops: SPECTRALLOCK_UNREDACT_OPS.slice(),
+    recover_ops: SPECTRALLOCK_RECOVER_OPS.slice(),
+    handwriting_ops: SPECTRALLOCK_HANDWRITING_OPS.slice(),
+    recover_live_kinds: SPECTRALLOCK_RECOVER_LIVE_KINDS.slice(),
+    recover_slot_kinds: SPECTRALLOCK_RECOVER_SLOT_KINDS.slice(),
     fraggate_live_ops: SPECTRALLOCK_FRAGGATE_OPS.slice(),
     fraggate_unredact_door_op: false,
+    fraggate_recover_door_op: false,
+    fraggate_handwriting_door_op: false,
     unredact_is_fraggate_door_op: false,
+    catalog_door: false,
+    software_tab: true,
+    names_only: true,
+    bucket: "Lock",
     worker_home: SPECTRALLOCK_WORKER,
     unredact: SPECTRALLOCK_UNREDACT,
+    recover: SPECTRALLOCK_RECOVER,
+    handwriting: SPECTRALLOCK_HANDWRITING,
     unredact_methods: ["GET", "POST"],
+    recover_methods: ["GET", "POST"],
+    handwriting_methods: ["GET", "POST"],
     github: SPECTRALLOCK_GITHUB,
     engine_digest: SPECTRALLOCK_DIGEST,
-    software_tab: true,
+    overlay_digest_rehashed: false,
     door: "fraggate",
     lamb_lens: "Service → Clarity → Peace",
     note: SPECTRALLOCK_NOTE,
+    ocr_note: SPECTRALLOCK_OCR_NOTE,
   };
 }
 

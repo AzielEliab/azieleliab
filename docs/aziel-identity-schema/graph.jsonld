@@ -72,7 +72,7 @@
         "FragGate",
         "GodLock",
         "Aziel Digital Library",
-        "SpectralLock leftover-bytes recovery (locate / lift / recover / refuse; SL-UNREDACT-OPAQUE; never OCR-from-black-box)",
+        "SpectralLock leftover-bytes recovery plus Worker LIVE /v1/unredact (deep PDF + revision_graph + per-revision copies), /v1/recover (NO-LIE; LIVE vs SLOT), /v1/handwriting (physical ink scan heuristics; not lab/ESDA/court); SL-UNREDACT-OPAQUE; never OCR-from-black-box",
         "Marion Zioncheck historical archive",
         "Hebrew name forms for Aziel Elroi Eliab (SEO / onomastic tether only)",
         "Aziel Elroi Eliab (עזיאל אל ראי אליאב / עזיאל אלרועי אליאב): Aziel = God is my strength (עזיאל); Elroi = God who sees (אל ראי / אלרועי); Eliab = God is father (אליאב).",
@@ -167,7 +167,7 @@
           "name": "Does SpectralLock OCR or invent letters from a black-box redaction?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "No. SpectralLock leftover container bytes recover honestly (leftover_bytes, recovered_from). Opaque rewrite with nothing left refuses SL-UNREDACT-OPAQUE — it does not invent letters. Locate / lift / recover / refuse. Heatmap is not a transcript. Inject ON is paint, not pigment. Unredact lives on the product Worker GET|POST https://spectrallock-download-tracker.vibelock.workers.dev/v1/unredact — not a catalog FragGate door op. Never OCR-from-black-box. Preview a small overlay on an image; leftover container bytes recover honestly, opaque rewrite refuses. Worker: https://spectrallock-download-tracker.vibelock.workers.dev/ Author Aziel Eliab only. Lamb Lens: Service → Clarity → Peace."
+            "text": "No. SpectralLock leftover container bytes recover honestly (leftover_bytes, recovered_from). Opaque rewrite with nothing left refuses SL-UNREDACT-OPAQUE — it does not invent letters. Locate / lift / recover / refuse. Heatmap is not a transcript. Inject ON is paint, not pigment. After spectrallock#13 LIVE (merge 4af8fcb), product Worker GET|POST https://spectrallock-download-tracker.vibelock.workers.dev/v1/unredact is deep PDF + revision_graph + per-revision copies; GET|POST https://spectrallock-download-tracker.vibelock.workers.dev/v1/recover is universal artifact recover (NO-LIE; LIVE vs SLOT); GET|POST https://spectrallock-download-tracker.vibelock.workers.dev/v1/handwriting is physical ink scan heuristics — not lab, not ESDA, not a court finding. Those Worker paths are not catalog FragGate door ops. Never OCR-from-black-box. OCR runs only after structural recovery and never reconstructs covered letters from context. Context guesses are not recovery. Heatmaps are not transcripts. Never OCR-from-black-box. Never claim pigment recovery, ESDA, chemical, lab, or forensic certification. Author Aziel Eliab. NO-LIE. Preview a small overlay on an image; leftover container bytes recover honestly, opaque rewrite refuses. Worker: https://spectrallock-download-tracker.vibelock.workers.dev/ Author Aziel Eliab only. Lamb Lens: Service → Clarity → Peace."
           }
         },
         {
