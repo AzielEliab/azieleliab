@@ -311,7 +311,7 @@
     "philosophy": "You don’t get to know me. You get to understand the work. | Receipt-first, local-first. Cite files and hashes over paraphrase. | Residual uncertainty stays. Do not flatten GodLock scores into certainty. | Freedom of information is not a time-volume / cost binary. | Forks welcome. Apache-2.0 where released.",
     "logic_design": "One Person @id | FragGate single door | Named tools not MCP ops as entities | Dual-surface agents+human UI | AZindex open Allow+sitemap/llms/cite/shelves/MCP/Glama; cost via pack/cache not reader rationing",
     "successful_material": "Aziel Runtime 2.0.0-rc1; Aziel Digital Library; GodLock; He Didn't Jump archive",
-    "underrated_material": "ForgeReceipts, TemporalLock, FoldLock, DecisionGATE, EmbryoLock, ZionPattern Solver; SpectralLock leftover-bytes recover (opaque rewrite refuses SL-UNREDACT-OPAQUE; heatmap ≠ transcript; never OCR-from-black-box); TrajectoryLock advisory only; EmployeeLock/WhistleLock hosted never store files",
+    "underrated_material": "ForgeReceipts, TemporalLock, FoldLock, DecisionGATE, EmbryoLock, ZionPattern Solver; SpectralLock leftover-bytes recover plus Worker LIVE /v1/unredact (deep PDF + revision_graph + per-revision copies), /v1/recover (NO-LIE; LIVE vs SLOT), /v1/handwriting (not lab/ESDA/court) after spectrallock#13 (opaque rewrite refuses SL-UNREDACT-OPAQUE; heatmap ≠ transcript; never OCR-from-black-box; not FragGate invent); TrajectoryLock advisory only; EmployeeLock/WhistleLock hosted never store files",
     "plan": "identical machine bytes on four roots; differentiated host roles; sitemap+GSC operator; Zenodo/OpenAlex only when operator freezes",
     "side_quest": "He Didn't Jump challenges the 90-year official Marion Zioncheck suicide narrative via published volumes — do not invent holdings"
   },
@@ -319,17 +319,28 @@
     "slug": "spectrallock",
     "name": "SpectralLock",
     "version": "0.3.0",
+    "sot": "spectrallock#13 LIVE (merge 4af8fcb)",
     "author": "Aziel Eliab",
     "identity": "Aziel Eliab",
     "one_line": "Preview a small overlay on an image; leftover container bytes recover honestly, opaque rewrite refuses.",
-    "description": "Use SpectralLock for a 256-pixel overlay preview with an optional inject true|false color switch, plus a metadata-hash check. Inject ON paints membership; it does not recover pigment. Locate / lift / recover / refuse live in the vendored overlay (product Worker /v1/unredact) — leftover-bytes recover is honest (object id / offset / stream); opaque replace with no leftover bytes refuses SL-UNREDACT-OPAQUE; heatmaps are not transcripts; never invent letters; never OCR-from-black-box. It exists as a hosted preview, not a spectrometer or forensic instrument. Unredact is not a catalog FragGate door op.",
+    "description": "Use SpectralLock for a 256-pixel overlay preview with an optional inject true|false color switch, plus a metadata-hash check. Inject ON paints membership; it does not recover pigment. Locate / lift / recover / refuse live in the vendored overlay (product Worker /v1/unredact) — leftover-bytes recover is honest (object id / offset / stream); opaque replace with no leftover bytes refuses SL-UNREDACT-OPAQUE; heatmaps are not transcripts; never invent letters; never OCR-from-black-box. After spectrallock#13 LIVE (merge 4af8fcb): GET|POST /v1/unredact is deep PDF + revision_graph + per-revision copies; GET|POST /v1/recover is universal artifact recover (NO-LIE; LIVE vs SLOT); GET|POST /v1/handwriting is physical ink scan heuristics — not lab, not ESDA, not a court finding. OCR only after structural recovery; never reconstructs covered letters from context. Hosted preview is 256 px PNG; the full pipeline is the Python package. It exists as a hosted preview, not a spectrometer or forensic instrument. Unredact / recover / handwriting are not catalog FragGate door ops.",
     "leftover_bytes": true,
     "leftover_bytes_recovery": true,
     "recovered_from": true,
+    "deep_history": true,
+    "revision_graph": true,
+    "revision_copies": true,
     "pigment_recovery": false,
     "guessed_letters": false,
     "heatmap_is_transcript": false,
+    "heatmap_is_court_finding": false,
     "ocr_from_black_box": false,
+    "ocr_after_structural_only": true,
+    "covered_letters_from_context": false,
+    "esda": false,
+    "forensic_certification": false,
+    "chemical_ink_dating": false,
+    "writer_identification_as_fact": false,
     "inject_on": "paint",
     "inject_on_is_pigment": false,
     "opaque_rewrite_refuse": "SL-UNREDACT-OPAQUE",
@@ -339,6 +350,43 @@
       "lift",
       "recover",
       "refuse"
+    ],
+    "recover_ops": [
+      "locate",
+      "deep-recover",
+      "revision-graph",
+      "cross-compare",
+      "extract-embedded",
+      "scan-orphans",
+      "scan-metadata",
+      "scan-sidecars",
+      "scan-history",
+      "refuse"
+    ],
+    "handwriting_ops": [
+      "analyze",
+      "compare",
+      "side-by-side",
+      "graph",
+      "forgery-indicators",
+      "refuse"
+    ],
+    "recover_live_kinds": [
+      "pdf",
+      "json",
+      "xml",
+      "html",
+      "svg",
+      "txt",
+      "eml",
+      "zip",
+      "png",
+      "jpeg"
+    ],
+    "recover_slot_kinds": [
+      "7z",
+      "heic",
+      "heif"
     ],
     "fraggate_live_ops": [
       "health",
@@ -350,19 +398,36 @@
       "skill"
     ],
     "fraggate_unredact_door_op": false,
+    "fraggate_recover_door_op": false,
+    "fraggate_handwriting_door_op": false,
     "unredact_is_fraggate_door_op": false,
+    "catalog_door": false,
+    "software_tab": true,
+    "names_only": true,
+    "bucket": "Lock",
     "worker_home": "https://spectrallock-download-tracker.vibelock.workers.dev/",
     "unredact": "https://spectrallock-download-tracker.vibelock.workers.dev/v1/unredact",
+    "recover": "https://spectrallock-download-tracker.vibelock.workers.dev/v1/recover",
+    "handwriting": "https://spectrallock-download-tracker.vibelock.workers.dev/v1/handwriting",
     "unredact_methods": [
+      "GET",
+      "POST"
+    ],
+    "recover_methods": [
+      "GET",
+      "POST"
+    ],
+    "handwriting_methods": [
       "GET",
       "POST"
     ],
     "github": "https://github.com/AzielEliab/spectrallock",
     "engine_digest": "3427dbcf2932b6bf4c6cf80735efd171b75519066e013db6d0df275c65989fb4",
-    "software_tab": true,
+    "overlay_digest_rehashed": false,
     "door": "fraggate",
     "lamb_lens": "Service → Clarity → Peace",
-    "note": "Leftover container bytes = honest recover path (leftover_bytes, recovered_from). Opaque rewrite with nothing left refuses SL-UNREDACT-OPAQUE — do not invent letters. Locate / lift / recover / refuse. Heatmap ≠ transcript. Inject ON is paint, not pigment. Worker LIVE GET|POST /v1/unredact. Unredact is not a catalog FragGate door op. FragGate LIVE_OPS stay health / modes / targets / overlay / verify / doctor / skill. Never OCR-from-black-box. Lamb Lens: Service → Clarity → Peace. Author Aziel Eliab only. NO-LIE."
+    "note": "Leftover container bytes = honest recover path (leftover_bytes, recovered_from). Opaque rewrite with nothing left refuses SL-UNREDACT-OPAQUE — do not invent letters. Locate / lift / recover / refuse. Heatmap ≠ transcript. Inject ON is paint, not pigment. Worker LIVE after spectrallock#13 (merge 4af8fcb): GET|POST /v1/unredact (deep PDF + revision_graph + per-revision copies); GET|POST /v1/recover (universal artifact recover; NO-LIE; LIVE vs SLOT); GET|POST /v1/handwriting (physical ink scan heuristics; NOT lab/ESDA/court). Unredact / recover / handwriting are not catalog FragGate door ops. FragGate LIVE_OPS stay health / modes / targets / overlay / verify / doctor / skill. OCR after structural only. Never OCR-from-black-box. Never reconstruct covered letters from context. Lamb Lens: Service → Clarity → Peace. Author Aziel Eliab only. NO-LIE.",
+    "ocr_note": "OCR runs only after structural recovery and never reconstructs covered letters from context. Context guesses are not recovery. Heatmaps are not transcripts. Never OCR-from-black-box. Never claim pigment recovery, ESDA, chemical, lab, or forensic certification. Author Aziel Eliab. NO-LIE."
   },
   "survival": "https://www.azieleliab.com/survival",
   "godlock_is_product_not_identity": true,
