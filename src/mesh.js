@@ -151,7 +151,6 @@ function qnsCiteFields() {
     ip_panel: false,
     channel_plane: CHANNEL_PLANE,
     vpn: VPN_CITE,
-    : false,
     mesh_live_nodes_are_api: false,
     live_nodes_are_not_live_doors: true,
   };

@@ -83,7 +83,6 @@ export const DUAL_SURFACE = Object.freeze({
   door: "fraggate",
   softwares: "fraggate_call only",
   master_33: MASTER_33_MCP,
-  : CLAIM_COMPLETE,
 });
 /** Verified Glama listing (owner/repo path). Do not invent a server id. */
 export const GLAMA_RUNTIME = "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime";
