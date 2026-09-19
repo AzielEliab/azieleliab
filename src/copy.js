@@ -278,6 +278,31 @@ export const EMBRYOLOCK_WORKER = "https://embryolock-download-tracker.vibelock.w
 /** Softwares worker_home. Counted download is same host /download. Not a hosted unlock. */
 export const ARK_WORKER = "https://ark-download-tracker.vibelock.workers.dev/";
 export const ARK_DOWNLOAD = "https://ark-download-tracker.vibelock.workers.dev/download";
+/** SpectralLock leftover-bytes honesty after spectrallock#12 + aziel-runtime#137. */
+export const SPECTRALLOCK_SLUG = "spectrallock";
+export const SPECTRALLOCK_NAME = "SpectralLock";
+export const SPECTRALLOCK_VERSION = "0.3.0";
+export const SPECTRALLOCK_WORKER = "https://spectrallock-download-tracker.vibelock.workers.dev/";
+export const SPECTRALLOCK_UNREDACT = SPECTRALLOCK_WORKER + "v1/unredact";
+export const SPECTRALLOCK_GITHUB = "https://github.com/AzielEliab/spectrallock";
+/** Runtime catalog digest after aziel-runtime#137. Hasher on disk — not invented. */
+export const SPECTRALLOCK_DIGEST = "3427dbcf2932b6bf4c6cf80735efd171b75519066e013db6d0df275c65989fb4";
+export const SPECTRALLOCK_ONE_LINE =
+  "Preview a small overlay on an image; leftover container bytes recover honestly, opaque rewrite refuses.";
+export const SPECTRALLOCK_DESCRIPTION =
+  "Use SpectralLock for a 256-pixel overlay preview with an optional inject true|false color switch, plus a metadata-hash check. Inject ON paints membership; it does not recover pigment. Locate / lift / recover / refuse live in the vendored overlay (product Worker /v1/unredact) — leftover-bytes recover is honest (object id / offset / stream); opaque replace with no leftover bytes refuses SL-UNREDACT-OPAQUE; heatmaps are not transcripts; never invent letters; never OCR-from-black-box. It exists as a hosted preview, not a spectrometer or forensic instrument. Unredact is not a catalog FragGate door op.";
+export const SPECTRALLOCK_NOTE =
+  "Leftover container bytes = honest recover path (leftover_bytes, recovered_from). Opaque rewrite with nothing left refuses SL-UNREDACT-OPAQUE — do not invent letters. Locate / lift / recover / refuse. Heatmap ≠ transcript. Inject ON is paint, not pigment. Worker LIVE GET|POST /v1/unredact. Unredact is not a catalog FragGate door op. FragGate LIVE_OPS stay health / modes / targets / overlay / verify / doctor / skill. Never OCR-from-black-box. Lamb Lens: Service → Clarity → Peace. Author Aziel Eliab only. NO-LIE.";
+export const SPECTRALLOCK_FRAGGATE_OPS = Object.freeze([
+  "health",
+  "modes",
+  "targets",
+  "overlay",
+  "verify",
+  "doctor",
+  "skill",
+]);
+export const SPECTRALLOCK_UNREDACT_OPS = Object.freeze(["locate", "lift", "recover", "refuse"]);
 export const FRAGGATE_WORKER = "https://fraggate-download-tracker.vibelock.workers.dev/";
 export const FRAGGATE_GITHUB = "https://github.com/AzielEliab/fraggate";
 /** Primary FragGate door is the Worker UI. GitHub remains the source repo. */
@@ -627,6 +652,67 @@ export function canonicalSoftwareSlug(slug, name) {
   return s || undefined;
 }
 
+/** Fallback Softwares blurbs when live /v1/software is down. Spectrallock leftover-bytes after #137. */
+export const CATALOG_BLURBS = Object.freeze({
+  spectrallock: {
+    one_line: SPECTRALLOCK_ONE_LINE,
+    description: SPECTRALLOCK_DESCRIPTION,
+    engine_digest: SPECTRALLOCK_DIGEST,
+    version: SPECTRALLOCK_VERSION,
+  },
+});
+
+/** Fill missing one_line / description from locked fallback blurbs. Never overwrite live honesty. */
+export function applyCatalogBlurb(item, slug) {
+  if (!item || typeof item !== "object") return item;
+  const s = String(slug || item.slug || "")
+    .trim()
+    .toLowerCase();
+  const blurb = CATALOG_BLURBS[s];
+  if (!blurb) return item;
+  if (!item.one_line) item.one_line = blurb.one_line;
+  if (!item.description) item.description = blurb.description;
+  if (!item.engine_digest && blurb.engine_digest) item.engine_digest = blurb.engine_digest;
+  if (!item.version && blurb.version) item.version = blurb.version;
+  return item;
+}
+
+export function spectrallockCite() {
+  return {
+    slug: SPECTRALLOCK_SLUG,
+    name: SPECTRALLOCK_NAME,
+    version: SPECTRALLOCK_VERSION,
+    author: AUTHOR,
+    identity: AUTHOR,
+    one_line: SPECTRALLOCK_ONE_LINE,
+    description: SPECTRALLOCK_DESCRIPTION,
+    leftover_bytes: true,
+    leftover_bytes_recovery: true,
+    recovered_from: true,
+    pigment_recovery: false,
+    guessed_letters: false,
+    heatmap_is_transcript: false,
+    ocr_from_black_box: false,
+    inject_on: "paint",
+    inject_on_is_pigment: false,
+    opaque_rewrite_refuse: "SL-UNREDACT-OPAQUE",
+    refuse_code: "SL-UNREDACT-OPAQUE",
+    ops: SPECTRALLOCK_UNREDACT_OPS.slice(),
+    fraggate_live_ops: SPECTRALLOCK_FRAGGATE_OPS.slice(),
+    fraggate_unredact_door_op: false,
+    unredact_is_fraggate_door_op: false,
+    worker_home: SPECTRALLOCK_WORKER,
+    unredact: SPECTRALLOCK_UNREDACT,
+    unredact_methods: ["GET", "POST"],
+    github: SPECTRALLOCK_GITHUB,
+    engine_digest: SPECTRALLOCK_DIGEST,
+    software_tab: true,
+    door: "fraggate",
+    lamb_lens: "Service → Clarity → Peace",
+    note: SPECTRALLOCK_NOTE,
+  };
+}
+
 export function catalogSoftwareFromSlugs(slugs = CATALOG_SLUGS, liveProducts = []) {
   const liveBySlug = new Map((liveProducts || []).map((p) => [p && p.slug, p]));
   const seen = new Set();
@@ -651,6 +737,8 @@ export function catalogSoftwareFromSlugs(slugs = CATALOG_SLUGS, liveProducts = [
     else item.status = "live";
     if (live.version) item.version = live.version;
     if (live.one_line) item.one_line = live.one_line;
+    if (live.description) item.description = live.description;
+    if (live.engine_digest) item.engine_digest = live.engine_digest;
     if (live.github) item.github = live.github;
     else if (CATALOG_RUNTIME_HOME[slug]) item.github = GITHUB_RUNTIME;
     if (live.bucket) item.bucket = live.bucket;
@@ -658,6 +746,7 @@ export function catalogSoftwareFromSlugs(slugs = CATALOG_SLUGS, liveProducts = [
     if (live.placement) item.placement = live.placement;
     else if (CATALOG_RUNTIME_PLACEMENT[slug]) item.placement = CATALOG_RUNTIME_PLACEMENT[slug];
     if (live.mcp) item.mcp = live.mcp;
+    applyCatalogBlurb(item, slug);
     out.push(item);
   };
   for (const slug of slugs || []) add(slug);
