@@ -151,7 +151,6 @@ function qnsCiteFields() {
     ip_panel: false,
     channel_plane: CHANNEL_PLANE,
     vpn: VPN_CITE,
-    : false,
     mesh_live_nodes_are_api: false,
     live_nodes_are_not_live_doors: true,
   };
@@ -373,7 +372,6 @@ export function injectMeshCite(doc) {
   if (doc.worker_hardware == null) doc.worker_hardware = WORKER_HARDWARE;
   if (doc.channel_plane == null) doc.channel_plane = CHANNEL_PLANE;
   if (doc.vpn == null) doc.vpn = VPN_CITE;
-  if (doc. == null) doc. = false;
   if (doc.login_mesh == null) doc.login_mesh = false;
   if (doc.mesh_live_nodes_are_api == null) doc.mesh_live_nodes_are_api = false;
   if (doc.live_nodes_are_not_live_doors == null) doc.live_nodes_are_not_live_doors = true;

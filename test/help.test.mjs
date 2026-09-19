@@ -45,7 +45,23 @@ const HELP_ALIASES = [
   ["/help/runtime", HELP_RUNTIME_PATH],
 ];
 
-const BANNED = [/THIS IS NOT/i, /≠/, /blocked-from/i];
+const BANNED = [
+  /THIS IS NOT/i,
+  /≠/,
+  /blocked-from/i,
+  //i,
+  /durable/i,
+  /survival/i,
+  /unkillable/i,
+  //i,
+  /fielded[_-]?100/i,
+  /69\/100/,
+  //,
+  /80\+/,
+  //i,
+  /scoreboard/i,
+  /preempt toward/i,
+];
 
 describe("human help addendum", () => {
   it("exports the five sitemap .txt paths", () => {

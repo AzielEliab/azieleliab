@@ -13,7 +13,6 @@ import {
   EMBRYOLOCK_WORKER,
   FRAGGATE_WORKER,
   LIBRARY,
-  FIELD_100,
   MASTER_33_MCP,
   RUNTIME,
   RUNTIME_DOWNLOAD,
@@ -512,7 +511,6 @@ export function softwareIndexBody(live, mesh) {
     suite_download: RUNTIME_DOWNLOAD,
     door: "fraggate",
     sort_law: "plain A–Z → gate A–Z → lock A–Z",
-    : FIELD_100,
     master_33: MASTER_33_MCP,
     mcp: {
       door: "fraggate",
