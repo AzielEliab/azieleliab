@@ -4,7 +4,11 @@ import {
   ABOUT_PATHS,
   ARK_DOWNLOAD,
   AUTHOR,
+  SPECTRALLOCK_HANDWRITING,
+  SPECTRALLOCK_OCR_NOTE,
   SPECTRALLOCK_ONE_LINE,
+  SPECTRALLOCK_RECOVER,
+  SPECTRALLOCK_SOT,
   SPECTRALLOCK_UNREDACT,
   SPECTRALLOCK_WORKER,
   spectrallockCite,
@@ -168,18 +172,32 @@ export const SPECTRALLOCK_FAQ_NAME =
   "Does SpectralLock OCR or invent letters from a black-box redaction?";
 
 export const SPECTRALLOCK_FAQ_ANSWER =
-  "No. SpectralLock leftover container bytes recover honestly (leftover_bytes, recovered_from). Opaque rewrite with nothing left refuses SL-UNREDACT-OPAQUE — it does not invent letters. Locate / lift / recover / refuse. Heatmap is not a transcript. Inject ON is paint, not pigment. Unredact lives on the product Worker GET|POST " +
+  "No. SpectralLock leftover container bytes recover honestly (leftover_bytes, recovered_from). Opaque rewrite with nothing left refuses SL-UNREDACT-OPAQUE — it does not invent letters. Locate / lift / recover / refuse. Heatmap is not a transcript. Inject ON is paint, not pigment. After " +
+  SPECTRALLOCK_SOT +
+  ", product Worker GET|POST " +
   SPECTRALLOCK_UNREDACT +
-  " — not a catalog FragGate door op. Never OCR-from-black-box. " +
+  " is deep PDF + revision_graph + per-revision copies; GET|POST " +
+  SPECTRALLOCK_RECOVER +
+  " is universal artifact recover (NO-LIE; LIVE vs SLOT); GET|POST " +
+  SPECTRALLOCK_HANDWRITING +
+  " is physical ink scan heuristics — not lab, not ESDA, not a court finding. Those Worker paths are not catalog FragGate door ops. Never OCR-from-black-box. " +
+  SPECTRALLOCK_OCR_NOTE +
+  " " +
   SPECTRALLOCK_ONE_LINE +
   " Worker: " +
   SPECTRALLOCK_WORKER +
   " Author Aziel Eliab only. Lamb Lens: Service → Clarity → Peace.";
 
 export const SPECTRALLOCK_SOFTWARES_LINE =
-  "- SpectralLock — leftover container bytes recover honestly (leftover_bytes / recovered_from). Opaque rewrite refuses SL-UNREDACT-OPAQUE. Heatmap ≠ transcript. Inject ON is paint, not pigment. Unredact is product Worker GET|POST " +
+  "- SpectralLock — leftover container bytes recover honestly (leftover_bytes / recovered_from). Opaque rewrite refuses SL-UNREDACT-OPAQUE. Heatmap ≠ transcript. Inject ON is paint, not pigment. After " +
+  SPECTRALLOCK_SOT +
+  ": GET|POST " +
   SPECTRALLOCK_UNREDACT +
-  " — not a FragGate door op. Never OCR-from-black-box.";
+  " (deep PDF + revision_graph + per-revision copies); GET|POST " +
+  SPECTRALLOCK_RECOVER +
+  " (universal artifact recover; NO-LIE; LIVE vs SLOT); GET|POST " +
+  SPECTRALLOCK_HANDWRITING +
+  " (physical ink scan heuristics; NOT lab/ESDA/court). Not FragGate invent. Never OCR-from-black-box.";
 
 export const CONCORDANCE_FAQ_NAME = "Is Aziel Eliab the two musicians named in 1 Chronicles 15:20?";
 
@@ -314,7 +332,7 @@ export const MISSION = {
   successful_material:
     "Aziel Runtime 2.0.0-rc1; Aziel Digital Library; GodLock; He Didn't Jump archive",
   underrated_material:
-    "ForgeReceipts, TemporalLock, FoldLock, DecisionGATE, EmbryoLock, ZionPattern Solver; SpectralLock leftover-bytes recover (opaque rewrite refuses SL-UNREDACT-OPAQUE; heatmap ≠ transcript; never OCR-from-black-box); TrajectoryLock advisory only; EmployeeLock/WhistleLock hosted never store files",
+    "ForgeReceipts, TemporalLock, FoldLock, DecisionGATE, EmbryoLock, ZionPattern Solver; SpectralLock leftover-bytes recover plus Worker LIVE /v1/unredact (deep PDF + revision_graph + per-revision copies), /v1/recover (NO-LIE; LIVE vs SLOT), /v1/handwriting (not lab/ESDA/court) after spectrallock#13 (opaque rewrite refuses SL-UNREDACT-OPAQUE; heatmap ≠ transcript; never OCR-from-black-box; not FragGate invent); TrajectoryLock advisory only; EmployeeLock/WhistleLock hosted never store files",
   plan:
     "identical machine bytes on four roots; differentiated host roles; sitemap+GSC operator; Zenodo/OpenAlex only when operator freezes",
   side_quest:
@@ -476,7 +494,7 @@ export const PERSON_KNOWS_ABOUT = [
   "FragGate",
   "GodLock",
   "Aziel Digital Library",
-  "SpectralLock leftover-bytes recovery (locate / lift / recover / refuse; SL-UNREDACT-OPAQUE; never OCR-from-black-box)",
+  "SpectralLock leftover-bytes recovery plus Worker LIVE /v1/unredact (deep PDF + revision_graph + per-revision copies), /v1/recover (NO-LIE; LIVE vs SLOT), /v1/handwriting (physical ink scan heuristics; not lab/ESDA/court); SL-UNREDACT-OPAQUE; never OCR-from-black-box",
   "Marion Zioncheck historical archive",
   "Hebrew name forms for Aziel Elroi Eliab (SEO / onomastic tether only)",
   HEBREW_NAME_DEFINITION,

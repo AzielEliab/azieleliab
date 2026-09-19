@@ -67,7 +67,7 @@ Softwares via FragGate (~41).
 The ARK: local deniable vault; one phrase opens one vault; counted download via https://ark-download-tracker.vibelock.workers.dev/download (worker_home same host). Not a hosted unlock. Whitestone: ephemeral pro se; not a lawyer.
 - The ARK — https://ark-download-tracker.vibelock.workers.dev/download (worker_home same host). Not a hosted unlock.
 - Whitestone — ephemeral pro se; not a lawyer.
-- SpectralLock — leftover container bytes recover honestly (leftover_bytes / recovered_from). Opaque rewrite refuses SL-UNREDACT-OPAQUE. Heatmap ≠ transcript. Inject ON is paint, not pigment. Unredact is product Worker GET|POST https://spectrallock-download-tracker.vibelock.workers.dev/v1/unredact — not a FragGate door op. Never OCR-from-black-box.
+- SpectralLock — leftover container bytes recover honestly (leftover_bytes / recovered_from). Opaque rewrite refuses SL-UNREDACT-OPAQUE. Heatmap ≠ transcript. Inject ON is paint, not pigment. After spectrallock#13 LIVE (merge 4af8fcb): GET|POST https://spectrallock-download-tracker.vibelock.workers.dev/v1/unredact (deep PDF + revision_graph + per-revision copies); GET|POST https://spectrallock-download-tracker.vibelock.workers.dev/v1/recover (universal artifact recover; NO-LIE; LIVE vs SLOT); GET|POST https://spectrallock-download-tracker.vibelock.workers.dev/v1/handwriting (physical ink scan heuristics; NOT lab/ESDA/court). Not FragGate invent. Never OCR-from-black-box.
 
 ## Research (Aziel Digital Library MASTER)
 
