@@ -42,7 +42,7 @@ export const SURVIVAL_RUNTIME_JSON = RUNTIME_LOCAL + SURVIVAL_JSON_PATH;
 export const PLATFORM_IDS = Object.freeze(["windows", "mac", "linux", "android", "ios"]);
 
 export const SURVIVAL_NOTE =
-  "BAN-SURVIVAL-1.0 hub pull of runtime GET /survival (short TTL). Mutual backup: cold shelves back death-by-ban; live_doors back cold-shelf death. Keep both. Never invent a live door. Live Nodes is QNM presence — not an exec API and not live_doors. Cap-7 shuffle via MirageGrid; resolves_to_hub: false. Hosted Cap-7 exec SLOT. Platforms all LIVE (browser / PWA / Worker / MCP) — not native store binaries. Calling-name rotation: mesh pull *new name alert: <name> from GET /survival. Identity Aziel Eliab only. GodLock is a product, not identity. Lamb Lens: Service → Clarity → Peace. NO-LIE. visible_1520: false.";
+  "BAN-SURVIVAL-1.0 hub pull of runtime GET /survival (short TTL). Mutual backup: cold shelves back death-by-ban; live_doors back cold-shelf death. Keep both. Never invent a live door. Live Nodes is QNM presence. Cap-7 shuffle via MirageGrid; resolves_to_hub: false. Hosted Cap-7 exec SLOT. Platforms all LIVE (browser / PWA / Worker / MCP). Calling-name rotation: mesh pull *new name alert: <name> from GET /survival. Identity Aziel Eliab only. GodLock is a product. Lamb Lens: Service → Clarity → Peace. NO-LIE. visible_1520: false.";
 
 function isBanSurvivalDoc(doc) {
   return Boolean(doc && typeof doc === "object" && !Array.isArray(doc) && doc.spec === BAN_SURVIVAL_SPEC);
@@ -94,12 +94,12 @@ export function callingNameCite(origin) {
     },
     note:
       rotated && alert
-        ? "Mesh pull " + alert + " from GET /survival. Identity Aziel Eliab unchanged. GodLock is a product, not identity."
+        ? "Mesh pull " + alert + " from GET /survival. Identity Aziel Eliab unchanged. GodLock is a product."
         : "No honest ban signal. Live calling name stays " +
           name +
           ". Rotation format: " +
           CALLING_NAME_ALERT_PREFIX +
-          " <name>. Identity Aziel Eliab only. GodLock is a product, not identity.",
+          " <name>. Identity Aziel Eliab only. GodLock is a product.",
   };
 }
 
@@ -129,7 +129,7 @@ export function platformsCite(origin) {
     survival: SURVIVAL_LOCAL,
     platforms: ids,
     note:
-      "Windows, Mac, Linux, Android, and iPhone are LIVE via browser / PWA / Worker fronts / Softwares /download / MCP. Hubs pull /survival. Not five native store binaries.",
+      "Windows, Mac, Linux, Android, and iPhone are LIVE via browser / PWA / Worker fronts / Softwares /download / MCP. Hubs pull /survival.",
   };
 }
 
@@ -141,7 +141,7 @@ export function mutualBackupCite(origin) {
     shelves_backup_for: (live && live.shelves_backup_for) || "death-by-ban",
     live_doors_backup_for: (live && live.live_doors_backup_for) || "cold-shelf-death",
     refuse: ["BAN-NO-SHELF-ONLY", "BAN-NO-DOOR-ONLY"],
-    note: "Cold shelves back up death-by-ban. Live fronts back up shelf death. Keep both. Shelves are not /mcp.",
+    note: "Cold shelves back up death-by-ban. Live fronts back up shelf death. Keep both.",
   };
 }
 
@@ -172,7 +172,7 @@ export function cap7ShuffleCite(origin) {
     hardcoded_single_host: false,
     mesh_live_nodes_are_api: false,
     note:
-      "Cap-7 shuffle via MirageGrid LIVE Worker. GET /v1/health · /bridge · /v1/shuffle. resolves_to_hub: false. Hosted Cap-7 exec SLOT. Not live_doors. Not Live Nodes. GodLock is a product, not identity.",
+      "Cap-7 shuffle via MirageGrid LIVE Worker. GET /v1/health · /bridge · /v1/shuffle. resolves_to_hub: false. Hosted Cap-7 exec SLOT. GodLock is a product.",
   };
 }
 
@@ -189,7 +189,7 @@ export function shelfBackupCite(origin) {
     role: "death-by-ban-backup",
     is_live_door: false,
     shelves: "https://www.azielcorpuslibrary.net/shelves",
-    note: "Cold shelves back up death-by-ban. Pull runtime /survival for the live tip-hash. Not /mcp.",
+    note: "Cold shelves back up death-by-ban. Pull runtime /survival for the live tip-hash.",
   };
 }
 
@@ -284,12 +284,12 @@ export function survivalLlmsBlock(origin) {
     "- Origin: " + SURVIVAL_ORIGIN + " · " + SURVIVAL_ORIGIN_JSON,
     "- Runtime door: " + SURVIVAL_RUNTIME,
     "- Mutual backup: shelves → death-by-ban; live_doors → cold-shelf-death. Keep both.",
-    "- Live doors listed only from pulled SoT (never invented). Live Nodes ≠ live_doors ≠ Cap-7.",
+    "- Live doors listed only from pulled SoT (never invented). Live Nodes is QNM presence.",
     "- Cap-7 shuffle via MirageGrid: " + MIRAGEGRID + " (" + MIRAGEGRID_HEALTH + " · " + MIRAGEGRID_BRIDGE + " · " + MIRAGEGRID_SHUFFLE + "). resolves_to_hub: false.",
     "- Platforms all LIVE: " + cite.platforms.platforms.join(", ") + ". native_app_store: false.",
     "- Calling name: " + cite.calling_name.calling_name + " (" + BAN_CALLING_NAME_SPEC + "). Identity Aziel Eliab unchanged.",
     "- Rotation awareness: " + (alert || CALLING_NAME_ALERT_PREFIX + " <name> (none while rotated:false)"),
-    "- GodLock is a product, not identity. Person @id: " + PERSON_ID,
+    "- GodLock is a product. Person @id: " + PERSON_ID,
     "- Lamb Lens: Service → Clarity → Peace. NO-LIE. visible_1520: false.",
     "",
   ].join("\n");

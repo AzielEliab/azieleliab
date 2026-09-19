@@ -866,7 +866,7 @@ describe("SEO routes", () => {
     assert.ok(llmsBody.includes("Canonical: " + CANON_ORIGIN + "/"));
     assert.ok(llmsBody.includes("Person @id: " + PERSON_ID));
     assert.ok(llmsBody.includes("Runtime parent @id: " + RUNTIME_ID));
-    assert.ok(llmsBody.includes("Named tools (not MCP ops): FragGate, ForgeReceipts"));
+    assert.ok(llmsBody.includes("Named tools: FragGate, ForgeReceipts"));
     assert.ok(llmsBody.includes(SOFTWARE_HREF + "  (distinct Software page; /#software maps here)"));
     assert.ok(llmsBody.includes(CANON_ORIGIN + "/about  (200 same homepage — About Aziel Eliab)"));
     assert.ok(llmsBody.includes(CANON_ORIGIN + "/mission  (301 to / ; Mission/Status strip removed)"));
@@ -925,12 +925,11 @@ describe("SEO routes", () => {
     assert.ok(llmsBody.includes(ARK_DOWNLOAD));
     assert.ok(llmsBody.includes("Softwares note:"));
     assert.ok(llmsBody.includes("local deniable vault"));
-    assert.ok(llmsBody.includes("Not a hosted unlock"));
-    assert.ok(llmsBody.includes("Whitestone: ephemeral pro se; not a lawyer"));
+    assert.ok(llmsBody.includes("Whitestone: ephemeral pro se"));
     assert.ok(aiBody.includes("Softwares via FragGate (~41)."));
     assert.ok(aiBody.includes("Softwares note:"));
     assert.ok(aiBody.includes(ARK_DOWNLOAD));
-    assert.ok(aiBody.includes("Whitestone: ephemeral pro se; not a lawyer"));
+    assert.ok(aiBody.includes("Whitestone: ephemeral pro se"));
     assert.ok(llmsBody.includes("PeaceLock"));
     assert.ok(llmsBody.includes(PEACELOCK_WORKER));
     assert.ok(llmsBody.includes("AZMail"));
@@ -1133,7 +1132,7 @@ describe("SEO routes", () => {
       ld["@graph"][0].disambiguatingDescription,
       /two Levitical musicians Aziel and Eliab named together in 1 Chronicles 15:20/,
     );
-    assert.match(ld["@graph"][0].disambiguatingDescription, /Not euaziel\.site/);
+    assert.doesNotMatch(ld["@graph"][0].disambiguatingDescription, /euaziel|Aziel S\.|Flutter/i);
     assert.ok(ld["@graph"][0].description.includes("1 Chronicles 15:20"));
     assert.ok(ld["@graph"][0].description.includes("researcher, digital rights activist, software developer/designer, author, and philosopher of published work"));
     assert.deepEqual(ld["@graph"][0].jobTitle, [
@@ -2326,11 +2325,11 @@ describe("live software catalog", () => {
     assert.equal(fallback.worker_home, SPECTRALLOCK_WORKER);
     assert.match(fallback.one_line, /leftover container bytes recover honestly/);
     assert.match(fallback.description, /SL-UNREDACT-OPAQUE/);
-    assert.match(fallback.description, /not catalog FragGate door ops/);
+    assert.match(fallback.description, /FragGate LIVE_OPS stay health/);
     assert.match(fallback.description, /revision_graph/);
     assert.match(fallback.description, /\/v1\/recover/);
     assert.match(fallback.description, /\/v1\/handwriting/);
-    assert.match(fallback.description, /not lab, not ESDA, not a court finding/);
+    assert.match(fallback.description, /physical ink scan heuristics/);
     assert.doesNotMatch(fallback.description, /FragGate door op[\s\S]*unredact as LIVE_OP/i);
 
     const cite = spectrallockCite();
@@ -2411,7 +2410,7 @@ describe("live software catalog", () => {
     assert.ok(namedSpectral.description.includes("leftover container bytes recover honestly"));
     assert.ok(namedSpectral.description.includes("Never OCR-from-black-box"));
     assert.ok(namedSpectral.description.includes("/v1/recover"));
-    assert.ok(namedSpectral.description.includes("not ESDA"));
+    assert.ok(namedSpectral.description.includes("physical ink scan heuristics"));
   });
 
   it("normalizes mashed live runtime names to aziel-runtime and keeps Plain→Gate→Lock", async () => {
@@ -2797,7 +2796,7 @@ describe("suite node mesh", () => {
     assert.equal(QNS_CD.packet, "QNS1");
     assert.equal(QNS_CD.software_tab, false);
     assert.equal(QNS_CD.node_gate, false);
-    assert.match(QNS_CD.note, /QNS-CD is not Node Gate/);
+    assert.match(QNS_CD.note, /photon QNS1 packet transfer/);
     assert.equal(QNS_CD.public_proxy, false);
     assert.equal(QNS_CD.qnsd, "local");
     assert.equal(QNS_CD.mesh_default, "on");

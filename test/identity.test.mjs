@@ -133,7 +133,7 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     assert.deepEqual(names, personAlternateNames());
   });
 
-  it("locks living researcher copy, 15:20 musicians, and euaziel machine NOT", () => {
+  it("locks living researcher copy and 15:20 concordance mention", () => {
     const person = personJsonLd();
     assert.equal(person["@id"], "https://www.azieleliab.com/#aziel");
     assert.ok(person.description.startsWith(WHAT_AZIEL_ELIAB_DOES));
@@ -144,7 +144,7 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     assert.doesNotMatch(person.description, /Aziel S\.|euaziel|Flutter/i);
     assert.equal(person.disambiguatingDescription, DISAMBIGUATING_DESCRIPTION);
     assert.match(person.disambiguatingDescription, /two Levitical musicians Aziel and Eliab named together in 1 Chronicles 15:20/);
-    assert.match(person.disambiguatingDescription, /Not euaziel\.site/);
+    assert.doesNotMatch(person.disambiguatingDescription, /euaziel|Aziel S\.|Flutter/i);
     assert.deepEqual(person.knowsAbout, PERSON_KNOWS_ABOUT);
     assert.deepEqual(person.jobTitle, PERSON_JOB_TITLE);
     assert.equal(person.additionalName, "Elroi");
@@ -226,13 +226,13 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     assert.ok(answers.includes(SPECTRALLOCK_FAQ_ANSWER));
     assert.ok(SPECTRALLOCK_FAQ_ANSWER.includes("SL-UNREDACT-OPAQUE"));
     assert.ok(SPECTRALLOCK_FAQ_ANSWER.includes("leftover_bytes"));
-    assert.ok(SPECTRALLOCK_FAQ_ANSWER.includes("not catalog FragGate door ops"));
+    assert.ok(SPECTRALLOCK_FAQ_ANSWER.includes("never invent letters"));
     assert.ok(SPECTRALLOCK_FAQ_ANSWER.includes("Never OCR-from-black-box"));
     assert.ok(SPECTRALLOCK_FAQ_ANSWER.includes("/v1/unredact"));
     assert.ok(SPECTRALLOCK_FAQ_ANSWER.includes("/v1/recover"));
     assert.ok(SPECTRALLOCK_FAQ_ANSWER.includes("/v1/handwriting"));
     assert.ok(SPECTRALLOCK_FAQ_ANSWER.includes("revision_graph"));
-    assert.ok(SPECTRALLOCK_FAQ_ANSWER.includes("not ESDA"));
+    assert.ok(SPECTRALLOCK_FAQ_ANSWER.includes("physical ink scan heuristics"));
     assert.ok(SPECTRALLOCK_FAQ_ANSWER.includes("OCR runs only after structural recovery"));
     assert.ok(WHAT_HE_DOES_ANSWER.startsWith(WHAT_AZIEL_ELIAB_DOES));
     assert.ok(WHAT_HE_DOES_ANSWER.includes(RESEARCH_ADDENDUM));
@@ -245,10 +245,9 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     assert.ok(SOFTWARES_ADDENDUM.includes("one phrase opens one vault"));
     assert.ok(SOFTWARES_ADDENDUM.includes(ARK_DOWNLOAD));
     assert.ok(SOFTWARES_ADDENDUM.includes("worker_home same host"));
-    assert.ok(SOFTWARES_ADDENDUM.includes("Not a hosted unlock"));
-    assert.ok(SOFTWARES_ADDENDUM.includes("Whitestone: ephemeral pro se; not a lawyer"));
+    assert.ok(SOFTWARES_ADDENDUM.includes("Whitestone: ephemeral pro se"));
     assert.ok(SPECTRALLOCK_SOFTWARES_LINE.includes("leftover container bytes recover honestly"));
-    assert.ok(SPECTRALLOCK_SOFTWARES_LINE.includes("Not FragGate invent"));
+    assert.ok(SPECTRALLOCK_SOFTWARES_LINE.includes("Never OCR-from-black-box"));
     assert.ok(SPECTRALLOCK_SOFTWARES_LINE.includes("/v1/recover"));
     assert.ok(SPECTRALLOCK_SOFTWARES_LINE.includes("/v1/handwriting"));
     assert.ok(SPECTRALLOCK_SOFTWARES_LINE.includes("revision_graph"));
@@ -256,7 +255,7 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     assert.match(MISSION.underrated_material, /SpectralLock leftover-bytes recover/);
     assert.match(MISSION.underrated_material, /\/v1\/recover/);
     assert.match(MISSION.underrated_material, /\/v1\/handwriting/);
-    assert.match(MISSION.underrated_material, /not FragGate invent/);
+    assert.match(MISSION.underrated_material, /never OCR-from-black-box/);
     assert.match(MISSION.underrated_material, /TrajectoryLock advisory only/);
     assert.doesNotMatch(SOFTWARES_ADDENDUM, /\bviews?\b|\bdownloads?\s+\d|\bcount\s+\d/i);
     const softwareFaq = faq.mainEntity.find((q) => q.name === "What software does Aziel Eliab make?");
@@ -328,7 +327,7 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     assert.ok(body.includes(WHAT_HE_DOES_SOFTWARES));
     assert.ok(body.includes(SOFTWARES_ADDENDUM));
     assert.ok(body.includes(ARK_DOWNLOAD));
-    assert.ok(body.includes("Whitestone — ephemeral pro se; not a lawyer"));
+    assert.ok(body.includes("Whitestone — ephemeral pro se."));
     assert.ok(body.includes(SPECTRALLOCK_SOFTWARES_LINE));
     assert.ok(body.includes("/v1/recover"));
     assert.ok(body.includes("/v1/handwriting"));
@@ -349,14 +348,14 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     assert.ok(body.includes(DISAMBIGUATING_DESCRIPTION));
     assert.match(WHO_IS_ANSWER, /1 Chronicles 15:20/);
     assert.doesNotMatch(SOFTWARE_DEVELOPER_ANSWER, /1 Chronicles|Aziel S\.|Flutter/i);
-    assert.match(DISAMBIGUATING_DESCRIPTION, /Not euaziel\.site; not Aziel S\. \(Flutter\/portfolio\)/);
+    assert.doesNotMatch(DISAMBIGUATING_DESCRIPTION, /euaziel|Aziel S\.|Flutter/i);
     assert.doesNotMatch(WHO_IS_ANSWER + "\n" + SOFTWARE_DEVELOPER_ANSWER, /Flutter|euaziel/i);
     assert.doesNotMatch(body.replaceAll(DISAMBIGUATING_DESCRIPTION, ""), /Flutter/i);
     assert.ok(body.includes(LIBRARY_STATS));
     assert.ok(body.includes(LIBRARY_STATS_FALLBACK));
     assert.ok(!body.includes(LIBRARY + "/v1/stats"));
     assert.ok(body.includes(HEDIDNTJUMP + "/api/stats"));
-    assert.ok(body.includes("## Published About (work, not biography)"));
+    assert.ok(body.includes("## Published About"));
     assert.ok(body.includes("## Site coverage"));
     assert.equal(SITE_COVERAGE.length, 5);
     assert.deepEqual(SITE_COVERAGE.map((row) => row.id), ["ae", "corpus", "godlock", "hedidntjump", "runtime"]);
@@ -492,7 +491,7 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     assert.ok(llms.includes(SPECTRALLOCK_FAQ_NAME));
     assert.ok(llms.includes("SL-UNREDACT-OPAQUE"));
     assert.ok(llms.includes("leftover container bytes recover honestly"));
-    assert.ok(llms.includes("not a FragGate door op"));
+    assert.ok(llms.includes("physical ink scan heuristics"));
     assert.ok(llms.includes("/v1/recover"));
     assert.ok(llms.includes("/v1/handwriting"));
     assert.ok(llms.includes("revision_graph"));
@@ -505,7 +504,7 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     assert.ok(aiHasBrief.includes("never OCR-from-black-box"));
     assert.ok(aiHasBrief.includes("/v1/recover"));
     assert.ok(aiHasBrief.includes("/v1/handwriting"));
-    assert.ok(aiHasBrief.includes("NOT lab/ESDA/court"));
+    assert.ok(aiHasBrief.includes("physical ink scan heuristics"));
     assert.ok(aiHasBrief.includes(SOFTWARES_ADDENDUM));
     assert.ok(aiHasBrief.includes("Softwares note: " + SOFTWARES_ADDENDUM));
     assert.ok(aiHasBrief.includes(RESEARCH_ADDENDUM));

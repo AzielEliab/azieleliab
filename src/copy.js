@@ -105,11 +105,11 @@ export const TRADES_RUNTIME_HEALTH = TRADES_RUNTIME + "/v1/health";
 export const TRADES_RUNTIME_STATS = TRADES_RUNTIME + "/v1/stats";
 export const TRADES_RUNTIME_ID = CANON_ORIGIN + "/#sister-trades-runtime";
 export const TRADES_RUNTIME_ONE_LINE =
-  "Shadow-first local BYO runtime for HVAC/plumbing/electrical/sewer/cross-trades. BYO ServiceTitan+ProBooks. Human authority. Not hosted company OS. live_backends false.";
+  "Shadow-first local BYO runtime for HVAC/plumbing/electrical/sewer/cross-trades. BYO ServiceTitan+ProBooks. Human authority. live_backends false.";
 export const SISTER_PRODUCTS_NOTE =
-  "Sister products cited honestly. Not Softwares-tab engines. Not FragGate true-engines. Not MASTER-33 isolation software. aziel-runtime fraggate_call does not execute their company ops. Identity Aziel Eliab only.";
+  "Sister products cited honestly. aziel-runtime fraggate_call does not execute their company ops. Identity Aziel Eliab only.";
 export const TRADES_RUNTIME_NOTE =
-  "Trades-Runtime is a separate local-first BYO field-trades runtime. Not aziel-runtime wholesale. Not a FragGate-exec true engine. Product MCP is read-only (health, stats, cite, skill). No ServiceTitan or ProBooks write-back. No tenant data on the public Worker. GitHub Pages stay off. Public get = Worker download. Dual surface: agent chat has no technical UI chrome; Worker / local install / counted download stay complete human software. live_backends false. Identity Aziel Eliab only.";
+  "Trades-Runtime is a separate local-first BYO field-trades runtime. Product MCP is read-only (health, stats, cite, skill). No ServiceTitan or ProBooks write-back. No tenant data on the public Worker. GitHub Pages stay off. Public get = Worker download. Dual surface: agent chat has no technical UI chrome; Worker / local install / counted download stay complete human software. live_backends false. Identity Aziel Eliab only.";
 export const TRADES_RUNTIME_SAME_AS = [
   TRADES_RUNTIME_GITHUB,
   TRADES_RUNTIME + "/",
@@ -293,11 +293,11 @@ export const SPECTRALLOCK_DIGEST = "3427dbcf2932b6bf4c6cf80735efd171b75519066e01
 export const SPECTRALLOCK_ONE_LINE =
   "Preview a small overlay on an image; leftover container bytes recover honestly, opaque rewrite refuses.";
 export const SPECTRALLOCK_DESCRIPTION =
-  "Use SpectralLock for a 256-pixel overlay preview with an optional inject true|false color switch, plus a metadata-hash check. Inject ON paints membership; it does not recover pigment. Locate / lift / recover / refuse live in the vendored overlay (product Worker /v1/unredact) — leftover-bytes recover is honest (object id / offset / stream); opaque replace with no leftover bytes refuses SL-UNREDACT-OPAQUE; heatmaps are not transcripts; never invent letters; never OCR-from-black-box. After spectrallock#13 LIVE (merge 4af8fcb): GET|POST /v1/unredact is deep PDF + revision_graph + per-revision copies; GET|POST /v1/recover is universal artifact recover (NO-LIE; LIVE vs SLOT); GET|POST /v1/handwriting is physical ink scan heuristics — not lab, not ESDA, not a court finding. OCR only after structural recovery; never reconstructs covered letters from context. Hosted preview is 256 px PNG; the full pipeline is the Python package. It exists as a hosted preview, not a spectrometer or forensic instrument. Unredact / recover / handwriting are not catalog FragGate door ops.";
+  "Use SpectralLock for a 256-pixel overlay preview with an optional inject true|false color switch, plus a metadata-hash check. Inject ON paints membership. Locate / lift / recover / refuse live in the vendored overlay (product Worker /v1/unredact) — leftover-bytes recover is honest (object id / offset / stream); opaque replace with no leftover bytes refuses SL-UNREDACT-OPAQUE; never invent letters; never OCR-from-black-box. After spectrallock#13 LIVE (merge 4af8fcb): GET|POST /v1/unredact is deep PDF + revision_graph + per-revision copies; GET|POST /v1/recover is universal artifact recover (NO-LIE; LIVE vs SLOT); GET|POST /v1/handwriting is physical ink scan heuristics. OCR only after structural recovery; never reconstructs covered letters from context. Hosted preview is 256 px PNG; the full pipeline is the Python package. It exists as a hosted preview. FragGate LIVE_OPS stay health / modes / targets / overlay / verify / doctor / skill.";
 export const SPECTRALLOCK_NOTE =
-  "Leftover container bytes = honest recover path (leftover_bytes, recovered_from). Opaque rewrite with nothing left refuses SL-UNREDACT-OPAQUE — do not invent letters. Locate / lift / recover / refuse. Heatmap ≠ transcript. Inject ON is paint, not pigment. Worker LIVE after spectrallock#13 (merge 4af8fcb): GET|POST /v1/unredact (deep PDF + revision_graph + per-revision copies); GET|POST /v1/recover (universal artifact recover; NO-LIE; LIVE vs SLOT); GET|POST /v1/handwriting (physical ink scan heuristics; NOT lab/ESDA/court). Unredact / recover / handwriting are not catalog FragGate door ops. FragGate LIVE_OPS stay health / modes / targets / overlay / verify / doctor / skill. OCR after structural only. Never OCR-from-black-box. Never reconstruct covered letters from context. Lamb Lens: Service → Clarity → Peace. Author Aziel Eliab only. NO-LIE.";
+  "Leftover container bytes = honest recover path (leftover_bytes, recovered_from). Opaque rewrite with nothing left refuses SL-UNREDACT-OPAQUE — do not invent letters. Locate / lift / recover / refuse. Inject ON is paint. Worker LIVE after spectrallock#13 (merge 4af8fcb): GET|POST /v1/unredact (deep PDF + revision_graph + per-revision copies); GET|POST /v1/recover (universal artifact recover; NO-LIE; LIVE vs SLOT); GET|POST /v1/handwriting (physical ink scan heuristics). FragGate LIVE_OPS stay health / modes / targets / overlay / verify / doctor / skill. OCR after structural only. Never OCR-from-black-box. Never reconstruct covered letters from context. Lamb Lens: Service → Clarity → Peace. Author Aziel Eliab only. NO-LIE.";
 export const SPECTRALLOCK_OCR_NOTE =
-  "OCR runs only after structural recovery and never reconstructs covered letters from context. Context guesses are not recovery. Heatmaps are not transcripts. Never OCR-from-black-box. Never claim pigment recovery, ESDA, chemical, lab, or forensic certification. Author Aziel Eliab. NO-LIE.";
+  "OCR runs only after structural recovery and never reconstructs covered letters from context. Never OCR-from-black-box. Never claim pigment recovery, ESDA, chemical, lab, or forensic certification. Author Aziel Eliab. NO-LIE.";
 export const SPECTRALLOCK_FRAGGATE_OPS = Object.freeze([
   "health",
   "modes",
@@ -890,7 +890,7 @@ export const SOFTWARE_EXTRAS = [
     enabled_default: false,
     path: "/v1/mesh",
     spec: "QNM-BUILD-1.0",
-    note: "Suite rollup. Not a Softwares-tab product. Read-only suite presence is on (display from runtime). GET never enables. Operator-armed Node Gate / neighbor heal / network ON. AZVPN auto_use + vpn:true (HTTPS/WS REAL; WG/OpenVPN SLOT). Channel plane wifi/bt/rf/photon ON cites; worker_hardware:false.",
+    note: "Suite rollup. Read-only suite presence is on (display from runtime). GET never enables. Operator-armed Node Gate / neighbor heal / network ON. AZVPN auto_use + vpn:true (HTTPS/WS REAL; WG/OpenVPN SLOT). Channel plane wifi/bt/rf/photon ON cites; worker_hardware:false.",
   },
   {
     slug: TRADES_RUNTIME_SLUG,

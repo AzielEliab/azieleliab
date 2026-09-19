@@ -38,7 +38,7 @@ identifiers:
     description: Digital Library MASTER
   - type: url
     value: "https://godlock.uk/"
-    description: GodLock (product, not identity)
+    description: GodLock (product)
   - type: url
     value: "https://www.hedidntjump.com/"
     description: He Didn't Jump archive

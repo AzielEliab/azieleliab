@@ -98,13 +98,13 @@ describe("Trades-Runtime sister-product machine cite", () => {
       assert.ok(body.includes("llms.txt: " + TRADES_RUNTIME_LLMS));
       assert.ok(body.includes("live_backends: false"));
       assert.ok(body.includes("fraggate_call: false"));
-      assert.ok(body.includes("Not a second FragGate door"));
+      assert.ok(body.includes("FragGate remains THE single Softwares door"));
       assert.ok(body.includes(AI_CLIENTS_SENTENCE));
       for (const client of FULL_CLIENT_MARKERS) {
         assert.ok(body.includes(client), "missing client " + client);
       }
     }
-    assert.ok(llms.includes("GET " + TRADES_RUNTIME + "/  (sister product Trades-Runtime; not FragGate exec)"));
+    assert.ok(llms.includes("GET " + TRADES_RUNTIME + "/  (sister product Trades-Runtime)"));
     assert.ok(llms.includes("POST " + TRADES_RUNTIME_MCP));
     assert.equal(AI_CLIENTS.length >= 16, true);
   });
