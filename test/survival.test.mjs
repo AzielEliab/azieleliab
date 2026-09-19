@@ -248,7 +248,7 @@ describe("BAN-SURVIVAL hub pull", () => {
     assert.ok(llms.includes(MIRAGEGRID_BRIDGE));
     assert.ok(llms.includes(CALLING_NAME_ALERT_PREFIX));
     assert.ok(llms.includes("platforms all LIVE") || llms.includes("Platforms all LIVE"));
-    assert.ok(llms.includes("GodLock is a product, not identity"));
+    assert.ok(llms.includes("GodLock is a product"));
     assert.ok(llms.includes("Service → Clarity → Peace"));
     assert.ok(llms.includes(SURVIVAL_LOCAL));
 

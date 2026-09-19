@@ -112,7 +112,7 @@ export function survivalCite() {
     survival: "bytes↔hash",
     crawlers: "extra shelves, not resurrection",
     law: SURVIVAL_LAW.slice(),
-    note: "Chrome cite. Outside hashed /ingest.txt tip bytes. Not a Softwares product.",
+    note: "Chrome cite. Outside hashed /ingest.txt tip bytes.",
   };
 }
 
@@ -127,7 +127,7 @@ export function nolieCite() {
     author_voice_required: false,
     network_never_lies: true,
     law: NOLIE_LAW.slice(),
-    note: "Chrome cite. Outside hashed /ingest.txt tip bytes. Not a Softwares product.",
+    note: "Chrome cite. Outside hashed /ingest.txt tip bytes.",
   };
 }
 
@@ -136,12 +136,12 @@ export function survivalLlmsBlock() {
     "## " + SURVIVAL_SPEC,
     "",
     ...SURVIVAL_LAW.map((line) => "- " + line),
-    "- Not a Softwares product. Outside hashed tip bytes.",
+    "- Outside hashed tip bytes.",
     "",
     "## " + NOLIE_SPEC,
     "",
     ...NOLIE_LAW.map((line) => "- " + line),
-    "- Not a Softwares product. Outside hashed tip bytes.",
+    "- Outside hashed tip bytes.",
     "",
   ].join("\n");
 }

@@ -63,7 +63,7 @@ export const QNS_CD = Object.freeze({
   author: AUTHOR,
   identity: AUTHOR,
   note:
-    "QNS-CD-1.0 photon QNS1 packet transfer. Local qnsd is coded in qnm-node. Runtime cites + catalog field live in aziel-runtime. AZInterface has pair custody. Hub cite / Worker mesh cross-map only — not a Softwares-tab product. No public qnsd proxy. QNS-CD is not Node Gate. Read-only suite presence is on (display from runtime). Author Aziel Eliab only.",
+    "QNS-CD-1.0 photon QNS1 packet transfer. Local qnsd is coded in qnm-node. Runtime cites + catalog field live in aziel-runtime. AZInterface has pair custody. Hub cite / Worker mesh cross-map only. Read-only suite presence is on (display from runtime). Author Aziel Eliab only.",
 });
 
 /** Operator-armed mesh cites from runtime GET /v1/mesh (2026-09-17). Not a login panel. */
@@ -100,7 +100,7 @@ export const CHANNEL_PLANE = Object.freeze({
   default_vpn_backend: "azvpn",
   auto_use: true,
   note:
-    "Operator-armed communication channel cites (wifi / bluetooth / rf / photon) are ON as a channel plane. Live OS/hardware bearers run on local qnm-node / qnsd. Public VPN auto-binds AZVPN (HTTPS/WS REAL; WireGuard/OpenVPN SLOT; GET cites only). worker_hardware:false. public_proxy false. Pairing ≠ tunnel.",
+    "Operator-armed communication channel cites (wifi / bluetooth / rf / photon) are ON as a channel plane. Live OS/hardware bearers run on local qnm-node / qnsd. Public VPN auto-binds AZVPN (HTTPS/WS REAL; WireGuard/OpenVPN SLOT; GET cites only). worker_hardware:false. public_proxy false.",
 });
 
 export const VPN_CITE = Object.freeze({
@@ -123,13 +123,13 @@ export const VPN_CITE = Object.freeze({
   origin_hiding: false,
   get_never_opens: true,
   note:
-    "AZVPN auto_use + vpn:true. HTTPS/WS REAL; WireGuard/OpenVPN/L3 SLOT. GET /v1/mesh cites the bind and never opens a session. Not Tor. Not origin-hiding.",
+    "AZVPN auto_use + vpn:true. HTTPS/WS REAL; WireGuard/OpenVPN/L3 SLOT. GET /v1/mesh cites the bind and never opens a session.",
 });
 
 export const MESH_DEFAULT = "on";
 
 export const MESH_NOTE =
-  "QNM-BUILD-1.0 suite rollup (live/locked/isolated). live_nodes is presence size — not an exec API, not BAN-SURVIVAL live_doors, not Cap-7. Read-only suite presence is on — display from runtime. GET never enables. Operator enable requires a declared bearer (example: suite-presence). Mesh ON. Operator-armed Node Gate + neighbor heal + network ON (2026-09-17) — not a login-recovery / IP panel. AZVPN auto_use + vpn:true (HTTPS/WS REAL; WireGuard/OpenVPN SLOT; GET cites only, never opens a session). Channel plane wifi/bluetooth/rf/photon ON cites; worker_hardware:false. Not a Softwares-tab product. Cross-map QNS-CD-1.0 (photon QNS1 packet transfer). Local qnsd is qnm-node only — no public proxy. Author Aziel Eliab only.";
+  "QNM-BUILD-1.0 suite rollup (live/locked/isolated). live_nodes is presence size. Read-only suite presence is on — display from runtime. GET never enables. Operator enable requires a declared bearer (example: suite-presence). Mesh ON. Operator-armed Node Gate + neighbor heal + network ON (2026-09-17). AZVPN auto_use + vpn:true (HTTPS/WS REAL; WireGuard/OpenVPN SLOT; GET cites only, never opens a session). Channel plane wifi/bluetooth/rf/photon ON cites; worker_hardware:false. Cross-map QNS-CD-1.0 (photon QNS1 packet transfer). Local qnsd is qnm-node only. Author Aziel Eliab only.";
 
 function qnsCiteFields() {
   return {

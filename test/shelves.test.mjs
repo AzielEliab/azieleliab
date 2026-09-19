@@ -297,10 +297,8 @@ describe("COLD-MULTI-SHELF-1.0 AZindex gate", () => {
       assert.ok(text.includes(CODEBERG_PACK_SHA256), name);
       assert.ok(text.includes("until Framagit verifies"), name);
       assert.doesNotMatch(text, /Framagit OR GitLab/, name);
-      assert.ok(text.includes("CNS-GITFLIC-EMAIL"), name);
-      assert.ok(text.includes("CNS-GITLAB-CF-LOOP"), name);
+      assert.doesNotMatch(text, /GitFlic blocked|GitLab blocked|IP banned|CNS-ZENODO-IP-BAN|CNS-GITFLIC-EMAIL|CNS-GITLAB-CF-LOOP/, name);
       assert.doesNotMatch(text, /archive\.org unverified/, name);
-      assert.ok(text.includes("CNS-ZENODO-IP-BAN"), name);
       assert.ok(text.includes("CNS-OPERATOR-ATTEST"), name);
       assert.ok(text.includes(LAMB_LENS_PATH), name);
       assert.ok(text.includes(NO_FAN), name);
