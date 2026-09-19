@@ -349,7 +349,7 @@ describe("software doors", () => {
     assert.equal(cite.runtime_doors[2].label, "Suite pack");
     assert.equal(cite.runtime_sot.git_short, "6a3798a");
     assert.equal(cite.runtime_sot.version_id, "105fa1ee");
-    assert.equal(cite., false);
+    assert.equal("" in cite, false);
     assert.equal(cite.master_33, false);
     assert.equal(cite.mcp.softwares, "fraggate_call only");
     assert.equal(cite.node_gate, true);
@@ -1016,7 +1016,7 @@ describe("SEO routes", () => {
     assert.equal(citeBody.vpn.kinds.wireguard, "SLOT");
     assert.equal(citeBody.channel_plane.photon, "on");
     assert.equal(citeBody.worker_hardware, false);
-    assert.equal(citeBody., false);
+    assert.equal("" in citeBody, false);
     assert.equal(citeBody.master_33, false);
     assert.equal(citeBody.runtime_version_id, "105fa1ee");
     assert.equal(citeBody.runtime_git_short, "6a3798a");
@@ -1080,6 +1080,48 @@ describe("SEO routes", () => {
     assert.deepEqual(citeBody, citeDoc());
     assert.ok(sitemapXml().includes(CANON_ORIGIN + "/"));
     assert.ok(sitemapXml().includes(RUNTIME_LOCAL));
+  });
+
+  it("keeps Plane LIVE|SLOT facts and drops scoreboard / survival copy", () => {
+    const SCOREBOARD = [
+      //i,
+      //i,
+      /durable/i,
+      /hard to kill/i,
+      /survival/i,
+      /unkillable/i,
+      //i,
+      /fielded[_-]?100/i,
+      /fielded 100/i,
+      /69\/100/,
+      //,
+      /80\+/,
+      //i,
+      /scoreboard/i,
+      /preempt toward/i,
+      /never publish fielded/i,
+      /never fielded/i,
+    ];
+    const planes = [
+      ["llms.txt", llmsTxt()],
+      ["ai.txt", aiTxt()],
+      ["cite.json", JSON.stringify(citeDoc())],
+    ];
+    for (const [name, text] of planes) {
+      assert.match(text, /Plane A/, name + " Plane A");
+      assert.match(text, /Plane B/, name + " Plane B");
+      assert.match(text, /SLOT/, name + " SLOT");
+      for (const ban of SCOREBOARD) {
+        assert.doesNotMatch(text, ban, name + " " + ban);
+      }
+    }
+    for (const ban of SCOREBOARD) {
+      assert.doesNotMatch(robotsTxt(), ban, "robots.txt " + ban);
+    }
+    assert.match(llmsTxt(), /LIVE only after hash verify/);
+    assert.equal("" in citeDoc(), false);
+    assert.equal("" in citeDoc().mcp, false);
+    assert.equal("" in citeDoc().dual_surface, false);
   });
 
   it("embeds Person + WebSite + Runtime JSON-LD and a www canonical", () => {
@@ -2516,7 +2558,7 @@ describe("live software catalog", () => {
     assert.equal(doc.count, 41);
     assert.equal(CATALOG_SLUGS.length, 41);
     assert.equal(CATALOG_KV_KEY, "software:catalog:v4");
-    assert.equal(doc., false);
+    assert.equal("" in doc, false);
     assert.ok(doc.tab_placement_slugs.includes("azvpn"));
     assert.ok(doc.tab_placement_slugs.includes("mmconsensus"));
     assert.ok(doc.tab_placement_slugs.includes("toolbench"));
@@ -2628,7 +2670,7 @@ describe("live software catalog", () => {
     const doc = await index.json();
     assert.equal(doc.source, "live");
     assert.equal(doc.count, 9);
-    assert.equal(doc., false);
+    assert.equal("" in doc, false);
     assert.deepEqual(doc.tab_placement_slugs.slice(0, 4), ["azinterface", "decisiongate", "forgereceipts", "azcoherence"]);
     const azvpn = doc.products.find((s) => s.slug === "azvpn");
     assert.equal(azvpn.url, RUNTIME + "/#task-azvpn");
@@ -2701,7 +2743,7 @@ describe("live software catalog", () => {
     }
     const body = softwareIndexBody(packed);
     assert.equal(body.count, 41);
-    assert.equal(body., false);
+    assert.equal("" in body, false);
     assert.ok(body.products.every((p) => p.url && /^https?:\/\//i.test(p.url)));
     assert.ok(body.products.some((p) => p.slug === "azvpn" && p.url === RUNTIME + "/#task-azvpn"));
     assert.ok(!body.products.some((p) => /azvpn-download-tracker/.test(p.url || "")));
@@ -2784,7 +2826,7 @@ describe("suite node mesh", () => {
     assert.equal(off.vpn.auto_use, true);
     assert.equal(off.channel_plane.wifi, "on");
     assert.equal(off.worker_hardware, false);
-    assert.equal(off., false);
+    assert.equal("" in off, false);
     assert.equal(off.login_mesh, false);
     assert.match(MESH_NOTE, /QNS-CD-1\.0/);
     assert.match(MESH_NOTE, /GET never enables/);

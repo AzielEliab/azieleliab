@@ -38,7 +38,7 @@ About aliases `/about`, `/AzielEliab`, `/aziel-eliab` 200 the same homepage HTML
 
 ## Mesh (read-only ON)
 
-Read-only suite presence is **on**. Display `live_nodes` from aziel-runtime. Mesh ON. Operator-armed Node Gate + neighbor heal + network ON (not a login-recovery / IP panel). AZVPN auto_use + vpn:true (HTTPS/WS REAL; WireGuard/OpenVPN SLOT; GET cites only). Channel plane wifi/bluetooth/rf/photon ON cites; worker_hardware:false. Softwares via fraggate_call only; master_33:false; FragGate sole door. Never .
+Read-only suite presence is **on**. Display `live_nodes` from aziel-runtime. Mesh ON. Operator-armed Node Gate + neighbor heal + network ON (not a login-recovery / IP panel). AZVPN auto_use + vpn:true (HTTPS/WS REAL; WireGuard/OpenVPN SLOT; GET cites only). Channel plane wifi/bluetooth/rf/photon ON cites; worker_hardware:false. Softwares via fraggate_call only; master_33:false; FragGate sole door.
 
 | Path | What |
 |------|------|
