@@ -36,10 +36,14 @@ import {
   WHAT_HE_DOES_FAQ_NAMES,
   WHAT_HE_DOES_SOFTWARES,
   SOFTWARES_ADDENDUM,
+  SPECTRALLOCK_FAQ_ANSWER,
+  SPECTRALLOCK_FAQ_NAME,
+  SPECTRALLOCK_SOFTWARES_LINE,
   RESEARCH_ADDENDUM,
   HARDWARE_ADDENDUM,
   SITE_COVERAGE,
   SITE_COVERAGE_ANSWER,
+  MISSION,
   LIBRARY_STATS,
   LIBRARY_STATS_FALLBACK,
   STATS_COUNTERS,
@@ -207,6 +211,8 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     ]);
     for (const name of WHAT_HE_DOES_FAQ_NAMES) assert.ok(questions.includes(name), name);
     assert.ok(questions.includes("Who is Aziel Eliab the software developer?"));
+    assert.ok(questions.includes(SPECTRALLOCK_FAQ_NAME));
+    assert.equal(SPECTRALLOCK_FAQ_NAME, "Does SpectralLock OCR or invent letters from a black-box redaction?");
     assert.ok(questions.includes(CONCORDANCE_FAQ_NAME));
     assert.equal(CONCORDANCE_FAQ_NAME, "Is Aziel Eliab the two musicians named in 1 Chronicles 15:20?");
     assert.ok(questions.some((q) => /1 Chronicles 15:20/i.test(q)));
@@ -217,6 +223,12 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     const answers = faq.mainEntity.map((q) => q.acceptedAnswer.text);
     assert.ok(answers.includes(WHO_IS_ANSWER));
     assert.ok(answers.includes(WHAT_HE_DOES_ANSWER));
+    assert.ok(answers.includes(SPECTRALLOCK_FAQ_ANSWER));
+    assert.ok(SPECTRALLOCK_FAQ_ANSWER.includes("SL-UNREDACT-OPAQUE"));
+    assert.ok(SPECTRALLOCK_FAQ_ANSWER.includes("leftover_bytes"));
+    assert.ok(SPECTRALLOCK_FAQ_ANSWER.includes("not a catalog FragGate door op"));
+    assert.ok(SPECTRALLOCK_FAQ_ANSWER.includes("Never OCR-from-black-box"));
+    assert.ok(!SPECTRALLOCK_FAQ_ANSWER.includes("unredact") || SPECTRALLOCK_FAQ_ANSWER.includes("/v1/unredact"));
     assert.ok(WHAT_HE_DOES_ANSWER.startsWith(WHAT_AZIEL_ELIAB_DOES));
     assert.ok(WHAT_HE_DOES_ANSWER.includes(RESEARCH_ADDENDUM));
     assert.ok(WHAT_HE_DOES_ANSWER.includes(HARDWARE_ADDENDUM));
@@ -230,6 +242,11 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     assert.ok(SOFTWARES_ADDENDUM.includes("worker_home same host"));
     assert.ok(SOFTWARES_ADDENDUM.includes("Not a hosted unlock"));
     assert.ok(SOFTWARES_ADDENDUM.includes("Whitestone: ephemeral pro se; not a lawyer"));
+    assert.ok(SPECTRALLOCK_SOFTWARES_LINE.includes("leftover container bytes recover honestly"));
+    assert.ok(SPECTRALLOCK_SOFTWARES_LINE.includes("not a FragGate door op"));
+    assert.doesNotMatch(MISSION.underrated_material, /SpectralLock\/TrajectoryLock advisory only/);
+    assert.match(MISSION.underrated_material, /SpectralLock leftover-bytes recover/);
+    assert.match(MISSION.underrated_material, /TrajectoryLock advisory only/);
     assert.doesNotMatch(SOFTWARES_ADDENDUM, /\bviews?\b|\bdownloads?\s+\d|\bcount\s+\d/i);
     const softwareFaq = faq.mainEntity.find((q) => q.name === "What software does Aziel Eliab make?");
     assert.ok(softwareFaq);
@@ -385,6 +402,9 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     assert.deepEqual(doc.what_he_does_faq, WHAT_HE_DOES_FAQ_NAMES);
     assert.equal(doc.what_he_does_softwares, WHAT_HE_DOES_SOFTWARES);
     assert.equal(doc.softwares_addendum, SOFTWARES_ADDENDUM);
+    assert.equal(doc.spectrallock.refuse_code, "SL-UNREDACT-OPAQUE");
+    assert.equal(doc.spectrallock.fraggate_unredact_door_op, false);
+    assert.match(doc.mission.underrated_material, /SpectralLock leftover-bytes recover/);
     assert.equal(doc.research_addendum, RESEARCH_ADDENDUM);
     assert.equal(doc.hardware_addendum, HARDWARE_ADDENDUM);
     assert.equal(doc.library_front_door.records_packed, 326);
@@ -448,9 +468,16 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     assert.ok(llms.includes("AZDOC-9B0E3D62EDCC"));
     assert.ok(llms.includes("AZDOC-A011CAD23671"));
     for (const name of WHAT_HE_DOES_FAQ_NAMES) assert.ok(llms.includes(name), "llms " + name);
+    assert.ok(llms.includes(SPECTRALLOCK_FAQ_NAME));
+    assert.ok(llms.includes("SL-UNREDACT-OPAQUE"));
+    assert.ok(llms.includes("leftover container bytes recover honestly"));
+    assert.ok(llms.includes("not a FragGate door op"));
     const aiHasBrief = aiTxt();
     assert.ok(aiHasBrief.includes(WHAT_AZIEL_ELIAB_DOES));
     assert.ok(aiHasBrief.includes(WHAT_HE_DOES_SOFTWARES));
+    assert.ok(aiHasBrief.includes(SPECTRALLOCK_FAQ_NAME));
+    assert.ok(aiHasBrief.includes("SL-UNREDACT-OPAQUE"));
+    assert.ok(aiHasBrief.includes("never OCR-from-black-box"));
     assert.ok(aiHasBrief.includes(SOFTWARES_ADDENDUM));
     assert.ok(aiHasBrief.includes("Softwares note: " + SOFTWARES_ADDENDUM));
     assert.ok(aiHasBrief.includes(RESEARCH_ADDENDUM));
@@ -520,6 +547,26 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     assert.deepEqual(cite.what_he_does_faq, WHAT_HE_DOES_FAQ_NAMES);
     assert.equal(cite.what_he_does_softwares, WHAT_HE_DOES_SOFTWARES);
     assert.equal(cite.softwares_addendum, SOFTWARES_ADDENDUM);
+    assert.equal(cite.spectrallock.slug, "spectrallock");
+    assert.equal(cite.spectrallock.refuse_code, "SL-UNREDACT-OPAQUE");
+    assert.equal(cite.spectrallock.fraggate_unredact_door_op, false);
+    assert.equal(cite.spectrallock.heatmap_is_transcript, false);
+    assert.equal(cite.spectrallock.ocr_from_black_box, false);
+    assert.equal(cite.spectrallock.leftover_bytes, true);
+    assert.equal(
+      cite.spectrallock.engine_digest,
+      "3427dbcf2932b6bf4c6cf80735efd171b75519066e013db6d0df275c65989fb4",
+    );
+    assert.deepEqual(cite.spectrallock.fraggate_live_ops, [
+      "health",
+      "modes",
+      "targets",
+      "overlay",
+      "verify",
+      "doctor",
+      "skill",
+    ]);
+    assert.ok(!cite.spectrallock.fraggate_live_ops.includes("unredact"));
     assert.equal(cite.research_addendum, RESEARCH_ADDENDUM);
     assert.equal(cite.hardware_addendum, HARDWARE_ADDENDUM);
     assert.ok(cite.published_research.some((row) => row.records && row.records.includes("AZDOC-A011CAD23671")));

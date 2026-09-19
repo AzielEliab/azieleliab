@@ -71,6 +71,11 @@ import {
   resolveRuntimeVersion,
   runtimeToolId,
   sisterProductsCite,
+  spectrallockCite,
+  SPECTRALLOCK_ONE_LINE,
+  SPECTRALLOCK_SLUG,
+  SPECTRALLOCK_UNREDACT,
+  SPECTRALLOCK_WORKER,
   tradesRuntimeCite,
   WEBSITE_ID,
   BRANDMARK_NAME,
@@ -109,6 +114,9 @@ import {
   WHAT_HE_DOES_FAQ_NAMES,
   WHAT_HE_DOES_SOFTWARES,
   SOFTWARES_ADDENDUM,
+  SPECTRALLOCK_FAQ_ANSWER,
+  SPECTRALLOCK_FAQ_NAME,
+  SPECTRALLOCK_SOFTWARES_LINE,
   RESEARCH_ADDENDUM,
   HARDWARE_ADDENDUM,
   PUBLISHED_RESEARCH,
@@ -566,6 +574,7 @@ export function citeDoc(software = SOFTWARE, runtimeVersion = RUNTIME_VERSION, s
     visible_1520: false,
     foldlock: foldlockTipSafeCite(),
     foldlock_shelf: "FOLDLOCK-SHELF-1.0",
+    spectrallock: spectrallockCite(),
     person_jsonld: CANON_ORIGIN + "/person.jsonld",
     identity_jsonld: CANON_ORIGIN + "/identity.jsonld",
     graph_jsonld: CANON_ORIGIN + "/graph.jsonld",
@@ -715,7 +724,12 @@ export function citeDoc(software = SOFTWARE, runtimeVersion = RUNTIME_VERSION, s
     trades_runtime_slug: TRADES_RUNTIME_SLUG,
     trades_runtime_mcp: TRADES_RUNTIME_MCP,
     github_trades_runtime: TRADES_RUNTIME_GITHUB,
-    software_names: doorsSoftware.map((s) => ({ name: s.name, url: s.href })),
+    software_names: doorsSoftware.map((s) => {
+      const row = { name: s.name, url: s.href };
+      if (s.slug) row.slug = s.slug;
+      if (s.one_line) row.one_line = s.one_line;
+      return row;
+    }),
     doors: DOORS.map((d) => {
       const row = { label: d.label, url: d.href };
       if (d.also) row.also = { label: d.also.label, url: d.also.href };
@@ -779,7 +793,12 @@ function sisterProductsLlmsBlock() {
 
 export function llmsTxt(software = SOFTWARE, survival = null) {
   const doorsSoftware = software && software.length ? software : SOFTWARE;
-  const softwareLines = doorsSoftware.map((s) => "- " + s.name + ": " + s.href).join("\n");
+  const softwareLines = doorsSoftware
+    .map((s) => {
+      const blurb = s.one_line ? " — " + s.one_line : "";
+      return "- " + s.name + ": " + s.href + blurb;
+    })
+    .join("\n");
   const doorLines = doorIndexLines();
   return [
     "# Aziel Eliab",
@@ -845,6 +864,10 @@ export function llmsTxt(software = SOFTWARE, survival = null) {
     "",
     softwareLines,
     "- Softwares note: " + SOFTWARES_ADDENDUM,
+    SPECTRALLOCK_SOFTWARES_LINE,
+    "- SpectralLock FAQ: " + SPECTRALLOCK_FAQ_NAME,
+    "- SpectralLock FAQ answer: " + SPECTRALLOCK_FAQ_ANSWER,
+    "- SpectralLock unredact: GET|POST " + SPECTRALLOCK_UNREDACT + " (not a FragGate door op)",
     "",
     "## " + RUNTIME_TITLE,
     "",
@@ -924,7 +947,7 @@ export function llmsTxt(software = SOFTWARE, survival = null) {
     "- GET " + CANON_ORIGIN + "/v1/mesh/nodes",
     "- GET " + SURVIVAL_LOCAL + "  (" + BAN_SURVIVAL_SPEC + " hub pull of runtime SoT; short TTL)",
     "- GET " + SURVIVAL_JSON_LOCAL,
-    "- GET " + CANON_ORIGIN + "/cite.json  (" + REDLINE_SPEC + " · Cap-7 design_of · attack-surface · FoldLock tip-safe · " + BAN_SURVIVAL_SPEC + ")",
+    "- GET " + CANON_ORIGIN + "/cite.json  (" + REDLINE_SPEC + " · Cap-7 design_of · attack-surface · FoldLock tip-safe · SpectralLock leftover-bytes · " + BAN_SURVIVAL_SPEC + ")",
     "- GET " + CANON_ORIGIN + "/llms.txt",
     "- GET " + SHELVES_HREF + "  (COLD-MULTI-SHELF-1.0; canonical registry " + shelvesCite().canonical_registry + ")",
     "- GET " + SHELVES_JSON_HREF,
@@ -1068,6 +1091,10 @@ export function aiTxt(survival = null) {
     "- Softwares: " + SOFTWARE_HREF + " (distinct page; /#software maps here)",
     "- Softwares: " + WHAT_HE_DOES_SOFTWARES,
     "- Softwares note: " + SOFTWARES_ADDENDUM,
+    SPECTRALLOCK_SOFTWARES_LINE,
+    "- SpectralLock FAQ: " + SPECTRALLOCK_FAQ_NAME,
+    "- SpectralLock leftover-bytes: leftover_bytes / recovered_from; opaque rewrite refuses SL-UNREDACT-OPAQUE; heatmap ≠ transcript; inject ON is paint not pigment; never OCR-from-black-box",
+    "- SpectralLock Worker: " + SPECTRALLOCK_WORKER + " GET|POST " + SPECTRALLOCK_UNREDACT + " (not a FragGate door op)",
     "- Receipts: " + RECEIPTS_HREF,
     "- Ingest: " + INGEST_HREF,
     "- Page bytes: " + INGEST_BYTES_HREF,
@@ -1084,7 +1111,11 @@ export function aiTxt(survival = null) {
     "- Donate: " + DONATE_HREF,
     "- Research / corpus: " + LIBRARY + "/",
     "- Library identity: " + LIBRARY_AZIEL,
-    "- cite.json: " + CANON_ORIGIN + "/cite.json  (" + REDLINE_SPEC + " · Cap-7 design_of · attack-surface · FoldLock tip-safe)",
+    "- cite.json: " +
+      CANON_ORIGIN +
+      "/cite.json  (" +
+      REDLINE_SPEC +
+      " · Cap-7 design_of · attack-surface · FoldLock tip-safe · SpectralLock leftover-bytes)",
     "- llms.txt: " + CANON_ORIGIN + "/llms.txt",
     shelvesLlmsBlock(),
     redlineLlmsBlock(),
@@ -1161,13 +1192,20 @@ export function jsonLd(software = SOFTWARE, runtimeVersion = RUNTIME_VERSION) {
   const apiId = RUNTIME_LOCAL + "#webapi";
   const softwareId = CANON_ORIGIN + "/#software";
   const person = { "@id": personId };
-  const namedTools = RUNTIME_NAMED_TOOLS.map((tool) => ({
-    "@type": "SoftwareApplication",
-    "@id": runtimeToolId(tool.slug),
-    name: tool.name,
-    author: person,
-    isPartOf: { "@id": runtimeId },
-  }));
+  const namedTools = RUNTIME_NAMED_TOOLS.map((tool) => {
+    const node = {
+      "@type": "SoftwareApplication",
+      "@id": runtimeToolId(tool.slug),
+      name: tool.name,
+      author: person,
+      isPartOf: { "@id": runtimeId },
+    };
+    if (tool.slug === SPECTRALLOCK_SLUG) {
+      node.description = SPECTRALLOCK_ONE_LINE + " " + SPECTRALLOCK_FAQ_ANSWER;
+      node.url = SPECTRALLOCK_WORKER;
+    }
+    return node;
+  });
   return {
     "@context": "https://schema.org",
     "@graph": [
@@ -1293,15 +1331,20 @@ export function jsonLd(software = SOFTWARE, runtimeVersion = RUNTIME_VERSION) {
           TRADES_RUNTIME_GITHUB,
         ],
       },
-      ...doorsSoftware.map((item) => ({
-        "@type": "SoftwareApplication",
-        "@id": softwareNodeId(item),
-        name: item.name,
-        url: item.href,
-        applicationCategory: "DeveloperApplication",
-        author: person,
-        isPartOf: { "@id": softwareId },
-      })),
+      ...doorsSoftware.map((item) => {
+        const node = {
+          "@type": "SoftwareApplication",
+          "@id": softwareNodeId(item),
+          name: item.name,
+          url: item.href,
+          applicationCategory: "DeveloperApplication",
+          author: person,
+          isPartOf: { "@id": softwareId },
+        };
+        const desc = item.description || item.one_line;
+        if (desc) node.description = desc;
+        return node;
+      }),
       ...namedTools,
       faqPageNode(),
       {

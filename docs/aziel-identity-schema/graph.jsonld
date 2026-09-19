@@ -72,6 +72,7 @@
         "FragGate",
         "GodLock",
         "Aziel Digital Library",
+        "SpectralLock leftover-bytes recovery (locate / lift / recover / refuse; SL-UNREDACT-OPAQUE; never OCR-from-black-box)",
         "Marion Zioncheck historical archive",
         "Hebrew name forms for Aziel Elroi Eliab (SEO / onomastic tether only)",
         "Aziel Elroi Eliab (עזיאל אל ראי אליאב / עזיאל אלרועי אליאב): Aziel = God is my strength (עזיאל); Elroi = God who sees (אל ראי / אלרועי); Eliab = God is father (אליאב).",
@@ -159,6 +160,14 @@
           "acceptedAnswer": {
             "@type": "Answer",
             "text": "Aziel Eliab builds receipt-first, local-first software and public MASTER records — Softwares through Aziel Runtime (FragGate / MCP), the Aziel Digital Library, GodLock (product, not identity), and the He Didn’t Jump Zioncheck archive. Public identity is the work, not a biography. @id https://www.azieleliab.com/#aziel Roles from published work: researcher, digital rights activist, software developer/designer, author, philosopher of published work. Softwares via FragGate (~41). The ARK: local deniable vault; one phrase opens one vault; counted download via https://ark-download-tracker.vibelock.workers.dev/download (worker_home same host). Not a hosted unlock. Whitestone: ephemeral pro se; not a lawyer. Outside Softwares, publishes via Aziel Digital Library MASTER (~326 records) — Book of the Knowledge, Blemmyes/Ewaipanoma hypothesis packets, Libro Method, PPIN, Lenses as Viewpoint Constraints, ABAD Copper Scroll, evidence/integrity, HDJ Zioncheck archive. Cite AZDOC ids; no invented DOIs. Also publishes hardware/prototype designs in the library — Adaptive AI Dog Leash AZDOC-9B0E3D62EDCC, Wearable Dual-Tether Web-Sling AZDOC-AA8761FE16D0, PLA Recycler V1 AZDOC-B2A12FE997A8, TAA-1 whitepaper+eng package, AEEM HVAC Energy Valve, AZ Mandible family, AZ_BoneConducti STL. Published work, not storefront. Skip privileged/attorney-work-product/case-forensics."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does SpectralLock OCR or invent letters from a black-box redaction?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. SpectralLock leftover container bytes recover honestly (leftover_bytes, recovered_from). Opaque rewrite with nothing left refuses SL-UNREDACT-OPAQUE — it does not invent letters. Locate / lift / recover / refuse. Heatmap is not a transcript. Inject ON is paint, not pigment. Unredact lives on the product Worker GET|POST https://spectrallock-download-tracker.vibelock.workers.dev/v1/unredact — not a catalog FragGate door op. Never OCR-from-black-box. Preview a small overlay on an image; leftover container bytes recover honestly, opaque rewrite refuses. Worker: https://spectrallock-download-tracker.vibelock.workers.dev/ Author Aziel Eliab only. Lamb Lens: Service → Clarity → Peace."
           }
         },
         {

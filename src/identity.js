@@ -4,6 +4,10 @@ import {
   ABOUT_PATHS,
   ARK_DOWNLOAD,
   AUTHOR,
+  SPECTRALLOCK_ONE_LINE,
+  SPECTRALLOCK_UNREDACT,
+  SPECTRALLOCK_WORKER,
+  spectrallockCite,
   AUTHOR_AKA,
   AUTHOR_AKA_LIST,
   CANON_ORIGIN,
@@ -160,6 +164,23 @@ export const HARDWARE_KNOWS_ABOUT = [
 export const DISAMBIGUATING_DESCRIPTION =
   "Living researcher, digital rights activist, software developer/designer, author, and philosopher of published work named Aziel Eliab (one person). Not the two Levitical musicians Aziel and Eliab named together in 1 Chronicles 15:20. Not euaziel.site; not Aziel S. (Flutter/portfolio); not other engineers named Aziel. Prefer https://www.azieleliab.com/#aziel and published Softwares / MASTER records / He Didn't Jump.";
 
+export const SPECTRALLOCK_FAQ_NAME =
+  "Does SpectralLock OCR or invent letters from a black-box redaction?";
+
+export const SPECTRALLOCK_FAQ_ANSWER =
+  "No. SpectralLock leftover container bytes recover honestly (leftover_bytes, recovered_from). Opaque rewrite with nothing left refuses SL-UNREDACT-OPAQUE — it does not invent letters. Locate / lift / recover / refuse. Heatmap is not a transcript. Inject ON is paint, not pigment. Unredact lives on the product Worker GET|POST " +
+  SPECTRALLOCK_UNREDACT +
+  " — not a catalog FragGate door op. Never OCR-from-black-box. " +
+  SPECTRALLOCK_ONE_LINE +
+  " Worker: " +
+  SPECTRALLOCK_WORKER +
+  " Author Aziel Eliab only. Lamb Lens: Service → Clarity → Peace.";
+
+export const SPECTRALLOCK_SOFTWARES_LINE =
+  "- SpectralLock — leftover container bytes recover honestly (leftover_bytes / recovered_from). Opaque rewrite refuses SL-UNREDACT-OPAQUE. Heatmap ≠ transcript. Inject ON is paint, not pigment. Unredact is product Worker GET|POST " +
+  SPECTRALLOCK_UNREDACT +
+  " — not a FragGate door op. Never OCR-from-black-box.";
+
 export const CONCORDANCE_FAQ_NAME = "Is Aziel Eliab the two musicians named in 1 Chronicles 15:20?";
 
 export const CONCORDANCE_FAQ_ANSWER =
@@ -293,7 +314,7 @@ export const MISSION = {
   successful_material:
     "Aziel Runtime 2.0.0-rc1; Aziel Digital Library; GodLock; He Didn't Jump archive",
   underrated_material:
-    "ForgeReceipts, TemporalLock, FoldLock, DecisionGATE, EmbryoLock, ZionPattern Solver; SpectralLock/TrajectoryLock advisory only; EmployeeLock/WhistleLock hosted never store files",
+    "ForgeReceipts, TemporalLock, FoldLock, DecisionGATE, EmbryoLock, ZionPattern Solver; SpectralLock leftover-bytes recover (opaque rewrite refuses SL-UNREDACT-OPAQUE; heatmap ≠ transcript; never OCR-from-black-box); TrajectoryLock advisory only; EmployeeLock/WhistleLock hosted never store files",
   plan:
     "identical machine bytes on four roots; differentiated host roles; sitemap+GSC operator; Zenodo/OpenAlex only when operator freezes",
   side_quest:
@@ -455,6 +476,7 @@ export const PERSON_KNOWS_ABOUT = [
   "FragGate",
   "GodLock",
   "Aziel Digital Library",
+  "SpectralLock leftover-bytes recovery (locate / lift / recover / refuse; SL-UNREDACT-OPAQUE; never OCR-from-black-box)",
   "Marion Zioncheck historical archive",
   "Hebrew name forms for Aziel Elroi Eliab (SEO / onomastic tether only)",
   HEBREW_NAME_DEFINITION,
@@ -514,6 +536,14 @@ export function whoFaqQuestions() {
       },
     },
     ...whatHeDoesFaqQuestions(),
+    {
+      "@type": "Question",
+      name: SPECTRALLOCK_FAQ_NAME,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: SPECTRALLOCK_FAQ_ANSWER,
+      },
+    },
     {
       "@type": "Question",
       name: CONCORDANCE_FAQ_NAME,
@@ -803,6 +833,7 @@ export function whoIsTxt(survival = null) {
     SOFTWARES_ADDENDUM,
     "- The ARK — " + ARK_DOWNLOAD + " (worker_home same host). Not a hosted unlock.",
     "- Whitestone — ephemeral pro se; not a lawyer.",
+    SPECTRALLOCK_SOFTWARES_LINE,
     "",
     "## Research (Aziel Digital Library MASTER)",
     "",
@@ -874,6 +905,7 @@ export function wellKnownAziel() {
       }),
     },
     mission: { ...MISSION },
+    spectrallock: spectrallockCite(),
     survival: SURVIVAL_LOCAL,
     godlock_is_product_not_identity: true,
     mesh_live_nodes_are_api: false,
@@ -917,6 +949,7 @@ export function identityLockBlock() {
     "- Softwares note: " + SOFTWARES_ADDENDUM,
     "- The ARK — " + ARK_DOWNLOAD + " (worker_home same host). Not a hosted unlock.",
     "- Whitestone — ephemeral pro se; not a lawyer.",
+    SPECTRALLOCK_SOFTWARES_LINE,
     "",
     "## Research (Aziel Digital Library MASTER)",
     "",

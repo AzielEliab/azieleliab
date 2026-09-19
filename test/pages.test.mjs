@@ -94,6 +94,12 @@ import {
   isRuntimeSoftware,
   softwareBucket,
   sortSoftware,
+  SPECTRALLOCK_DESCRIPTION,
+  SPECTRALLOCK_DIGEST,
+  SPECTRALLOCK_ONE_LINE,
+  SPECTRALLOCK_UNREDACT,
+  SPECTRALLOCK_WORKER,
+  spectrallockCite,
 } from "../src/copy.js";
 import {
   destFromRuntimePath,
@@ -2307,6 +2313,75 @@ describe("live software catalog", () => {
     };
     assert.equal(catalogHasThisIs(stale), true);
     assert.equal(catalogHasThisIs(doc), false);
+  });
+
+  it("inherits SpectralLock leftover-bytes honesty from live /v1/software and fallback blurbs", async () => {
+    const fallback = SOFTWARE.find((s) => s.slug === "spectrallock");
+    assert.ok(fallback);
+    assert.equal(fallback.one_line, SPECTRALLOCK_ONE_LINE);
+    assert.equal(fallback.description, SPECTRALLOCK_DESCRIPTION);
+    assert.equal(fallback.engine_digest, SPECTRALLOCK_DIGEST);
+    assert.equal(fallback.worker_home, SPECTRALLOCK_WORKER);
+    assert.match(fallback.one_line, /leftover container bytes recover honestly/);
+    assert.match(fallback.description, /SL-UNREDACT-OPAQUE/);
+    assert.match(fallback.description, /not a catalog FragGate door op/);
+    assert.doesNotMatch(fallback.description, /FragGate door op[\s\S]*unredact as LIVE_OP/i);
+
+    const cite = spectrallockCite();
+    assert.equal(cite.fraggate_unredact_door_op, false);
+    assert.deepEqual(cite.ops, ["locate", "lift", "recover", "refuse"]);
+    assert.ok(!cite.fraggate_live_ops.includes("unredact"));
+    assert.equal(cite.unredact, SPECTRALLOCK_UNREDACT);
+
+    const env = catalogEnv(async (req) => {
+      const path = new URL(req.url).pathname;
+      if (path === "/v1/software") {
+        return new Response(
+          JSON.stringify({
+            ok: true,
+            version: "2.0.0-rc1",
+            products: [
+              {
+                slug: "spectrallock",
+                name: "SpectralLock",
+                one_line: SPECTRALLOCK_ONE_LINE,
+                description: SPECTRALLOCK_DESCRIPTION,
+                engine_digest: SPECTRALLOCK_DIGEST,
+                worker_home: SPECTRALLOCK_WORKER,
+              },
+              {
+                slug: "azai",
+                name: "AZAI",
+                one_line: "Local OpenAI-compatible runtime.",
+                worker_home: "https://azai-download-tracker.vibelock.workers.dev/",
+              },
+            ],
+          }),
+          { status: 200, headers: { "Content-Type": "application/json" } },
+        );
+      }
+      return new Response(JSON.stringify({ error: "not found" }), { status: 404 });
+    });
+
+    const index = await fetchPath("/v1/software", {}, env);
+    const doc = await index.json();
+    const spectral = doc.products.find((s) => s.slug === "spectrallock");
+    assert.ok(spectral);
+    assert.equal(spectral.one_line, SPECTRALLOCK_ONE_LINE);
+    assert.equal(spectral.description, SPECTRALLOCK_DESCRIPTION);
+    assert.equal(spectral.engine_digest, SPECTRALLOCK_DIGEST);
+    assert.match(spectral.description, /leftover-bytes recover is honest/);
+    assert.ok(!spectral.fraggate_live_ops);
+
+    const llms = llmsTxt(doc.products);
+    assert.ok(llms.includes(SPECTRALLOCK_ONE_LINE));
+    assert.ok(llms.includes("SL-UNREDACT-OPAQUE"));
+    const ld = jsonLd(doc.products);
+    const spectralApp = ld["@graph"].find((n) => n["@id"] === softwareNodeId(spectral));
+    assert.equal(spectralApp.description, SPECTRALLOCK_DESCRIPTION);
+    const namedSpectral = ld["@graph"].find((n) => n["@id"] === "https://www.azieleliab.com/runtime#spectrallock");
+    assert.ok(namedSpectral.description.includes("leftover container bytes recover honestly"));
+    assert.ok(namedSpectral.description.includes("Never OCR-from-black-box"));
   });
 
   it("normalizes mashed live runtime names to aziel-runtime and keeps Plain→Gate→Lock", async () => {
