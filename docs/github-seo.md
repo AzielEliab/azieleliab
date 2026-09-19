@@ -18,15 +18,15 @@ Every public website on the Aziel Eliab profile. One-line what/why. Hub About bo
 |-----|------|
 | https://www.azieleliab.com/ | Official Person hub / Softwares / research landing |
 | https://www.azielcorpuslibrary.net/ | Digital Library MASTER |
-| https://godlock.uk/ | GodLock challenge/score product (not a VPN; GodLock ≠ identity) |
-| https://www.hedidntjump.com/ | Zioncheck 7 Aug 1936 archive (not a verdict) |
+| https://godlock.uk/ | GodLock challenge/score product |
+| https://www.hedidntjump.com/ | Zioncheck 7 Aug 1936 archive |
 | https://aziel-runtime.vibelock.workers.dev/ | Aziel Runtime / FragGate MCP Softwares door |
-| https://trades-runtime.vibelock.workers.dev/ | Trades-Runtime sister product (local-first BYO field trades; not FragGate exec; live_backends false) |
+| https://trades-runtime.vibelock.workers.dev/ | Trades-Runtime sister product (local-first BYO field trades; live_backends false) |
 | https://github.com/AzielEliab/trades-runtime | Trades-Runtime source |
 | https://glama.ai/mcp/servers/AzielEliab/aziel-runtime | Try on Glama |
 | https://github.com/AzielEliab | GitHub user / public source |
 
-Machine who-is (not a biography): https://www.azieleliab.com/who-is
+Machine who-is: https://www.azieleliab.com/who-is
 
 Hub crawl routes (`/person.jsonld` · `/cite.json` · `/llms.txt` · `/ai.txt` · `/sitemap.xml` · `/who-is` · `/survival`) plus Runtime `/openapi.json` and `POST /mcp`. Pack copy: [github-profile-readme/](github-profile-readme/).
 
@@ -122,7 +122,7 @@ Not MCP ops (`fraggate_call`, `runtime_run`, …). Child `@id` is `https://www.a
 | azmail | AZMail |
 | azhub | AZHub |
 | azinterface | AZInterface |
-| spectrallock | SpectralLock — leftover-bytes recover; Worker LIVE /v1/unredact (deep PDF + revision_graph + per-revision copies), /v1/recover (NO-LIE; LIVE vs SLOT), /v1/handwriting (not lab/ESDA/court); opaque rewrite refuses SL-UNREDACT-OPAQUE; heatmap ≠ transcript; inject ON is paint not pigment; never OCR-from-black-box; not FragGate invent |
+| spectrallock | SpectralLock — leftover-bytes recover; Worker LIVE /v1/unredact (deep PDF + revision_graph + per-revision copies), /v1/recover (NO-LIE; LIVE vs SLOT), /v1/handwriting; opaque rewrite refuses SL-UNREDACT-OPAQUE; inject ON is paint; never OCR-from-black-box |
 | shadowlock | ShadowLock |
 | foldlock | FoldLock |
 | codelock | CodeLock |

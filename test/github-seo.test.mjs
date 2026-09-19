@@ -110,7 +110,7 @@ describe("GitHub-side SEO / ecosystem docs", () => {
       assert.ok(text.includes(TRADES_WORKER), name + " Trades-Runtime Worker");
       assert.ok(text.includes(TRADES_REPO), name + " Trades-Runtime GitHub");
       assert.match(text, /live_backends false/, name);
-      assert.match(text, /not FragGate exec/, name);
+      assert.match(text, /sister product/, name);
     }
   });
 
@@ -205,8 +205,8 @@ describe("GitHub-side SEO / ecosystem docs", () => {
     assert.match(profile, /author/);
     assert.match(profile, /philosopher/);
     assert.match(profile, /User-Agent: Mozilla\/5\.0/);
-    assert.match(profile, /not a VPN/);
-    assert.match(profile, /not a verdict/);
+    assert.match(profile, /GodLock challenge\/score product/);
+    assert.match(profile, /Zioncheck 7 Aug 1936 archive/);
     assert.match(profile, /who-is/);
     assert.ok(profile.includes(TRADES_WORKER));
     assert.ok(profile.includes(TRADES_REPO));
