@@ -50,8 +50,28 @@ import {
   DUAL_SURFACE,
   FIELD_100,
   MASTER_33_MCP,
+  SISTER_PRODUCTS_NOTE,
+  TRADES_RUNTIME,
+  TRADES_RUNTIME_CITE,
+  TRADES_RUNTIME_DOWNLOAD,
+  TRADES_RUNTIME_GITHUB,
+  TRADES_RUNTIME_HEALTH,
+  TRADES_RUNTIME_ID,
+  TRADES_RUNTIME_LLMS,
+  TRADES_RUNTIME_MCP,
+  TRADES_RUNTIME_NAME,
+  TRADES_RUNTIME_NOTE,
+  TRADES_RUNTIME_ONE_LINE,
+  TRADES_RUNTIME_OPENAPI,
+  TRADES_RUNTIME_SAME_AS,
+  TRADES_RUNTIME_SKILL,
+  TRADES_RUNTIME_SLUG,
+  TRADES_RUNTIME_STATS,
+  TRADES_RUNTIME_VERSION,
   resolveRuntimeVersion,
   runtimeToolId,
+  sisterProductsCite,
+  tradesRuntimeCite,
   WEBSITE_ID,
   BRANDMARK_NAME,
   SIGIL,
@@ -379,6 +399,8 @@ const SITEMAP_RANK = {
   [SURVIVAL_LOCAL]: { changefreq: "hourly", priority: "0.6" },
   [SURVIVAL_JSON_LOCAL]: { changefreq: "hourly", priority: "0.5" },
   [RUNTIME_LOCAL]: { changefreq: "daily", priority: "0.8" },
+  [TRADES_RUNTIME + "/"]: { changefreq: "daily", priority: "0.7" },
+  [TRADES_RUNTIME_GITHUB]: { changefreq: "weekly", priority: "0.6" },
 };
 
 export function sitemapXml(now = new Date(), software = SOFTWARE) {
@@ -449,6 +471,16 @@ export function sitemapXml(now = new Date(), software = SOFTWARE) {
     RUNTIME + "/",
     RUNTIME + "/v1/software",
     RUNTIME + "/v1/fraggate/list",
+    TRADES_RUNTIME + "/",
+    TRADES_RUNTIME_DOWNLOAD,
+    TRADES_RUNTIME_OPENAPI,
+    TRADES_RUNTIME_MCP,
+    TRADES_RUNTIME_CITE,
+    TRADES_RUNTIME_LLMS,
+    TRADES_RUNTIME_SKILL,
+    TRADES_RUNTIME_HEALTH,
+    TRADES_RUNTIME_STATS,
+    TRADES_RUNTIME_GITHUB,
     X_URL,
     ...doors.map((s) => s.href),
   ];
@@ -678,6 +710,11 @@ export function citeDoc(software = SOFTWARE, runtimeVersion = RUNTIME_VERSION, s
     sigil: SIGIL,
     license: LICENSE,
     doi: null,
+    sister_products: sisterProductsCite(),
+    trades_runtime: tradesRuntimeCite(),
+    trades_runtime_slug: TRADES_RUNTIME_SLUG,
+    trades_runtime_mcp: TRADES_RUNTIME_MCP,
+    github_trades_runtime: TRADES_RUNTIME_GITHUB,
     software_names: doorsSoftware.map((s) => ({ name: s.name, url: s.href })),
     doors: DOORS.map((d) => {
       const row = { label: d.label, url: d.href };
@@ -707,6 +744,37 @@ function doorIndexLines() {
     const extra = d.also ? " · live " + d.also.href : "";
     return "- " + d.label + ": " + d.href + extra;
   }).join("\n");
+}
+
+function sisterProductsLlmsBlock() {
+  return [
+    "## Sister products",
+    "",
+    SISTER_PRODUCTS_NOTE,
+    "",
+    "### " + TRADES_RUNTIME_NAME + " (" + TRADES_RUNTIME_SLUG + ")",
+    TRADES_RUNTIME_ONE_LINE,
+    TRADES_RUNTIME_NOTE,
+    "- Version: " + TRADES_RUNTIME_VERSION,
+    "- Worker: " + TRADES_RUNTIME + "/",
+    "- GitHub: " + TRADES_RUNTIME_GITHUB,
+    "- Download: " + TRADES_RUNTIME_DOWNLOAD,
+    "- OpenAPI: " + TRADES_RUNTIME_OPENAPI,
+    "- MCP (read-only): POST " + TRADES_RUNTIME_MCP,
+    "- cite.json: " + TRADES_RUNTIME_CITE,
+    "- llms.txt: " + TRADES_RUNTIME_LLMS,
+    "- Skill: " + TRADES_RUNTIME_SKILL,
+    "- Health: " + TRADES_RUNTIME_HEALTH,
+    "- Stats: " + TRADES_RUNTIME_STATS,
+    "- live_backends: false",
+    "- hosted_company_os: false",
+    "- software_tab: false",
+    "- fraggate_engine: false",
+    "- fraggate_call: false (aziel-runtime does not execute company ops)",
+    "- Not a second FragGate door. FragGate remains THE single Softwares door.",
+    "- " + AI_CLIENTS_SENTENCE,
+    "",
+  ].join("\n");
 }
 
 export function llmsTxt(software = SOFTWARE, survival = null) {
@@ -810,6 +878,7 @@ export function llmsTxt(software = SOFTWARE, survival = null) {
     "- QNS-CD-1.0: " + QNS_CD_SPEC + " photon QNS1 packet transfer. Local qnsd in qnm-node. Skill: " + RUNTIME_LOCAL + "/v1/skill",
     "- " + AI_CLIENTS_SENTENCE,
     "",
+    sisterProductsLlmsBlock(),
     "## Donate",
     "",
     "- " + DONATE_TITLE + ": " + DONATE_HREF,
@@ -881,6 +950,14 @@ export function llmsTxt(software = SOFTWARE, survival = null) {
     "- GET " + RUNTIME_LOCAL + "/v1/mesh/nodes",
     "- GET " + SURVIVAL_RUNTIME + "  (" + BAN_SURVIVAL_SPEC + ")",
     "- GET " + RUNTIME_LOCAL + "/v1/survival",
+    "- GET " + TRADES_RUNTIME + "/  (sister product Trades-Runtime; not FragGate exec)",
+    "- GET " + TRADES_RUNTIME_DOWNLOAD,
+    "- GET " + TRADES_RUNTIME_OPENAPI,
+    "- POST " + TRADES_RUNTIME_MCP,
+    "- GET " + TRADES_RUNTIME_CITE,
+    "- GET " + TRADES_RUNTIME_LLMS,
+    "- GET " + TRADES_RUNTIME_SKILL,
+    "- GET " + TRADES_RUNTIME_GITHUB,
     "- GET " + CANON_ORIGIN + "/v1/stats  (read pageviews, no increment)",
     "- GET " + CANON_ORIGIN + "/v1/view   (read pageviews, no increment)",
     "- POST " + CANON_ORIGIN + "/v1/view  (increment pageviews)",
@@ -1034,6 +1111,7 @@ export function aiTxt(survival = null) {
     "- QNS-CD-1.0 (photon QNS1 packet transfer): local qnsd " + GITHUB_QNM_NODE + " · runtime " + GITHUB_RUNTIME,
     "- Runtime library: " + LIBRARY_RUNTIME,
     "- Runtime origin: " + RUNTIME + "/",
+    sisterProductsLlmsBlock(),
     "- GodLock: " + GODLOCK + "/",
     "- He Didn't Jump: " + HEDIDNTJUMP + "/",
     "- GitHub: " + GITHUB,
@@ -1211,6 +1289,8 @@ export function jsonLd(software = SOFTWARE, runtimeVersion = RUNTIME_VERSION) {
           RUNTIME + "/v1/software",
           RUNTIME_LOCAL + "/v1/fraggate/list",
           FRAGGATE,
+          TRADES_RUNTIME + "/",
+          TRADES_RUNTIME_GITHUB,
         ],
       },
       ...doorsSoftware.map((item) => ({
@@ -1224,6 +1304,36 @@ export function jsonLd(software = SOFTWARE, runtimeVersion = RUNTIME_VERSION) {
       })),
       ...namedTools,
       faqPageNode(),
+      {
+        "@type": "SoftwareApplication",
+        "@id": TRADES_RUNTIME_ID,
+        name: TRADES_RUNTIME_NAME,
+        alternateName: TRADES_RUNTIME_SLUG,
+        applicationCategory: "DeveloperApplication",
+        operatingSystem: "Local TypeScript / Cloudflare Workers giveaway",
+        softwareVersion: TRADES_RUNTIME_VERSION,
+        url: TRADES_RUNTIME + "/",
+        description:
+          TRADES_RUNTIME_ONE_LINE +
+          " Sister product extra — not a Softwares-tab engine and not a FragGate true-engine. " +
+          AI_CLIENTS_SENTENCE +
+          " Author Aziel Eliab.",
+        author: person,
+        creator: person,
+        isPartOf: { "@id": siteId },
+        license: "https://www.apache.org/licenses/LICENSE-2.0",
+        codeRepository: TRADES_RUNTIME_GITHUB,
+        downloadUrl: TRADES_RUNTIME_DOWNLOAD,
+        sourceCode: {
+          "@type": "SoftwareSourceCode",
+          name: TRADES_RUNTIME_NAME,
+          codeRepository: TRADES_RUNTIME_GITHUB,
+          url: TRADES_RUNTIME_GITHUB,
+          author: person,
+        },
+        sameAs: TRADES_RUNTIME_SAME_AS.slice(),
+        relatedLink: [TRADES_RUNTIME_OPENAPI, TRADES_RUNTIME_MCP, TRADES_RUNTIME_CITE, TRADES_RUNTIME_LLMS],
+      },
     ],
   };
 }
