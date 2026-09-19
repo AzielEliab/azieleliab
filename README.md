@@ -83,6 +83,8 @@ Cloudflare Worker `azieleliab-com` serves the literary landing, crawl files, and
 | `/person.jsonld` · `/identity.jsonld` · `/.well-known/person.jsonld` | Identical Person JSON-LD (`application/ld+json`) |
 | `/graph.jsonld` | Person + FAQPage + four hub WebSites + Runtime + stats Dataset |
 | `/who-is-aziel-eliab.txt` · `/who-is` | Machine who-is text + 7 model rules + public work |
+| `/help.txt` · `/addendum.txt` | Human help / addendum (plain-language work definitions). Pointers to `/llms.txt` and `/cite.json`. |
+| `/help/softwares.txt` · `/help/receipts.txt` · `/help/runtime.txt` | Optional human addenda for Softwares via runtime, receipts, and Aziel Runtime |
 | `/.well-known/aziel.json` | `person_id`, `sameAs`, empty `zenodo_dois`, `openalex: null`, mission, Hebrew forms, stats URLs |
 | `/ai.txt` | Crawl policy (includes COLD-MULTI-SHELF planes) |
 | `/survival` · `/v1/survival` | BAN-SURVIVAL-1.0 machine pull of runtime `GET /survival` (short TTL). Mutual backup, live_doors, platforms all LIVE, calling-name `*new name alert:`, Cap-7 shuffle via MirageGrid. JSON only — no visible 15:20 chrome. |

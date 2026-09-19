@@ -190,6 +190,7 @@ import {
   banSurvivalCite,
   survivalLlmsBlock as banSurvivalLlmsBlock,
 } from "./survival.js";
+import { HELP_SITEMAP_HREFS } from "./help.js";
 
 export const AI_CRAWLER_AGENTS = [
   "GPTBot",
@@ -406,6 +407,11 @@ const SITEMAP_RANK = {
   [CANON_ORIGIN + "/.well-known/aziel.json"]: { changefreq: "weekly", priority: "0.8" },
   [CANON_ORIGIN + "/.well-known/person.jsonld"]: { changefreq: "weekly", priority: "0.7" },
   [CANON_ORIGIN + "/ai.txt"]: { changefreq: "weekly", priority: "0.5" },
+  [CANON_ORIGIN + "/help.txt"]: { changefreq: "weekly", priority: "0.6" },
+  [CANON_ORIGIN + "/addendum.txt"]: { changefreq: "weekly", priority: "0.5" },
+  [CANON_ORIGIN + "/help/softwares.txt"]: { changefreq: "weekly", priority: "0.5" },
+  [CANON_ORIGIN + "/help/receipts.txt"]: { changefreq: "weekly", priority: "0.5" },
+  [CANON_ORIGIN + "/help/runtime.txt"]: { changefreq: "weekly", priority: "0.5" },
   [CANON_ORIGIN + "/v1/software"]: { changefreq: "hourly", priority: "0.8" },
   [SURVIVAL_LOCAL]: { changefreq: "hourly", priority: "0.6" },
   [SURVIVAL_JSON_LOCAL]: { changefreq: "hourly", priority: "0.5" },
@@ -449,6 +455,7 @@ export function sitemapXml(now = new Date(), software = SOFTWARE) {
     CANON_ORIGIN + "/.well-known/aziel.json",
     CANON_ORIGIN + "/.well-known/person.jsonld",
     CANON_ORIGIN + "/ai.txt",
+    ...HELP_SITEMAP_HREFS,
     CANON_ORIGIN + "/robots.txt",
     CANON_ORIGIN + "/sitemap.xml",
     CANON_ORIGIN + "/v1/stats",
