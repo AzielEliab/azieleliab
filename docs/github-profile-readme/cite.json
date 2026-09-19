@@ -19,6 +19,7 @@
     "godlock.uk": "https://godlock.uk/",
     "hedidntjump.com": "https://www.hedidntjump.com/",
     "aziel-runtime": "https://aziel-runtime.vibelock.workers.dev/",
+    "trades-runtime": "https://trades-runtime.vibelock.workers.dev/",
     "glama": "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime",
     "github": "https://github.com/AzielEliab"
   },
@@ -27,7 +28,33 @@
     "azielcorpuslibrary.net": "https://www.azielcorpuslibrary.net/cite.json",
     "godlock.uk": "https://godlock.uk/cite.json",
     "hedidntjump.com": "https://www.hedidntjump.com/cite.json",
-    "aziel-runtime": "https://aziel-runtime.vibelock.workers.dev/cite.json"
+    "aziel-runtime": "https://aziel-runtime.vibelock.workers.dev/cite.json",
+    "trades-runtime": "https://trades-runtime.vibelock.workers.dev/cite.json"
+  },
+  "sister_products": {
+    "author": "Aziel Eliab",
+    "identity": "Aziel Eliab",
+    "software_tab": false,
+    "fraggate_engine": false,
+    "fraggate_call": false,
+    "note": "Sister products cited honestly. Not Softwares-tab engines. Not FragGate true-engines. aziel-runtime fraggate_call does not execute their company ops. Identity Aziel Eliab only.",
+    "products": [
+      {
+        "slug": "trades-runtime",
+        "name": "Trades-Runtime",
+        "version": "0.3.3",
+        "live_backends": false,
+        "fraggate_engine": false,
+        "fraggate_call": false,
+        "github": "https://github.com/AzielEliab/trades-runtime",
+        "worker": "https://trades-runtime.vibelock.workers.dev",
+        "download": "https://trades-runtime.vibelock.workers.dev/download",
+        "openapi": "https://trades-runtime.vibelock.workers.dev/openapi.json",
+        "mcp": "https://trades-runtime.vibelock.workers.dev/mcp",
+        "cite": "https://trades-runtime.vibelock.workers.dev/cite.json",
+        "llms": "https://trades-runtime.vibelock.workers.dev/llms.txt"
+      }
+    ]
   },
   "survival": {
     "spec": "BAN-SURVIVAL-1.0",

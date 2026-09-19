@@ -89,6 +89,97 @@ export const DUAL_SURFACE = Object.freeze({
 export const GLAMA_RUNTIME = "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime";
 export const RUNTIME_DOCS = "https://github.com/AzielEliab/aziel-runtime/tree/main/docs/2.0";
 
+/** Sister product (cite-only extra). Not a FragGate true-engine. Not Softwares-tab. */
+export const TRADES_RUNTIME = "https://trades-runtime.vibelock.workers.dev";
+export const TRADES_RUNTIME_GITHUB = "https://github.com/AzielEliab/trades-runtime";
+export const TRADES_RUNTIME_SLUG = "trades-runtime";
+export const TRADES_RUNTIME_NAME = "Trades-Runtime";
+export const TRADES_RUNTIME_VERSION = "0.3.3";
+export const TRADES_RUNTIME_DOWNLOAD = TRADES_RUNTIME + "/download";
+export const TRADES_RUNTIME_OPENAPI = TRADES_RUNTIME + "/openapi.json";
+export const TRADES_RUNTIME_MCP = TRADES_RUNTIME + "/mcp";
+export const TRADES_RUNTIME_CITE = TRADES_RUNTIME + "/cite.json";
+export const TRADES_RUNTIME_LLMS = TRADES_RUNTIME + "/llms.txt";
+export const TRADES_RUNTIME_SKILL = TRADES_RUNTIME + "/v1/skill";
+export const TRADES_RUNTIME_HEALTH = TRADES_RUNTIME + "/v1/health";
+export const TRADES_RUNTIME_STATS = TRADES_RUNTIME + "/v1/stats";
+export const TRADES_RUNTIME_ID = CANON_ORIGIN + "/#sister-trades-runtime";
+export const TRADES_RUNTIME_ONE_LINE =
+  "Shadow-first local BYO runtime for HVAC/plumbing/electrical/sewer/cross-trades. BYO ServiceTitan+ProBooks. Human authority. Not hosted company OS. live_backends false.";
+export const SISTER_PRODUCTS_NOTE =
+  "Sister products cited honestly. Not Softwares-tab engines. Not FragGate true-engines. Not MASTER-33 isolation software. aziel-runtime fraggate_call does not execute their company ops. Identity Aziel Eliab only.";
+export const TRADES_RUNTIME_NOTE =
+  "Trades-Runtime is a separate local-first BYO field-trades runtime. Not aziel-runtime wholesale. Not a FragGate-exec true engine. Product MCP is read-only (health, stats, cite, skill). No ServiceTitan or ProBooks write-back. No tenant data on the public Worker. GitHub Pages stay off. Public get = Worker download. Dual surface: agent chat has no technical UI chrome; Worker / local install / counted download stay complete human software. live_backends false. Identity Aziel Eliab only.";
+export const TRADES_RUNTIME_SAME_AS = [
+  TRADES_RUNTIME_GITHUB,
+  TRADES_RUNTIME + "/",
+  TRADES_RUNTIME_DOWNLOAD,
+  TRADES_RUNTIME_MCP,
+  TRADES_RUNTIME_CITE,
+  TRADES_RUNTIME_LLMS,
+];
+
+export function tradesRuntimeCite() {
+  return {
+    slug: TRADES_RUNTIME_SLUG,
+    name: TRADES_RUNTIME_NAME,
+    version: TRADES_RUNTIME_VERSION,
+    author: AUTHOR,
+    identity: AUTHOR,
+    github: TRADES_RUNTIME_GITHUB,
+    worker: TRADES_RUNTIME,
+    worker_home: TRADES_RUNTIME + "/",
+    href: TRADES_RUNTIME + "/",
+    url: TRADES_RUNTIME + "/",
+    mcp: TRADES_RUNTIME_MCP,
+    download: TRADES_RUNTIME_DOWNLOAD,
+    cite: TRADES_RUNTIME_CITE,
+    llms: TRADES_RUNTIME_LLMS,
+    skill: TRADES_RUNTIME_SKILL,
+    openapi: TRADES_RUNTIME_OPENAPI,
+    health: TRADES_RUNTIME_HEALTH,
+    stats: TRADES_RUNTIME_STATS,
+    one_line: TRADES_RUNTIME_ONE_LINE,
+    live_backends: false,
+    hosted_company_os: false,
+    tenant_data: false,
+    servicetitan_write: false,
+    probooks_write: false,
+    software_tab: false,
+    fraggate_engine: false,
+    true_engine_runtime: false,
+    engine: false,
+    isolation_software: false,
+    nested_softwares_exec: false,
+    fraggate_call: false,
+    not_aziel_runtime: true,
+    not_a_second_door: true,
+    kind: "extra",
+    placement: "softwares-extra",
+    how_to_cite:
+      "Eliab, Aziel. (2026). Trades-Runtime " +
+      TRADES_RUNTIME_VERSION +
+      " [Software]. Apache-2.0. " +
+      TRADES_RUNTIME_GITHUB,
+    note: SISTER_PRODUCTS_NOTE,
+    sameAs: TRADES_RUNTIME_SAME_AS.slice(),
+  };
+}
+
+export function sisterProductsCite() {
+  return {
+    author: AUTHOR,
+    identity: AUTHOR,
+    software_tab: false,
+    fraggate_engine: false,
+    isolation_software: false,
+    fraggate_call: false,
+    nested_softwares_exec: false,
+    note: SISTER_PRODUCTS_NOTE,
+    products: [tradesRuntimeCite()],
+  };
+}
+
 /** Locked Person node. www + #aziel — never apex, never #aziel-eliab. */
 export const PERSON_ID = CANON_ORIGIN + "/#aziel";
 export const WEBSITE_ID = CANON_ORIGIN + "/#website";
@@ -602,7 +693,7 @@ export const EMBRYOLOCK_COPY = {
   ],
 };
 
-const EXTRA_SLUGS = new Set(["fraggate", "mesh", "aziel-runtime", "runtime"]);
+const EXTRA_SLUGS = new Set(["fraggate", "mesh", "aziel-runtime", "runtime", "trades-runtime"]);
 
 export function isSoftwareExtra(slug, name) {
   const s = String(canonicalSoftwareSlug(slug, name) || slug || "")
@@ -611,12 +702,13 @@ export function isSoftwareExtra(slug, name) {
   if (EXTRA_SLUGS.has(s)) return true;
   const n = String(name || "").trim();
   if (/^fraggate$/i.test(n) || /^mesh$/i.test(n)) return true;
+  if (/^trades[\s_-]?runtime$/i.test(n)) return true;
   return false;
 }
 
 /**
- * FragGate / mesh / aziel-runtime — extras only.
- * Never Softwares products[] cards.
+ * FragGate / mesh / aziel-runtime / trades-runtime — extras only.
+ * Never Softwares products[] cards. Trades-Runtime is a sister product cite.
  */
 export const SOFTWARE_EXTRAS = [
   {
@@ -646,6 +738,27 @@ export const SOFTWARE_EXTRAS = [
     path: "/v1/mesh",
     spec: "QNM-BUILD-1.0",
     note: "Suite rollup. Not a Softwares-tab product. Read-only suite presence is on (display from runtime). GET never enables. Operator-armed Node Gate / neighbor heal / network ON. AZVPN auto_use + vpn:true (HTTPS/WS REAL; WG/OpenVPN SLOT). Channel plane wifi/bt/rf/photon ON cites; worker_hardware:false.",
+  },
+  {
+    slug: TRADES_RUNTIME_SLUG,
+    name: TRADES_RUNTIME_NAME,
+    href: TRADES_RUNTIME + "/",
+    url: TRADES_RUNTIME + "/",
+    worker_home: TRADES_RUNTIME + "/",
+    github: TRADES_RUNTIME_GITHUB,
+    download: TRADES_RUNTIME_DOWNLOAD,
+    mcp: TRADES_RUNTIME_MCP,
+    version: TRADES_RUNTIME_VERSION,
+    one_line: TRADES_RUNTIME_ONE_LINE,
+    kind: "extra",
+    placement: "softwares-extra",
+    software_tab: false,
+    engine: false,
+    fraggate_engine: false,
+    fraggate_call: false,
+    live_backends: false,
+    hosted_company_os: false,
+    note: SISTER_PRODUCTS_NOTE,
   },
 ];
 export const EXTRA_SOFTWARE = SOFTWARE_EXTRAS;

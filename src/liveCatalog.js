@@ -25,7 +25,10 @@ import {
   RUNTIME_VERSION_ID,
   SOFTWARE,
   SOFTWARE_EXTRAS,
+  TRADES_RUNTIME,
+  TRADES_RUNTIME_SLUG,
   resolveRuntimeVersion,
+  sisterProductsCite,
   canonicalSoftwareSlug,
   catalogHref,
   catalogWorkerHome,
@@ -103,6 +106,7 @@ export function liveProductHref(product) {
   if (!product || typeof product !== "object") return "";
   const fromLive = firstHttpUrl(product, ["worker_home", "href", "home", "url"]);
   const slug = String(product.slug || "").trim();
+  if (slug === TRADES_RUNTIME_SLUG) return TRADES_RUNTIME + "/";
   if (isInRuntimePlacement(product, slug)) return runtimeTaskHome(slug) || fromLive;
   if (fromLive) return fromLive;
   if (slug === "embryolock") return EMBRYOLOCK_WORKER;
@@ -131,8 +135,14 @@ export function catalogDoorRow(item) {
   if (item.github) row.github = item.github;
   if (item.bucket) row.bucket = item.bucket;
   if (item.download_url) row.download_url = item.download_url;
+  if (item.download) row.download = item.download;
   if (item.placement) row.placement = item.placement;
   if (item.mcp) row.mcp = item.mcp;
+  if (item.engine === false) row.engine = false;
+  if (item.fraggate_engine === false) row.fraggate_engine = false;
+  if (item.fraggate_call === false) row.fraggate_call = false;
+  if (item.live_backends === false) row.live_backends = false;
+  if (item.hosted_company_os === false) row.hosted_company_os = false;
   if (item.surface) row.surface = item.surface;
   if (item.kind) row.kind = item.kind;
   if (item.software_tab === false) row.software_tab = false;
@@ -173,8 +183,14 @@ function mapLiveItem(row) {
   if (row.github) item.github = row.github;
   if (row.bucket) item.bucket = row.bucket;
   if (row.download_url) item.download_url = row.download_url;
+  if (row.download) item.download = row.download;
   if (row.placement) item.placement = row.placement;
   if (row.mcp) item.mcp = row.mcp;
+  if (row.engine === false) item.engine = false;
+  if (row.fraggate_engine === false) item.fraggate_engine = false;
+  if (row.fraggate_call === false) item.fraggate_call = false;
+  if (row.live_backends === false) item.live_backends = false;
+  if (row.hosted_company_os === false) item.hosted_company_os = false;
   if (row.surface) item.surface = row.surface;
   if (row.kind) item.kind = row.kind;
   if (row.software_tab === false) item.software_tab = false;
@@ -205,6 +221,20 @@ function extrasFromLiveDoc(doc, seen) {
   for (const row of extras) {
     if (!row || typeof row !== "object") continue;
     add(row);
+  }
+
+  const sisters =
+    doc && doc.sister_products && Array.isArray(doc.sister_products.products)
+      ? doc.sister_products.products
+      : [];
+  for (const row of sisters) {
+    if (!row || typeof row !== "object") continue;
+    add({
+      ...row,
+      kind: row.kind || "extra",
+      software_tab: false,
+      href: row.href || row.worker_home || row.worker || row.url,
+    });
   }
 
   if (doc && typeof doc.fraggate === "string" && /^https?:\/\//i.test(doc.fraggate)) {
@@ -480,6 +510,7 @@ export function softwareIndexBody(live, mesh) {
       softwares: "fraggate_call only",
       master_33: MASTER_33_MCP,
     },
+    sister_products: sisterProductsCite(),
   };
 }
 
@@ -494,6 +525,13 @@ function extraCiteRow(item) {
   if (item.path) row.path = item.path;
   if (item.spec) row.spec = item.spec;
   if (item.note) row.note = item.note;
+  if (item.github) row.github = item.github;
+  if (item.download) row.download = item.download;
+  if (item.one_line) row.one_line = item.one_line;
+  if (item.engine === false) row.engine = false;
+  if (item.fraggate_engine === false) row.fraggate_engine = false;
+  if (item.fraggate_call === false) row.fraggate_call = false;
+  if (item.live_backends === false) row.live_backends = false;
   return row;
 }
 
