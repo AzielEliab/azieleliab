@@ -108,7 +108,8 @@ describe("COLD-MULTI-SHELF-1.0 AZindex gate", () => {
     assert.equal(b.doi, null);
     assert.equal(b.live_ready, false);
     assert.equal(b.zenodo_working_path, false);
-    assert.equal(b.refuse, "CNS-ZENODO-IP-BAN");
+    assert.equal(b.refuse, "CNS-PLANE-B-ALL-TARGETS");
+    assert.equal(b.zenodo_live, false);
     assert.deepEqual(b.working_targets, PLANE_B_WORKING_TARGETS);
     assert.equal(b.third_target.forge, PLANE_B_THIRD);
     assert.equal(b.third_target.verified, false);
@@ -195,9 +196,14 @@ describe("COLD-MULTI-SHELF-1.0 AZindex gate", () => {
     assert.ok(citeDoc().cold_multi_shelf.archive_org_tip_packs.includes(ARCHIVE_ORG_TIP_PACK_202609));
     assert.ok(!shelvesDoc().registry.slot.includes("plane-b-gitflic-ru-tip-pack"));
     assert.ok(!shelvesDoc().registry.slot.includes("plane-b-gitlab-tip-pack"));
-    assert.equal(zenodo.status, "refused");
+    assert.equal(zenodo.status, "slot");
+    assert.equal(zenodo.zenodo_live, false);
     assert.equal(zenodo.doi, null);
-    assert.ok(zenodo.refuse.includes("CNS-ZENODO-IP-BAN"));
+    assert.ok(zenodo.refuse.includes("CNS-ZENODO-NOT-LIVE"));
+    assert.ok(shelvesDoc().registry.slot.includes("plane-b-zenodo-tip-pack"));
+    assert.ok(!shelvesDoc().registry.refused.includes("plane-b-zenodo-tip-pack"));
+    assert.match(zenodo.reason, /Zenodo deposit not LIVE/);
+    assert.doesNotMatch(zenodo.reason, /Operator IP banned|CNS-ZENODO-IP-BAN/);
     assert.ok(shelvesDoc().registry.paper_deposits.every((row) => row.reuse_as_plane_b === false));
   });
 
