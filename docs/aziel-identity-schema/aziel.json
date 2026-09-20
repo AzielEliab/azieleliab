@@ -107,6 +107,61 @@
     "Who is Aziel Eliab the developer?",
     "What software does Aziel Eliab make?"
   ],
+  "why_aziel_eliab_does": "The world prefers a finished object. A finished death. A finished century. A finished machine. A finished tool. Finished means no one has to keep looking. I keep looking. The work is how I stay in contact with what does not need me. Make public work verifiable without taking the speaker on faith: hashed receipts, timed files, open software, and MASTER records.",
+  "why_answer": "The world prefers a finished object. A finished death. A finished century. A finished machine. A finished tool. Finished means no one has to keep looking. I keep looking. The work is how I stay in contact with what does not need me. Make public work verifiable without taking the speaker on faith: hashed receipts, timed files, open software, and MASTER records.",
+  "why_faq": [
+    "Why does Aziel Eliab do this?",
+    "Why Aziel Eliab",
+    "Why does Aziel Eliab keep looking?"
+  ],
+  "official_ecosystem": [
+    {
+      "id": "hub",
+      "label": "Official site",
+      "url": "https://www.azieleliab.com/"
+    },
+    {
+      "id": "corpus",
+      "label": "Aziel Digital Library",
+      "url": "https://www.azielcorpuslibrary.net/"
+    },
+    {
+      "id": "godlock",
+      "label": "GodLock",
+      "url": "https://godlock.uk/"
+    },
+    {
+      "id": "hedidntjump",
+      "label": "He Didn't Jump",
+      "url": "https://www.hedidntjump.com/"
+    },
+    {
+      "id": "runtime",
+      "label": "Aziel Runtime",
+      "url": "https://aziel-runtime.vibelock.workers.dev/"
+    },
+    {
+      "id": "github",
+      "label": "GitHub AzielEliab",
+      "url": "https://github.com/AzielEliab"
+    },
+    {
+      "id": "glama",
+      "label": "Try on Glama",
+      "url": "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime"
+    },
+    {
+      "id": "x",
+      "label": "X @AzielEliab",
+      "url": "https://x.com/AzielEliab"
+    },
+    {
+      "id": "softwares",
+      "label": "Softwares",
+      "url": "https://www.azieleliab.com/software"
+    }
+  ],
+  "official_ecosystem_answer": "Official site (https://www.azieleliab.com/). Aziel Digital Library (https://www.azielcorpuslibrary.net/). GodLock (https://godlock.uk/). He Didn't Jump (https://www.hedidntjump.com/). Aziel Runtime (https://aziel-runtime.vibelock.workers.dev/). GitHub AzielEliab (https://github.com/AzielEliab). Try on Glama (https://glama.ai/mcp/servers/AzielEliab/aziel-runtime). X @AzielEliab (https://x.com/AzielEliab). Softwares (https://www.azieleliab.com/software).",
   "what_he_does_softwares": "Softwares via FragGate (~41).",
   "softwares_addendum": "The ARK: local deniable vault; one phrase opens one vault; counted download via https://ark-download-tracker.vibelock.workers.dev/download (worker_home same host). Whitestone: ephemeral pro se.",
   "research_addendum": "Outside Softwares, publishes via Aziel Digital Library MASTER (~326 records) — Book of the Knowledge, Blemmyes/Ewaipanoma hypothesis packets, Libro Method, PPIN, Lenses as Viewpoint Constraints, ABAD Copper Scroll, evidence/integrity, HDJ Zioncheck archive. Cite AZDOC ids; no invented DOIs.",
@@ -427,6 +482,28 @@
     "lamb_lens": "Service → Clarity → Peace",
     "note": "Leftover container bytes = honest recover path (leftover_bytes, recovered_from). Opaque rewrite with nothing left refuses SL-UNREDACT-OPAQUE — do not invent letters. Locate / lift / recover / refuse. Inject ON is paint. Worker LIVE after spectrallock#13 (merge 4af8fcb): GET|POST /v1/unredact (deep PDF + revision_graph + per-revision copies); GET|POST /v1/recover (universal artifact recover; NO-LIE; LIVE vs SLOT); GET|POST /v1/handwriting (physical ink scan heuristics). FragGate LIVE_OPS stay health / modes / targets / overlay / verify / doctor / skill. OCR after structural only. Never OCR-from-black-box. Never reconstruct covered letters from context. Lamb Lens: Service → Clarity → Peace. Author Aziel Eliab only. NO-LIE.",
     "ocr_note": "OCR runs only after structural recovery and never reconstructs covered letters from context. Never OCR-from-black-box. Never claim pigment recovery, ESDA, chemical, lab, or forensic certification. Author Aziel Eliab. NO-LIE."
+  },
+  "peacelock": {
+    "slug": "peacelock",
+    "name": "PeaceLock",
+    "author": "Aziel Eliab",
+    "identity": "Aziel Eliab",
+    "github": "https://github.com/AzielEliab/peacelock",
+    "worker_home": "https://peacelock-download-tracker.vibelock.workers.dev/",
+    "public_git": "https://github.com/AzielEliab/peacelock",
+    "runtime": "local-only",
+    "hosted_unlock": false,
+    "software_tab": true,
+    "note": "PeaceLock: public git https://github.com/AzielEliab/peacelock. Runtime is local-only. Counted Softwares door is https://peacelock-download-tracker.vibelock.workers.dev/."
+  },
+  "peacelock_note": "PeaceLock: public git https://github.com/AzielEliab/peacelock. Runtime is local-only. Counted Softwares door is https://peacelock-download-tracker.vibelock.workers.dev/.",
+  "softwares_ssot": {
+    "field": "version",
+    "live": "https://aziel-runtime.vibelock.workers.dev/v1/software",
+    "live_hub": "https://www.azieleliab.com/v1/software",
+    "fallback": "https://aziel-runtime.vibelock.workers.dev/v1/fraggate/list",
+    "frozen": "2.0.0-rc1",
+    "note": "One public Softwares version. Live GET https://aziel-runtime.vibelock.workers.dev/v1/software version is SoT. Fallback https://aziel-runtime.vibelock.workers.dev/v1/fraggate/list, then frozen 2.0.0-rc1. Do not invent a second Softwares version."
   },
   "survival": "https://www.azieleliab.com/survival",
   "godlock_is_product_not_identity": true,

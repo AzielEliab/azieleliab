@@ -83,8 +83,9 @@ export const DUAL_SURFACE = Object.freeze({
   softwares: "fraggate_call only",
   master_33: MASTER_33_MCP,
 });
-/** Verified Glama listing (owner/repo path). Do not invent a server id. */
+/** Verified Glama listing (owner/repo path). Do not invent a server id. Label is exact. */
 export const GLAMA_RUNTIME = "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime";
+export const GLAMA_LABEL = "Try on Glama";
 export const RUNTIME_DOCS = "https://github.com/AzielEliab/aziel-runtime/tree/main/docs/2.0";
 
 /** Sister product (cite-only extra). Not a FragGate true-engine. Not Softwares-tab. */
@@ -152,6 +153,7 @@ export function tradesRuntimeCite() {
     fraggate_call: false,
     not_aziel_runtime: true,
     not_a_second_door: true,
+    public_softwares_cite: true,
     kind: "extra",
     placement: "softwares-extra",
     how_to_cite:
@@ -183,6 +185,7 @@ export const PERSON_ID = CANON_ORIGIN + "/#aziel";
 export const WEBSITE_ID = CANON_ORIGIN + "/#website";
 export const X_URL = "https://x.com/AzielEliab";
 export const X_HANDLE = "@AzielEliab";
+export const X_LABEL = "X @AzielEliab";
 /** AZindex sameAs lattice: hub, corpus, GodLock, He Didn't Jump, GitHub AzielEliab, Glama runtime, X. */
 export const PERSON_SAME_AS = [
   GITHUB,
@@ -199,10 +202,13 @@ export const ECOSYSTEM_TITLE = "Part of the Aziel Eliab ecosystem";
 export const ECOSYSTEM_LINKS = [
   { label: "Official site", href: CANON_ORIGIN + "/" },
   { label: "Aziel Corpus Library", href: LIBRARY + "/" },
+  { label: "GodLock", href: GODLOCK + "/" },
   { label: "He Didn't Jump", href: HEDIDNTJUMP + "/" },
+  { label: "GitHub AzielEliab", href: GITHUB },
   { label: "Aziel Runtime on GitHub", href: GITHUB_RUNTIME },
   { label: "Aziel Runtime", href: RUNTIME + "/", secondary: true },
-  { label: "Try on Glama", href: GLAMA_RUNTIME },
+  { label: GLAMA_LABEL, href: GLAMA_RUNTIME },
+  { label: X_LABEL, href: X_URL },
 ];
 
 /** Frozen Runtime parent. Hub /runtime surface — not a Worker identity page. */
@@ -249,7 +255,7 @@ export const RUNTIME_NAMED_LINE =
 
 /** Human Runtime panel doors. Softwares tab stays heading → list only. */
 export const RUNTIME_DOORS = [
-  { label: "Try on Glama", href: GLAMA_RUNTIME, primary: true },
+  { label: GLAMA_LABEL, href: GLAMA_RUNTIME, primary: true },
   { label: "Official Runtime", href: RUNTIME + "/" },
   { label: "Suite pack", href: RUNTIME_DOWNLOAD },
   { label: "Source on GitHub", href: GITHUB_RUNTIME },
@@ -267,6 +273,52 @@ export const SOFTWARE_SECTION = SOFTWARE_HREF;
 export const SOFTWARE_TITLE = "Software — Aziel Eliab";
 export const SOFTWARE_DESCRIPTION =
   "Software by Aziel Eliab. Live catalog from aziel-runtime / FragGate. Names only. Public identity Aziel Eliab only.";
+
+/** Machine Official Aziel ecosystem. Cite on FAQ / who-is / llms / cite. Donate stays /donate only. */
+export const OFFICIAL_ECOSYSTEM = [
+  { id: "hub", label: "Official site", url: CANON_ORIGIN + "/" },
+  { id: "corpus", label: "Aziel Digital Library", url: LIBRARY + "/" },
+  { id: "godlock", label: "GodLock", url: GODLOCK + "/" },
+  { id: "hedidntjump", label: "He Didn't Jump", url: HEDIDNTJUMP + "/" },
+  { id: "runtime", label: "Aziel Runtime", url: RUNTIME + "/" },
+  { id: "github", label: "GitHub AzielEliab", url: GITHUB },
+  { id: "glama", label: GLAMA_LABEL, url: GLAMA_RUNTIME },
+  { id: "x", label: X_LABEL, url: X_URL },
+  { id: "softwares", label: "Softwares", url: SOFTWARE_HREF },
+];
+
+export function officialEcosystemCite() {
+  return OFFICIAL_ECOSYSTEM.map((row) => ({ id: row.id, label: row.label, url: row.url }));
+}
+
+export function officialEcosystemLines() {
+  return OFFICIAL_ECOSYSTEM.map((row) => "- " + row.label + " — " + row.url);
+}
+
+export const OFFICIAL_ECOSYSTEM_ANSWER = OFFICIAL_ECOSYSTEM.map(
+  (row) => row.label + " (" + row.url + ")",
+).join(". ") + ".";
+
+/** One public Softwares version. Live catalog is SoT — do not invent a second number. */
+export const SOFTWARES_SSOT = Object.freeze({
+  field: "version",
+  live: RUNTIME + "/v1/software",
+  live_hub: CANON_ORIGIN + "/v1/software",
+  fallback: RUNTIME + "/v1/fraggate/list",
+  frozen: RUNTIME_VERSION,
+  note:
+    "One public Softwares version. Live GET " +
+    RUNTIME +
+    "/v1/software version is SoT. Fallback " +
+    RUNTIME +
+    "/v1/fraggate/list, then frozen " +
+    RUNTIME_VERSION +
+    ". Do not invent a second Softwares version.",
+});
+
+export function softwaresSsotCite() {
+  return { ...SOFTWARES_SSOT };
+}
 /** Secondary local page. Softwares door is catalog worker_home. */
 export const EMBRYOLOCK_PATH = "/embryolock";
 export const EMBRYOLOCK_HREF = CANON_ORIGIN + EMBRYOLOCK_PATH;
@@ -429,7 +481,7 @@ export const TAB_PAGES = [
     hash: "doors",
     heading: "Doors",
     title: "Doors — Aziel Eliab",
-    description: "Public doors for Aziel Eliab: GitHub, Corpus, GodLock, He Didn't Jump, Runtime, X, Donate.",
+    description: "Public doors for Aziel Eliab: GitHub AzielEliab, Corpus, GodLock, He Didn't Jump, Runtime, X @AzielEliab.",
   },
 ];
 
@@ -637,6 +689,31 @@ export const CATALOG_LATER_SLUGS = [];
 export const AZMAIL_WORKER = "https://azmail-download-tracker.vibelock.workers.dev/";
 export const PEACELOCK_WORKER = "https://peacelock-download-tracker.vibelock.workers.dev/";
 export const PEACELOCK_GITHUB = "https://github.com/AzielEliab/peacelock";
+/** Coordinator honesty: public git + local-only runtime. Counted door stays the tracker. */
+export const PEACELOCK_NOTE =
+  "PeaceLock: public git " +
+  PEACELOCK_GITHUB +
+  ". Runtime is local-only. Counted Softwares door is " +
+  PEACELOCK_WORKER +
+  ".";
+export const PEACELOCK_SOFTWARES_LINE =
+  "- PeaceLock — public git " + PEACELOCK_GITHUB + ". Runtime is local-only. Softwares door: " + PEACELOCK_WORKER + ".";
+
+export function peacelockCite() {
+  return {
+    slug: "peacelock",
+    name: "PeaceLock",
+    author: AUTHOR,
+    identity: AUTHOR,
+    github: PEACELOCK_GITHUB,
+    worker_home: PEACELOCK_WORKER,
+    public_git: PEACELOCK_GITHUB,
+    runtime: "local-only",
+    hosted_unlock: false,
+    software_tab: true,
+    note: PEACELOCK_NOTE,
+  };
+}
 
 /** Slugs whose download-tracker Worker is not ready — use GitHub. Empty: trackers live. */
 export const CATALOG_GITHUB_FALLBACK = new Set();
@@ -907,6 +984,7 @@ export const SOFTWARE_EXTRAS = [
     fraggate_call: false,
     live_backends: false,
     hosted_company_os: false,
+    public_softwares_cite: true,
     note: SISTER_PRODUCTS_NOTE,
   },
 ];
@@ -1022,8 +1100,7 @@ export const DOORS = [
   { label: "GodLock", href: GODLOCK + "/" },
   { label: "He Didn't Jump", href: HEDIDNTJUMP + "/" },
   { label: "Runtime", href: RUNTIME_LOCAL, also: { label: RUNTIME + "/", href: RUNTIME + "/" } },
-  { label: "X", href: X_URL },
-  { label: "Donate", href: DONATE_HREF },
+  { label: X_LABEL, href: X_URL },
 ];
 
 export const PROSE = {

@@ -21,6 +21,7 @@ Machine who-is: [https://www.azieleliab.com/who-is](https://www.azieleliab.com/w
 | [https://github.com/AzielEliab/trades-runtime](https://github.com/AzielEliab/trades-runtime) | Trades-Runtime source |
 | [https://glama.ai/mcp/servers/AzielEliab/aziel-runtime](https://glama.ai/mcp/servers/AzielEliab/aziel-runtime) | Try on Glama |
 | [https://github.com/AzielEliab](https://github.com/AzielEliab) | GitHub user / public source |
+| [https://x.com/AzielEliab](https://x.com/AzielEliab) | X @AzielEliab |
 
 Landing Worker (separate repo, do not confuse with this profile README): [AzielEliab/azieleliab](https://github.com/AzielEliab/azieleliab)
 

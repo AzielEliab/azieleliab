@@ -446,6 +446,17 @@ describe("software doors", () => {
     assert.ok(html.includes(">PeaceLock<"));
     assert.match(html, /peacelock-download-tracker/i);
     assert.ok(citeDoc().software_names.some((s) => s.name === "PeaceLock" && s.url === PEACELOCK_WORKER));
+    assert.equal(citeDoc().peacelock.runtime, "local-only");
+    assert.equal(citeDoc().peacelock.github, "https://github.com/AzielEliab/peacelock");
+    assert.ok(html.includes('class="soft-name"'));
+    assert.ok(html.includes(">PeaceLock<"));
+    assert.doesNotMatch(html, /public git|local-only runtime/);
+    const catalog = softwareIndexBody();
+    assert.equal(catalog.peacelock.runtime, "local-only");
+    assert.equal(catalog.peacelock.github, "https://github.com/AzielEliab/peacelock");
+    assert.equal(catalog.peacelock.worker_home, PEACELOCK_WORKER);
+    assert.equal(catalog.softwares_ssot.field, "version");
+    assert.match(catalog.softwares_ssot.note, /One public Softwares version/);
   });
 
   it("lists AZMail in Plain and uses AZMAIL_WORKER now that it is in the catalog", () => {
@@ -772,6 +783,7 @@ describe("doors", () => {
     assert.match(llmsTxt(), /## Doors[\s\S]*He Didn't Jump: https:\/\/www\.hedidntjump\.com\//);
     assert.match(aiTxt(), /## Doors[\s\S]*He Didn't Jump: https:\/\/www\.hedidntjump\.com\//);
     assert.ok(sitemapXml().includes("<loc>" + HEDIDNTJUMP + "/</loc>"));
+    assert.ok(sitemapXml().includes("<loc>https://github.com/AzielEliab/peacelock</loc>"));
   });
 });
 
@@ -932,6 +944,11 @@ describe("SEO routes", () => {
     assert.ok(aiBody.includes("Whitestone: ephemeral pro se"));
     assert.ok(llmsBody.includes("PeaceLock"));
     assert.ok(llmsBody.includes(PEACELOCK_WORKER));
+    assert.ok(llmsBody.includes("PeaceLock — public git https://github.com/AzielEliab/peacelock"));
+    assert.ok(llmsBody.includes("Runtime is local-only"));
+    assert.ok(llmsBody.includes("One public Softwares version"));
+    assert.ok(aiBody.includes("PeaceLock — public git https://github.com/AzielEliab/peacelock"));
+    assert.ok(aiBody.includes("One public Softwares version"));
     assert.ok(llmsBody.includes("AZMail"));
     assert.ok(llmsBody.includes(AZMAIL_WORKER));
     assert.ok(llmsBody.includes("AZBrowser"));
@@ -1080,6 +1097,18 @@ describe("SEO routes", () => {
     assert.deepEqual(citeBody, citeDoc());
     assert.ok(sitemapXml().includes(CANON_ORIGIN + "/"));
     assert.ok(sitemapXml().includes(RUNTIME_LOCAL));
+    assert.ok(mapBody.includes("<loc>" + GLAMA_RUNTIME + "</loc>"));
+    assert.ok(mapBody.includes("<loc>https://x.com/AzielEliab</loc>"));
+    assert.ok(mapBody.includes("<loc>https://github.com/AzielEliab</loc>"));
+    assert.ok(mapBody.includes("<loc>https://godlock.uk/</loc>"));
+    assert.ok(llmsBody.includes("## Official Aziel ecosystem"));
+    assert.ok(llmsBody.includes("## Why"));
+    assert.ok(llmsBody.includes("Try on Glama — " + GLAMA_RUNTIME));
+    assert.ok(llmsBody.includes("X @AzielEliab — https://x.com/AzielEliab"));
+    assert.ok(aiBody.includes("## Official Aziel ecosystem"));
+    assert.ok(citeBody.official_ecosystem.some((row) => row.label === "Try on Glama" && row.url === GLAMA_RUNTIME));
+    assert.ok(citeBody.x_label === "X @AzielEliab");
+    assert.ok(citeBody.glama_label === "Try on Glama");
   });
 
   it("keeps Plane LIVE|SLOT facts and drops scoreboard / survival copy", () => {
@@ -1088,7 +1117,6 @@ describe("SEO routes", () => {
       //i,
       /durable/i,
       /hard to kill/i,
-      /survival/i,
       /unkillable/i,
       //i,
       /fielded[_-]?100/i,
@@ -1344,10 +1372,13 @@ describe("public entity graph phases B–D + E audit", () => {
       [
         ["Official site", "https://www.azieleliab.com/", false],
         ["Aziel Corpus Library", "https://www.azielcorpuslibrary.net/", false],
+        ["GodLock", "https://godlock.uk/", false],
         ["He Didn't Jump", "https://www.hedidntjump.com/", false],
+        ["GitHub AzielEliab", "https://github.com/AzielEliab", false],
         ["Aziel Runtime on GitHub", "https://github.com/AzielEliab/aziel-runtime", false],
         ["Aziel Runtime", "https://aziel-runtime.vibelock.workers.dev/", true],
         ["Try on Glama", "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime", false],
+        ["X @AzielEliab", "https://x.com/AzielEliab", false],
       ],
     );
     const block = ecosystemHtml();
@@ -2084,7 +2115,7 @@ describe("AZL-DONATE-1.0", () => {
     );
   });
 
-  it("puts Donate on the homepage spine and Doors list, not as a homepage section", () => {
+  it("puts Donate on the homepage spine and /donate, not under Doors", () => {
     const html = pageHtml();
     assert.ok(!html.includes('id="donate"'));
     assert.ok(!html.includes('href="#donate"'));
@@ -2100,9 +2131,10 @@ describe("AZL-DONATE-1.0", () => {
     assert.ok(html.includes('aria-label="Spine"'));
     assert.ok(html.includes(">" + DONATE_TITLE + "<"));
     assert.ok(html.includes('href="' + DONATE_HREF + '"'));
-    const donateDoor = DOORS.find((d) => d.label === "Donate");
-    assert.ok(donateDoor);
-    assert.equal(donateDoor.href, DONATE_HREF);
+    assert.ok(!DOORS.some((d) => d.label === "Donate"));
+    const doorsCard = doorsHtml().match(/<section class="card lead" id="doors">[\s\S]*?<\/section>/);
+    assert.ok(doorsCard);
+    assert.doesNotMatch(doorsCard[0], />Donate</);
     assert.equal(DONATE_PATH, "/donate");
     assert.equal(DONATE_HREF, CANON_ORIGIN + DONATE_PATH + "?v=png");
     assert.deepEqual(

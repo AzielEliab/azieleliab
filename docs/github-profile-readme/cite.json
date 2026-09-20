@@ -21,7 +21,8 @@
     "aziel-runtime": "https://aziel-runtime.vibelock.workers.dev/",
     "trades-runtime": "https://trades-runtime.vibelock.workers.dev/",
     "glama": "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime",
-    "github": "https://github.com/AzielEliab"
+    "github": "https://github.com/AzielEliab",
+    "x": "https://x.com/AzielEliab"
   },
   "cite": {
     "azieleliab.com": "https://www.azieleliab.com/cite.json",

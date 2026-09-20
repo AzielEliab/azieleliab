@@ -71,12 +71,15 @@ describe("Trades-Runtime sister-product machine cite", () => {
     assert.equal(extra.fraggate_engine, false);
     assert.equal(extra.fraggate_call, false);
     assert.equal(extra.live_backends, false);
+    assert.equal(extra.public_softwares_cite, true);
     assert.equal(extra.href, TRADES_RUNTIME + "/");
     const sisters = sisterProductsCite();
     assert.equal(sisters.software_tab, false);
     assert.equal(sisters.fraggate_call, false);
     assert.equal(sisters.products[0].live_backends, false);
     assert.equal(sisters.products[0].fraggate_engine, false);
+    assert.equal(sisters.products[0].public_softwares_cite, true);
+    assert.equal(tradesRuntimeCite().public_softwares_cite, true);
     assert.equal(tradesRuntimeCite().mcp, TRADES_RUNTIME_MCP);
   });
 
@@ -120,6 +123,7 @@ describe("Trades-Runtime sister-product machine cite", () => {
     assert.equal(cite.trades_runtime.fraggate_engine, false);
     assert.equal(cite.trades_runtime.fraggate_call, false);
     assert.equal(cite.trades_runtime.hosted_company_os, false);
+    assert.equal(cite.trades_runtime.public_softwares_cite, true);
     assert.equal(cite.sister_products.fraggate_call, false);
     assert.equal(cite.sister_products.products[0].slug, TRADES_RUNTIME_SLUG);
     assert.ok(!cite.software_names.some((s) => s.name === TRADES_RUNTIME_NAME));
@@ -201,6 +205,13 @@ describe("Trades-Runtime sister-product machine cite", () => {
     assert.equal(extra.download, TRADES_RUNTIME_DOWNLOAD);
     assert.equal(extra.live_backends, false);
     assert.equal(extra.fraggate_call, false);
+    assert.equal(extra.public_softwares_cite, true);
+    assert.equal(body.softwares_ssot.field, "version");
+    assert.equal(body.softwares_ssot.live, "https://aziel-runtime.vibelock.workers.dev/v1/software");
+    assert.equal(body.softwares_ssot.frozen, "2.0.0-rc1");
+    assert.equal(body.peacelock.runtime, "local-only");
+    assert.equal(body.peacelock.github, "https://github.com/AzielEliab/peacelock");
+    assert.equal(body.sister_products.products[0].public_softwares_cite, true);
     assert.equal(body.sister_products.products[0].slug, TRADES_RUNTIME_SLUG);
     assert.equal(body.sister_products.fraggate_engine, false);
 
@@ -224,5 +235,6 @@ describe("Trades-Runtime sister-product machine cite", () => {
     assert.ok(liveExtra);
     assert.equal(liveExtra.href, TRADES_RUNTIME + "/");
     assert.equal(liveExtra.live_backends, false);
+    assert.equal(liveExtra.public_softwares_cite, true);
   });
 });
