@@ -1,4 +1,5 @@
 /** Exact landing copy and verified public doors. Author: Aziel Eliab. */
+import { CATALOG_PURPOSE } from "./softwareCopy.js";
 
 export const CANON_ORIGIN = "https://www.azieleliab.com";
 export const APEX_HOST = "azieleliab.com";
@@ -253,7 +254,7 @@ export function runtimeToolId(slug) {
 export const RUNTIME_NAMED_LINE =
   "Aziel Runtime includes named components such as FragGate, ForgeReceipts, …";
 
-/** Human Runtime panel doors. Softwares tab stays heading → list only. */
+/** Human Runtime panel doors. Softwares tab lists name + designed-purpose one_line. */
 export const RUNTIME_DOORS = [
   { label: GLAMA_LABEL, href: GLAMA_RUNTIME, primary: true },
   { label: "Official Runtime", href: RUNTIME + "/" },
@@ -272,7 +273,7 @@ export const SOFTWARE_HREF = CANON_ORIGIN + SOFTWARE_PATH;
 export const SOFTWARE_SECTION = SOFTWARE_HREF;
 export const SOFTWARE_TITLE = "Software — Aziel Eliab";
 export const SOFTWARE_DESCRIPTION =
-  "Software by Aziel Eliab. Live catalog from aziel-runtime / FragGate. Names only. Public identity Aziel Eliab only.";
+  "Software by Aziel Eliab. Live catalog from aziel-runtime / FragGate. Designed-purpose one_line from GET /v1/software. Public identity Aziel Eliab only.";
 
 /** Machine Official Aziel ecosystem. Cite on FAQ / who-is / llms / cite. Donate stays /donate only. */
 export const OFFICIAL_ECOSYSTEM = [
@@ -326,6 +327,14 @@ export const EMBRYOLOCK_WORKER = "https://embryolock-download-tracker.vibelock.w
 /** Softwares worker_home. Counted download is same host /download. Not a hosted unlock. */
 export const ARK_WORKER = "https://ark-download-tracker.vibelock.workers.dev/";
 export const ARK_DOWNLOAD = "https://ark-download-tracker.vibelock.workers.dev/download";
+/** Whitestone is Worker-catalog Softwares (FragGate status none). Do not invent fraggate_call ops. */
+export const WHITESTONE_SLUG = "whitestone";
+export const WHITESTONE_NAME = "Whitestone";
+export const WHITESTONE_WORKER = "https://whitestone-download-tracker.vibelock.workers.dev/";
+export const WHITESTONE_WEB = "https://whitestone.vibelock.workers.dev/";
+export const WHITESTONE_GITHUB = "https://github.com/AzielEliab/Whitestone";
+export const WHITESTONE_ONE_LINE = CATALOG_PURPOSE.whitestone.one_line;
+export const WHITESTONE_DESCRIPTION = CATALOG_PURPOSE.whitestone.description;
 /** SpectralLock Worker honesty after spectrallock#13 LIVE (merge 4af8fcb). Overlay digest not rehashed. */
 export const SPECTRALLOCK_SLUG = "spectrallock";
 export const SPECTRALLOCK_NAME = "SpectralLock";
@@ -338,10 +347,8 @@ export const SPECTRALLOCK_HANDWRITING = SPECTRALLOCK_WORKER + "v1/handwriting";
 export const SPECTRALLOCK_GITHUB = "https://github.com/AzielEliab/spectrallock";
 /** Runtime catalog digest after aziel-runtime#137. Hasher on disk — not invented. Overlay digest not rehashed in #13. */
 export const SPECTRALLOCK_DIGEST = "3427dbcf2932b6bf4c6cf80735efd171b75519066e013db6d0df275c65989fb4";
-export const SPECTRALLOCK_ONE_LINE =
-  "Preview a small overlay on an image; leftover container bytes recover honestly, opaque rewrite refuses.";
-export const SPECTRALLOCK_DESCRIPTION =
-  "Use SpectralLock for a 256-pixel overlay preview with an optional inject true|false color switch, plus a metadata-hash check. Inject ON paints membership. Locate / lift / recover / refuse live in the vendored overlay (product Worker /v1/unredact) — leftover-bytes recover is honest (object id / offset / stream); opaque replace with no leftover bytes refuses SL-UNREDACT-OPAQUE; never invent letters; never OCR-from-black-box. After spectrallock#13 LIVE (merge 4af8fcb): GET|POST /v1/unredact is deep PDF + revision_graph + per-revision copies; GET|POST /v1/recover is universal artifact recover (NO-LIE; LIVE vs SLOT); GET|POST /v1/handwriting is physical ink scan heuristics. OCR only after structural recovery; never reconstructs covered letters from context. Hosted preview is 256 px PNG; the full pipeline is the Python package. It exists as a hosted preview. FragGate LIVE_OPS stay health / modes / targets / overlay / verify / doctor / skill.";
+export const SPECTRALLOCK_ONE_LINE = CATALOG_PURPOSE.spectrallock.one_line;
+export const SPECTRALLOCK_DESCRIPTION = CATALOG_PURPOSE.spectrallock.description;
 export const SPECTRALLOCK_NOTE =
   "Leftover container bytes = honest recover path (leftover_bytes, recovered_from). Opaque rewrite with nothing left refuses SL-UNREDACT-OPAQUE — do not invent letters. Locate / lift / recover / refuse. Inject ON is paint. Worker LIVE after spectrallock#13 (merge 4af8fcb): GET|POST /v1/unredact (deep PDF + revision_graph + per-revision copies); GET|POST /v1/recover (universal artifact recover; NO-LIE; LIVE vs SLOT); GET|POST /v1/handwriting (physical ink scan heuristics). FragGate LIVE_OPS stay health / modes / targets / overlay / verify / doctor / skill. OCR after structural only. Never OCR-from-black-box. Never reconstruct covered letters from context. Lamb Lens: Service → Clarity → Peace. Author Aziel Eliab only. NO-LIE.";
 export const SPECTRALLOCK_OCR_NOTE =
@@ -573,6 +580,7 @@ export const CATALOG_SLUGS = [
   "veillock",
   "vibelock",
   "whistlelock",
+  "whitestone",
   "zkattest",
   "zsolver",
 ];
@@ -618,6 +626,7 @@ export const CATALOG_NAMES = {
   veillock: "VeilLock",
   vibelock: "VibeLock",
   whistlelock: "WhistleLock",
+  whitestone: "Whitestone",
   zkattest: "ZKAttest",
   zsolver: "ZionPattern Solver",
 };
@@ -696,8 +705,10 @@ export const PEACELOCK_NOTE =
   ". Runtime is local-only. Counted Softwares door is " +
   PEACELOCK_WORKER +
   ".";
+export const PEACELOCK_ONE_LINE = CATALOG_PURPOSE.peacelock.one_line;
+export const PEACELOCK_DESCRIPTION = CATALOG_PURPOSE.peacelock.description;
 export const PEACELOCK_SOFTWARES_LINE =
-  "- PeaceLock — public git " + PEACELOCK_GITHUB + ". Runtime is local-only. Softwares door: " + PEACELOCK_WORKER + ".";
+  "- PeaceLock — " + PEACELOCK_ONE_LINE + " " + PEACELOCK_WORKER;
 
 export function peacelockCite() {
   return {
@@ -720,6 +731,7 @@ export const CATALOG_GITHUB_FALLBACK = new Set();
 
 export function catalogGithub(slug) {
   if (CATALOG_RUNTIME_HOME[slug]) return GITHUB_RUNTIME;
+  if (slug === "whitestone") return WHITESTONE_GITHUB;
   return "https://github.com/AzielEliab/" + slug;
 }
 
@@ -727,6 +739,7 @@ export function catalogWorkerHome(slug, product) {
   if (slug === "aziel-corpus") return LIBRARY + "/";
   if (slug === "azmail") return AZMAIL_WORKER;
   if (slug === "peacelock") return PEACELOCK_WORKER;
+  if (slug === "whitestone") return WHITESTONE_WORKER;
   if (isInRuntimePlacement(product, slug)) return runtimeTaskHome(slug);
   if (CATALOG_RUNTIME_HOME[slug]) return CATALOG_RUNTIME_HOME[slug];
   return "https://" + slug + "-download-tracker.vibelock.workers.dev/";
@@ -763,15 +776,8 @@ export function canonicalSoftwareSlug(slug, name) {
   return s || undefined;
 }
 
-/** Fallback Softwares blurbs when live /v1/software is down. Spectrallock Worker honesty after #13. */
-export const CATALOG_BLURBS = Object.freeze({
-  spectrallock: {
-    one_line: SPECTRALLOCK_ONE_LINE,
-    description: SPECTRALLOCK_DESCRIPTION,
-    engine_digest: SPECTRALLOCK_DIGEST,
-    version: SPECTRALLOCK_VERSION,
-  },
-});
+/** Fallback Softwares blurbs when live /v1/software is down. Worker designed-purpose SSoT. */
+export const CATALOG_BLURBS = CATALOG_PURPOSE;
 
 /** Fill missing one_line / description from locked fallback blurbs. Never overwrite live honesty. */
 export function applyCatalogBlurb(item, slug) {
@@ -779,13 +785,28 @@ export function applyCatalogBlurb(item, slug) {
   const s = String(slug || item.slug || "")
     .trim()
     .toLowerCase();
-  const blurb = CATALOG_BLURBS[s];
+  const blurb = CATALOG_PURPOSE[s];
   if (!blurb) return item;
   if (!item.one_line) item.one_line = blurb.one_line;
   if (!item.description) item.description = blurb.description;
-  if (!item.engine_digest && blurb.engine_digest) item.engine_digest = blurb.engine_digest;
-  if (!item.version && blurb.version) item.version = blurb.version;
+  if (!item.engine_digest && s === SPECTRALLOCK_SLUG) item.engine_digest = SPECTRALLOCK_DIGEST;
+  if (!item.version && s === SPECTRALLOCK_SLUG) item.version = SPECTRALLOCK_VERSION;
   return item;
+}
+
+/** Softwares list line: Name — designed-purpose one_line. */
+export function softwarePurposeLine(item) {
+  if (!item || !item.name) return "";
+  const purpose = item.one_line || (item.slug && CATALOG_PURPOSE[item.slug] && CATALOG_PURPOSE[item.slug].one_line) || "";
+  return purpose ? item.name + " — " + purpose : item.name;
+}
+
+export function softwarePurposeLines(software) {
+  const items = software && software.length ? software : SOFTWARE;
+  return items
+    .map((item) => softwarePurposeLine(item))
+    .filter(Boolean)
+    .map((line) => "- " + line);
 }
 
 export function spectrallockCite() {

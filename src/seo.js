@@ -41,8 +41,10 @@ import {
   OFFICIAL_ECOSYSTEM_ANSWER,
   PEACELOCK_GITHUB,
   PEACELOCK_NOTE,
+  PEACELOCK_ONE_LINE,
   PEACELOCK_SOFTWARES_LINE,
   peacelockCite,
+  softwarePurposeLines,
   softwaresSsotCite,
   PERSON_ID,
   PERSON_SAME_AS,
@@ -81,6 +83,7 @@ import {
   runtimeToolId,
   sisterProductsCite,
   spectrallockCite,
+  SPECTRALLOCK_DESCRIPTION,
   SPECTRALLOCK_HANDWRITING,
   SPECTRALLOCK_OCR_NOTE,
   SPECTRALLOCK_ONE_LINE,
@@ -809,7 +812,7 @@ function officialEcosystemLlmsBlock() {
     OFFICIAL_ECOSYSTEM_ANSWER,
     "",
     ...officialEcosystemLines(),
-    "- Softwares page is heading → name list.",
+    "- Softwares page lists name + designed-purpose one_line from GET /v1/software.",
     "- Runtime CTA: " + GLAMA_LABEL + " " + GLAMA_RUNTIME,
     "- " + X_LABEL + ": " + X_URL,
     "- Donate is " + DONATE_HREF + " (not a Doors row).",
@@ -931,17 +934,11 @@ export function llmsTxt(software = SOFTWARE, survival = null) {
     "- FragGate list: " + RUNTIME_LOCAL + "/v1/fraggate/list (origin " + RUNTIME + "/v1/fraggate/list)",
     "- FragGate Worker: " + FRAGGATE,
     "- FragGate kernel: " + FRAGGATE_GITHUB,
-    "",
-    softwareLines,
-    "- Softwares note: " + SOFTWARES_ADDENDUM,
-    SPECTRALLOCK_SOFTWARES_LINE,
-    PEACELOCK_SOFTWARES_LINE,
+    "- Softwares (machine cite): name + designed-purpose one_line + Worker URL. GET /v1/software is the hub catalog.",
     "- SpectralLock FAQ: " + SPECTRALLOCK_FAQ_NAME,
     "- SpectralLock FAQ answer: " + SPECTRALLOCK_FAQ_ANSWER,
-    "- SpectralLock unredact: GET|POST " + SPECTRALLOCK_UNREDACT + " (deep PDF + revision_graph + per-revision copies)",
-    "- SpectralLock recover: GET|POST " + SPECTRALLOCK_RECOVER + " (universal artifact recover; NO-LIE; LIVE vs SLOT)",
-    "- SpectralLock handwriting: GET|POST " + SPECTRALLOCK_HANDWRITING + " (physical ink scan heuristics)",
-    "- SpectralLock OCR: " + SPECTRALLOCK_OCR_NOTE,
+    "",
+    softwareLines,
     "",
     "## " + RUNTIME_TITLE,
     "",
@@ -958,7 +955,7 @@ export function llmsTxt(software = SOFTWARE, survival = null) {
     "- Origin: " + RUNTIME + "/",
     "- Library: " + LIBRARY_RUNTIME,
     "- Live catalog: " + RUNTIME + "/v1/software (fallback " + RUNTIME + "/v1/fraggate/list)",
-    "- Softwares tab: heading → name list only. Plain A–Z → Gate A–Z → Lock A–Z.",
+    "- Softwares tab: name + designed-purpose one_line. Plain A–Z → Gate A–Z → Lock A–Z.",
     "- MCP: Softwares via fraggate_call only. FragGate sole door. master_33:false.",
     "- Dual surface: agent MCP + complete human UI on runtime (#op-panel / #dashboard / #fg-console + #task-* + About Aziel + per-product hashtags + GET /download).",
     "- OpenAPI: " + RUNTIME_LOCAL + "/openapi.json",
@@ -1066,7 +1063,7 @@ export function llmsTxt(software = SOFTWARE, survival = null) {
   ].join("\n");
 }
 
-export function aiTxt(survival = null) {
+export function aiTxt(survival = null, software) {
   const bots = AI_CRAWLER_AGENTS.flatMap((agent) => ["", "User-agent: " + agent, "Allow: /"]);
   return [
     "# Aziel Eliab — AI crawl policy",
@@ -1166,15 +1163,10 @@ export function aiTxt(survival = null) {
     "- Softwares: " + WHAT_HE_DOES_SOFTWARES,
     "- Softwares note: " + SOFTWARES_ADDENDUM,
     "- Softwares version SoT: " + softwaresSsotCite().note,
-    SPECTRALLOCK_SOFTWARES_LINE,
-    PEACELOCK_SOFTWARES_LINE,
+    "- Softwares (machine cite): name + designed-purpose one_line. GET /v1/software is the hub catalog.",
     "- SpectralLock FAQ: " + SPECTRALLOCK_FAQ_NAME,
-    "- SpectralLock leftover-bytes: leftover_bytes / recovered_from; opaque rewrite refuses SL-UNREDACT-OPAQUE; inject ON is paint; never OCR-from-black-box",
-    "- SpectralLock unredact: GET|POST " + SPECTRALLOCK_UNREDACT + " (deep PDF + revision_graph + per-revision copies)",
-    "- SpectralLock recover: GET|POST " + SPECTRALLOCK_RECOVER + " (universal artifact recover; NO-LIE; LIVE vs SLOT)",
-    "- SpectralLock handwriting: GET|POST " + SPECTRALLOCK_HANDWRITING + " (physical ink scan heuristics)",
-    "- SpectralLock OCR: " + SPECTRALLOCK_OCR_NOTE,
-    "- SpectralLock Worker: " + SPECTRALLOCK_WORKER,
+    "- SpectralLock FAQ answer: " + SPECTRALLOCK_FAQ_ANSWER,
+    ...softwarePurposeLines(software),
     "- Receipts: " + RECEIPTS_HREF,
     "- Ingest: " + INGEST_HREF,
     "- Page bytes: " + INGEST_BYTES_HREF,
@@ -1195,7 +1187,7 @@ export function aiTxt(survival = null) {
       CANON_ORIGIN +
       "/cite.json  (" +
       REDLINE_SPEC +
-      " · Cap-7 design_of · attack-surface · FoldLock tip-safe · SpectralLock leftover-bytes + recover/handwriting)",
+      " · Cap-7 design_of · attack-surface · FoldLock tip-safe)",
     "- llms.txt: " + CANON_ORIGIN + "/llms.txt",
     shelvesLlmsBlock(),
     redlineLlmsBlock(),
@@ -1283,7 +1275,7 @@ export function jsonLd(software = SOFTWARE, runtimeVersion = RUNTIME_VERSION) {
       isPartOf: { "@id": runtimeId },
     };
     if (tool.slug === SPECTRALLOCK_SLUG) {
-      node.description = SPECTRALLOCK_ONE_LINE + " " + SPECTRALLOCK_FAQ_ANSWER;
+      node.description = SPECTRALLOCK_ONE_LINE + " " + SPECTRALLOCK_DESCRIPTION;
       node.url = SPECTRALLOCK_WORKER;
     }
     return node;
@@ -1429,7 +1421,7 @@ export function jsonLd(software = SOFTWARE, runtimeVersion = RUNTIME_VERSION) {
         return node;
       }),
       ...namedTools,
-      faqPageNode(),
+      faqPageNode(doorsSoftware),
       {
         "@type": "SoftwareApplication",
         "@id": TRADES_RUNTIME_ID,

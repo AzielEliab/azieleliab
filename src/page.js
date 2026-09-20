@@ -116,10 +116,18 @@ function researchParagraphs() {
 }
 
 function softwareLine(items = SOFTWARE) {
-  return (items || SOFTWARE).map((item, i, list) => {
-    const mark = i === list.length - 1 ? "." : ".";
-    return a(item.href, item.name, "soft-name") + mark;
-  }).join(" ");
+  return (
+    '<ul class="soft-list">' +
+    (items || SOFTWARE)
+      .map((item) => {
+        const purpose = item.one_line
+          ? '<span class="soft-purpose"> — ' + esc(item.one_line) + "</span>"
+          : "";
+        return "<li>" + a(item.href, item.name, "soft-name") + purpose + "</li>";
+      })
+      .join("") +
+    "</ul>"
+  );
 }
 
 function doorRow(door) {
@@ -267,9 +275,13 @@ p:last-child{margin-bottom:0}
 .card.close{border-color:var(--gold)}
 a{color:var(--ink);text-decoration:underline;text-decoration-color:var(--gold-dim);text-underline-offset:3px}
 a:hover{color:var(--gold);text-decoration-color:var(--gold)}
-.soft-line{color:var(--ink-soft);line-height:1.95}
+.soft-line{color:var(--ink-soft);line-height:1.55}
+.soft-list{list-style:none;margin:0;padding:0}
+.soft-list li{margin:0 0 10px}
+.soft-list li:last-child{margin-bottom:0}
 .soft-name{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;font-size:16px;font-weight:650;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--gold);padding-bottom:1px}
 .soft-name:hover{color:var(--gold)}
+.soft-purpose{color:var(--ink-soft);font-weight:400}
 .runtime-cite{margin:0 0 12px;color:var(--muted);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;font-size:14px;letter-spacing:.04em}
 .runtime-named{margin:0 0 12px;color:var(--muted);font-size:15px;line-height:1.55}
 .runtime-doors{margin:0 0 10px}
@@ -803,7 +815,7 @@ export function firstScreenHtml(opts = {}) {
 
 function tabArticle(section, softwareItems) {
   if (section.id === "why") return paragraphs(PROSE.why);
-  if (section.id === "software") return '<p class="soft-line">' + softwareLine(softwareItems) + "</p>";
+  if (section.id === "software") return '<div class="soft-line">' + softwareLine(softwareItems) + "</div>";
   if (section.id === "research") return researchParagraphs();
   if (section.id === "doors") return '<ul class="doors">' + DOORS.map(doorRow).join("") + "</ul>";
   return "";

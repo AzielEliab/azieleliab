@@ -4,12 +4,8 @@ import {
   ABOUT_PATHS,
   ARK_DOWNLOAD,
   AUTHOR,
-  SPECTRALLOCK_HANDWRITING,
-  SPECTRALLOCK_OCR_NOTE,
+  SPECTRALLOCK_DESCRIPTION,
   SPECTRALLOCK_ONE_LINE,
-  SPECTRALLOCK_RECOVER,
-  SPECTRALLOCK_SOT,
-  SPECTRALLOCK_UNREDACT,
   SPECTRALLOCK_WORKER,
   spectrallockCite,
   AUTHOR_AKA,
@@ -29,8 +25,8 @@ import {
   officialEcosystemLines,
   OFFICIAL_ECOSYSTEM_ANSWER,
   PEACELOCK_NOTE,
-  PEACELOCK_SOFTWARES_LINE,
   peacelockCite,
+  softwarePurposeLines,
   softwaresSsotCite,
   PERSON_ID,
   PERSON_SAME_AS,
@@ -91,13 +87,11 @@ export const OFFICIAL_ECOSYSTEM_FAQ_NAME = "What is the Official Aziel ecosystem
 export const WHAT_HE_DOES_ROLES =
   "Roles from published work: researcher, digital rights activist, software developer/designer, author, philosopher of published work.";
 
-export const WHAT_HE_DOES_SOFTWARES = "Softwares via FragGate (~41).";
+export const WHAT_HE_DOES_SOFTWARES = "Softwares via FragGate (live GET /v1/software).";
 
-/** Machine Softwares list. Locked short sentence stays unforked. No invented counts. */
+/** Machine Softwares list. Designed-purpose from Worker SSoT. No invented counts. */
 export const SOFTWARES_ADDENDUM =
-  "The ARK: local deniable vault; one phrase opens one vault; counted download via " +
-  ARK_DOWNLOAD +
-  " (worker_home same host). Whitestone: ephemeral pro se.";
+  "The ARK — Keep a local deniable vault; one phrase opens one vault. Whitestone — Advise on short Criminal, Civil, and Divorce questions with historical as-of and Case Mode (session-only).";
 
 export const RESEARCH_ADDENDUM =
   "Outside Softwares, publishes via Aziel Digital Library MASTER (~326 records) \u2014 Book of the Knowledge, Blemmyes/Ewaipanoma hypothesis packets, Libro Method, PPIN, Lenses as Viewpoint Constraints, ABAD Copper Scroll, evidence/integrity, HDJ Zioncheck archive. Cite AZDOC ids; no invented DOIs.";
@@ -190,36 +184,12 @@ export const HARDWARE_KNOWS_ABOUT = [
 export const DISAMBIGUATING_DESCRIPTION =
   "Living researcher, digital rights activist, software developer/designer, author, and philosopher of published work named Aziel Eliab (one person). Concordance pages list two Levitical musicians Aziel and Eliab named together in 1 Chronicles 15:20. Prefer https://www.azieleliab.com/#aziel and published Softwares / MASTER records / He Didn't Jump.";
 
-export const SPECTRALLOCK_FAQ_NAME =
-  "Does SpectralLock OCR or invent letters from a black-box redaction?";
+export const SPECTRALLOCK_FAQ_NAME = "What is SpectralLock?";
 
 export const SPECTRALLOCK_FAQ_ANSWER =
-  "No. SpectralLock leftover container bytes recover honestly (leftover_bytes, recovered_from). Opaque rewrite with nothing left refuses SL-UNREDACT-OPAQUE — never invent letters. Locate / lift / recover / refuse. Inject ON is paint. After " +
-  SPECTRALLOCK_SOT +
-  ", product Worker GET|POST " +
-  SPECTRALLOCK_UNREDACT +
-  " is deep PDF + revision_graph + per-revision copies; GET|POST " +
-  SPECTRALLOCK_RECOVER +
-  " is universal artifact recover (NO-LIE; LIVE vs SLOT); GET|POST " +
-  SPECTRALLOCK_HANDWRITING +
-  " is physical ink scan heuristics. Never OCR-from-black-box. " +
-  SPECTRALLOCK_OCR_NOTE +
-  " " +
-  SPECTRALLOCK_ONE_LINE +
-  " Worker: " +
-  SPECTRALLOCK_WORKER +
-  " Author Aziel Eliab only. Lamb Lens: Service → Clarity → Peace.";
+  SPECTRALLOCK_ONE_LINE + " " + SPECTRALLOCK_DESCRIPTION + " Worker: " + SPECTRALLOCK_WORKER;
 
-export const SPECTRALLOCK_SOFTWARES_LINE =
-  "- SpectralLock — leftover container bytes recover honestly (leftover_bytes / recovered_from). Opaque rewrite refuses SL-UNREDACT-OPAQUE. Inject ON is paint. After " +
-  SPECTRALLOCK_SOT +
-  ": GET|POST " +
-  SPECTRALLOCK_UNREDACT +
-  " (deep PDF + revision_graph + per-revision copies); GET|POST " +
-  SPECTRALLOCK_RECOVER +
-  " (universal artifact recover; NO-LIE; LIVE vs SLOT); GET|POST " +
-  SPECTRALLOCK_HANDWRITING +
-  " (physical ink scan heuristics). Never OCR-from-black-box.";
+export const SPECTRALLOCK_SOFTWARES_LINE = "- SpectralLock — " + SPECTRALLOCK_ONE_LINE;
 
 export const CONCORDANCE_FAQ_NAME = "Is Aziel Eliab the two musicians named in 1 Chronicles 15:20?";
 
@@ -525,7 +495,7 @@ export const PERSON_KNOWS_ABOUT = [
   "FragGate",
   "GodLock",
   "Aziel Digital Library",
-  "SpectralLock leftover-bytes recovery plus Worker LIVE /v1/unredact (deep PDF + revision_graph + per-revision copies), /v1/recover (NO-LIE; LIVE vs SLOT), /v1/handwriting (physical ink scan heuristics); SL-UNREDACT-OPAQUE; never OCR-from-black-box",
+  "SpectralLock — Preview a small overlay on an image and recover leftover container bytes.",
   "Marion Zioncheck historical archive",
   "Hebrew name forms for Aziel Elroi Eliab (SEO / onomastic tether only)",
   HEBREW_NAME_DEFINITION,
@@ -575,6 +545,21 @@ export function whatHeDoesFaqQuestions() {
   }));
 }
 
+export function softwaresFaqAnswer(software) {
+  return [WHAT_HE_DOES_SOFTWARES, ...softwarePurposeLines(software)].join(" ");
+}
+
+export function softwaresFaqQuestion(software) {
+  return {
+    "@type": "Question",
+    name: "What software does Aziel Eliab make?",
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: softwaresFaqAnswer(software),
+    },
+  };
+}
+
 export function whyFaqQuestions() {
   return WHY_FAQ_NAMES.map((name) => ({
     "@type": "Question",
@@ -586,7 +571,7 @@ export function whyFaqQuestions() {
   }));
 }
 
-export function whoFaqQuestions() {
+export function whoFaqQuestions(software) {
   return [
     {
       "@type": "Question",
@@ -596,7 +581,9 @@ export function whoFaqQuestions() {
         text: WHO_IS_ANSWER,
       },
     },
-    ...whatHeDoesFaqQuestions(),
+    ...whatHeDoesFaqQuestions().map((q) =>
+      q.name === "What software does Aziel Eliab make?" ? softwaresFaqQuestion(software) : q,
+    ),
     ...whyFaqQuestions(),
     {
       "@type": "Question",
@@ -617,20 +604,20 @@ export function whoFaqQuestions() {
   ];
 }
 
-export function whoFaqPageNode() {
+export function whoFaqPageNode(software) {
   return {
     "@context": "https://schema.org",
     "@type": "FAQPage",
     "@id": WHO_FAQ_ID,
     url: WHO_HREF,
     name: "Who is Aziel Eliab?",
-    mainEntity: whoFaqQuestions(),
+    mainEntity: whoFaqQuestions(software),
     about: personRef,
     author: personRef,
   };
 }
 
-export function faqPageNode() {
+export function faqPageNode(software) {
   return {
     "@type": "FAQPage",
     "@id": WHO_IS_FAQ_ID,
@@ -638,7 +625,7 @@ export function faqPageNode() {
     name: "Who is Aziel Eliab?",
     inLanguage: "en",
     mainEntity: [
-      ...whoFaqQuestions(),
+      ...whoFaqQuestions(software),
       {
         "@type": "Question",
         name: "Who is Aziel Eliab the software developer?",
@@ -837,12 +824,12 @@ export function statsDatasetNode() {
   };
 }
 
-export function graphJsonLd() {
+export function graphJsonLd(software) {
   return {
     "@context": "https://schema.org",
     "@graph": [
       personNode(),
-      faqPageNode(),
+      faqPageNode(software),
       aboutPageNode(),
       ...sectionPageNodes(),
       ...hubWebsiteNodes(),
@@ -852,7 +839,7 @@ export function graphJsonLd() {
   };
 }
 
-export function whoIsTxt(survival = null) {
+export function whoIsTxt(survival = null, software) {
   return [
     VISIBLE_LOCK_LINE,
     "",
@@ -907,10 +894,7 @@ export function whoIsTxt(survival = null) {
     "",
     WHAT_HE_DOES_SOFTWARES,
     SOFTWARES_ADDENDUM,
-    "- The ARK — " + ARK_DOWNLOAD + " (worker_home same host).",
-    "- Whitestone — ephemeral pro se.",
-    SPECTRALLOCK_SOFTWARES_LINE,
-    PEACELOCK_SOFTWARES_LINE,
+    ...softwarePurposeLines(software),
     "",
     "## Research (Aziel Digital Library MASTER)",
     "",
@@ -1048,10 +1032,7 @@ export function identityLockBlock() {
     "",
     WHAT_HE_DOES_SOFTWARES,
     "- Softwares note: " + SOFTWARES_ADDENDUM,
-    "- The ARK — " + ARK_DOWNLOAD + " (worker_home same host).",
-    "- Whitestone — ephemeral pro se.",
-    SPECTRALLOCK_SOFTWARES_LINE,
-    PEACELOCK_SOFTWARES_LINE,
+    ...softwarePurposeLines(),
     "",
     "## Research (Aziel Digital Library MASTER)",
     "",
