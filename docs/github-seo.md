@@ -122,7 +122,7 @@ Not MCP ops (`fraggate_call`, `runtime_run`, …). Child `@id` is `https://www.a
 | azmail | AZMail |
 | azhub | AZHub |
 | azinterface | AZInterface |
-| spectrallock | SpectralLock — leftover-bytes recover; Worker LIVE /v1/unredact (deep PDF + revision_graph + per-revision copies), /v1/recover (NO-LIE; LIVE vs SLOT), /v1/handwriting; opaque rewrite refuses SL-UNREDACT-OPAQUE; inject ON is paint; never OCR-from-black-box |
+| spectrallock | SpectralLock — Preview a small overlay on an image and recover leftover container bytes. |
 | shadowlock | ShadowLock |
 | foldlock | FoldLock |
 | codelock | CodeLock |

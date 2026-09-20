@@ -281,20 +281,20 @@ describe("landing copy", () => {
 describe("software doors", () => {
   it("hyperlinks every SOFTWARE name to a verified URL", () => {
     const html = softwareHtml();
-    assert.equal(CATALOG_SOFTWARE.length, 41);
-    assert.equal(SOFTWARE.length, 41);
+    assert.equal(CATALOG_SOFTWARE.length, 42);
+    assert.equal(SOFTWARE.length, 42);
     for (const item of SOFTWARE) {
       const needle = 'href="' + item.href + '"';
       assert.ok(html.includes(needle), "missing href for " + item.name);
       assert.ok(html.includes(">" + item.name + "<"), "missing visible name " + item.name);
     }
     assert.doesNotMatch(html, /Run them without me/);
-    assert.match(html, /<h2>Software<\/h2>\s*<p class="soft-line">/);
+    assert.match(html, /<h2>Software<\/h2>\s*<div class="soft-line">/);
     assert.doesNotMatch(html, /soft-close/);
     assert.doesNotMatch(html, /runtime 1\.6\.\d+ FragGate/i);
     const softwareCard = html.match(/<section class="card lead" id="software">[\s\S]*?<\/section>/);
     assert.ok(softwareCard);
-    assert.match(softwareCard[0], /<h2>Software<\/h2>\s*<p class="soft-line">/);
+    assert.match(softwareCard[0], /<h2>Software<\/h2>\s*<div class="soft-line">/);
     assert.doesNotMatch(softwareCard[0], /Official Runtime|Try on Glama|Try \/ Deploy on Glama|Documentation \/ Architecture|Suite pack|named components|Ask Jeeves/);
     assert.doesNotMatch(softwareCard[0], /2\.0\.0-rc1/);
   });
@@ -494,8 +494,9 @@ describe("software doors", () => {
     assert.ok(!citeDoc().software_names.some((s) => s.name === "Lumen"));
     assert.ok(citeDoc().software_names.some((s) => s.name === "EmbryoLock" && s.url === EMBRYOLOCK_WORKER));
     assert.ok(citeDoc().software_names.some((s) => s.name === "The ARK" && s.url === ARK_WORKER));
-    assert.equal(citeDoc().softwares_addendum.includes(ARK_DOWNLOAD), true);
-    assert.equal(citeDoc().what_he_does_softwares, "Softwares via FragGate (~41).");
+    assert.ok(citeDoc().softwares_addendum.includes("The ARK"));
+    assert.ok(citeDoc().softwares_addendum.includes("local deniable vault"));
+    assert.equal(citeDoc().what_he_does_softwares, "Softwares via FragGate (live GET /v1/software).");
     assert.ok(citeDoc().software_names.some((s) => s.name === "PeaceLock"));
     const stub = embryoLockHtml();
     assert.ok(stub.includes('rel="canonical" href="' + EMBRYOLOCK_HREF + '"'));
@@ -934,20 +935,19 @@ describe("SEO routes", () => {
     assert.ok(llmsBody.includes(EMBRYOLOCK_HREF));
     assert.ok(llmsBody.includes(EMBRYOLOCK_WORKER));
     assert.ok(llmsBody.includes("The ARK"));
-    assert.ok(llmsBody.includes(ARK_DOWNLOAD));
+    assert.ok(llmsBody.includes(ARK_WORKER));
     assert.ok(llmsBody.includes("Softwares note:"));
     assert.ok(llmsBody.includes("local deniable vault"));
-    assert.ok(llmsBody.includes("Whitestone: ephemeral pro se"));
-    assert.ok(aiBody.includes("Softwares via FragGate (~41)."));
+    assert.ok(llmsBody.includes("Whitestone — Advise on short Criminal, Civil, and Divorce questions"));
+    assert.ok(aiBody.includes("Softwares via FragGate (live GET /v1/software)."));
     assert.ok(aiBody.includes("Softwares note:"));
-    assert.ok(aiBody.includes(ARK_DOWNLOAD));
-    assert.ok(aiBody.includes("Whitestone: ephemeral pro se"));
+    assert.ok(aiBody.includes("The ARK"));
+    assert.ok(aiBody.includes("Whitestone — Advise on short Criminal, Civil, and Divorce questions"));
     assert.ok(llmsBody.includes("PeaceLock"));
     assert.ok(llmsBody.includes(PEACELOCK_WORKER));
-    assert.ok(llmsBody.includes("PeaceLock — public git https://github.com/AzielEliab/peacelock"));
-    assert.ok(llmsBody.includes("Runtime is local-only"));
+    assert.ok(llmsBody.includes("PeaceLock — Record chosen silence or chosen inaction as a hash-chained receipt"));
     assert.ok(llmsBody.includes("One public Softwares version"));
-    assert.ok(aiBody.includes("PeaceLock — public git https://github.com/AzielEliab/peacelock"));
+    assert.ok(aiBody.includes("PeaceLock — Record chosen silence or chosen inaction as a hash-chained receipt"));
     assert.ok(aiBody.includes("One public Softwares version"));
     assert.ok(llmsBody.includes("AZMail"));
     assert.ok(llmsBody.includes(AZMAIL_WORKER));
@@ -1255,7 +1255,7 @@ describe("SEO routes", () => {
     assert.ok(!html.includes(">mesh off<"));
     assert.ok(!html.includes(">Live Nodes · off<"));
     assert.ok(!html.includes("mesh off"));
-    const softLine = softwareHtml().match(/<p class="soft-line">[\s\S]*?<\/p>/);
+    const softLine = softwareHtml().match(/<div class="soft-line">[\s\S]*?<\/div>/);
     assert.ok(softLine);
     assert.doesNotMatch(softLine[0], /Live Nodes/i);
     assert.ok(ld["@graph"][2].description.includes("/v1/mesh/status"));
@@ -1396,7 +1396,7 @@ describe("public entity graph phases B–D + E audit", () => {
     const softwarePage = softwareHtml();
     const softwareCard = softwarePage.match(/<section class="card lead" id="software">[\s\S]*?<\/section>/);
     assert.ok(softwareCard);
-    assert.match(softwareCard[0], /<h2>Software<\/h2>\s*<p class="soft-line">/);
+    assert.match(softwareCard[0], /<h2>Software<\/h2>\s*<div class="soft-line">/);
     assert.doesNotMatch(softwareCard[0], /Part of the Aziel Eliab ecosystem/);
     assert.doesNotMatch(softwareCard[0], /Official site|Aziel Corpus Library|Try on Glama|named components/);
     const footer = html.match(/<footer>[\s\S]*?<\/footer>/);
@@ -1520,7 +1520,7 @@ describe("public entity graph phases B–D + E audit", () => {
     const runtimeCard = html.match(/<section class="card" id="runtime">[\s\S]*?<\/section>/);
     assert.ok(softwareCard);
     assert.ok(runtimeCard);
-    assert.match(softwareCard[0], /<h2>Software<\/h2>\s*<p class="soft-line">/);
+    assert.match(softwareCard[0], /<h2>Software<\/h2>\s*<div class="soft-line">/);
     assert.doesNotMatch(softwareCard[0], /named components|Ask Jeeves/);
     assert.ok(runtimeCard[0].includes(RUNTIME_NAMED_LINE));
     assert.match(runtimeCard[0], /class="runtime-cta"[^>]*>Try on Glama</);
@@ -2389,21 +2389,17 @@ describe("live software catalog", () => {
     assert.equal(catalogHasThisIs(doc), false);
   });
 
-  it("inherits SpectralLock leftover-bytes honesty from live /v1/software and fallback blurbs", async () => {
+  it("inherits SpectralLock designed-purpose from live /v1/software and fallback blurbs", async () => {
     const fallback = SOFTWARE.find((s) => s.slug === "spectrallock");
     assert.ok(fallback);
     assert.equal(fallback.one_line, SPECTRALLOCK_ONE_LINE);
     assert.equal(fallback.description, SPECTRALLOCK_DESCRIPTION);
     assert.equal(fallback.engine_digest, SPECTRALLOCK_DIGEST);
     assert.equal(fallback.worker_home, SPECTRALLOCK_WORKER);
-    assert.match(fallback.one_line, /leftover container bytes recover honestly/);
-    assert.match(fallback.description, /SL-UNREDACT-OPAQUE/);
-    assert.match(fallback.description, /FragGate LIVE_OPS stay health/);
-    assert.match(fallback.description, /revision_graph/);
-    assert.match(fallback.description, /\/v1\/recover/);
-    assert.match(fallback.description, /\/v1\/handwriting/);
-    assert.match(fallback.description, /physical ink scan heuristics/);
-    assert.doesNotMatch(fallback.description, /FragGate door op[\s\S]*unredact as LIVE_OP/i);
+    assert.match(fallback.one_line, /Preview a small overlay on an image and recover leftover container bytes/);
+    assert.match(fallback.description, /It exists as a hosted overlay preview/);
+    assert.doesNotMatch(fallback.one_line, /never invent|THIS-IS-NOT|THIS IS NOT/i);
+    assert.doesNotMatch(fallback.description, /never invent|THIS-IS-NOT|THIS IS NOT/i);
 
     const cite = spectrallockCite();
     assert.equal(cite.fraggate_unredact_door_op, false);
@@ -2420,9 +2416,10 @@ describe("live software catalog", () => {
     assert.equal(cite.revision_graph, true);
     assert.equal(cite.esda, false);
 
-    const softwareVisible = softwareHtml().match(/<p class="soft-line">[\s\S]*?<\/p>/);
+    const softwareVisible = softwareHtml().match(/<div class="soft-line">[\s\S]*?<\/div>/);
     assert.ok(softwareVisible);
     assert.ok(softwareVisible[0].includes(">SpectralLock<"));
+    assert.ok(softwareVisible[0].includes("Preview a small overlay on an image and recover leftover container bytes"));
     assert.ok(!softwareVisible[0].includes("/v1/recover"));
     assert.ok(!softwareVisible[0].includes("/v1/handwriting"));
     assert.ok(!softwareVisible[0].includes("revision_graph"));
@@ -2465,25 +2462,19 @@ describe("live software catalog", () => {
     assert.equal(spectral.one_line, SPECTRALLOCK_ONE_LINE);
     assert.equal(spectral.description, SPECTRALLOCK_DESCRIPTION);
     assert.equal(spectral.engine_digest, SPECTRALLOCK_DIGEST);
-    assert.match(spectral.description, /leftover-bytes recover is honest/);
-    assert.match(spectral.description, /revision_graph/);
-    assert.match(spectral.description, /\/v1\/recover/);
-    assert.match(spectral.description, /\/v1\/handwriting/);
+    assert.match(spectral.description, /It exists as a hosted overlay preview/);
+    assert.doesNotMatch(spectral.description, /never invent|THIS-IS-NOT|THIS IS NOT/i);
     assert.ok(!spectral.fraggate_live_ops);
 
     const llms = llmsTxt(doc.products);
     assert.ok(llms.includes(SPECTRALLOCK_ONE_LINE));
-    assert.ok(llms.includes("SL-UNREDACT-OPAQUE"));
-    assert.ok(llms.includes(SPECTRALLOCK_RECOVER));
-    assert.ok(llms.includes(SPECTRALLOCK_HANDWRITING));
+    assert.doesNotMatch(llms.split("## Software")[1].split("## Aziel Runtime")[0], /never invent|THIS-IS-NOT|THIS IS NOT/i);
     const ld = jsonLd(doc.products);
     const spectralApp = ld["@graph"].find((n) => n["@id"] === softwareNodeId(spectral));
     assert.equal(spectralApp.description, SPECTRALLOCK_DESCRIPTION);
     const namedSpectral = ld["@graph"].find((n) => n["@id"] === "https://www.azieleliab.com/runtime#spectrallock");
-    assert.ok(namedSpectral.description.includes("leftover container bytes recover honestly"));
-    assert.ok(namedSpectral.description.includes("Never OCR-from-black-box"));
-    assert.ok(namedSpectral.description.includes("/v1/recover"));
-    assert.ok(namedSpectral.description.includes("physical ink scan heuristics"));
+    assert.ok(namedSpectral.description.includes("Preview a small overlay on an image and recover leftover container bytes"));
+    assert.doesNotMatch(namedSpectral.description, /never invent|THIS-IS-NOT|THIS IS NOT/i);
   });
 
   it("normalizes mashed live runtime names to aziel-runtime and keeps Plain→Gate→Lock", async () => {
@@ -2521,7 +2512,7 @@ describe("live software catalog", () => {
     assert.doesNotMatch(html, /runtime 1\.6\.15 FragGate/);
     assert.doesNotMatch(softwareBody, /runtime 1\.6\.15 FragGate/);
     assert.doesNotMatch(html, /Run them without me/);
-    assert.match(softwareBody, /<h2>Software<\/h2>\s*<p class="soft-line">/);
+    assert.match(softwareBody, /<h2>Software<\/h2>\s*<div class="soft-line">/);
     const idx = (name) => softwareBody.indexOf(">" + name + "<");
     assert.ok(idx("AZAI") < idx("DecisionGATE"));
     assert.ok(idx("DecisionGATE") < idx("CodeLock"));
@@ -2586,8 +2577,8 @@ describe("live software catalog", () => {
     assert.ok(doc.extras.some((s) => s.slug === "mesh" && s.enabled_default === false));
     assert.equal(doc.software.length, SOFTWARE.length);
     assert.equal(doc.products.length, SOFTWARE.length);
-    assert.equal(doc.count, 41);
-    assert.equal(CATALOG_SLUGS.length, 41);
+    assert.equal(doc.count, 42);
+    assert.equal(CATALOG_SLUGS.length, 42);
     assert.equal(CATALOG_KV_KEY, "software:catalog:v4");
     assert.equal("" in doc, false);
     assert.ok(doc.tab_placement_slugs.includes("azvpn"));
@@ -2681,7 +2672,7 @@ describe("live software catalog", () => {
 
     const software = await fetchPath("/software", {}, env);
     const html = await software.text();
-    assert.match(html, /<h2>Software<\/h2>\s*<p class="soft-line">/);
+    assert.match(html, /<h2>Software<\/h2>\s*<div class="soft-line">/);
     for (const name of ["AZAI", "AZVPN", "MMConsensus", "StaticClock", "ToolBench", "ZKAttest", "NewPlace", "DecisionGATE", "VeilLock"]) {
       assert.ok(html.includes(">" + name + "<"), name);
     }
@@ -2712,7 +2703,7 @@ describe("live software catalog", () => {
     assert.equal(liveProductHref({ slug: "azvpn", worker_home: null, github: GITHUB_RUNTIME }), RUNTIME + "/#task-azvpn");
   });
 
-  it("keeps fallback CATALOG_SLUGS aligned with live 6a3798a /v1/software SoT (41)", () => {
+  it("keeps fallback CATALOG_SLUGS aligned with Worker /v1/software designed-purpose SoT (42)", () => {
     const liveSot = [
       "4dmap",
       "ark",
@@ -2753,6 +2744,7 @@ describe("live software catalog", () => {
       "veillock",
       "vibelock",
       "whistlelock",
+      "whitestone",
       "zkattest",
       "zsolver",
     ];
@@ -2766,14 +2758,14 @@ describe("live software catalog", () => {
       })),
       tab_placement_slugs: ["azvpn", "mmconsensus", "toolbench", "zkattest"],
     });
-    assert.equal(packed.products.length, 41);
+    assert.equal(packed.products.length, 42);
     const html = softwareHtml(packed.products);
-    assert.match(html, /<h2>Software<\/h2>\s*<p class="soft-line">/);
+    assert.match(html, /<h2>Software<\/h2>\s*<div class="soft-line">/);
     for (const slug of liveSot) {
       assert.ok(html.includes(">" + CATALOG_NAMES[slug] + "<"), slug);
     }
     const body = softwareIndexBody(packed);
-    assert.equal(body.count, 41);
+    assert.equal(body.count, 42);
     assert.equal("" in body, false);
     assert.ok(body.products.every((p) => p.url && /^https?:\/\//i.test(p.url)));
     assert.ok(body.products.some((p) => p.slug === "azvpn" && p.url === RUNTIME + "/#task-azvpn"));
@@ -3005,7 +2997,7 @@ describe("suite node mesh", () => {
     assert.ok(html.includes('id="aziel-live-nodes"'));
     assert.ok(html.includes('name="aziel-mesh-status"'));
     const softwarePage = await fetchPath("/software", {}, env);
-    const landingSoft = (await softwarePage.text()).match(/<p class="soft-line">[\s\S]*?<\/p>/);
+    const landingSoft = (await softwarePage.text()).match(/<div class="soft-line">[\s\S]*?<\/div>/);
     assert.ok(landingSoft);
     assert.doesNotMatch(landingSoft[0], /Live Nodes/i);
 

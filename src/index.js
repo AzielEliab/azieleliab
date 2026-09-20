@@ -330,9 +330,14 @@ export async function handleRequest(request, env = {}, ctx) {
   const needsLive =
     homeLike ||
     path === "/llms.txt" ||
+    path === "/ai.txt" ||
     path === "/cite.json" ||
     path === "/sitemap.xml" ||
-    path === "/v1/software";
+    path === "/v1/software" ||
+    path === "/graph.jsonld" ||
+    path === "/who-is" ||
+    path === "/who-is-aziel-eliab.txt" ||
+    path === "/.well-known/aziel.json";
   const needsMesh = homeLike || path === "/v1/software";
   const needsSurvival =
     path === "/llms.txt" ||
@@ -389,14 +394,14 @@ export async function handleRequest(request, env = {}, ctx) {
   else if (path === "/person.jsonld" || path === "/identity.jsonld" || path === "/.well-known/person.jsonld") {
     res = text(prettyJson(personJsonLd()), "application/ld+json", { cache: SEO_CACHE, cors: true });
   } else if (path === "/graph.jsonld") {
-    res = text(prettyJson(graphJsonLd()), "application/ld+json", { cache: SEO_CACHE, cors: true });
+    res = text(prettyJson(graphJsonLd(doors)), "application/ld+json", { cache: SEO_CACHE, cors: true });
   } else if (path === "/who") {
     res = html(whoHtml());
   } else if (path === "/who-is-aziel-eliab.txt" || path === "/who-is") {
-    res = text(whoIsTxt(survival), "text/plain", { cache: SEO_CACHE });
+    res = text(whoIsTxt(survival, doors), "text/plain", { cache: SEO_CACHE });
   } else if (path === "/.well-known/aziel.json") {
     res = text(prettyJson(wellKnownAziel()), "application/json", { cache: SEO_CACHE, cors: true });
-  } else if (path === "/ai.txt") res = text(aiTxt(survival), "text/plain", { cache: SEO_CACHE });
+  } else if (path === "/ai.txt") res = text(aiTxt(survival, doors), "text/plain", { cache: SEO_CACHE });
   else if (isHelpPath(path)) res = text(helpBody(path), "text/plain", { cache: SEO_CACHE });
   else if (path === SURVIVAL_PATH || path === SURVIVAL_JSON_PATH) {
     res = json(survival || (await loadSurvival(env, ctx, { request })), JSON_SHORT_CACHE);

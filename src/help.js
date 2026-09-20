@@ -276,7 +276,7 @@ export function helpSoftwaresTxt() {
       RUNTIME_TITLE +
       ". FragGate is the single door. Agents reach Softwares with fraggate_call. Humans use the complete runtime Worker UI.",
     "",
-    "This file is a pointer. The live name list and door URLs stay on:",
+    "This file is a pointer. Designed-purpose one_line + door URLs stay on:",
     "- " + SOFTWARE_TITLE + ": " + SOFTWARE_HREF,
     "- Softwares version SoT: " + SOFTWARES_SSOT.note,
     "- Live catalog JSON: " + CANON_ORIGIN + "/v1/software",
@@ -291,7 +291,7 @@ export function helpSoftwaresTxt() {
       CANON_ORIGIN +
       "/llms.txt.",
     "",
-    "The Softwares page is heading → name list. New catalog products appear from the live runtime snapshot.",
+    "The Softwares page lists name + designed-purpose one_line from live GET /v1/software. New catalog products appear from the live runtime snapshot.",
     "",
     "Author: " + AUTHOR,
     "",
