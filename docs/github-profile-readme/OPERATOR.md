@@ -16,6 +16,8 @@ This folder is the **GitHub-side index** for Google AI Search, Gemini, GPTBot, a
 
 Also listed for Google AI in [../github-seo.md](../github-seo.md).
 
+**Softwares section.** Designed-purpose `one_line`s from live `GET https://aziel-runtime.vibelock.workers.dev/v1/software` (42 products). Primary MCP is Glama. Keep every public website link. No AI-coaching locked sentences (`THIS-IS` / `THIS IS:` / “You don't get to know me”). Author Aziel Eliab.
+
 **Or publish the README elsewhere.** Copy [README.md](README.md) (plus `CITATION.cff` / `person.jsonld` / `llms.txt` / `cite.json` if useful) to any public surface you control — a gist, a docs host, or another repo whose name does **not** collide with `azieleliab`. Do not invent tips or DOIs. Do not invent biography, legal name, or home.
 
 **Website field.** GitHub Settings → Public profile → Website = `https://www.azieleliab.com/` (needs `user` scope; this token cannot set `blog`).

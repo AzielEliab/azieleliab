@@ -6,6 +6,14 @@
   "url": "https://www.azieleliab.com/",
   "repository": "https://github.com/AzielEliab/azieleliab",
   "note": "GitHub-side profile README index under docs/github-profile-readme/. AzielEliab/AzielEliab cannot exist (case-collides with azieleliab). Live cite records are on each hub. Do not invent tips or DOIs.",
+  "softwares": {
+    "author": "Aziel Eliab",
+    "identity": "Aziel Eliab",
+    "count": 42,
+    "source": "https://aziel-runtime.vibelock.workers.dev/v1/software",
+    "primary_mcp": "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime",
+    "note": "Designed-purpose one_lines on the profile README Softwares section. No THIS-IS coaching copy."
+  },
   "roles": [
     "researcher",
     "digital rights activist",
