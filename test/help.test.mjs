@@ -123,6 +123,8 @@ describe("human help addendum", () => {
     const addendum = addendumTxt();
     assert.ok(soft.includes("/v1/software"));
     assert.ok(soft.includes("fraggate_call"));
+    assert.ok(soft.includes("One public Softwares version"));
+    assert.ok(soft.includes("public git + local-only runtime"));
     assert.ok(receipts.includes("ACT-RECEIPT-1.0"));
     assert.ok(receipts.includes("/verify"));
     assert.ok(runtime.includes("aziel-runtime"));

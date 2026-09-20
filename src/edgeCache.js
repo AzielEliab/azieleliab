@@ -53,7 +53,7 @@ export function cacheBackend(env) {
 }
 
 /** Bump to invalidate Cache API snapshots after SEO/history scrubs. */
-export const PUBLIC_CACHE_EPOCH = "v20260920-ecosystem";
+export const PUBLIC_CACHE_EPOCH = "v20260920-honesty";
 
 export function cacheRequest(url) {
   const u = new URL(String(url), "https://www.azieleliab.com");

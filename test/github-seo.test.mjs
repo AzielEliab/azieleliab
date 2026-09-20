@@ -113,6 +113,9 @@ describe("GitHub-side SEO / ecosystem docs", () => {
       assert.ok(text.includes(TRADES_REPO), name + " Trades-Runtime GitHub");
       assert.match(text, /live_backends false/, name);
       assert.match(text, /sister product/, name);
+      assert.match(text, /public Softwares\/cite/, name);
+      assert.ok(text.includes("https://github.com/AzielEliab/peacelock"), name + " PeaceLock git");
+      assert.match(text, /local-only/, name);
     }
   });
 

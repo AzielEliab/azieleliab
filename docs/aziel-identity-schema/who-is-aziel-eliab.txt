@@ -77,6 +77,7 @@ The ARK: local deniable vault; one phrase opens one vault; counted download via 
 - The ARK — https://ark-download-tracker.vibelock.workers.dev/download (worker_home same host).
 - Whitestone — ephemeral pro se.
 - SpectralLock — leftover container bytes recover honestly (leftover_bytes / recovered_from). Opaque rewrite refuses SL-UNREDACT-OPAQUE. Inject ON is paint. After spectrallock#13 LIVE (merge 4af8fcb): GET|POST https://spectrallock-download-tracker.vibelock.workers.dev/v1/unredact (deep PDF + revision_graph + per-revision copies); GET|POST https://spectrallock-download-tracker.vibelock.workers.dev/v1/recover (universal artifact recover; NO-LIE; LIVE vs SLOT); GET|POST https://spectrallock-download-tracker.vibelock.workers.dev/v1/handwriting (physical ink scan heuristics). Never OCR-from-black-box.
+- PeaceLock — public git https://github.com/AzielEliab/peacelock. Runtime is local-only. Softwares door: https://peacelock-download-tracker.vibelock.workers.dev/.
 
 ## Research (Aziel Digital Library MASTER)
 

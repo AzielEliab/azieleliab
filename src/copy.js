@@ -153,6 +153,7 @@ export function tradesRuntimeCite() {
     fraggate_call: false,
     not_aziel_runtime: true,
     not_a_second_door: true,
+    public_softwares_cite: true,
     kind: "extra",
     placement: "softwares-extra",
     how_to_cite:
@@ -297,6 +298,27 @@ export function officialEcosystemLines() {
 export const OFFICIAL_ECOSYSTEM_ANSWER = OFFICIAL_ECOSYSTEM.map(
   (row) => row.label + " (" + row.url + ")",
 ).join(". ") + ".";
+
+/** One public Softwares version. Live catalog is SoT — do not invent a second number. */
+export const SOFTWARES_SSOT = Object.freeze({
+  field: "version",
+  live: RUNTIME + "/v1/software",
+  live_hub: CANON_ORIGIN + "/v1/software",
+  fallback: RUNTIME + "/v1/fraggate/list",
+  frozen: RUNTIME_VERSION,
+  note:
+    "One public Softwares version. Live GET " +
+    RUNTIME +
+    "/v1/software version is SoT. Fallback " +
+    RUNTIME +
+    "/v1/fraggate/list, then frozen " +
+    RUNTIME_VERSION +
+    ". Do not invent a second Softwares version.",
+});
+
+export function softwaresSsotCite() {
+  return { ...SOFTWARES_SSOT };
+}
 /** Secondary local page. Softwares door is catalog worker_home. */
 export const EMBRYOLOCK_PATH = "/embryolock";
 export const EMBRYOLOCK_HREF = CANON_ORIGIN + EMBRYOLOCK_PATH;
@@ -667,6 +689,31 @@ export const CATALOG_LATER_SLUGS = [];
 export const AZMAIL_WORKER = "https://azmail-download-tracker.vibelock.workers.dev/";
 export const PEACELOCK_WORKER = "https://peacelock-download-tracker.vibelock.workers.dev/";
 export const PEACELOCK_GITHUB = "https://github.com/AzielEliab/peacelock";
+/** Coordinator honesty: public git + local-only runtime. Counted door stays the tracker. */
+export const PEACELOCK_NOTE =
+  "PeaceLock: public git " +
+  PEACELOCK_GITHUB +
+  ". Runtime is local-only. Counted Softwares door is " +
+  PEACELOCK_WORKER +
+  ".";
+export const PEACELOCK_SOFTWARES_LINE =
+  "- PeaceLock — public git " + PEACELOCK_GITHUB + ". Runtime is local-only. Softwares door: " + PEACELOCK_WORKER + ".";
+
+export function peacelockCite() {
+  return {
+    slug: "peacelock",
+    name: "PeaceLock",
+    author: AUTHOR,
+    identity: AUTHOR,
+    github: PEACELOCK_GITHUB,
+    worker_home: PEACELOCK_WORKER,
+    public_git: PEACELOCK_GITHUB,
+    runtime: "local-only",
+    hosted_unlock: false,
+    software_tab: true,
+    note: PEACELOCK_NOTE,
+  };
+}
 
 /** Slugs whose download-tracker Worker is not ready — use GitHub. Empty: trackers live. */
 export const CATALOG_GITHUB_FALLBACK = new Set();
@@ -937,6 +984,7 @@ export const SOFTWARE_EXTRAS = [
     fraggate_call: false,
     live_backends: false,
     hosted_company_os: false,
+    public_softwares_cite: true,
     note: SISTER_PRODUCTS_NOTE,
   },
 ];

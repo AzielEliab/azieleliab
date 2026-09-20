@@ -483,6 +483,28 @@
     "note": "Leftover container bytes = honest recover path (leftover_bytes, recovered_from). Opaque rewrite with nothing left refuses SL-UNREDACT-OPAQUE — do not invent letters. Locate / lift / recover / refuse. Inject ON is paint. Worker LIVE after spectrallock#13 (merge 4af8fcb): GET|POST /v1/unredact (deep PDF + revision_graph + per-revision copies); GET|POST /v1/recover (universal artifact recover; NO-LIE; LIVE vs SLOT); GET|POST /v1/handwriting (physical ink scan heuristics). FragGate LIVE_OPS stay health / modes / targets / overlay / verify / doctor / skill. OCR after structural only. Never OCR-from-black-box. Never reconstruct covered letters from context. Lamb Lens: Service → Clarity → Peace. Author Aziel Eliab only. NO-LIE.",
     "ocr_note": "OCR runs only after structural recovery and never reconstructs covered letters from context. Never OCR-from-black-box. Never claim pigment recovery, ESDA, chemical, lab, or forensic certification. Author Aziel Eliab. NO-LIE."
   },
+  "peacelock": {
+    "slug": "peacelock",
+    "name": "PeaceLock",
+    "author": "Aziel Eliab",
+    "identity": "Aziel Eliab",
+    "github": "https://github.com/AzielEliab/peacelock",
+    "worker_home": "https://peacelock-download-tracker.vibelock.workers.dev/",
+    "public_git": "https://github.com/AzielEliab/peacelock",
+    "runtime": "local-only",
+    "hosted_unlock": false,
+    "software_tab": true,
+    "note": "PeaceLock: public git https://github.com/AzielEliab/peacelock. Runtime is local-only. Counted Softwares door is https://peacelock-download-tracker.vibelock.workers.dev/."
+  },
+  "peacelock_note": "PeaceLock: public git https://github.com/AzielEliab/peacelock. Runtime is local-only. Counted Softwares door is https://peacelock-download-tracker.vibelock.workers.dev/.",
+  "softwares_ssot": {
+    "field": "version",
+    "live": "https://aziel-runtime.vibelock.workers.dev/v1/software",
+    "live_hub": "https://www.azieleliab.com/v1/software",
+    "fallback": "https://aziel-runtime.vibelock.workers.dev/v1/fraggate/list",
+    "frozen": "2.0.0-rc1",
+    "note": "One public Softwares version. Live GET https://aziel-runtime.vibelock.workers.dev/v1/software version is SoT. Fallback https://aziel-runtime.vibelock.workers.dev/v1/fraggate/list, then frozen 2.0.0-rc1. Do not invent a second Softwares version."
+  },
   "survival": "https://www.azieleliab.com/survival",
   "godlock_is_product_not_identity": true,
   "mesh_live_nodes_are_api": false,

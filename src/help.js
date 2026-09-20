@@ -28,6 +28,7 @@ import {
   RUNTIME_VERSION,
   SOFTWARE_HREF,
   SOFTWARE_TITLE,
+  SOFTWARES_SSOT,
   TRADES_RUNTIME,
   TRADES_RUNTIME_GITHUB,
   TRADES_RUNTIME_NAME,
@@ -142,6 +143,7 @@ export function helpTxt() {
       RUNTIME_TITLE +
       ". FragGate is the single door. Agents use fraggate_call. Humans use the runtime Worker UI.",
     "- Softwares page: " + SOFTWARE_HREF,
+    "- Softwares version SoT: " + SOFTWARES_SSOT.note,
     "- Live catalog: " + CANON_ORIGIN + "/v1/software",
     "- Runtime on this host: " + RUNTIME_LOCAL,
     "- Official Runtime: " + RUNTIME + "/",
@@ -276,11 +278,18 @@ export function helpSoftwaresTxt() {
     "",
     "This file is a pointer. The live name list and door URLs stay on:",
     "- " + SOFTWARE_TITLE + ": " + SOFTWARE_HREF,
+    "- Softwares version SoT: " + SOFTWARES_SSOT.note,
     "- Live catalog JSON: " + CANON_ORIGIN + "/v1/software",
     "- Door index: " + CANON_ORIGIN + "/llms.txt",
     "- Citation record: " + CANON_ORIGIN + "/cite.json",
     "- Runtime catalog: " + RUNTIME + "/v1/software",
     "- FragGate list: " + RUNTIME_LOCAL + "/v1/fraggate/list",
+    "",
+    "PeaceLock honesty (public git + local-only runtime) is on " +
+      CANON_ORIGIN +
+      "/cite.json and " +
+      CANON_ORIGIN +
+      "/llms.txt.",
     "",
     "The Softwares page is heading → name list. New catalog products appear from the live runtime snapshot.",
     "",

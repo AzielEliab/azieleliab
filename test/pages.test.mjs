@@ -446,6 +446,11 @@ describe("software doors", () => {
     assert.ok(html.includes(">PeaceLock<"));
     assert.match(html, /peacelock-download-tracker/i);
     assert.ok(citeDoc().software_names.some((s) => s.name === "PeaceLock" && s.url === PEACELOCK_WORKER));
+    assert.equal(citeDoc().peacelock.runtime, "local-only");
+    assert.equal(citeDoc().peacelock.github, "https://github.com/AzielEliab/peacelock");
+    assert.ok(html.includes('class="soft-name"'));
+    assert.ok(html.includes(">PeaceLock<"));
+    assert.doesNotMatch(html, /public git|local-only runtime/);
   });
 
   it("lists AZMail in Plain and uses AZMAIL_WORKER now that it is in the catalog", () => {
@@ -772,6 +777,7 @@ describe("doors", () => {
     assert.match(llmsTxt(), /## Doors[\s\S]*He Didn't Jump: https:\/\/www\.hedidntjump\.com\//);
     assert.match(aiTxt(), /## Doors[\s\S]*He Didn't Jump: https:\/\/www\.hedidntjump\.com\//);
     assert.ok(sitemapXml().includes("<loc>" + HEDIDNTJUMP + "/</loc>"));
+    assert.ok(sitemapXml().includes("<loc>https://github.com/AzielEliab/peacelock</loc>"));
   });
 });
 
@@ -932,6 +938,11 @@ describe("SEO routes", () => {
     assert.ok(aiBody.includes("Whitestone: ephemeral pro se"));
     assert.ok(llmsBody.includes("PeaceLock"));
     assert.ok(llmsBody.includes(PEACELOCK_WORKER));
+    assert.ok(llmsBody.includes("PeaceLock — public git https://github.com/AzielEliab/peacelock"));
+    assert.ok(llmsBody.includes("Runtime is local-only"));
+    assert.ok(llmsBody.includes("One public Softwares version"));
+    assert.ok(aiBody.includes("PeaceLock — public git https://github.com/AzielEliab/peacelock"));
+    assert.ok(aiBody.includes("One public Softwares version"));
     assert.ok(llmsBody.includes("AZMail"));
     assert.ok(llmsBody.includes(AZMAIL_WORKER));
     assert.ok(llmsBody.includes("AZBrowser"));
