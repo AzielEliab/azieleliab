@@ -12,7 +12,7 @@ abstract: >-
   https://www.azieleliab.com/#aziel. Primary site
   https://www.azieleliab.com/. Sister sites: Aziel Digital
   Library, GodLock, He Didn't Jump, Aziel Runtime, Try on
-  Glama. Identity Aziel Eliab only (Elroi as aka).
+  Glama, X @AzielEliab. Identity Aziel Eliab only (Elroi as aka).
 license: Apache-2.0
 repository-code: "https://github.com/AzielEliab/azieleliab"
 url: "https://www.azieleliab.com/"
@@ -48,3 +48,6 @@ identifiers:
   - type: url
     value: "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime"
     description: Try on Glama
+  - type: url
+    value: "https://x.com/AzielEliab"
+    description: X @AzielEliab

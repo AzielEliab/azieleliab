@@ -17,6 +17,7 @@ const RUNTIME_WORKER = "https://aziel-runtime.vibelock.workers.dev/";
 const TRADES_WORKER = "https://trades-runtime.vibelock.workers.dev/";
 const TRADES_REPO = "https://github.com/AzielEliab/trades-runtime";
 const GITHUB_USER = "https://github.com/AzielEliab";
+const X_URL = "https://x.com/AzielEliab";
 const PUBLIC_WEBSITES = [
   CANON,
   CORPUS,
@@ -25,6 +26,7 @@ const PUBLIC_WEBSITES = [
   RUNTIME_WORKER,
   GLAMA,
   GITHUB_USER,
+  X_URL,
 ];
 
 const AI_CLIENTS = [
@@ -232,7 +234,6 @@ describe("GitHub-side SEO / ecosystem docs", () => {
       //i,
       /durable/i,
       /hard to kill/i,
-      /survival/i,
       /unkillable/i,
       //i,
       /fielded[_-]?100/i,

@@ -43,7 +43,11 @@ import {
   HARDWARE_ADDENDUM,
   SITE_COVERAGE,
   SITE_COVERAGE_ANSWER,
+  WHY_ANSWER,
+  WHY_AZIEL_ELIAB_DOES,
+  WHY_FAQ_NAMES,
   MISSION,
+  OFFICIAL_ECOSYSTEM_FAQ_NAME,
   LIBRARY_STATS,
   LIBRARY_STATS_FALLBACK,
   STATS_COUNTERS,
@@ -152,6 +156,11 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     assert.equal(person.mainEntityOfPage, WHO_HREF);
     assert.deepEqual(person.subjectOf, { "@type": "FAQPage", "@id": WHO_IS_FAQ_ID });
     assert.deepEqual(person.sameAs, PERSON_SAME_AS);
+    assert.deepEqual(person.relatedLink, [
+      "https://www.azieleliab.com/software",
+      "https://aziel-runtime.vibelock.workers.dev/",
+      "https://www.azieleliab.com/runtime",
+    ]);
     assert.ok(person.sameAs.includes("https://www.azieleliab.com/"));
     assert.ok(person.sameAs.includes("https://www.azielcorpuslibrary.net/"));
     assert.ok(person.sameAs.includes("https://godlock.uk/"));
@@ -219,6 +228,8 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     assert.ok(questions.some((q) => /misspell/i.test(q)));
     assert.ok(questions.includes("What does the published About say?"));
     assert.ok(questions.includes("What public sites does Aziel Eliab publish?"));
+    assert.ok(questions.includes(OFFICIAL_ECOSYSTEM_FAQ_NAME));
+    for (const name of WHY_FAQ_NAMES) assert.ok(questions.includes(name), name);
     const answers = faq.mainEntity.map((q) => q.acceptedAnswer.text);
     assert.ok(answers.includes(WHO_IS_ANSWER));
     assert.ok(answers.includes(WHAT_HE_DOES_ANSWER));
@@ -267,7 +278,15 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     assert.ok(answers.includes(MISSPELLINGS_ANSWER));
     assert.ok(answers.includes(ABOUT_PUBLISHED_ANSWER));
     assert.ok(answers.includes(SITE_COVERAGE_ANSWER));
+    assert.ok(answers.includes(WHY_ANSWER));
+    assert.equal(WHY_ANSWER, WHY_AZIEL_ELIAB_DOES);
+    assert.match(WHY_ANSWER, /I keep looking/);
+    assert.doesNotMatch(WHY_ANSWER, /1 Chronicles|Flutter|euaziel/i);
     assert.match(WHO_IS_ANSWER, /two Levitical musicians Aziel and Eliab named together in 1 Chronicles 15:20/);
+    assert.match(WHO_IS_ANSWER, /x\.com\/AzielEliab/);
+    assert.match(WHO_IS_ANSWER, /Try on Glama/);
+    assert.match(SOFTWARE_DEVELOPER_ANSWER, /Try on Glama/);
+    assert.match(SOFTWARE_DEVELOPER_ANSWER, /X @AzielEliab/);
     assert.match(CONCORDANCE_FAQ_ANSWER, /two Levitical musicians/);
     assert.match(CONCORDANCE_FAQ_ANSWER, /1 Chronicles 15:20/);
     assert.doesNotMatch(SOFTWARE_DEVELOPER_ANSWER, /1 Chronicles/);
@@ -322,6 +341,11 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     assert.ok(body.includes(WHAT_AZIEL_ELIAB_DOES));
     assert.ok(body.includes(WHAT_HE_DOES_ANSWER));
     assert.ok(body.includes("## What Aziel Eliab does"));
+    assert.ok(body.includes("## Why"));
+    assert.ok(body.includes(WHY_AZIEL_ELIAB_DOES));
+    assert.ok(body.includes("## Official Aziel ecosystem"));
+    assert.ok(body.includes("Try on Glama"));
+    assert.ok(body.includes("https://x.com/AzielEliab"));
     assert.ok(body.includes("## Softwares"));
     assert.ok(body.includes(WHAT_HE_DOES_SOFTWARES));
     assert.ok(body.includes(SOFTWARES_ADDENDUM));
@@ -378,6 +402,7 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     assert.ok(visible.includes(WHO_IS_ANSWER));
     assert.ok(!visible.includes(VISIBLE_LOCK_LINE));
     assert.ok(!visible.includes(WHAT_AZIEL_ELIAB_DOES));
+    assert.ok(!visible.includes(WHY_AZIEL_ELIAB_DOES));
     assert.ok(!visible.includes(RESEARCH_ADDENDUM));
     assert.ok(!visible.includes(HARDWARE_ADDENDUM));
     assert.ok(!visible.includes(SOFTWARES_ADDENDUM));
@@ -610,6 +635,13 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     assert.ok(cite.published_research.some((row) => row.records && row.records.includes("AZDOC-A011CAD23671")));
     assert.ok(cite.published_hardware.some((row) => row.records && row.records.includes("AZDOC-9B0E3D62EDCC")));
     assert.equal(cite.who_is_answer, WHO_IS_ANSWER);
+    assert.equal(cite.why_aziel_eliab_does, WHY_AZIEL_ELIAB_DOES);
+    assert.deepEqual(cite.why_faq, WHY_FAQ_NAMES);
+    assert.equal(cite.official_ecosystem_faq, OFFICIAL_ECOSYSTEM_FAQ_NAME);
+    assert.ok(cite.official_ecosystem.some((row) => row.label === "Try on Glama"));
+    assert.ok(cite.official_ecosystem.some((row) => row.label === "X @AzielEliab" && row.url === "https://x.com/AzielEliab"));
+    assert.ok(cite.official_ecosystem.some((row) => row.label === "Softwares"));
+    assert.ok(!cite.official_ecosystem.some((row) => /donate/i.test(row.label)));
     assert.equal(cite.hebrew_name_definition, HEBREW_NAME_DEFINITION);
     assert.ok(cite.aka.includes("Elias Artista"));
     assert.ok(cite.alternateName.includes("Elias Artista"));

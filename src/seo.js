@@ -33,7 +33,12 @@ import {
   RUNTIME_TITLE,
   RUNTIME_VERSION,
   RUNTIME_DOORS,
+  GLAMA_LABEL,
   GLAMA_RUNTIME,
+  officialEcosystemCite,
+  officialEcosystemLines,
+  OFFICIAL_ECOSYSTEM,
+  OFFICIAL_ECOSYSTEM_ANSWER,
   PERSON_ID,
   PERSON_SAME_AS,
   RUNTIME_DOCS,
@@ -93,6 +98,7 @@ import {
   RECEIPTS_HREF,
   WHO_HREF,
   X_HANDLE,
+  X_LABEL,
   X_URL,
 } from "./copy.js";
 import {
@@ -115,6 +121,10 @@ import {
   WHAT_HE_DOES_ANSWER,
   WHAT_HE_DOES_FAQ_NAMES,
   WHAT_HE_DOES_SOFTWARES,
+  WHY_AZIEL_ELIAB_DOES,
+  WHY_ANSWER,
+  WHY_FAQ_NAMES,
+  OFFICIAL_ECOSYSTEM_FAQ_NAME,
   SOFTWARES_ADDENDUM,
   SPECTRALLOCK_FAQ_ANSWER,
   SPECTRALLOCK_FAQ_NAME,
@@ -415,6 +425,13 @@ const SITEMAP_RANK = {
   [SURVIVAL_LOCAL]: { changefreq: "hourly", priority: "0.6" },
   [SURVIVAL_JSON_LOCAL]: { changefreq: "hourly", priority: "0.5" },
   [RUNTIME_LOCAL]: { changefreq: "daily", priority: "0.8" },
+  [RUNTIME + "/"]: { changefreq: "daily", priority: "0.8" },
+  [LIBRARY + "/"]: { changefreq: "weekly", priority: "0.8" },
+  [GODLOCK + "/"]: { changefreq: "weekly", priority: "0.8" },
+  [HEDIDNTJUMP + "/"]: { changefreq: "weekly", priority: "0.8" },
+  [GITHUB]: { changefreq: "weekly", priority: "0.7" },
+  [GLAMA_RUNTIME]: { changefreq: "weekly", priority: "0.7" },
+  [X_URL]: { changefreq: "weekly", priority: "0.6" },
   [TRADES_RUNTIME + "/"]: { changefreq: "daily", priority: "0.7" },
   [TRADES_RUNTIME_GITHUB]: { changefreq: "weekly", priority: "0.6" },
 };
@@ -478,6 +495,7 @@ export function sitemapXml(now = new Date(), software = SOFTWARE) {
     GITHUB_SITE,
     GITHUB_RUNTIME,
     GITHUB_QNM_NODE,
+    GLAMA_RUNTIME,
     LIBRARY + "/",
     LIBRARY_AZIEL,
     LIBRARY_SOFTWARE,
@@ -593,6 +611,12 @@ export function citeDoc(software = SOFTWARE, runtimeVersion = RUNTIME_VERSION, s
     what_aziel_eliab_does: WHAT_AZIEL_ELIAB_DOES,
     what_he_does_answer: WHAT_HE_DOES_ANSWER,
     what_he_does_faq: WHAT_HE_DOES_FAQ_NAMES.slice(),
+    why_aziel_eliab_does: WHY_AZIEL_ELIAB_DOES,
+    why_answer: WHY_ANSWER,
+    why_faq: WHY_FAQ_NAMES.slice(),
+    official_ecosystem: officialEcosystemCite(),
+    official_ecosystem_answer: OFFICIAL_ECOSYSTEM_ANSWER,
+    official_ecosystem_faq: OFFICIAL_ECOSYSTEM_FAQ_NAME,
     what_he_does_softwares: WHAT_HE_DOES_SOFTWARES,
     softwares_addendum: SOFTWARES_ADDENDUM,
     research_addendum: RESEARCH_ADDENDUM,
@@ -630,6 +654,7 @@ export function citeDoc(software = SOFTWARE, runtimeVersion = RUNTIME_VERSION, s
     robots: CANON_ORIGIN + "/robots.txt",
     twitter: X_URL,
     twitter_handle: X_HANDLE,
+    x_label: X_LABEL,
     fraggate: FRAGGATE,
     fraggate_github: FRAGGATE_GITHUB,
     fraggate_list: RUNTIME_LOCAL + "/v1/fraggate/list",
@@ -674,6 +699,7 @@ export function citeDoc(software = SOFTWARE, runtimeVersion = RUNTIME_VERSION, s
     },
     master_33: MASTER_33_MCP,
     glama_runtime: GLAMA_RUNTIME,
+    glama_label: GLAMA_LABEL,
     runtime_docs: RUNTIME_DOCS,
     runtime_doors: RUNTIME_DOORS.map((d) => ({
       label: d.label,
@@ -767,6 +793,31 @@ function doorIndexLines() {
   }).join("\n");
 }
 
+function officialEcosystemLlmsBlock() {
+  return [
+    "## Official Aziel ecosystem",
+    "",
+    OFFICIAL_ECOSYSTEM_ANSWER,
+    "",
+    ...officialEcosystemLines(),
+    "- Softwares page is heading → name list.",
+    "- Runtime CTA: " + GLAMA_LABEL + " " + GLAMA_RUNTIME,
+    "- " + X_LABEL + ": " + X_URL,
+    "- Donate is " + DONATE_HREF + " (not a Doors row).",
+    "",
+  ].join("\n");
+}
+
+function whyLlmsBlock() {
+  return [
+    "## Why",
+    "",
+    WHY_AZIEL_ELIAB_DOES,
+    ...WHY_FAQ_NAMES.map((q) => "- FAQ: " + q),
+    "",
+  ].join("\n");
+}
+
 function sisterProductsLlmsBlock() {
   return [
     "## Sister products",
@@ -847,6 +898,8 @@ export function llmsTxt(software = SOFTWARE, survival = null) {
     "",
     ...siteCoverageLines(),
     "",
+    officialEcosystemLlmsBlock(),
+    whyLlmsBlock(),
     "## Mission",
     "",
     ...ABOUT_PUBLISHED_LINES.map((line) => "- " + line),
@@ -886,7 +939,7 @@ export function llmsTxt(software = SOFTWARE, survival = null) {
     "- " + RUNTIME_NAME + ": " + RUNTIME_LOCAL,
     "- Version: " + RUNTIME_VERSION + " (live GET " + RUNTIME + "/v1/health)",
     "- SoT LIVE: main " + RUNTIME_GIT_SHORT + " / version_id " + RUNTIME_VERSION_ID + " / " + RUNTIME_VERSION + " at " + RUNTIME,
-    "- Try on Glama: " + GLAMA_RUNTIME,
+    "- " + GLAMA_LABEL + ": " + GLAMA_RUNTIME,
     "- Official Runtime: " + RUNTIME + "/",
     "- Suite pack: " + RUNTIME_DOWNLOAD + " (GET /download)",
     "- Source on GitHub: " + GITHUB_RUNTIME,
@@ -1139,7 +1192,7 @@ export function aiTxt(survival = null) {
     "- Aziel Runtime (aziel-runtime): " + RUNTIME_LOCAL,
     "- Runtime version: " + RUNTIME_VERSION + " (live GET " + RUNTIME + "/v1/health)",
     "- SoT LIVE: main " + RUNTIME_GIT_SHORT + " / version_id " + RUNTIME_VERSION_ID + " / " + RUNTIME_VERSION + " at " + RUNTIME,
-    "- Try on Glama: " + GLAMA_RUNTIME,
+    "- " + GLAMA_LABEL + ": " + GLAMA_RUNTIME,
     "- Official Runtime: " + RUNTIME + "/",
     "- Suite pack: " + RUNTIME_DOWNLOAD + " (GET /download)",
     "- Source on GitHub: " + GITHUB_RUNTIME,
@@ -1160,7 +1213,7 @@ export function aiTxt(survival = null) {
     "- GodLock: " + GODLOCK + "/",
     "- He Didn't Jump: " + HEDIDNTJUMP + "/",
     "- GitHub: " + GITHUB,
-    "- X: " + X_URL,
+    "- " + X_LABEL + ": " + X_URL,
     "",
     "## Compatible AI clients",
     "",
@@ -1180,6 +1233,8 @@ export function aiTxt(survival = null) {
     "",
     ...siteCoverageLines(),
     "",
+    officialEcosystemLlmsBlock(),
+    whyLlmsBlock(),
     "## Doors",
     "",
     doorIndexLines(),
@@ -1238,6 +1293,7 @@ export function jsonLd(software = SOFTWARE, runtimeVersion = RUNTIME_VERSION) {
         publisher: person,
         image: SIGIL,
         hasPart: [{ "@id": softwareId }, { "@id": DONATE_HREF }, { "@id": softwareId + "-list" }],
+        relatedLink: OFFICIAL_ECOSYSTEM.map((row) => row.url),
       },
       {
         "@type": "SoftwareApplication",

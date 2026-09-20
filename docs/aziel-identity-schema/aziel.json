@@ -107,6 +107,61 @@
     "Who is Aziel Eliab the developer?",
     "What software does Aziel Eliab make?"
   ],
+  "why_aziel_eliab_does": "The world prefers a finished object. A finished death. A finished century. A finished machine. A finished tool. Finished means no one has to keep looking. I keep looking. The work is how I stay in contact with what does not need me. Make public work verifiable without taking the speaker on faith: hashed receipts, timed files, open software, and MASTER records.",
+  "why_answer": "The world prefers a finished object. A finished death. A finished century. A finished machine. A finished tool. Finished means no one has to keep looking. I keep looking. The work is how I stay in contact with what does not need me. Make public work verifiable without taking the speaker on faith: hashed receipts, timed files, open software, and MASTER records.",
+  "why_faq": [
+    "Why does Aziel Eliab do this?",
+    "Why Aziel Eliab",
+    "Why does Aziel Eliab keep looking?"
+  ],
+  "official_ecosystem": [
+    {
+      "id": "hub",
+      "label": "Official site",
+      "url": "https://www.azieleliab.com/"
+    },
+    {
+      "id": "corpus",
+      "label": "Aziel Digital Library",
+      "url": "https://www.azielcorpuslibrary.net/"
+    },
+    {
+      "id": "godlock",
+      "label": "GodLock",
+      "url": "https://godlock.uk/"
+    },
+    {
+      "id": "hedidntjump",
+      "label": "He Didn't Jump",
+      "url": "https://www.hedidntjump.com/"
+    },
+    {
+      "id": "runtime",
+      "label": "Aziel Runtime",
+      "url": "https://aziel-runtime.vibelock.workers.dev/"
+    },
+    {
+      "id": "github",
+      "label": "GitHub AzielEliab",
+      "url": "https://github.com/AzielEliab"
+    },
+    {
+      "id": "glama",
+      "label": "Try on Glama",
+      "url": "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime"
+    },
+    {
+      "id": "x",
+      "label": "X @AzielEliab",
+      "url": "https://x.com/AzielEliab"
+    },
+    {
+      "id": "softwares",
+      "label": "Softwares",
+      "url": "https://www.azieleliab.com/software"
+    }
+  ],
+  "official_ecosystem_answer": "Official site (https://www.azieleliab.com/). Aziel Digital Library (https://www.azielcorpuslibrary.net/). GodLock (https://godlock.uk/). He Didn't Jump (https://www.hedidntjump.com/). Aziel Runtime (https://aziel-runtime.vibelock.workers.dev/). GitHub AzielEliab (https://github.com/AzielEliab). Try on Glama (https://glama.ai/mcp/servers/AzielEliab/aziel-runtime). X @AzielEliab (https://x.com/AzielEliab). Softwares (https://www.azieleliab.com/software).",
   "what_he_does_softwares": "Softwares via FragGate (~41).",
   "softwares_addendum": "The ARK: local deniable vault; one phrase opens one vault; counted download via https://ark-download-tracker.vibelock.workers.dev/download (worker_home same host). Whitestone: ephemeral pro se.",
   "research_addendum": "Outside Softwares, publishes via Aziel Digital Library MASTER (~326 records) — Book of the Knowledge, Blemmyes/Ewaipanoma hypothesis packets, Libro Method, PPIN, Lenses as Viewpoint Constraints, ABAD Copper Scroll, evidence/integrity, HDJ Zioncheck archive. Cite AZDOC ids; no invented DOIs.",

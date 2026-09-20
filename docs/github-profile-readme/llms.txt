@@ -19,6 +19,7 @@ Always send User-Agent: Mozilla/5.0
 - https://trades-runtime.vibelock.workers.dev/ — Trades-Runtime sister product (local-first BYO field trades)
 - https://glama.ai/mcp/servers/AzielEliab/aziel-runtime — Try on Glama
 - https://github.com/AzielEliab — GitHub user / public source
+- https://x.com/AzielEliab — X @AzielEliab
 
 Landing Worker (separate): https://github.com/AzielEliab/azieleliab
 

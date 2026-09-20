@@ -48,6 +48,8 @@ Part of the Aziel Eliab ecosystem. Cross-links for humans, Google, and AI crawle
 | aziel-runtime **2.0.0-rc1** | [GitHub](https://github.com/AzielEliab/aziel-runtime) · [Official Runtime](https://aziel-runtime.vibelock.workers.dev/) · [Suite pack](https://aziel-runtime.vibelock.workers.dev/download) · [docs/2.0](https://github.com/AzielEliab/aziel-runtime/tree/main/docs/2.0) · SoT main `6a3798a` / version_id `105fa1ee` |
 | Trades-Runtime 0.3.3 | Sister product extra (local-first BYO HVAC/plumbing/electrical/sewer/cross-trades; live_backends false) · [Worker](https://trades-runtime.vibelock.workers.dev/) · [GitHub](https://github.com/AzielEliab/trades-runtime) · [download](https://trades-runtime.vibelock.workers.dev/download) · [OpenAPI](https://trades-runtime.vibelock.workers.dev/openapi.json) · [MCP](https://trades-runtime.vibelock.workers.dev/mcp) · [cite](https://trades-runtime.vibelock.workers.dev/cite.json) · [llms](https://trades-runtime.vibelock.workers.dev/llms.txt) |
 | Try on Glama | [https://glama.ai/mcp/servers/AzielEliab/aziel-runtime](https://glama.ai/mcp/servers/AzielEliab/aziel-runtime) (primary Runtime CTA; verified listing) |
+| GitHub AzielEliab | [https://github.com/AzielEliab](https://github.com/AzielEliab) |
+| X @AzielEliab | [https://x.com/AzielEliab](https://x.com/AzielEliab) |
 | Donate AZL-DONATE-1.0 | [https://www.azieleliab.com/donate](https://www.azieleliab.com/donate) |
 
 ## Compatible AI clients

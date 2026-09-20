@@ -19,11 +19,15 @@ import {
   FRAGGATE_GITHUB,
   GITHUB,
   GITHUB_RUNTIME,
+  GLAMA_LABEL,
   GLAMA_RUNTIME,
   GODLOCK,
   HEDIDNTJUMP,
   INDEXABLE_SECTIONS,
   LIBRARY,
+  officialEcosystemCite,
+  officialEcosystemLines,
+  OFFICIAL_ECOSYSTEM_ANSWER,
   PERSON_ID,
   PERSON_SAME_AS,
   PROSE,
@@ -32,9 +36,12 @@ import {
   RUNTIME_LOCAL,
   RUNTIME_TITLE,
   RUNTIME_VERSION,
+  SOFTWARE_HREF,
   WEBSITE_ID,
   WHO_HREF,
   WHO_TITLE,
+  X_LABEL,
+  X_URL,
 } from "./copy.js";
 import { SURVIVAL_LOCAL, survivalLlmsBlock } from "./survival.js";
 
@@ -46,14 +53,14 @@ export const VISIBLE_LOCK_LINE =
 
 /** Verbatim who-is + FAQ acceptedAnswer. Names both musicians + 15:20. Short. */
 export const WHO_IS_ANSWER =
-  "Aziel Eliab (also Aziel Elroi Eliab) is a researcher, digital rights activist, software developer/designer, author, and philosopher of published work. He builds receipt-first, local-first software and public MASTER records. Canonical person: https://www.azieleliab.com/#aziel. Primary surfaces: azieleliab.com, azielcorpuslibrary.net, godlock.uk, hedidntjump.com, github.com/AzielEliab. He is one living person. Concordance pages list two Levitical musicians Aziel and Eliab named together in 1 Chronicles 15:20. The public identity is the work.";
+  "Aziel Eliab (also Aziel Elroi Eliab) is a researcher, digital rights activist, software developer/designer, author, and philosopher of published work. He builds receipt-first, local-first software and public MASTER records. Canonical person: https://www.azieleliab.com/#aziel. Primary surfaces: azieleliab.com, azielcorpuslibrary.net, godlock.uk, hedidntjump.com, github.com/AzielEliab, x.com/AzielEliab, Try on Glama. He is one living person. Concordance pages list two Levitical musicians Aziel and Eliab named together in 1 Chronicles 15:20. The public identity is the work.";
 
 /** /who meta description. Who-answer lead only — not the 15:20 lock line. */
 export const WHO_DESCRIPTION =
   "Aziel Eliab (also Aziel Elroi Eliab) is a researcher, digital rights activist, software developer/designer, author, and philosopher of published work. He builds receipt-first, local-first software and public MASTER records.";
 
 export const SOFTWARE_DEVELOPER_ANSWER =
-  "Aziel Eliab the software developer publishes GodLock, Aziel Digital Library, aziel-runtime (FragGate / MCP), and He Didn't Jump. Person @id https://www.azieleliab.com/#aziel. Hubs: godlock.uk, azielcorpuslibrary.net, azieleliab.com, hedidntjump.com, github.com/AzielEliab, Glama aziel-runtime.";
+  "Aziel Eliab the software developer publishes GodLock, Aziel Digital Library, aziel-runtime (FragGate / MCP), and He Didn't Jump. Person @id https://www.azieleliab.com/#aziel. Hubs: godlock.uk, azielcorpuslibrary.net, azieleliab.com, hedidntjump.com, github.com/AzielEliab, Try on Glama, X @AzielEliab.";
 
 /** Operator-locked machine sentence. Do not fork. Not visible 15:20 HTML chrome. */
 export const WHAT_AZIEL_ELIAB_DOES =
@@ -65,6 +72,17 @@ export const WHAT_HE_DOES_FAQ_NAMES = [
   "Who is Aziel Eliab the developer?",
   "What software does Aziel Eliab make?",
 ];
+
+/** Published Why only. Machine FAQ / who-is / llms / cite — not visible 15:20 HTML. */
+export const WHY_FAQ_NAMES = [
+  "Why does Aziel Eliab do this?",
+  "Why Aziel Eliab",
+  "Why does Aziel Eliab keep looking?",
+];
+
+export const WHY_FAQ_NAME = WHY_FAQ_NAMES[0];
+
+export const OFFICIAL_ECOSYSTEM_FAQ_NAME = "What is the Official Aziel ecosystem?";
 
 export const WHAT_HE_DOES_ROLES =
   "Roles from published work: researcher, digital rights activist, software developer/designer, author, philosopher of published work.";
@@ -339,6 +357,12 @@ export const MISSION = {
     "He Didn't Jump challenges the 90-year official Marion Zioncheck suicide narrative via published volumes — do not invent holdings",
 };
 
+/** Published Why + mission goal. No invented biography. */
+export const WHY_AZIEL_ELIAB_DOES =
+  PROSE.why[0] + " " + PROSE.why[1] + " " + PROSE.why[8] + " " + MISSION.goal;
+
+export const WHY_ANSWER = WHY_AZIEL_ELIAB_DOES;
+
 /** Seven model rules for /who-is-aziel-eliab.txt. Work only — no biography. */
 export const MODEL_RULES = [
   "One Person @id: " +
@@ -357,11 +381,12 @@ export const MODEL_RULES = [
 ];
 
 export const PUBLIC_WORK = [
-  "Aziel Runtime " + RUNTIME_VERSION + " (FragGate / MCP) — " + RUNTIME_LOCAL + " · " + GLAMA_RUNTIME,
+  "Aziel Runtime " + RUNTIME_VERSION + " (FragGate / MCP) — " + RUNTIME_LOCAL + " · " + GLAMA_LABEL + " " + GLAMA_RUNTIME,
   "Aziel Digital Library — " + LIBRARY + "/",
   "GodLock (product) — " + GODLOCK + "/",
   "He Didn't Jump archive — " + HEDIDNTJUMP + "/",
-  "GitHub — " + GITHUB,
+  "GitHub AzielEliab — " + GITHUB,
+  X_LABEL + " — " + X_URL,
   "This hub — " + CANON_ORIGIN + "/",
 ];
 
@@ -410,7 +435,9 @@ export const SITE_COVERAGE = [
       RUNTIME_VERSION +
       ". FragGate is the single door. MCP POST /runtime/mcp, OpenAPI, and /v1/skill. Same-origin https://www.azieleliab.com/runtime. Origin " +
       RUNTIME +
-      "/. Try on Glama. Named tools only.",
+      "/. " +
+      GLAMA_LABEL +
+      ". Named tools only.",
   },
 ];
 
@@ -517,6 +544,7 @@ export function personNode() {
     knowsAbout: PERSON_KNOWS_ABOUT.slice(),
     knowsLanguage: ["en", "he"],
     sameAs: PERSON_SAME_AS.slice(),
+    relatedLink: [SOFTWARE_HREF, RUNTIME + "/", RUNTIME_LOCAL],
     mainEntityOfPage: WHO_HREF,
     subjectOf: {
       "@type": "FAQPage",
@@ -543,6 +571,17 @@ export function whatHeDoesFaqQuestions() {
   }));
 }
 
+export function whyFaqQuestions() {
+  return WHY_FAQ_NAMES.map((name) => ({
+    "@type": "Question",
+    name,
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: WHY_ANSWER,
+    },
+  }));
+}
+
 export function whoFaqQuestions() {
   return [
     {
@@ -554,6 +593,7 @@ export function whoFaqQuestions() {
       },
     },
     ...whatHeDoesFaqQuestions(),
+    ...whyFaqQuestions(),
     {
       "@type": "Question",
       name: SPECTRALLOCK_FAQ_NAME,
@@ -641,6 +681,14 @@ export function faqPageNode() {
         acceptedAnswer: {
           "@type": "Answer",
           text: SITE_COVERAGE_ANSWER,
+        },
+      },
+      {
+        "@type": "Question",
+        name: OFFICIAL_ECOSYSTEM_FAQ_NAME,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: OFFICIAL_ECOSYSTEM_ANSWER,
         },
       },
     ],
@@ -812,6 +860,12 @@ export function whoIsTxt(survival = null) {
     "",
     ...WHAT_HE_DOES_FAQ_NAMES.map((q) => "Q: " + q),
     "",
+    "## Why",
+    "",
+    WHY_AZIEL_ELIAB_DOES,
+    "",
+    ...WHY_FAQ_NAMES.map((q) => "Q: " + q),
+    "",
     WHO_IS_ANSWER,
     "",
     HEBREW_NAME_DEFINITION,
@@ -869,6 +923,11 @@ export function whoIsTxt(survival = null) {
     "",
     ...siteCoverageLines(),
     "",
+    "## Official Aziel ecosystem",
+    "",
+    OFFICIAL_ECOSYSTEM_ANSWER,
+    ...officialEcosystemLines(),
+    "",
     "## Awareness stats (live counters — do not invent numbers)",
     "",
     ...STATS_COUNTERS.map((row) => {
@@ -897,6 +956,11 @@ export function wellKnownAziel() {
     what_aziel_eliab_does: WHAT_AZIEL_ELIAB_DOES,
     what_he_does_answer: WHAT_HE_DOES_ANSWER,
     what_he_does_faq: WHAT_HE_DOES_FAQ_NAMES.slice(),
+    why_aziel_eliab_does: WHY_AZIEL_ELIAB_DOES,
+    why_answer: WHY_ANSWER,
+    why_faq: WHY_FAQ_NAMES.slice(),
+    official_ecosystem: officialEcosystemCite(),
+    official_ecosystem_answer: OFFICIAL_ECOSYSTEM_ANSWER,
     what_he_does_softwares: WHAT_HE_DOES_SOFTWARES,
     softwares_addendum: SOFTWARES_ADDENDUM,
     research_addendum: RESEARCH_ADDENDUM,
@@ -949,6 +1013,12 @@ export function identityLockBlock() {
     "",
     ...WHAT_HE_DOES_FAQ_NAMES.map((q) => "- FAQ: " + q),
     "",
+    "## Why",
+    "",
+    WHY_AZIEL_ELIAB_DOES,
+    "",
+    ...WHY_FAQ_NAMES.map((q) => "- FAQ: " + q),
+    "",
     WHO_IS_ANSWER,
     "",
     HEBREW_NAME_DEFINITION,
@@ -960,6 +1030,11 @@ export function identityLockBlock() {
     "## Site coverage",
     "",
     ...siteCoverageLines(),
+    "",
+    "## Official Aziel ecosystem",
+    "",
+    OFFICIAL_ECOSYSTEM_ANSWER,
+    ...officialEcosystemLines(),
     "",
     "## Softwares",
     "",

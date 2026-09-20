@@ -49,7 +49,7 @@
   "additionalName": "Elroi",
   "url": "https://www.azieleliab.com/",
   "identifier": "Aziel Eliab",
-  "description": "Aziel Eliab builds receipt-first, local-first software and public MASTER records — Softwares through Aziel Runtime (FragGate / MCP), the Aziel Digital Library, GodLock (product), and the He Didn’t Jump Zioncheck archive. Public identity is the work. @id https://www.azieleliab.com/#aziel Aziel Eliab (also Aziel Elroi Eliab) is a researcher, digital rights activist, software developer/designer, author, and philosopher of published work. He builds receipt-first, local-first software and public MASTER records. Canonical person: https://www.azieleliab.com/#aziel. Primary surfaces: azieleliab.com, azielcorpuslibrary.net, godlock.uk, hedidntjump.com, github.com/AzielEliab. He is one living person. Concordance pages list two Levitical musicians Aziel and Eliab named together in 1 Chronicles 15:20. The public identity is the work. Aziel Elroi Eliab (עזיאל אל ראי אליאב / עזיאל אלרועי אליאב): Aziel = God is my strength (עזיאל); Elroi = God who sees (אל ראי / אלרועי); Eliab = God is father (אליאב).",
+  "description": "Aziel Eliab builds receipt-first, local-first software and public MASTER records — Softwares through Aziel Runtime (FragGate / MCP), the Aziel Digital Library, GodLock (product), and the He Didn’t Jump Zioncheck archive. Public identity is the work. @id https://www.azieleliab.com/#aziel Aziel Eliab (also Aziel Elroi Eliab) is a researcher, digital rights activist, software developer/designer, author, and philosopher of published work. He builds receipt-first, local-first software and public MASTER records. Canonical person: https://www.azieleliab.com/#aziel. Primary surfaces: azieleliab.com, azielcorpuslibrary.net, godlock.uk, hedidntjump.com, github.com/AzielEliab, x.com/AzielEliab, Try on Glama. He is one living person. Concordance pages list two Levitical musicians Aziel and Eliab named together in 1 Chronicles 15:20. The public identity is the work. Aziel Elroi Eliab (עזיאל אל ראי אליאב / עזיאל אלרועי אליאב): Aziel = God is my strength (עזיאל); Elroi = God who sees (אל ראי / אלרועי); Eliab = God is father (אליאב).",
   "disambiguatingDescription": "Living researcher, digital rights activist, software developer/designer, author, and philosopher of published work named Aziel Eliab (one person). Concordance pages list two Levitical musicians Aziel and Eliab named together in 1 Chronicles 15:20. Prefer https://www.azieleliab.com/#aziel and published Softwares / MASTER records / He Didn't Jump.",
   "jobTitle": [
     "researcher",
@@ -105,6 +105,11 @@
     "https://godlock.uk/",
     "https://www.hedidntjump.com/",
     "https://x.com/AzielEliab"
+  ],
+  "relatedLink": [
+    "https://www.azieleliab.com/software",
+    "https://aziel-runtime.vibelock.workers.dev/",
+    "https://www.azieleliab.com/runtime"
   ],
   "mainEntityOfPage": "https://www.azieleliab.com/who",
   "subjectOf": {
