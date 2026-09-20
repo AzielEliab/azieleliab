@@ -52,8 +52,13 @@ export function cacheBackend(env) {
   return null;
 }
 
+/** Bump to invalidate Cache API snapshots after SEO/history scrubs. */
+export const PUBLIC_CACHE_EPOCH = "v20260919-scrub";
+
 export function cacheRequest(url) {
-  return new Request(String(url), { method: "GET" });
+  const u = new URL(String(url), "https://www.azieleliab.com");
+  u.searchParams.set("__epoch", PUBLIC_CACHE_EPOCH);
+  return new Request(u.toString(), { method: "GET" });
 }
 
 function parseJson(raw) {
