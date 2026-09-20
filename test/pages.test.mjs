@@ -1130,7 +1130,7 @@ describe("SEO routes", () => {
     assert.ok(html.includes('rel="canonical" href="' + CANON_ORIGIN + '/"'));
     assert.ok(html.includes('hreflang="en" href="' + CANON_ORIGIN + '/"'));
     assert.ok(html.includes('hreflang="x-default" href="' + CANON_ORIGIN + '/"'));
-    assert.ok(html.includes('name="twitter:site" content="@azieleliab"'));
+    assert.ok(html.includes('name="twitter:site" content="@AzielEliab"'));
     assert.ok(html.includes('property="og:locale" content="en"'));
     assert.ok(html.includes('rel="me" href="https://github.com/AzielEliab"'));
     assert.ok(html.includes('href="/runtime/openapi.json"'));
@@ -1259,8 +1259,7 @@ describe("public entity graph phases B–D + E audit", () => {
       "https://www.azielcorpuslibrary.net/",
       "https://godlock.uk/",
       "https://www.hedidntjump.com/",
-      "https://x.com/AzielElroiEliab",
-      "https://x.com/azieleliab",
+      "https://x.com/AzielEliab",
     ]);
     assert.equal(GLAMA_RUNTIME, "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime");
     assert.doesNotMatch(GLAMA_RUNTIME, /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i);
@@ -2028,7 +2027,7 @@ describe("AZL-DONATE-1.0", () => {
     assert.ok(html.includes("<title>Donate — " + AUTHOR + "</title>"));
     assert.ok(html.includes('name="author" content="' + AUTHOR + '"'));
     assert.ok(html.includes('name="description" content="' + DONATE_DESCRIPTION + '"'));
-    assert.ok(html.includes('name="twitter:site" content="@azieleliab"'));
+    assert.ok(html.includes('name="twitter:site" content="@AzielEliab"'));
     assert.ok(html.includes('href="/ai.txt"'));
     assert.ok(html.includes('href="/v1/software"'));
     assert.ok(html.includes('"@type":"WebPage"'));

@@ -25,7 +25,7 @@ Locked `@id`s on the www host (never apex; never `#aziel-eliab`):
 | WebSite | [https://www.azieleliab.com/#website](https://www.azieleliab.com/#website) |
 | Runtime parent | [https://www.azieleliab.com/runtime#runtime](https://www.azieleliab.com/runtime#runtime) |
 
-Person `sameAs` lattice (AZindex): [GitHub AzielEliab](https://github.com/AzielEliab), [secondary source](https://github.com/azieltherevealerofthesealed-arch), [Glama runtime](https://glama.ai/mcp/servers/AzielEliab/aziel-runtime) (owner/repo path — no invented UUIDs), [this hub](https://www.azieleliab.com/), [Corpus](https://www.azielcorpuslibrary.net/), [GodLock](https://godlock.uk/), [He Didn't Jump](https://www.hedidntjump.com/), [X AzielElroiEliab](https://x.com/AzielElroiEliab), [X azieleliab](https://x.com/azieleliab). One Person `@id` only. Runtime repo URLs stay on `author` / `creator` / `sourceCode` / `isPartOf`.
+Person `sameAs` lattice (AZindex): [GitHub AzielEliab](https://github.com/AzielEliab), [secondary source](https://github.com/azieltherevealerofthesealed-arch), [Glama runtime](https://glama.ai/mcp/servers/AzielEliab/aziel-runtime) (owner/repo path — no invented UUIDs), [this hub](https://www.azieleliab.com/), [Corpus](https://www.azielcorpuslibrary.net/), [GodLock](https://godlock.uk/), [He Didn't Jump](https://www.hedidntjump.com/), [X AzielEliab](https://x.com/AzielEliab). One Person `@id` only. Runtime repo URLs stay on `author` / `creator` / `sourceCode` / `isPartOf`.
 
 Machine identity (mirror copies in [docs/aziel-identity-schema/](docs/aziel-identity-schema/)): [`/person.jsonld`](https://www.azieleliab.com/person.jsonld) · [`/identity.jsonld`](https://www.azieleliab.com/identity.jsonld) · [`/graph.jsonld`](https://www.azieleliab.com/graph.jsonld) · [`/who`](https://www.azieleliab.com/who) · [`/who-is-aziel-eliab.txt`](https://www.azieleliab.com/who-is-aziel-eliab.txt) · [`/.well-known/aziel.json`](https://www.azieleliab.com/.well-known/aziel.json).
 
@@ -287,7 +287,7 @@ Every label and URL is hyperlinked.
 - Suite pack → https://aziel-runtime.vibelock.workers.dev/download (GET /download)
 - Source on GitHub → https://github.com/AzielEliab/aziel-runtime
 - Documentation / Architecture → https://github.com/AzielEliab/aziel-runtime/tree/main/docs/2.0
-- X → https://x.com/azieleliab
+- X → https://x.com/AzielEliab
 - Donate → https://www.azieleliab.com/donate
 
 ## Visual

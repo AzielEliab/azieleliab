@@ -86,8 +86,8 @@ Person `sameAs` lattice (AZindex):
 - https://www.azielcorpuslibrary.net/
 - https://godlock.uk/
 - https://www.hedidntjump.com/
-- https://x.com/AzielElroiEliab
-- https://x.com/azieleliab
+- https://x.com/AzielEliab
+- https://x.com/AzielEliab
 
 Do not invent Glama UUIDs, Zenodo DOIs, or extra identities. Aka only: Aziel Elroi Eliab, AzielEliab, AzielElroiEliab, The Revealer of The Sealed, Revealer of The Sealed.
 
