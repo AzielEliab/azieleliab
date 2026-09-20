@@ -451,6 +451,12 @@ describe("software doors", () => {
     assert.ok(html.includes('class="soft-name"'));
     assert.ok(html.includes(">PeaceLock<"));
     assert.doesNotMatch(html, /public git|local-only runtime/);
+    const catalog = softwareIndexBody();
+    assert.equal(catalog.peacelock.runtime, "local-only");
+    assert.equal(catalog.peacelock.github, "https://github.com/AzielEliab/peacelock");
+    assert.equal(catalog.peacelock.worker_home, PEACELOCK_WORKER);
+    assert.equal(catalog.softwares_ssot.field, "version");
+    assert.match(catalog.softwares_ssot.note, /One public Softwares version/);
   });
 
   it("lists AZMail in Plain and uses AZMAIL_WORKER now that it is in the catalog", () => {

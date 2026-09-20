@@ -205,6 +205,13 @@ describe("Trades-Runtime sister-product machine cite", () => {
     assert.equal(extra.download, TRADES_RUNTIME_DOWNLOAD);
     assert.equal(extra.live_backends, false);
     assert.equal(extra.fraggate_call, false);
+    assert.equal(extra.public_softwares_cite, true);
+    assert.equal(body.softwares_ssot.field, "version");
+    assert.equal(body.softwares_ssot.live, "https://aziel-runtime.vibelock.workers.dev/v1/software");
+    assert.equal(body.softwares_ssot.frozen, "2.0.0-rc1");
+    assert.equal(body.peacelock.runtime, "local-only");
+    assert.equal(body.peacelock.github, "https://github.com/AzielEliab/peacelock");
+    assert.equal(body.sister_products.products[0].public_softwares_cite, true);
     assert.equal(body.sister_products.products[0].slug, TRADES_RUNTIME_SLUG);
     assert.equal(body.sister_products.fraggate_engine, false);
 
@@ -228,5 +235,6 @@ describe("Trades-Runtime sister-product machine cite", () => {
     assert.ok(liveExtra);
     assert.equal(liveExtra.href, TRADES_RUNTIME + "/");
     assert.equal(liveExtra.live_backends, false);
+    assert.equal(liveExtra.public_softwares_cite, true);
   });
 });

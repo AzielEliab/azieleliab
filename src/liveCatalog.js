@@ -28,6 +28,8 @@ import {
   TRADES_RUNTIME_SLUG,
   resolveRuntimeVersion,
   sisterProductsCite,
+  peacelockCite,
+  softwaresSsotCite,
   applyCatalogBlurb,
   canonicalSoftwareSlug,
   catalogHref,
@@ -148,6 +150,7 @@ export function catalogDoorRow(item) {
   if (item.surface) row.surface = item.surface;
   if (item.kind) row.kind = item.kind;
   if (item.software_tab === false) row.software_tab = false;
+  if (item.public_softwares_cite === true) row.public_softwares_cite = true;
   if (item.enabled_default === false) row.enabled_default = false;
   if (item.path) row.path = item.path;
   if (item.spec) row.spec = item.spec;
@@ -198,6 +201,7 @@ function mapLiveItem(row) {
   if (row.surface) item.surface = row.surface;
   if (row.kind) item.kind = row.kind;
   if (row.software_tab === false) item.software_tab = false;
+  if (row.public_softwares_cite === true || slug === TRADES_RUNTIME_SLUG) item.public_softwares_cite = true;
   if (row.enabled_default === false) item.enabled_default = false;
   if (row.path) item.path = row.path;
   if (row.spec) item.spec = row.spec;
@@ -518,6 +522,8 @@ export function softwareIndexBody(live, mesh) {
       master_33: MASTER_33_MCP,
     },
     sister_products: sisterProductsCite(),
+    peacelock: peacelockCite(),
+    softwares_ssot: softwaresSsotCite(),
   };
 }
 
@@ -541,6 +547,7 @@ function extraCiteRow(item) {
   if (item.fraggate_engine === false) row.fraggate_engine = false;
   if (item.fraggate_call === false) row.fraggate_call = false;
   if (item.live_backends === false) row.live_backends = false;
+  if (item.public_softwares_cite === true) row.public_softwares_cite = true;
   return row;
 }
 
