@@ -26,7 +26,7 @@ export const STUB_HTML_CACHE = "public, max-age=300, s-maxage=3600, stale-while-
 /** Donate HTML must not sit in CF edge after QR asset swaps. */
 export const DONATE_HTML_CACHE = "no-store, max-age=0, must-revalidate";
 export const DONATE_CACHE_BUST = "png";
-export const SEO_CACHE = "public, max-age=86400, s-maxage=86400, stale-while-revalidate=604800";
+export const SEO_CACHE = "public, max-age=60, s-maxage=120, stale-while-revalidate=600";
 export const JSON_SHORT_CACHE = "public, max-age=60, s-maxage=120, stale-while-revalidate=600";
 
 const catalogMem = new WeakMap();
