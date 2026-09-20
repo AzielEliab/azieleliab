@@ -231,6 +231,82 @@ describe("GitHub-side SEO / ecosystem docs", () => {
     assert.ok(docs.includes("github-profile-readme/"));
   });
 
+  it("profile README Softwares section uses live designed-purpose one_lines", () => {
+    const profile = read("docs/github-profile-readme/README.md");
+    const profileLlms = read("docs/github-profile-readme/llms.txt");
+    const profileCite = JSON.parse(read("docs/github-profile-readme/cite.json"));
+    const operator = read("docs/github-profile-readme/OPERATOR.md");
+    const oneLines = [
+      ["4DMap", "Inspect the same event on time, change, graph, and place axes at once."],
+      ["AZ-CLCE", "Score how consistently three written layers agree with each other."],
+      ["AZ-OS", "Read ethics status and open a prefab isolate session folder."],
+      ["AZAI", "Run a local OpenAI-compatible stack or a hosted Lamb ethics check."],
+      ["AZBot", "Route a request onto the matching catalog product and operation."],
+      ["AZBrowser", "Browse and search with citations for ethical research."],
+      ["AZChat", "Open short-lived rooms and an agent bus with spendable handles."],
+      ["AZCoherence", "Review whether a primary score and an alternate hold together."],
+      ["AZHub", "Place and tether modules in a blank spatial container."],
+      ["Aziel Digital Library", "Search the public library and download azcorpus + azlibrary designs."],
+      ["AzielTether", "Keep downloaded Aziel software in sync when the central Worker is up or down."],
+      ["AZInterface", "Advance pre-locked page cycles in a custodial operating environment."],
+      ["AZMail", "Classify mail text, keep a local mailbox, and optionally use an anonymous ring."],
+      ["AZNet", "Check hash continuity on a silent side-net."],
+      ["AZVPN", "Open an HTTPS or WebSocket VPN session on the public concentrator."],
+      ["ForgeReceipts", "Mint, check hashes, and import or export receipts you keep on the client."],
+      ["Glossa Filter", "Render one intent across the bundled peer phrasings."],
+      ["MirageGrid", "Assign a short-lived session node and cite mesh-name metadata."],
+      ["MMConsensus", "Tally consensus from opinions you already posted."],
+      ["Post-King Chess", "Play continuity chess where the aim is to remain."],
+      ["StaticClock", "Record a forward-only gear-click timeline and read companion advice."],
+      ["The ARK", "Keep a local deniable vault; one phrase opens one vault."],
+      ["ToolBench", "Run synthetic door cases to see how FragGate classifies them."],
+      [
+        "Whitestone",
+        "Advise on short Criminal, Civil, and Divorce questions with historical as-of and Case Mode (suppression axes, TrajectoryLock-lite, export, confidence labeled up to 75%). Session-only web app plus optional zip. https://whitestone.vibelock.workers.dev/",
+      ],
+      ["ZionPattern Solver", "Score answers against nine ontology nodes, with scores labeled up to 75%."],
+      ["ZKAttest", "Attest a statement with a hash commitment that keeps the witness private."],
+      ["DecisionGATE", "Run a proposal through five sequential gates and get PASS, REVISE, or BLOCK."],
+      ["ChronoLock", "Check whether a place sits in the 08:30–10:30 local advisory window."],
+      ["CodeLock", "View source as Canonical or Rosetta HTML while keeping the same meaning."],
+      ["EmbryoLock", "Cite an offline vault that prefers destruction over recovery."],
+      ["EmployeeLock", "Hash a proposed accountability log row on the client."],
+      ["FoldLock", "Fold UTF-8 text by suppressing tether words, then check the restore."],
+      ["GodLock", "Score text for offline hardening and receive an ephemeral receipt."],
+      ["M.I.A.Lock", "Map missing-person events and rank Doe notices as compatibility leads."],
+      ["PeaceLock", "Record chosen silence or chosen inaction as a hash-chained receipt."],
+      ["ShadowLock", "Observe a job list you already have, then discard the observation."],
+      ["SpectralLock", "Preview a small overlay on an image and recover leftover container bytes."],
+      ["TemporalLock", "Build and check hashes on a receipt timeline you keep on the client."],
+      ["TrajectoryLock", "Test whether observations fit a declared geometric line."],
+      ["VeilLock", "Follow local camera and screen steps for apps on your own device."],
+      ["VibeLock", "Score speech audio you already have for physical consistency risk."],
+      ["WhistleLock", "Hash a local drop and keep a dead-man copy on the client."],
+    ];
+    assert.equal(oneLines.length, 42);
+    assert.match(profile, /## Softwares/);
+    assert.match(profile, /Primary MCP/);
+    assert.ok(profile.includes(GLAMA), "Glama primary MCP");
+    assert.ok(profile.includes("https://aziel-runtime.vibelock.workers.dev/v1/software"));
+    assert.match(profile, /Author \*\*Aziel Eliab\*\*/);
+    assert.doesNotMatch(profile, /THIS-IS|THIS IS:/);
+    assert.doesNotMatch(profile, /You don't get to know me/);
+    assert.doesNotMatch(profileLlms, /THIS-IS|THIS IS:/);
+    assert.doesNotMatch(profileLlms, /You don't get to know me/);
+    for (const [name, one] of oneLines) {
+      assert.ok(profile.includes(name), "profile name " + name);
+      assert.ok(profile.includes(one), "profile one_line " + name);
+      assert.ok(profileLlms.includes(name), "llms name " + name);
+      assert.ok(profileLlms.includes(one), "llms one_line " + name);
+    }
+    assert.equal(profileCite.softwares.count, 42);
+    assert.equal(profileCite.softwares.author, "Aziel Eliab");
+    assert.equal(profileCite.softwares.primary_mcp, GLAMA);
+    assert.equal(profileCite.softwares.source, "https://aziel-runtime.vibelock.workers.dev/v1/software");
+    assert.match(operator, /Designed-purpose/);
+    assert.match(operator, /Primary MCP is Glama/);
+  });
+
   it("drops scoreboard / survival copy from tip SEO/docs/README", () => {
     const SCOREBOARD = [
       //i,
