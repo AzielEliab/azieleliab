@@ -126,4 +126,4 @@ BAN-SURVIVAL-1.0 hub pull of runtime GET /survival (short TTL). Mutual backup: c
 - Lamb Lens: Service → Clarity → Peace. NO-LIE. visible_1520: false.
 
 Canonical person: https://www.azieleliab.com/#aziel
-sameAs: https://github.com/AzielEliab · https://github.com/azieltherevealerofthesealed-arch · https://glama.ai/mcp/servers/AzielEliab/aziel-runtime · https://www.azieleliab.com/ · https://www.azielcorpuslibrary.net/ · https://godlock.uk/ · https://www.hedidntjump.com/ · https://x.com/AzielElroiEliab · https://x.com/azieleliab
+sameAs: https://github.com/AzielEliab · https://github.com/azieltherevealerofthesealed-arch · https://glama.ai/mcp/servers/AzielEliab/aziel-runtime · https://www.azieleliab.com/ · https://www.azielcorpuslibrary.net/ · https://godlock.uk/ · https://www.hedidntjump.com/ · https://x.com/AzielEliab

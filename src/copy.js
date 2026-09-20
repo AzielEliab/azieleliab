@@ -181,10 +181,9 @@ export function sisterProductsCite() {
 /** Locked Person node. www + #aziel — never apex, never #aziel-eliab. */
 export const PERSON_ID = CANON_ORIGIN + "/#aziel";
 export const WEBSITE_ID = CANON_ORIGIN + "/#website";
-export const X_URL = "https://x.com/azieleliab";
-export const X_HANDLE = "@azieleliab";
-export const X_ELROI_URL = "https://x.com/AzielElroiEliab";
-/** AZindex sameAs lattice: hub, corpus, GodLock, He Didn't Jump, GitHub AzielEliab, Glama runtime. */
+export const X_URL = "https://x.com/AzielEliab";
+export const X_HANDLE = "@AzielEliab";
+/** AZindex sameAs lattice: hub, corpus, GodLock, He Didn't Jump, GitHub AzielEliab, Glama runtime, X. */
 export const PERSON_SAME_AS = [
   GITHUB,
   GITHUB_SECONDARY,
@@ -193,7 +192,6 @@ export const PERSON_SAME_AS = [
   LIBRARY + "/",
   GODLOCK + "/",
   HEDIDNTJUMP + "/",
-  X_ELROI_URL,
   X_URL,
 ];
 

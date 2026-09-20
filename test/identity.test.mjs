@@ -159,9 +159,8 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     assert.ok(person.sameAs.includes("https://github.com/AzielEliab"));
     assert.ok(person.sameAs.includes("https://glama.ai/mcp/servers/AzielEliab/aziel-runtime"));
     assert.ok(person.sameAs.includes("https://github.com/azieltherevealerofthesealed-arch"));
-    assert.ok(person.sameAs.includes("https://x.com/AzielElroiEliab"));
-    assert.ok(person.sameAs.includes("https://x.com/azieleliab"));
-    assert.equal(person.sameAs.length, 9);
+    assert.ok(person.sameAs.includes("https://x.com/AzielEliab"));
+    assert.equal(person.sameAs.length, 8);
     assert.ok(!person.sameAs.includes("https://www.azieleliab.com/runtime"));
     assert.ok(!person.sameAs.some((href) => /euaziel|flutter|react/i.test(href)));
     assert.ok(!("birthDate" in person));
