@@ -58,7 +58,7 @@ export const MASTER_33_MCP = false;
 export const RUNTIME_DOWNLOAD = RUNTIME + "/download";
 export const RUNTIME_DOWNLOAD_V1 = RUNTIME + "/v1/suite/download";
 export const RUNTIME_DOWNLOAD_NOTE =
-  "One-click suite pack JSON (REAL catalog + FoldLock tip + mesh cite). Worker wasm / WireGuard / OpenVPN SLOT. Counted GET /download. SCRUB-VERIFY-20260919.";
+  "One-click suite pack JSON (REAL catalog + FoldLock tip + mesh cite). Worker wasm / WireGuard / OpenVPN SLOT. Counted GET /download.";
 /** Human UI hashes live on the runtime Worker — not this hub homepage. */
 export const RUNTIME_HUMAN_UI = Object.freeze({
   host: RUNTIME + "/",
