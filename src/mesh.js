@@ -23,6 +23,7 @@ import {
 import { allowOriginRefresh } from "./costGuard.js";
 import { MESH_CACHE_URL, MESH_NODES_CACHE_URL, MESH_STATUS_CACHE_URL, MESH_TTL_SEC, readJsonSnapshot, writeJsonSnapshot } from "./edgeCache.js";
 import { fetchRuntimeJson } from "./liveCatalog.js";
+import { reColdStoreCite, sporeCite } from "./survival.js";
 
 export const MESH_PATH = "/v1/mesh";
 export const MESH_STATUS_PATH = "/v1/mesh/status";
@@ -372,6 +373,8 @@ export function meshSnapshot(origin) {
     note: MESH_NOTE,
     ...qnsCiteFields(),
     ...liveNodesFields(origin, enabled),
+    spore: sporeCite(origin),
+    re_cold_store: reColdStoreCite(origin),
   };
 }
 
@@ -402,6 +405,8 @@ function meshBase(origin) {
     mesh_nodes_runtime: MESH_NODES_RUNTIME,
     ...qnsCiteFields(),
     ...liveNodesFields(origin, enabled),
+    spore: sporeCite(origin),
+    re_cold_store: reColdStoreCite(origin),
   };
 }
 
@@ -485,6 +490,8 @@ export function injectMeshCite(doc) {
   if (doc.live_nodes_are_not_live_doors == null) doc.live_nodes_are_not_live_doors = true;
   if (doc.software_nodes_excluded == null) doc.software_nodes_excluded = true;
   if (doc.instance_nodes_excluded == null) doc.instance_nodes_excluded = true;
+  if (!doc.spore) doc.spore = sporeCite(null);
+  if (!doc.re_cold_store) doc.re_cold_store = reColdStoreCite(null);
   return doc;
 }
 

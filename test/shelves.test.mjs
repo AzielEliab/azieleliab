@@ -288,6 +288,8 @@ describe("COLD-MULTI-SHELF-1.0 AZindex gate", () => {
     assert.equal(cite.cold_multi_shelf.spec, COLD_MULTI_SHELF_SPEC);
     assert.equal(cite.cold_multi_shelf.canonical_registry, SHELVES_REGISTRY);
     assert.equal(cite.cold_multi_shelf.published_surfaces, 5);
+    assert.equal(cite.cold_multi_shelf.failed, false);
+    assert.equal(cite.cold_multi_shelf.replaced, false);
     assert.equal(cite.person_id, PERSON_ID);
     for (const [name, text] of [
       ["llms", llms],

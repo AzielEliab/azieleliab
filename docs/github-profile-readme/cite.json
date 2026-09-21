@@ -76,6 +76,15 @@
     "resolves_to_hub": false,
     "platforms_all_live": true,
     "calling_name_alert": "*new name alert:",
+    "spore_spec": "SPORE-1.0",
+    "spore_role": "failsafe",
+    "re_cold_store": {
+      "hook": "RE-COLD-STORE",
+      "allowed": true,
+      "destinations": [],
+      "invent_destination": false,
+      "shelves_failed": false
+    },
     "godlock_is_product_not_identity": true,
     "person_id": "https://www.azieleliab.com/#aziel"
   },

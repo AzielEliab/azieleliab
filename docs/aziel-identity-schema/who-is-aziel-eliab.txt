@@ -175,7 +175,7 @@ Official site (https://www.azieleliab.com/). Aziel Digital Library (https://www.
 
 ## BAN-SURVIVAL-1.0
 
-BAN-SURVIVAL-1.0 hub pull of runtime GET /survival (short TTL). Mutual backup: cold shelves back death-by-ban; live_doors back cold-shelf death. Keep both. Never invent a live door. Live Nodes is QNM presence. Cap-7 shuffle via MirageGrid; resolves_to_hub: false. Hosted Cap-7 exec SLOT. Platforms all LIVE (browser / PWA / Worker / MCP). Calling-name rotation: mesh pull *new name alert: <name> from GET /survival. Identity Aziel Eliab only. GodLock is a product. Lamb Lens: Service → Clarity → Peace. NO-LIE. visible_1520: false.
+BAN-SURVIVAL-1.0 hub pull of runtime GET /survival (short TTL). Mutual backup: cold shelves back death-by-ban; live_doors back cold-shelf death. Keep both. Never invent a live door. Live Nodes is QNM presence. Cap-7 shuffle via MirageGrid; resolves_to_hub: false. Hosted Cap-7 exec SLOT. Platforms all LIVE (browser / PWA / Worker / MCP). Calling-name rotation: mesh pull *new name alert: <name> from GET /survival. SPORE-1.0 is the last-resort failsafe (layer 3) after live fronts and cold-shelf mutual backup: pause / preserve / wait / physical-wipe-only. Does not replace cold shelves or BAN-SURVIVAL. Cold shelves not marked failed. RE-COLD-STORE is an honest hook (allowed; destinations []; no invent). Identity Aziel Eliab only. GodLock is a product. Lamb Lens: Service → Clarity → Peace. NO-LIE. visible_1520: false.
 - GET https://www.azieleliab.com/survival  (hub pull of runtime SoT; short TTL)
 - GET https://www.azieleliab.com/v1/survival
 - Origin: https://aziel-runtime.vibelock.workers.dev/survival · https://aziel-runtime.vibelock.workers.dev/v1/survival
@@ -186,6 +186,9 @@ BAN-SURVIVAL-1.0 hub pull of runtime GET /survival (short TTL). Mutual backup: c
 - Platforms all LIVE: windows, mac, linux, android, ios. native_app_store: false.
 - Calling name: Aziel Runtime (BAN-CALLING-NAME-1.0). Identity Aziel Eliab unchanged.
 - Rotation awareness: *new name alert: <name> (none while rotated:false)
+- SPORE-1.0 last-resort failsafe (layer 3). pause / preserve / wait / physical-wipe-only. Does not replace cold shelves.
+- Cold shelves not marked failed (failed: false). Plane B/C stay SLOT.
+- RE-COLD-STORE: allowed=true; destinations=[]; invent_destination=false.
 - GodLock is a product. Person @id: https://www.azieleliab.com/#aziel
 - Lamb Lens: Service → Clarity → Peace. NO-LIE. visible_1520: false.
 

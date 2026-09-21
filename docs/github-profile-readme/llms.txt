@@ -85,6 +85,7 @@ For https://www.azieleliab.com/ https://www.azielcorpuslibrary.net/ https://godl
 - /sitemap.xml
 - /who-is
 - /survival
+- SPORE-1.0 last-resort failsafe + RE-COLD-STORE (allowed, destinations [], no invent). Cold shelves not marked failed.
 
 ## Runtime machine routes
 
