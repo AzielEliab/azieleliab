@@ -30,6 +30,7 @@ const SKIP_GET_EXACT = new Set([
   "/v1/uses",
   "/v1/health",
   "/v1/ready",
+  "/v1/mesh",
   "/v1/mesh/status",
   "/v1/mesh/nodes",
   "/survival",
@@ -52,7 +53,7 @@ export function isLocalUsesPath(pathname) {
 
 export function isLocalMeshPath(pathname) {
   const p = runtimeDestPath(pathname);
-  return p === "/v1/mesh/status" || p === "/v1/mesh/nodes";
+  return p === "/v1/mesh" || p === "/v1/mesh/status" || p === "/v1/mesh/nodes";
 }
 
 export function isSkipRuntimeSurface(pathname) {

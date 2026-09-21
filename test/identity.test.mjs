@@ -36,6 +36,8 @@ import {
   WHAT_HE_DOES_FAQ_NAMES,
   WHAT_HE_DOES_SOFTWARES,
   SOFTWARES_ADDENDUM,
+  LIVE_NODES_FAQ_ANSWER,
+  LIVE_NODES_FAQ_NAME,
   SPECTRALLOCK_FAQ_ANSWER,
   SPECTRALLOCK_FAQ_NAME,
   SPECTRALLOCK_SOFTWARES_LINE,
@@ -219,6 +221,8 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     ]);
     for (const name of WHAT_HE_DOES_FAQ_NAMES) assert.ok(questions.includes(name), name);
     assert.ok(questions.includes("Who is Aziel Eliab the software developer?"));
+    assert.ok(questions.includes(LIVE_NODES_FAQ_NAME));
+    assert.equal(LIVE_NODES_FAQ_NAME, "What are Live Nodes?");
     assert.ok(questions.includes(SPECTRALLOCK_FAQ_NAME));
     assert.equal(SPECTRALLOCK_FAQ_NAME, "What is SpectralLock?");
     assert.ok(questions.includes(CONCORDANCE_FAQ_NAME));
@@ -233,6 +237,10 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     const answers = faq.mainEntity.map((q) => q.acceptedAnswer.text);
     assert.ok(answers.includes(WHO_IS_ANSWER));
     assert.ok(answers.includes(WHAT_HE_DOES_ANSWER));
+    assert.ok(answers.includes(LIVE_NODES_FAQ_ANSWER));
+    assert.match(LIVE_NODES_FAQ_ANSWER, /human mesh users/);
+    assert.match(LIVE_NODES_FAQ_ANSWER, /software_nodes/);
+    assert.doesNotMatch(LIVE_NODES_FAQ_ANSWER, /THIS-IS-NOT|THIS IS NOT/i);
     assert.ok(answers.includes(SPECTRALLOCK_FAQ_ANSWER));
     assert.ok(SPECTRALLOCK_FAQ_ANSWER.includes("Preview a small overlay on an image and recover leftover container bytes"));
     assert.ok(SPECTRALLOCK_FAQ_ANSWER.includes("It exists as a hosted overlay preview"));
@@ -336,6 +344,8 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     assert.ok(body.includes("## What Aziel Eliab does"));
     assert.ok(body.includes("## Why"));
     assert.ok(body.includes(WHY_AZIEL_ELIAB_DOES));
+    assert.ok(body.includes("Q: " + LIVE_NODES_FAQ_NAME));
+    assert.ok(body.includes(LIVE_NODES_FAQ_ANSWER));
     assert.ok(body.includes("## Official Aziel ecosystem"));
     assert.ok(body.includes("Try on Glama"));
     assert.ok(body.includes("https://x.com/AzielEliab"));

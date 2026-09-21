@@ -42,7 +42,7 @@ import {
   resolveRuntimeVersion,
 } from "./copy.js";
 import { qrImg } from "./qr.js";
-import { MESH_STATUS_LOCAL, QNM_SPEC, QNS_CD_SPEC, liveNodesLabel, meshQuietLabel } from "./mesh.js";
+import { MESH_LOCAL, MESH_STATUS_LOCAL, QNM_SPEC, QNS_CD_SPEC, liveNodesLabel, liveNodesNote, meshQuietLabel } from "./mesh.js";
 import { SURVIVAL_LOCAL } from "./survival.js";
 import {
   identityDiscoveryLinks,
@@ -504,6 +504,7 @@ function discoveryLinks() {
       ["application/json", "/reexpand", "re-expand law"],
       ["application/json", "/v1/software", "software catalog"],
       ["application/json", "/v1/update/check", "update check"],
+      ["application/json", "/v1/mesh", "mesh / Live Nodes"],
       ["application/json", "/v1/mesh/status", "mesh status"],
       ["application/json", "/v1/mesh/nodes", "mesh nodes"],
       ["application/json", "/runtime/openapi.json", "OpenAPI"],
@@ -595,10 +596,8 @@ export function viewsPill(views) {
 
 export function liveNodesPill(mesh) {
   return (
-    '<a class="pill" id="aziel-live-nodes" href="/v1/mesh/status" title="' +
-    attr(
-      "QNM presence count. Not an exec API, not BAN-SURVIVAL live_doors, not Cap-7. GET never enables. Operator-armed Node Gate + neighbor heal + network ON (not a login panel). AZVPN auto_use cite. Author Aziel Eliab.",
-    ) +
+    '<a class="pill" id="aziel-live-nodes" href="/v1/mesh" title="' +
+    attr(liveNodesNote(mesh)) +
     '">' +
     esc(liveNodesLabel(mesh)) +
     "</a>"
@@ -609,8 +608,8 @@ function meshQuietHtml(mesh) {
   const meshLabel = meshQuietLabel(mesh);
   const nodesLabel = liveNodesLabel(mesh);
   const links = [];
-  if (meshLabel) links.push(a("/v1/mesh/status", meshLabel));
-  links.push(a("/v1/mesh/status", nodesLabel));
+  if (meshLabel) links.push(a("/v1/mesh", meshLabel));
+  links.push(a("/v1/mesh", nodesLabel));
   return '<p class="mesh-quiet">' + links.join(" · ") + "</p>";
 }
 
@@ -618,10 +617,18 @@ const LIVE_NODES_SCRIPT = `<script>
 (function(){
   var el=document.getElementById("aziel-live-nodes");
   if(!el||!el.textContent)return;
-  fetch("/v1/mesh/status",{headers:{"Accept":"application/json","User-Agent":"Mozilla/5.0"}}).then(function(r){return r.json();}).then(function(d){
+  fetch("/v1/mesh",{headers:{"Accept":"application/json","User-Agent":"Mozilla/5.0"}}).then(function(r){return r.json();}).then(function(d){
     if(!d)return;
     var src=d.origin&&typeof d.origin==="object"?d.origin:d;
-    var n=d.live_nodes!=null?d.live_nodes:(src&&src.live_nodes!=null?src.live_nodes:(d.nodes&&d.nodes.length)||(src&&src.rollup&&src.rollup.live)||0);
+    var n=d.live_nodes!=null?d.live_nodes:(src&&src.live_nodes!=null?src.live_nodes:null);
+    if(n==null&&d.rollup&&d.rollup.mesh!=null)n=d.rollup.mesh;
+    if(n==null&&src&&src.rollup&&src.rollup.mesh!=null)n=src.rollup.mesh;
+    if(n==null){
+      var u=d.human_mesh_users!=null?d.human_mesh_users:(src&&src.human_mesh_users);
+      var s=d.human_uses!=null?d.human_uses:(src&&src.human_uses);
+      if(u!=null||s!=null)n=(Number(u)||0)+(Number(s)||0);
+    }
+    if(n==null)n=0;
     el.textContent="Live Nodes \\u00b7 "+n;
   }).catch(function(){});
 })();

@@ -115,8 +115,10 @@ import {
 import {
   injectMeshDiscovery,
   injectMeshOpenApi,
+  LIVE_NODES_NOTE,
   MESH_NODES_PATH,
   MESH_NOTE,
+  MESH_PATH,
   MESH_STATUS_PATH,
   liveNodesCount,
   liveNodesLabel,
@@ -826,10 +828,12 @@ describe("SEO routes", () => {
     assert.ok(body.includes("Allow: /v1/software"));
     assert.ok(body.includes("Allow: /v1/update"));
     assert.ok(body.includes("Allow: /v1/update/check"));
+    assert.ok(body.includes("Allow: /v1/mesh"));
     assert.ok(body.includes("Allow: /v1/mesh/status"));
     assert.ok(body.includes("Allow: /v1/mesh/nodes"));
     assert.ok(body.includes("Allow: /survival"));
     assert.ok(body.includes("Allow: /v1/survival"));
+    assert.ok(body.includes("Allow: /runtime/v1/mesh"));
     assert.ok(body.includes("Allow: /runtime/v1/mesh/status"));
     assert.ok(body.includes("Allow: /runtime/v1/mesh/nodes"));
     assert.ok(body.includes("Allow: /runtime/survival"));
@@ -903,8 +907,11 @@ describe("SEO routes", () => {
     assert.ok(llmsBody.includes("fallback"));
     assert.ok(llmsBody.includes("/v1/fraggate/list"));
     assert.ok(llmsBody.includes("/v1/update/check"));
+    assert.ok(llmsBody.includes("/v1/mesh"));
     assert.ok(llmsBody.includes("/v1/mesh/status"));
     assert.ok(llmsBody.includes("/v1/mesh/nodes"));
+    assert.ok(llmsBody.includes("human mesh users"));
+    assert.ok(llmsBody.includes("software_nodes never feeds Live Nodes"));
     assert.ok(llmsBody.includes("GET never enables"));
     assert.ok(llmsBody.includes("read-only suite presence is on") || llmsBody.includes("display from runtime"));
     assert.ok(!llmsBody.includes("default off"));
@@ -980,12 +987,14 @@ describe("SEO routes", () => {
     assert.ok(aiBody.includes("Allow: /v1/software"));
     assert.ok(aiBody.includes("Allow: /v1/update"));
     assert.ok(aiBody.includes("Allow: /v1/update/check"));
+    assert.ok(aiBody.includes("Allow: /v1/mesh"));
     assert.ok(aiBody.includes("Allow: /v1/mesh/status"));
     assert.ok(aiBody.includes("Allow: /v1/mesh/nodes"));
     assert.ok(aiBody.includes("Allow: /survival"));
     assert.ok(aiBody.includes("Allow: /v1/survival"));
     assert.ok(aiBody.includes("Allow: /runtime"));
     assert.ok(aiBody.includes("Allow: /runtime/v1/uses"));
+    assert.ok(aiBody.includes("Allow: /runtime/v1/mesh"));
     assert.ok(aiBody.includes("Allow: /runtime/v1/mesh/status"));
     assert.ok(aiBody.includes("Content-Signal"));
     assert.ok(aiBody.includes("Research / corpus"));
@@ -1012,9 +1021,12 @@ describe("SEO routes", () => {
     assert.equal(citeBody.llms, CANON_ORIGIN + "/llms.txt");
     assert.equal(citeBody.ai, CANON_ORIGIN + "/ai.txt");
     assert.equal(citeBody.update_check, CANON_ORIGIN + "/v1/update/check");
+    assert.equal(citeBody.mesh, CANON_ORIGIN + "/v1/mesh");
     assert.equal(citeBody.mesh_status, CANON_ORIGIN + "/v1/mesh/status");
     assert.equal(citeBody.mesh_nodes, CANON_ORIGIN + "/v1/mesh/nodes");
     assert.equal(citeBody.mesh_status_runtime, RUNTIME_LOCAL + "/v1/mesh/status");
+    assert.ok(citeBody.live_nodes_note.includes("human mesh users"));
+    assert.equal(citeBody.live_nodes_faq, "What are Live Nodes?");
     assert.equal(citeBody.mesh_default, "on");
     assert.equal(citeBody.qnm_spec, "QNM-BUILD-1.0");
     assert.equal(citeBody.mesh_enable_bearer, "suite-presence");
@@ -1086,10 +1098,12 @@ describe("SEO routes", () => {
     assert.ok(mapBody.includes("<loc>" + CANON_ORIGIN + "/llms.txt</loc>"));
     assert.ok(mapBody.includes("<loc>" + CANON_ORIGIN + "/v1/software</loc>"));
     assert.ok(mapBody.includes("<loc>" + CANON_ORIGIN + "/v1/update/check</loc>"));
+    assert.ok(mapBody.includes("<loc>" + CANON_ORIGIN + "/v1/mesh</loc>"));
     assert.ok(mapBody.includes("<loc>" + CANON_ORIGIN + "/v1/mesh/status</loc>"));
     assert.ok(mapBody.includes("<loc>" + CANON_ORIGIN + "/v1/mesh/nodes</loc>"));
     assert.ok(mapBody.includes("<loc>" + CANON_ORIGIN + "/survival</loc>"));
     assert.ok(mapBody.includes("<loc>" + CANON_ORIGIN + "/v1/survival</loc>"));
+    assert.ok(mapBody.includes("<loc>" + RUNTIME_LOCAL + "/v1/mesh</loc>"));
     assert.ok(mapBody.includes("<loc>" + RUNTIME_LOCAL + "/v1/mesh/status</loc>"));
     assert.ok(mapBody.includes("<loc>" + RUNTIME_LOCAL + "/survival</loc>"));
     assert.equal(llmsTxt().trim(), llmsBody.trim());
@@ -1242,6 +1256,7 @@ describe("SEO routes", () => {
     assert.ok(html.includes('"@type":"CollectionPage"'));
     assert.ok(html.includes('href="/v1/update/check"'));
     assert.ok(html.includes('name="aziel-update-check"'));
+    assert.ok(html.includes('href="/v1/mesh"'));
     assert.ok(html.includes('href="/v1/mesh/status"'));
     assert.ok(html.includes('href="/v1/mesh/nodes"'));
     assert.ok(html.includes('name="aziel-mesh-status"'));
@@ -1258,9 +1273,10 @@ describe("SEO routes", () => {
     const softLine = softwareHtml().match(/<div class="soft-line">[\s\S]*?<\/div>/);
     assert.ok(softLine);
     assert.doesNotMatch(softLine[0], /Live Nodes/i);
-    assert.ok(ld["@graph"][2].description.includes("/v1/mesh/status"));
+    assert.ok(ld["@graph"][2].description.includes("/v1/mesh"));
+    assert.ok(ld["@graph"][2].description.includes("human mesh users"));
     assert.ok(ld["@graph"][2].description.includes("QNS-CD-1.0"));
-    assert.ok(ld["@graph"][3].description.includes("/v1/mesh/status"));
+    assert.ok(ld["@graph"][3].description.includes("/v1/mesh"));
     assert.ok(ld["@graph"][3].description.includes("QNS-CD-1.0"));
   });
 });
@@ -1608,6 +1624,7 @@ describe("runtime use tracker", () => {
     assert.equal(shouldTrackRuntimeUse("/runtime/v1/health", "GET"), false);
     assert.equal(shouldTrackRuntimeUse("/runtime/v1/ready", "GET"), false);
     assert.equal(shouldTrackRuntimeUse("/runtime/v1/uses", "GET"), false);
+    assert.equal(shouldTrackRuntimeUse("/runtime/v1/mesh", "GET"), false);
     assert.equal(shouldTrackRuntimeUse("/runtime/v1/mesh/status", "GET"), false);
     assert.equal(shouldTrackRuntimeUse("/runtime/v1/mesh/nodes", "GET"), false);
     assert.equal(shouldTrackRuntimeUse("/runtime/survival", "GET"), false);
@@ -1625,6 +1642,7 @@ describe("runtime use tracker", () => {
     assert.equal(isLocalUsesPath("/runtime/v1/uses"), true);
     assert.equal(isLocalUsesPath("/runtime/v1/uses/"), true);
     assert.equal(isLocalUsesPath("/runtime/v1/health"), false);
+    assert.equal(isLocalMeshPath("/runtime/v1/mesh"), true);
     assert.equal(isLocalMeshPath("/runtime/v1/mesh/status"), true);
     assert.equal(isLocalMeshPath("/runtime/v1/mesh/nodes/"), true);
     assert.equal(isLocalMeshPath("/runtime/v1/health"), false);
@@ -1788,6 +1806,7 @@ describe("runtime proxy", () => {
     const spec = await fetchPath("/runtime/openapi.json", {}, env);
     const oj = await spec.json();
     assert.equal(oj.servers[0].url, RUNTIME_LOCAL);
+    assert.ok(oj.paths["/runtime/v1/mesh"]);
     assert.ok(oj.paths["/runtime/v1/mesh/status"]);
     assert.ok(oj.paths["/runtime/v1/mesh/nodes"]);
 
@@ -2809,6 +2828,7 @@ describe("live software catalog", () => {
 
 describe("suite node mesh", () => {
   it("never claims a hop mesh and omits mesh-off labels", () => {
+    assert.equal(MESH_PATH, "/v1/mesh");
     assert.equal(MESH_STATUS_PATH, "/v1/mesh/status");
     assert.equal(MESH_NODES_PATH, "/v1/mesh/nodes");
     assert.equal(meshEnabled(null), false);
@@ -2819,7 +2839,56 @@ describe("suite node mesh", () => {
     assert.equal(meshQuietLabel({ origin: { enabled: true } }), "mesh on");
     assert.equal(liveNodesLabel(null), "Live Nodes · 0");
     assert.equal(liveNodesLabel({ origin: { enabled: true, live_nodes: 40 } }), "Live Nodes · 40");
-    assert.equal(liveNodesCount({ enabled: true, rollup: { live: 40 } }), 40);
+    assert.equal(liveNodesCount({ enabled: true, rollup: { live: 40 } }), 0);
+    assert.equal(liveNodesCount({ enabled: true, rollup: { mesh: 3, live: 41 }, software_nodes: 41 }), 3);
+    assert.equal(liveNodesCount({ enabled: true, software_nodes: 41, nodes: [{}, {}, {}] }), 0);
+    assert.equal(liveNodesCount({ enabled: true, human_mesh_users: 2, human_uses: 5 }), 7);
+    assert.equal(liveNodesCount({ enabled: true, live_nodes: 0, software_nodes: 41 }), 0);
+    assert.equal(
+      liveNodesCount({
+        enabled: true,
+        live_nodes: 27147,
+        human_mesh_users: 0,
+        human_uses: 27147,
+        software_nodes: 41,
+        instance_nodes: 0,
+      }),
+      27147,
+    );
+    assert.equal(
+      liveNodesLabel({
+        origin: {
+          enabled: true,
+          live_nodes: 27147,
+          human_mesh_users: 0,
+          human_uses: 27147,
+          software_nodes: 41,
+          instance_nodes: 0,
+        },
+      }),
+      "Live Nodes · 27147",
+    );
+    const ssot = meshSnapshot({
+      enabled: true,
+      live_nodes: 27147,
+      human_mesh_users: 0,
+      human_uses: 27147,
+      software_nodes: 41,
+      instance_nodes: 0,
+      human_uses_complete: true,
+      human_uses_kv: true,
+      human_uses_source: "uses.total",
+    });
+    assert.equal(ssot.live_nodes, 27147);
+    assert.equal(ssot.human_mesh_users, 0);
+    assert.equal(ssot.human_uses, 27147);
+    assert.equal(ssot.live_nodes, ssot.human_mesh_users + ssot.human_uses);
+    assert.equal(ssot.software_nodes, 41);
+    assert.equal(ssot.instance_nodes, 0);
+    assert.equal(ssot.software_nodes_excluded, true);
+    assert.equal(ssot.instance_nodes_excluded, true);
+    assert.equal(ssot.human_uses_source, "uses.total");
+    assert.notEqual(ssot.live_nodes, ssot.software_nodes);
     assert.equal(QNM_SPEC, "QNM-BUILD-1.0");
     assert.equal(QNM_ENABLE_BEARER, "suite-presence");
     const off = meshStatusBody(null);
@@ -2830,7 +2899,13 @@ describe("suite node mesh", () => {
     assert.equal(off.mesh, "off");
     assert.equal(off.default, "on");
     assert.equal(off.live_nodes, 0);
-    assert.deepEqual(off.rollup, { live: 0, locked: 0, isolated: 0 });
+    assert.equal(off.human_mesh_users, 0);
+    assert.equal(off.human_uses, 0);
+    assert.match(off.live_nodes_note, /human mesh users/);
+    assert.equal(off.software_nodes_excluded, true);
+    assert.equal(off.instance_nodes_excluded, true);
+    assert.equal(off.instance_nodes, 0);
+    assert.deepEqual(off.rollup, { live: 0, mesh: 0, locked: 0, isolated: 0 });
     assert.deepEqual(off.bearers, []);
     assert.equal(off.qnm_spec, "QNM-BUILD-1.0");
     assert.equal(off.mesh_enable_bearer, "suite-presence");
@@ -2877,14 +2952,26 @@ describe("suite node mesh", () => {
     const snap = meshSnapshot(null);
     assert.equal(snap.enabled, false);
     assert.equal(snap.live_nodes, 0);
+    assert.equal(snap.path, CANON_ORIGIN + "/v1/mesh");
     assert.equal(snap.status, CANON_ORIGIN + "/v1/mesh/status");
-    assert.equal(snap.runtime, RUNTIME_LOCAL + "/v1/mesh/status");
-    assert.equal(snap.origin, "https://aziel-runtime.vibelock.workers.dev/v1/mesh/status");
+    assert.equal(snap.runtime, RUNTIME_LOCAL + "/v1/mesh");
+    assert.equal(snap.origin, "https://aziel-runtime.vibelock.workers.dev/v1/mesh");
     assert.equal(snap.qns_cd_spec, "QNS-CD-1.0");
     assert.equal(snap.qns_cd.public_proxy, false);
   });
 
-  it("serves /v1/mesh/status and /v1/mesh/nodes when runtime 404s", async () => {
+  it("serves /v1/mesh, /v1/mesh/status and /v1/mesh/nodes when runtime 404s", async () => {
+    const mesh = await fetchPath("/v1/mesh");
+    assert.equal(mesh.status, 200);
+    const meshDoc = await mesh.json();
+    assert.equal(meshDoc.ok, true);
+    assert.equal(meshDoc.live_nodes, 0);
+    assert.equal(meshDoc.human_mesh_users, 0);
+    assert.equal(meshDoc.human_uses, 0);
+    assert.match(meshDoc.live_nodes_note, /human mesh users/);
+    assert.equal(meshDoc.mesh_origin, "https://aziel-runtime.vibelock.workers.dev/v1/mesh");
+    assert.equal(meshDoc.mesh_local, CANON_ORIGIN + "/v1/mesh");
+
     const status = await fetchPath("/v1/mesh/status");
     assert.equal(status.status, 200);
     const doc = await status.json();
@@ -2933,7 +3020,7 @@ describe("suite node mesh", () => {
       AZIEL_RUNTIME: {
         fetch: async (req) => {
           const path = new URL(req.url).pathname;
-          if (path === "/v1/mesh/status") {
+          if (path === "/v1/mesh" || path === "/v1/mesh/status") {
             return new Response(
               JSON.stringify({
                 ok: true,
@@ -2941,11 +3028,16 @@ describe("suite node mesh", () => {
                 mesh: "on",
                 spec: "QNM-BUILD-1.0",
                 bearers: ["suite-presence"],
-                live_nodes: 40,
+                live_nodes: 3,
+                live_nodes_note: LIVE_NODES_NOTE,
+                human_mesh_users: 2,
+                human_uses: 1,
+                software_nodes: 41,
+                instance_nodes: 0,
                 locked_nodes: 0,
                 isolated_nodes: 0,
-                rollup: { live: 40, locked: 0, isolated: 0 },
-                node_count: 40,
+                rollup: { live: 41, mesh: 3, locked: 0, isolated: 0 },
+                node_count: 41,
               }),
               {
                 status: 200,
@@ -2972,9 +3064,14 @@ describe("suite node mesh", () => {
     const doc = await status.json();
     assert.equal(doc.enabled, true);
     assert.equal(doc.mesh, "on");
-    assert.equal(doc.live_nodes, 40);
+    assert.equal(doc.live_nodes, 3);
+    assert.equal(doc.human_mesh_users, 2);
+    assert.equal(doc.human_uses, 1);
+    assert.equal(doc.software_nodes, 41);
+    assert.equal(doc.instance_nodes, 0);
+    assert.equal(doc.live_nodes, doc.human_mesh_users + doc.human_uses);
     assert.deepEqual(doc.bearers, ["suite-presence"]);
-    assert.equal(doc.origin.live_nodes, 40);
+    assert.equal(doc.origin.live_nodes, 3);
 
     const nodes = await fetchPath("/v1/mesh/nodes", {}, env);
     const nodeDoc = await nodes.json();
@@ -2985,7 +3082,11 @@ describe("suite node mesh", () => {
     const index = await software.json();
     assert.equal(index.mesh.enabled, true);
     assert.equal(index.mesh.mesh, "on");
-    assert.equal(index.mesh.live_nodes, 40);
+    assert.equal(index.mesh.live_nodes, 3);
+    assert.equal(index.mesh.human_mesh_users, 2);
+    assert.equal(index.mesh.software_nodes, 41);
+    assert.equal(index.mesh.instance_nodes, 0);
+    assert.equal(index.mesh.live_nodes, index.mesh.human_mesh_users + index.mesh.human_uses);
     assert.deepEqual(index.mesh.bearers, ["suite-presence"]);
     assert.equal(index.mesh.qns_cd_spec, "QNS-CD-1.0");
     assert.equal(index.mesh.default, "on");
@@ -2993,11 +3094,16 @@ describe("suite node mesh", () => {
     const landing = await fetchPath("/", { headers: { "user-agent": "Mozilla/5.0" } }, env);
     const html = await landing.text();
     assert.ok(html.includes(">mesh on<"));
-    assert.ok(html.includes(">Live Nodes · 40<"));
+    assert.ok(html.includes(">Live Nodes · 3<"));
+    assert.ok(!html.includes(">Live Nodes · 41<"));
     assert.ok(html.includes('id="aziel-live-nodes"'));
     assert.ok(html.includes('name="aziel-mesh-status"'));
     const softwarePage = await fetchPath("/software", {}, env);
-    const landingSoft = (await softwarePage.text()).match(/<div class="soft-line">[\s\S]*?<\/div>/);
+    const softwareHtml = await softwarePage.text();
+    assert.ok(softwareHtml.includes(">Live Nodes · 3<"));
+    assert.ok(!softwareHtml.includes(">Live Nodes · 41<"));
+    assert.ok(softwareHtml.includes('href="/v1/mesh"'));
+    const landingSoft = softwareHtml.match(/<div class="soft-line">[\s\S]*?<\/div>/);
     assert.ok(landingSoft);
     assert.doesNotMatch(landingSoft[0], /Live Nodes/i);
 
@@ -3010,6 +3116,7 @@ describe("suite node mesh", () => {
 
   it("injects mesh paths into proxied OpenAPI, cite, and llms", () => {
     const spec = injectMeshOpenApi({ openapi: "3.1.0", paths: { "/v1/health": {} } });
+    assert.ok(spec.paths["/runtime/v1/mesh"].get);
     assert.ok(spec.paths["/runtime/v1/mesh/status"].get);
     assert.ok(spec.paths["/runtime/v1/mesh/nodes"].get);
     assert.ok(spec.paths["/v1/health"]);
@@ -3022,7 +3129,9 @@ describe("suite node mesh", () => {
     assert.equal(already.paths["/runtime/v1/mesh/status"], undefined);
 
     const cited = JSON.parse(injectMeshDiscovery(JSON.stringify({ author: AUTHOR }), "application/json", "/cite.json"));
+    assert.equal(cited.mesh, RUNTIME_LOCAL + "/v1/mesh");
     assert.equal(cited.mesh_status, RUNTIME_LOCAL + "/v1/mesh/status");
+    assert.match(cited.live_nodes_note, /human mesh users/);
     assert.equal(cited.mesh_default, "on");
     assert.equal(cited.qnm_spec, "QNM-BUILD-1.0");
     assert.equal(cited.mesh_enable_bearer, "suite-presence");
