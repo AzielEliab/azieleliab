@@ -6,7 +6,8 @@
  * (j.human_mesh_users, or j.live_nodes only when j.nodes is also
  * present after the runtime break) plus current azieleliab.com human
  * page viewers (operator lock 2026-09-21). Prefer runtime live_nodes
- * once it aggregates fleet viewers; until then local + mesh presence.
+ * once includes_site_viewers / site_live_viewers is present. Until then
+ * local + mesh presence. Local updates best-effort POST site-presence.
  * Never invent bots. Exclude HDJ. software_nodes never feeds the
  * pill. Also fetches /v1/mesh/status and /v1/mesh/nodes
  * via AZIEL_RUNTIME (else HTTPS origin). Read-only suite presence is
@@ -262,8 +263,8 @@ function siteLiveFrom(mesh) {
 }
 
 /**
- * Live Nodes (clock right side) = mesh presence, plus local human page
- * viewers until runtime /v1/mesh live_nodes aggregates fleet viewers.
+ * Live Nodes (clock right side) = runtime live_nodes when that document
+ * includes site viewers. Otherwise mesh presence plus local human page viewers.
  */
 export function meshLiveNodesCount(mesh) {
   const src = meshSource(mesh);
@@ -403,6 +404,7 @@ export function liveNodesLabel(mesh) {
 
 export function publicClockFields(mesh) {
   const src = mesh && typeof mesh === "object" ? mesh : {};
+  const includes = src.live_nodes_includes_viewers === true || runtimeAggregatesFleetViewers(meshSource(src));
   return {
     nodes: meshNodesCount(src),
     live_nodes: meshLiveNodesCount(src),
@@ -413,7 +415,8 @@ export function publicClockFields(mesh) {
     mesh_isolated: finiteCount(src.isolated_nodes) ?? 0,
     software_nodes: finiteCount(src.software_nodes) ?? 0,
     uses: humanUses(src),
-    live_nodes_includes_viewers: src.live_nodes_includes_viewers === true,
+    live_nodes_includes_viewers: includes,
+    includes_site_viewers: includes,
   };
 }
 

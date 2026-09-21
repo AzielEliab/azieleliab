@@ -2319,6 +2319,66 @@ describe("pageviews", () => {
     assert.equal(meshDoc.hdj_excluded, true);
     assert.equal(meshDoc.site_presence_local, true);
   });
+
+  it("POSTs site_live_nodes to runtime after a human update and does not double-count", async () => {
+    const posts = [];
+    const env = envWithViews(0);
+    env.AZIEL_RUNTIME = {
+      async fetch(req) {
+        const url = new URL(req.url);
+        if (req.method === "POST" && url.pathname === "/v1/mesh/site-presence") {
+          posts.push(await req.json());
+          return new Response(JSON.stringify({ ok: true }), { status: 200, headers: { "content-type": "application/json" } });
+        }
+        if (url.pathname === "/v1/mesh" || url.pathname === "/v1/mesh/status") {
+          return new Response(JSON.stringify({
+            ok: true,
+            enabled: true,
+            nodes: 4,
+            live_nodes: 12,
+            human_mesh_users: 1,
+            human_uses: 3,
+            site_live_viewers: 11,
+            includes_site_viewers: true,
+            live_nodes_plane: "human-mesh-users-site-viewers",
+          }), { status: 200, headers: { "content-type": "application/json" } });
+        }
+        return new Response(JSON.stringify({ error: "not found" }), { status: 404 });
+      },
+    };
+
+    const human = await fetchPath("/", { headers: { "user-agent": "Mozilla/5.0" } }, env);
+    assert.equal(human.status, 200);
+    const html = await human.text();
+    assert.ok(html.includes(">4/12<"));
+    assert.ok(!html.includes(">4/13<"));
+    assert.equal(posts.length, 1);
+    assert.deepEqual(posts[0], { host: "azieleliab.com", viewers: 1, kind: "human-page" });
+
+    const bot = await fetchPath("/", { headers: { "user-agent": "GPTBot/1.0" } }, env);
+    assert.equal(bot.status, 200);
+    assert.equal(posts.length, 1);
+
+    const count = await fetchPath("/count", { headers: { "user-agent": "Mozilla/5.0" } }, env);
+    const clock = await count.json();
+    assert.equal(clock.site_live_nodes, 1);
+    assert.equal(clock.live_nodes, 12);
+    assert.equal(clock.includes_site_viewers, true);
+    assert.equal(posts.length, 1);
+
+    const beat = await fetchPath("/heartbeat", {
+      method: "POST",
+      headers: { "user-agent": "Mozilla/5.0", "content-type": "application/json" },
+      body: "{}",
+    }, env);
+    const ping = await beat.json();
+    assert.equal(ping.live_nodes, 12);
+    assert.equal(ping.site_live_nodes, 1);
+    assert.equal(ping.includes_site_viewers, true);
+    assert.equal(posts.length, 2);
+    assert.equal(posts[1].viewers, 1);
+    assert.equal(posts[1].kind, "human-page");
+  });
 });
 
 describe("live software catalog", () => {

@@ -2,11 +2,14 @@
  * Concurrent human page-viewer presence for www.azieleliab.com.
  * Operator lock 2026-09-21: Live Nodes includes current website viewers.
  * Pattern from godlock.uk /count site_live_nodes (5-minute heartbeat window).
- * Prefer runtime GET /v1/mesh live_nodes once it aggregates fleet viewers.
- * Until then local presence + mesh presence. Never invent bots. Exclude HDJ.
+ * After a local human update, best-effort POST /v1/mesh/site-presence
+ * (AZIEL_RUNTIME, else the runtime HTTPS origin). Runtime is the Live Nodes
+ * SSoT once it includes site viewers — do not add the local count again.
+ * Never invent viewers. Bots are not counted. Exclude HDJ.
  * Author: Aziel Eliab.
  */
 import { clientIp } from "./costGuard.js";
+import { RUNTIME } from "./copy.js";
 import { isBot } from "./views.js";
 
 export const PRESENCE_KEY = "presence|sessions";
@@ -20,6 +23,10 @@ export const COUNT_PATH = "/count";
 export const COUNT_V1_PATH = "/v1/count";
 export const HEARTBEAT_PATH = "/heartbeat";
 export const HEARTBEAT_V1_PATH = "/v1/heartbeat";
+/** Runtime SSoT ingest. Latest report per host wins. 5-minute TTL. */
+export const SITE_PRESENCE_PATH = "/v1/mesh/site-presence";
+export const SITE_PRESENCE_KIND = "human-page";
+export const SITE_PRESENCE_CAP = 10000;
 
 export function isCountPath(pathname) {
   const p = String(pathname || "").replace(/\/+$/, "") || "/";
@@ -141,22 +148,91 @@ export async function touchSitePresence(env, request, nowMs = Date.now()) {
   return liveNodeCountFromMap(next, nowMs, true);
 }
 
+function finiteViewers(value) {
+  if (typeof value !== "number" || !Number.isInteger(value) || value < 0) return null;
+  return value;
+}
+
 /** Runtime already folded fleet/site viewers into live_nodes. Do not add local again. */
 export function runtimeAggregatesFleetViewers(doc) {
   if (!doc || typeof doc !== "object" || Array.isArray(doc)) return false;
   if (doc.site_presence_local === true) return false;
-  if (doc.live_nodes_includes_viewers === true || doc.live_nodes_includes_site === true) return true;
+  if (
+    doc.includes_site_viewers === true ||
+    doc.live_nodes_includes_viewers === true ||
+    doc.live_nodes_includes_site === true
+  ) {
+    return true;
+  }
+  if (finiteViewers(doc.site_live_viewers) != null) return true;
   const plane = String(doc.live_nodes_plane || "");
   if (/(viewer|site-live|page-view|website)/i.test(plane)) return true;
   const c = doc.live_nodes_components;
-  if (c && typeof c === "object") {
-    if (c.includes_viewers === true || c.fleet_viewers != null || c.page_viewers != null || c.website_viewers != null) {
-      return true;
-    }
-    if (c.site_live_nodes != null && c.site_presence_local !== true) return true;
+  if (c && typeof c === "object" && c.site_presence_local !== true) {
+    if (c.includes_site_viewers === true || c.includes_viewers === true) return true;
+    if (finiteViewers(c.site_live_viewers) != null) return true;
+    if (c.fleet_viewers != null || c.page_viewers != null || c.website_viewers != null) return true;
+    if (c.site_live_nodes != null) return true;
   }
   if (doc.fleet_viewers != null || doc.page_viewers != null || doc.website_viewers != null) return true;
   return false;
+}
+
+/** Honest positive integer only. Zero, non-integers, and over-cap counts are not sent. */
+export function sitePresencePayload(viewers) {
+  const n = finiteViewers(viewers);
+  if (n == null || n < 1 || n > SITE_PRESENCE_CAP) return null;
+  return {
+    host: SITE,
+    viewers: n,
+    kind: SITE_PRESENCE_KIND,
+  };
+}
+
+async function cancelResponse(res) {
+  try {
+    if (res && res.body && typeof res.body.cancel === "function") await res.body.cancel();
+  } catch {
+    /* best-effort */
+  }
+}
+
+/**
+ * Best-effort hub heartbeat into runtime SSoT.
+ * Requires a real local store so an unbound counter cannot POST 0.
+ * Failures stay local. Never throws.
+ */
+export async function publishSiteLiveNodes(env, viewers) {
+  try {
+    if (!env?.VIEWS) return { ok: false, posted: false, reason: "no-store" };
+    const payload = sitePresencePayload(viewers);
+    if (!payload) return { ok: false, posted: false, reason: "no-count" };
+    const dest = new URL(SITE_PRESENCE_PATH, RUNTIME + "/").toString();
+    const init = {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "User-Agent": "Mozilla/5.0",
+      },
+      body: JSON.stringify(payload),
+      redirect: "manual",
+    };
+    if (typeof AbortSignal !== "undefined" && typeof AbortSignal.timeout === "function") {
+      init.signal = AbortSignal.timeout(2500);
+    }
+    let res;
+    if (env.AZIEL_RUNTIME && typeof env.AZIEL_RUNTIME.fetch === "function") {
+      res = await env.AZIEL_RUNTIME.fetch(new Request(dest, init));
+    } else {
+      res = await fetch(dest, init);
+    }
+    const status = res && typeof res.status === "number" ? res.status : 0;
+    await cancelResponse(res);
+    return { ok: status >= 200 && status < 300, posted: true, status };
+  } catch {
+    return { ok: false, posted: false };
+  }
 }
 
 export function countBody(fields = {}) {
@@ -183,9 +259,10 @@ export function countBody(fields = {}) {
     hdj_excluded: HDJ_EXCLUDED,
     hdj: false,
     invent_users: false,
-    live_nodes_includes_viewers: fields.live_nodes_includes_viewers === true,
+    live_nodes_includes_viewers: fields.live_nodes_includes_viewers === true || fields.includes_site_viewers === true,
+    includes_site_viewers: fields.includes_site_viewers === true || fields.live_nodes_includes_viewers === true,
     note:
-      "Live Nodes (clock right side) is mesh presence plus current azieleliab.com human page viewers. Prefer runtime /v1/mesh live_nodes once it aggregates fleet viewers. HDJ is excluded. Bots are not invented.",
+      "Live Nodes uses runtime live_nodes when it includes site viewers. Otherwise mesh presence plus current azieleliab.com human page viewers. A local human update best-effort POSTs /v1/mesh/site-presence. HDJ is excluded. Bots are not counted.",
     ...fields.extra,
   };
 }
