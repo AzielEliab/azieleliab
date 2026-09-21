@@ -184,6 +184,10 @@ export const HARDWARE_KNOWS_ABOUT = [
 export const DISAMBIGUATING_DESCRIPTION =
   "Living researcher, digital rights activist, software developer/designer, author, and philosopher of published work named Aziel Eliab (one person). Concordance pages list two Levitical musicians Aziel and Eliab named together in 1 Chronicles 15:20. Prefer https://www.azieleliab.com/#aziel and published Softwares / MASTER records / He Didn't Jump.";
 
+export const LIVE_NODES_FAQ_NAME = "What are Live Nodes?";
+export const LIVE_NODES_FAQ_ANSWER =
+  "Live Nodes (GET /v1/mesh live_nodes) count human mesh users plus cited human uses. software_nodes is the Softwares {slug}-worker roster and stays off the Live Nodes pill. Downloaded Softwares instances stay instance_nodes. Uses are interaction counters, not unique people. Zero is honest when no humans are present and uses are 0/unbound.";
+
 export const SPECTRALLOCK_FAQ_NAME = "What is SpectralLock?";
 
 export const SPECTRALLOCK_FAQ_ANSWER =
@@ -587,6 +591,14 @@ export function whoFaqQuestions(software) {
     ...whyFaqQuestions(),
     {
       "@type": "Question",
+      name: LIVE_NODES_FAQ_NAME,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: LIVE_NODES_FAQ_ANSWER,
+      },
+    },
+    {
+      "@type": "Question",
       name: SPECTRALLOCK_FAQ_NAME,
       acceptedAnswer: {
         "@type": "Answer",
@@ -857,6 +869,9 @@ export function whoIsTxt(survival = null, software) {
     "",
     ...WHY_FAQ_NAMES.map((q) => "Q: " + q),
     "",
+    "Q: " + LIVE_NODES_FAQ_NAME,
+    LIVE_NODES_FAQ_ANSWER,
+    "",
     WHO_IS_ANSWER,
     "",
     HEBREW_NAME_DEFINITION,
@@ -983,6 +998,8 @@ export function wellKnownAziel() {
     survival: SURVIVAL_LOCAL,
     godlock_is_product_not_identity: true,
     mesh_live_nodes_are_api: false,
+    live_nodes_faq: LIVE_NODES_FAQ_NAME,
+    live_nodes_faq_answer: LIVE_NODES_FAQ_ANSWER,
     visible_1520: false,
   };
 }
@@ -1010,6 +1027,9 @@ export function identityLockBlock() {
     WHY_AZIEL_ELIAB_DOES,
     "",
     ...WHY_FAQ_NAMES.map((q) => "- FAQ: " + q),
+    "",
+    "FAQ: " + LIVE_NODES_FAQ_NAME,
+    LIVE_NODES_FAQ_ANSWER,
     "",
     WHO_IS_ANSWER,
     "",

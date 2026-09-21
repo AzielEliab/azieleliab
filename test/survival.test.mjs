@@ -223,8 +223,9 @@ describe("BAN-SURVIVAL hub pull", () => {
     const visible = html.split("<body>")[1] || "";
     assert.ok(html.includes('name="aziel-survival"'));
     assert.ok(html.includes('content="' + SURVIVAL_LOCAL + '"'));
-    assert.ok(html.includes("QNM presence count"));
-    assert.ok(html.includes("not BAN-SURVIVAL live_doors"));
+    assert.ok(html.includes("human mesh users"));
+    assert.ok(html.includes("software_nodes"));
+    assert.ok(html.includes("never feeds this pill"));
     assert.ok(!visible.includes(BAN_SURVIVAL_SPEC));
     assert.ok(!visible.includes(CALLING_NAME_ALERT_PREFIX));
     assert.ok(!visible.includes("1 Chronicles 15:20"));

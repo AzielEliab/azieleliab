@@ -85,6 +85,7 @@ export const PUBLIC_DOORS = Object.freeze([
   { method: "GET", path: "/ai.txt", role: "read", auth: "none" },
   { method: "GET", path: "/shelves", role: "read", auth: "none" },
   { method: "GET", path: "/v1/software", role: "read", auth: "none" },
+  { method: "GET", path: "/v1/mesh", role: "read", auth: "none", enables: false },
   { method: "GET", path: "/v1/mesh/status", role: "read", auth: "none", enables: false },
   { method: "GET", path: "/v1/mesh/nodes", role: "read", auth: "none", enables: false },
   { method: "GET", path: "/v1/mesh/az-generator", role: "cite", auth: "none", registrar: false },

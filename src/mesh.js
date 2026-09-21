@@ -1,8 +1,10 @@
 /**
  * Suite decentralized node mesh doors for www.azieleliab.com.
- * Fetches runtime /v1/mesh/status and /v1/mesh/nodes via AZIEL_RUNTIME
- * (else HTTPS origin). Read-only suite presence is on — display from
- * runtime. GET never enables.
+ * Live Nodes SoT is Worker GET /v1/mesh: live_nodes, live_nodes_note,
+ * human_mesh_users, human_uses (aziel-runtime#151). software_nodes
+ * never feeds the pill. Also fetches /v1/mesh/status and /v1/mesh/nodes
+ * via AZIEL_RUNTIME (else HTTPS origin). Read-only suite presence is
+ * on — display from runtime. GET never enables.
  * QNS-CD-1.0 is hub cite / mesh.js cross-map only (photon QNS1 packet
  * transfer). Local qnsd lives in qnm-node. No public qnsd proxy.
  * QNS-CD is not Node Gate. Mesh Node Gate is an operator-armed cite
@@ -19,15 +21,19 @@ import {
   RUNTIME_LOCAL,
 } from "./copy.js";
 import { allowOriginRefresh } from "./costGuard.js";
-import { MESH_NODES_CACHE_URL, MESH_STATUS_CACHE_URL, MESH_TTL_SEC, readJsonSnapshot, writeJsonSnapshot } from "./edgeCache.js";
+import { MESH_CACHE_URL, MESH_NODES_CACHE_URL, MESH_STATUS_CACHE_URL, MESH_TTL_SEC, readJsonSnapshot, writeJsonSnapshot } from "./edgeCache.js";
 import { fetchRuntimeJson } from "./liveCatalog.js";
 
+export const MESH_PATH = "/v1/mesh";
 export const MESH_STATUS_PATH = "/v1/mesh/status";
 export const MESH_NODES_PATH = "/v1/mesh/nodes";
+export const MESH_ORIGIN = RUNTIME + MESH_PATH;
 export const MESH_STATUS_ORIGIN = RUNTIME + MESH_STATUS_PATH;
 export const MESH_NODES_ORIGIN = RUNTIME + MESH_NODES_PATH;
+export const MESH_LOCAL = CANON_ORIGIN + MESH_PATH;
 export const MESH_STATUS_LOCAL = CANON_ORIGIN + MESH_STATUS_PATH;
 export const MESH_NODES_LOCAL = CANON_ORIGIN + MESH_NODES_PATH;
+export const MESH_RUNTIME = RUNTIME_LOCAL + MESH_PATH;
 export const MESH_STATUS_RUNTIME = RUNTIME_LOCAL + MESH_STATUS_PATH;
 export const MESH_NODES_RUNTIME = RUNTIME_LOCAL + MESH_NODES_PATH;
 
@@ -128,8 +134,17 @@ export const VPN_CITE = Object.freeze({
 
 export const MESH_DEFAULT = "on";
 
+/** Public Live Nodes = human mesh users + cited human uses. Never Softwares. Runtime #151 SoT. */
+export const LIVE_NODES_PLANE = "human-mesh-users-uses";
+export const LIVE_NODES_NOTE =
+  "Public Live Nodes (live_nodes / rollup.mesh) count human mesh users (join/heartbeat/presence with human bearers) plus the cited human uses signal (USES / human_uses). Isolated humans stay on isolated_nodes. Not Softwares catalog length. Not downloaded Softwares instances. Not software_nodes. software_nodes is the {slug}-worker roster and never feeds this pill. Uses are interaction counters, not unique people — incomplete or unbound telemetry is reported honestly (0 + complete=false). Live Nodes does not invent users. Zero is honest when no humans are present and uses are 0/unbound.";
+export const SOFTWARE_NODES_NOTE =
+  "software_nodes / rollup.software count Softwares product Workers ({slug}-worker) from suite-presence fan-out. They may appear in the mesh roster. They must never feed public Live Nodes.";
+export const LIVE_NODES_LLMS =
+  "live_nodes = human mesh users + cited human uses; software_nodes never feeds Live Nodes; GET never enables";
+
 export const MESH_NOTE =
-  "QNM-BUILD-1.0 suite rollup (live/locked/isolated). live_nodes is presence size. Read-only suite presence is on — display from runtime. GET never enables. Operator enable requires a declared bearer (example: suite-presence). Mesh ON. Operator-armed Node Gate + neighbor heal + network ON (2026-09-17). AZVPN auto_use + vpn:true (HTTPS/WS REAL; WireGuard/OpenVPN SLOT; GET cites only, never opens a session). Channel plane wifi/bluetooth/rf/photon ON cites; worker_hardware:false. Cross-map QNS-CD-1.0 (photon QNS1 packet transfer). Local qnsd is qnm-node only. Author Aziel Eliab only.";
+  "QNM-BUILD-1.0 suite rollup. live_nodes counts human mesh users plus cited human uses (USES). software_nodes is the {slug}-worker roster and never feeds Live Nodes. Read-only suite presence is on — display from runtime GET /v1/mesh. GET never enables. Operator enable requires a declared bearer (example: suite-presence). Mesh ON. Operator-armed Node Gate + neighbor heal + network ON (2026-09-17). AZVPN auto_use + vpn:true (HTTPS/WS REAL; WireGuard/OpenVPN SLOT; GET cites only, never opens a session). Channel plane wifi/bluetooth/rf/photon ON cites; worker_hardware:false. Cross-map QNS-CD-1.0 (photon QNS1 packet transfer). Local qnsd is qnm-node only. Author Aziel Eliab only.";
 
 function qnsCiteFields() {
   return {
@@ -153,6 +168,10 @@ function qnsCiteFields() {
     vpn: VPN_CITE,
     mesh_live_nodes_are_api: false,
     live_nodes_are_not_live_doors: true,
+    live_nodes_plane: LIVE_NODES_PLANE,
+    live_nodes_note: LIVE_NODES_NOTE,
+    software_nodes_note: SOFTWARE_NODES_NOTE,
+    software_nodes_excluded: true,
   };
 }
 
@@ -169,6 +188,14 @@ function finiteCount(value) {
   return Number.isFinite(n) && n >= 0 ? n : null;
 }
 
+function liveNodesFromHuman(doc) {
+  if (!doc || typeof doc !== "object") return null;
+  const users = finiteCount(doc.human_mesh_users);
+  const uses = finiteCount(doc.human_uses);
+  if (users == null && uses == null) return null;
+  return (users || 0) + (uses || 0);
+}
+
 export function liveNodesCount(mesh) {
   const src = meshSource(mesh);
   const top = mesh && mesh !== src && typeof mesh === "object" ? mesh : null;
@@ -176,12 +203,41 @@ export function liveNodesCount(mesh) {
     if (!doc) continue;
     const direct = finiteCount(doc.live_nodes);
     if (direct != null) return direct;
-    const rollup = doc.rollup && typeof doc.rollup === "object" ? finiteCount(doc.rollup.live) : null;
-    if (rollup != null) return rollup;
-    const named = finiteCount(doc.node_count);
-    if (named != null) return named;
-    if (Array.isArray(doc.nodes)) return doc.nodes.length;
-    if (Array.isArray(doc.items)) return doc.items.length;
+    const meshRollup = doc.rollup && typeof doc.rollup === "object" ? finiteCount(doc.rollup.mesh) : null;
+    if (meshRollup != null) return meshRollup;
+    const composed = liveNodesFromHuman(doc);
+    if (composed != null) return composed;
+  }
+  return 0;
+}
+
+export function liveNodesNote(mesh) {
+  const src = meshSource(mesh);
+  const top = mesh && mesh !== src && typeof mesh === "object" ? mesh : null;
+  for (const doc of [src, top]) {
+    if (doc && typeof doc.live_nodes_note === "string" && doc.live_nodes_note.trim()) {
+      return doc.live_nodes_note.trim();
+    }
+  }
+  return LIVE_NODES_NOTE;
+}
+
+export function humanMeshUsers(mesh) {
+  const src = meshSource(mesh);
+  const top = mesh && mesh !== src && typeof mesh === "object" ? mesh : null;
+  for (const doc of [src, top]) {
+    const n = doc ? finiteCount(doc.human_mesh_users) : null;
+    if (n != null) return n;
+  }
+  return 0;
+}
+
+export function humanUses(mesh) {
+  const src = meshSource(mesh);
+  const top = mesh && mesh !== src && typeof mesh === "object" ? mesh : null;
+  for (const doc of [src, top]) {
+    const n = doc ? finiteCount(doc.human_uses) : null;
+    if (n != null) return n;
   }
   return 0;
 }
@@ -189,10 +245,40 @@ export function liveNodesCount(mesh) {
 function rollupCounts(origin) {
   const src = origin && typeof origin === "object" ? origin : {};
   const nested = src.rollup && typeof src.rollup === "object" ? src.rollup : {};
+  const live = liveNodesCount(src);
   return {
-    live: liveNodesCount(src),
+    live,
+    mesh: finiteCount(nested.mesh) ?? live,
     locked: finiteCount(src.locked_nodes) ?? finiteCount(nested.locked) ?? 0,
     isolated: finiteCount(src.isolated_nodes) ?? finiteCount(nested.isolated) ?? 0,
+  };
+}
+
+function liveNodesFields(origin, enabled) {
+  const src = origin && typeof origin === "object" ? origin : {};
+  const users = enabled ? humanMeshUsers(src) : 0;
+  const uses = enabled ? humanUses(src) : 0;
+  const components =
+    src.live_nodes_components && typeof src.live_nodes_components === "object"
+      ? src.live_nodes_components
+      : {
+          human_mesh_users: users,
+          human_uses: uses,
+          software_nodes_excluded: true,
+          instance_nodes_excluded: true,
+          invent_users: false,
+        };
+  return {
+    live_nodes: enabled ? liveNodesCount(src) : 0,
+    live_nodes_note: liveNodesNote(src),
+    live_nodes_plane: typeof src.live_nodes_plane === "string" && src.live_nodes_plane ? src.live_nodes_plane : LIVE_NODES_PLANE,
+    human_mesh_users: users,
+    human_uses: uses,
+    human_uses_complete: src.human_uses_complete === true,
+    human_uses_kv: src.human_uses_kv === true,
+    software_nodes: enabled ? finiteCount(src.software_nodes) ?? 0 : 0,
+    software_nodes_note: typeof src.software_nodes_note === "string" && src.software_nodes_note ? src.software_nodes_note : SOFTWARE_NODES_NOTE,
+    live_nodes_components: components,
   };
 }
 
@@ -211,9 +297,9 @@ export function liveNodesLabel(mesh) {
   return "Live Nodes · " + liveNodesCount(mesh);
 }
 
-const MESH_OPENAPI_GET = (summary, description) => ({
+const MESH_OPENAPI_GET = (id, summary, description) => ({
   get: {
-    operationId: summary === "mesh status" ? "getMeshStatus" : "getMeshNodes",
+    operationId: id,
     summary,
     description,
     tags: ["mesh"],
@@ -226,19 +312,26 @@ const MESH_OPENAPI_GET = (summary, description) => ({
 });
 
 export const MESH_OPENAPI_PATHS = {
+  [MESH_PATH]: MESH_OPENAPI_GET(
+    "getMesh",
+    "mesh",
+    "QNM-BUILD-1.0 Live Nodes SoT (live_nodes = human mesh users + cited human uses; software_nodes never feeds Live Nodes; not exec API / not live_doors / not Cap-7). Read-only suite presence is on (display from runtime GET /v1/mesh). GET never enables. Operator enable requires a declared bearer (example: suite-presence). Operator-armed Node Gate + neighbor heal + network ON. AZVPN auto_use + vpn:true (HTTPS/WS REAL; WG/OpenVPN SLOT). Channel plane wifi/bt/rf/photon ON cites; worker_hardware:false. Cites QNS-CD-1.0. No public qnsd proxy. Author Aziel Eliab.",
+  ),
   [MESH_STATUS_PATH]: MESH_OPENAPI_GET(
+    "getMeshStatus",
     "mesh status",
-    "QNM-BUILD-1.0 suite rollup status (live_nodes = presence, not exec API / not live_doors / not Cap-7). Read-only suite presence is on (display from runtime). GET never enables. Operator enable requires a declared bearer (example: suite-presence). Operator-armed Node Gate + neighbor heal + network ON. AZVPN auto_use + vpn:true (HTTPS/WS REAL; WG/OpenVPN SLOT). Channel plane wifi/bt/rf/photon ON cites; worker_hardware:false. Cites QNS-CD-1.0. No public qnsd proxy. Author Aziel Eliab.",
+    "QNM-BUILD-1.0 suite rollup status (live_nodes = human mesh users + cited human uses; software_nodes never feeds Live Nodes; not exec API / not live_doors / not Cap-7). Read-only suite presence is on (display from runtime). GET never enables. Operator enable requires a declared bearer (example: suite-presence). Operator-armed Node Gate + neighbor heal + network ON. AZVPN auto_use + vpn:true (HTTPS/WS REAL; WG/OpenVPN SLOT). Channel plane wifi/bt/rf/photon ON cites; worker_hardware:false. Cites QNS-CD-1.0. No public qnsd proxy. Author Aziel Eliab.",
   ),
   [MESH_NODES_PATH]: MESH_OPENAPI_GET(
+    "getMeshNodes",
     "mesh nodes",
-    "QNM-BUILD-1.0 Live Nodes roster. Display from runtime (Live Nodes · 0 when unavailable). GET never enables. Cross-map QNS-CD-1.0. No public qnsd proxy. Author Aziel Eliab.",
+    "QNM-BUILD-1.0 node roster. Live Nodes number comes from GET /v1/mesh live_nodes (human mesh users + cited uses), not this roster length and not software_nodes. Display from runtime (Live Nodes · 0 when unavailable). GET never enables. Cross-map QNS-CD-1.0. No public qnsd proxy. Author Aziel Eliab.",
   ),
 };
 
 export function isMeshPath(pathname) {
   const p = String(pathname || "").replace(/\/+$/, "") || "/";
-  return p === MESH_STATUS_PATH || p === MESH_NODES_PATH;
+  return p === MESH_PATH || p === MESH_STATUS_PATH || p === MESH_NODES_PATH;
 }
 
 export function meshEnabled(origin) {
@@ -264,17 +357,18 @@ export function meshSnapshot(origin) {
     enabled,
     default: MESH_DEFAULT,
     mesh: enabled ? "on" : "off",
-    live_nodes: enabled ? rollup.live : 0,
     locked_nodes: enabled ? rollup.locked : 0,
     isolated_nodes: enabled ? rollup.isolated : 0,
-    rollup: enabled ? rollup : { live: 0, locked: 0, isolated: 0 },
+    rollup: enabled ? rollup : { live: 0, mesh: 0, locked: 0, isolated: 0 },
     bearers: enabled ? declaredBearers(origin) : [],
+    path: MESH_LOCAL,
     status: MESH_STATUS_LOCAL,
     nodes: MESH_NODES_LOCAL,
-    runtime: MESH_STATUS_RUNTIME,
-    origin: MESH_STATUS_ORIGIN,
+    runtime: MESH_RUNTIME,
+    origin: MESH_ORIGIN,
     note: MESH_NOTE,
     ...qnsCiteFields(),
+    ...liveNodesFields(origin, enabled),
   };
 }
 
@@ -289,12 +383,14 @@ function meshBase(origin) {
     mesh: enabled ? "on" : "off",
     enabled,
     default: MESH_DEFAULT,
-    live_nodes: enabled ? rollup.live : 0,
     locked_nodes: enabled ? rollup.locked : 0,
     isolated_nodes: enabled ? rollup.isolated : 0,
-    rollup: enabled ? rollup : { live: 0, locked: 0, isolated: 0 },
+    rollup: enabled ? rollup : { live: 0, mesh: 0, locked: 0, isolated: 0 },
     bearers: enabled ? declaredBearers(origin) : [],
     note: MESH_NOTE,
+    mesh_origin: MESH_ORIGIN,
+    mesh_local: MESH_LOCAL,
+    mesh_runtime: MESH_RUNTIME,
     mesh_status: MESH_STATUS_ORIGIN,
     mesh_status_local: MESH_STATUS_LOCAL,
     mesh_status_runtime: MESH_STATUS_RUNTIME,
@@ -302,6 +398,7 @@ function meshBase(origin) {
     mesh_nodes_local: MESH_NODES_LOCAL,
     mesh_nodes_runtime: MESH_NODES_RUNTIME,
     ...qnsCiteFields(),
+    ...liveNodesFields(origin, enabled),
   };
 }
 
@@ -329,6 +426,10 @@ async function loadMeshDoc(env, ctx, opts, path, cacheUrl, wrap) {
   return body;
 }
 
+export async function loadMesh(env, ctx, opts) {
+  return loadMeshDoc(env, ctx, opts, MESH_PATH, MESH_CACHE_URL, meshStatusBody);
+}
+
 export async function loadMeshStatus(env, ctx, opts) {
   return loadMeshDoc(env, ctx, opts, MESH_STATUS_PATH, MESH_STATUS_CACHE_URL, meshStatusBody);
 }
@@ -354,10 +455,14 @@ export function injectMeshOpenApi(doc) {
 
 export function injectMeshCite(doc) {
   if (!doc || typeof doc !== "object" || Array.isArray(doc)) return doc;
+  if (!doc.mesh) doc.mesh = MESH_RUNTIME;
   if (!doc.mesh_status) doc.mesh_status = MESH_STATUS_RUNTIME;
   if (!doc.mesh_nodes) doc.mesh_nodes = MESH_NODES_RUNTIME;
   if (!doc.mesh_default) doc.mesh_default = MESH_DEFAULT;
   if (!doc.mesh_note) doc.mesh_note = MESH_NOTE;
+  if (!doc.live_nodes_note) doc.live_nodes_note = LIVE_NODES_NOTE;
+  if (!doc.software_nodes_note) doc.software_nodes_note = SOFTWARE_NODES_NOTE;
+  if (!doc.live_nodes_plane) doc.live_nodes_plane = LIVE_NODES_PLANE;
   if (!doc.qns_cd_spec) doc.qns_cd_spec = QNS_CD_SPEC;
   if (!doc.qns_cd) doc.qns_cd = QNS_CD;
   if (!doc.qnm_spec) doc.qnm_spec = QNM_SPEC;
@@ -375,6 +480,7 @@ export function injectMeshCite(doc) {
   if (doc.login_mesh == null) doc.login_mesh = false;
   if (doc.mesh_live_nodes_are_api == null) doc.mesh_live_nodes_are_api = false;
   if (doc.live_nodes_are_not_live_doors == null) doc.live_nodes_are_not_live_doors = true;
+  if (doc.software_nodes_excluded == null) doc.software_nodes_excluded = true;
   return doc;
 }
 
@@ -382,9 +488,10 @@ const MESH_LLMS_BLOCK = [
   "",
   "## Mesh",
   "",
-  "- GET " + MESH_STATUS_RUNTIME + "  (QNM-BUILD-1.0 suite rollup; live_nodes = presence, not exec API / not live_doors / not Cap-7; GET never enables; read-only suite presence is on)",
-  "- GET " + MESH_NODES_RUNTIME + "  (suite node list / Live Nodes; display from runtime; not BAN-SURVIVAL live_doors)",
-  "- Origin: " + MESH_STATUS_ORIGIN + " · " + MESH_NODES_ORIGIN,
+  "- GET " + MESH_RUNTIME + "  (QNM-BUILD-1.0 Live Nodes SoT; " + LIVE_NODES_LLMS + "; not exec API / not live_doors / not Cap-7; read-only suite presence is on)",
+  "- GET " + MESH_STATUS_RUNTIME + "  (QNM-BUILD-1.0 suite rollup; " + LIVE_NODES_LLMS + "; not exec API / not live_doors / not Cap-7)",
+  "- GET " + MESH_NODES_RUNTIME + "  (suite node list; Live Nodes number is GET /v1/mesh live_nodes, not roster length / not software_nodes; not BAN-SURVIVAL live_doors)",
+  "- Origin: " + MESH_ORIGIN + " · " + MESH_STATUS_ORIGIN + " · " + MESH_NODES_ORIGIN,
   "- Operator enable requires a declared bearer (example: suite-presence). Read-only suite presence is on (display from runtime).",
   "- Mesh ON. Operator-armed Node Gate + neighbor heal + network ON (not a login panel).",
   "- AZVPN auto_use + vpn:true (HTTPS/WS REAL; WireGuard/OpenVPN SLOT). GET cites only.",

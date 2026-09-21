@@ -7,8 +7,9 @@
 
 export const CATALOG_KV_KEY = "software:catalog:v4";
 export const CATALOG_CACHE_URL = "https://www.azieleliab.com/__cache/software-catalog-v4";
-export const MESH_STATUS_CACHE_URL = "https://www.azieleliab.com/__cache/mesh-status-v1";
-export const MESH_NODES_CACHE_URL = "https://www.azieleliab.com/__cache/mesh-nodes-v1";
+export const MESH_CACHE_URL = "https://www.azieleliab.com/__cache/mesh-v2";
+export const MESH_STATUS_CACHE_URL = "https://www.azieleliab.com/__cache/mesh-status-v2";
+export const MESH_NODES_CACHE_URL = "https://www.azieleliab.com/__cache/mesh-nodes-v2";
 export const UPDATE_CHECK_CACHE_URL = "https://www.azieleliab.com/__cache/update-check-v1";
 export const SURVIVAL_CACHE_URL = "https://www.azieleliab.com/__cache/survival-v1";
 

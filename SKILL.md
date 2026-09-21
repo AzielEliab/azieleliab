@@ -38,22 +38,24 @@ About aliases `/about`, `/AzielEliab`, `/aziel-eliab` 200 the same homepage HTML
 
 ## Mesh (read-only ON)
 
-Read-only suite presence is **on**. Display `live_nodes` from aziel-runtime. Mesh ON. Operator-armed Node Gate + neighbor heal + network ON (not a login-recovery / IP panel). AZVPN auto_use + vpn:true (HTTPS/WS REAL; WireGuard/OpenVPN SLOT; GET cites only). Channel plane wifi/bluetooth/rf/photon ON cites; worker_hardware:false. Softwares via fraggate_call only; master_33:false; FragGate sole door.
+Read-only suite presence is **on**. Display `live_nodes` from aziel-runtime `GET /v1/mesh` (human mesh users + cited human uses). `software_nodes` never feeds Live Nodes. Mesh ON. Operator-armed Node Gate + neighbor heal + network ON (not a login-recovery / IP panel). AZVPN auto_use + vpn:true (HTTPS/WS REAL; WireGuard/OpenVPN SLOT; GET cites only). Channel plane wifi/bluetooth/rf/photon ON cites; worker_hardware:false. Softwares via fraggate_call only; master_33:false; FragGate sole door.
 
 | Path | What |
 |------|------|
-| `GET /v1/mesh/status` | Same-origin QNM-BUILD-1.0 rollup (runtime via `AZIEL_RUNTIME`, else HTTPS). Hoists `live_nodes` (presence — not exec API, not live_doors, not Cap-7). |
-| `GET /v1/mesh/nodes` | Live Nodes roster (display from runtime; `Live Nodes · 0` when unavailable) |
-| `GET /runtime/v1/mesh/status` | Same JSON through the quiet `/runtime` door |
+| `GET /v1/mesh` | Live Nodes SoT. Hoists `live_nodes`, `live_nodes_note`, `human_mesh_users`, `human_uses` from Worker `GET /v1/mesh`. Softwares count never feeds the pill. |
+| `GET /v1/mesh/status` | Same-origin QNM-BUILD-1.0 rollup (runtime via `AZIEL_RUNTIME`, else HTTPS). Same Live Nodes fields. |
+| `GET /v1/mesh/nodes` | Node roster (display from runtime; Live Nodes number is `GET /v1/mesh` `live_nodes`, not roster length) |
+| `GET /runtime/v1/mesh` | Same JSON through the quiet `/runtime` door |
+| `GET /runtime/v1/mesh/status` | Same |
 | `GET /runtime/v1/mesh/nodes` | Same |
 | `GET /survival` · `GET /v1/survival` | BAN-SURVIVAL-1.0 hub pull of runtime `GET /survival` (short TTL). Mutual backup, live_doors, platforms.all_live, calling_name, cap7_aznet. No visible 15:20 chrome. |
 | `GET /runtime/survival` · `GET /runtime/v1/survival` | Same JSON through the quiet `/runtime` door |
 | `GET /cite.json` | Hub citation record, including mesh + QNM rollup + QNS-CD + COLD-MULTI-SHELF + BAN-SURVIVAL |
 | `GET /shelves` · `GET /v1/shelves` | COLD-MULTI-SHELF-1.0 machine registry (same level as live corpus `/shelves`). Canonical registry: https://www.azielcorpuslibrary.net/shelves. No visible 15:20 chrome. |
 
-`GET /v1/mesh/status` never enables radios. Operator enable on runtime requires a declared bearer (example: `suite-presence`). A 404 or missing origin still returns identity Aziel Eliab with `live_nodes: 0`. Public UI never renders an off-state quiet mesh label.
+`GET /v1/mesh` never enables radios. Operator enable on runtime requires a declared bearer (example: `suite-presence`). A 404 or missing origin still returns identity Aziel Eliab with `live_nodes: 0`. Public UI never renders an off-state quiet mesh label.
 
-Homepage brandrow shows `Live Nodes · N` (sister-hub pill) from origin `live_nodes` (QNM presence only). Softwares list: live `GET /v1/software` designed-purpose `one_line` / `description` (42 catalog products; VeilLock local_only; Whitestone Worker-only, FragGate status none). In-runtime placements AZVPN / MMConsensus / ToolBench / ZKAttest door to `#task-*`. Softwares UI is name + designed-purpose one_line. Plain A–Z → Gate A–Z → Lock A–Z (StaticClock is Plain). Cap-7 shuffle is MirageGrid LIVE (`https://miragegrid.vibelock.workers.dev` `/v1/health` · `/bridge` · `/v1/shuffle`); `resolves_to_hub: false`.
+Homepage and Softwares-tab brandrow show `Live Nodes · N` (sister-hub pill) from origin `live_nodes` (human mesh users + cited uses). Softwares list: live `GET /v1/software` designed-purpose `one_line` / `description` (42 catalog products; VeilLock local_only; Whitestone Worker-only, FragGate status none). In-runtime placements AZVPN / MMConsensus / ToolBench / ZKAttest door to `#task-*`. Softwares UI is name + designed-purpose one_line. Plain A–Z → Gate A–Z → Lock A–Z (StaticClock is Plain). Cap-7 shuffle is MirageGrid LIVE (`https://miragegrid.vibelock.workers.dev` `/v1/health` · `/bridge` · `/v1/shuffle`); `resolves_to_hub: false`.
 
 Agent skill for the runtime door: https://www.azieleliab.com/runtime/v1/skill  
 Origin skill: https://aziel-runtime.vibelock.workers.dev/v1/skill

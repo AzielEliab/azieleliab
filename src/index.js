@@ -19,9 +19,11 @@ import {
   UPDATE_PATH,
 } from "./liveCatalog.js";
 import {
+  loadMesh,
   loadMeshNodes,
   loadMeshStatus,
   MESH_NODES_PATH,
+  MESH_PATH,
   MESH_STATUS_PATH,
   meshSnapshot,
 } from "./mesh.js";
@@ -128,7 +130,7 @@ function refuseJson(doc, status = 400) {
 
 function meshDoorPath(path) {
   return (
-    path === "/v1/mesh" ||
+    path === MESH_PATH ||
     path === MESH_STATUS_PATH ||
     path === MESH_NODES_PATH ||
     path === "/v1/mesh/az-generator"
@@ -262,6 +264,7 @@ export async function handleRequest(request, env = {}, ctx) {
     "/v1/software",
     UPDATE_PATH,
     UPDATE_CHECK_PATH,
+    MESH_PATH,
     MESH_STATUS_PATH,
     MESH_NODES_PATH,
     SURVIVAL_PATH,
@@ -347,32 +350,32 @@ export async function handleRequest(request, env = {}, ctx) {
     path === "/who-is-aziel-eliab.txt" ||
     path === SURVIVAL_PATH ||
     path === SURVIVAL_JSON_PATH;
-  const [live, meshStatus, survival] = await Promise.all([
+  const [live, meshDoc, survival] = await Promise.all([
     needsLive ? loadLiveSoftware(env, ctx) : Promise.resolve(null),
-    needsMesh ? loadMeshStatus(env, ctx) : Promise.resolve(null),
+    needsMesh ? loadMesh(env, ctx) : Promise.resolve(null),
     needsSurvival ? loadSurvival(env, ctx) : Promise.resolve(null),
   ]);
   const doors = live && live.software;
-  const mesh = meshStatus ? meshSnapshot(meshStatus.origin) : null;
+  const mesh = meshDoc ? meshSnapshot(meshDoc.origin) : null;
 
   let res;
   if (path === "/") {
-    res = html(pageHtml(await pageViews(request, env), doors, meshStatus, live && live.version));
+    res = html(pageHtml(await pageViews(request, env), doors, meshDoc, live && live.version));
   } else if (aboutPath) {
     res = html(
-      pageHtml(await readViews(env), doors, meshStatus, live && live.version, {
+      pageHtml(await readViews(env), doors, meshDoc, live && live.version, {
         canonical: CANON_ORIGIN + aboutPath,
       }),
     );
   } else if (azielAlias) {
     res = html(
-      pageHtml(await readViews(env), doors, meshStatus, live && live.version, {
+      pageHtml(await readViews(env), doors, meshDoc, live && live.version, {
         section: { title: AUTHOR, description: DESCRIPTION, path: "/aziel" },
         canonical: CANON_ORIGIN + "/aziel",
       }),
     );
   } else if (tab) {
-    res = html(sectionPageHtml(tab, await readViews(env), doors, meshStatus, live && live.version));
+    res = html(sectionPageHtml(tab, await readViews(env), doors, meshDoc, live && live.version));
   } else if (path === "/receipts") res = html(await receiptsHtml());
   else if (path === INGEST_PATH) res = html(ingestHtml());
   else if (path === INGEST_BYTES_PATH) res = text(canonicalPageBytes(), "text/plain", { cache: SEO_CACHE });
@@ -417,8 +420,10 @@ export async function handleRequest(request, env = {}, ctx) {
     res = text(sitemapXml(new Date(), doors), "application/xml", { cache: SEO_CACHE });
   } else if (path === "/v1/software") {
     res = json(softwareIndexBody(live, mesh), CATALOG_HTTP_CACHE);
+  } else if (path === MESH_PATH) {
+    res = json(meshDoc || (await loadMesh(env, ctx, { request })), JSON_SHORT_CACHE);
   } else if (path === MESH_STATUS_PATH) {
-    res = json(meshStatus || (await loadMeshStatus(env, ctx, { request })), JSON_SHORT_CACHE);
+    res = json(await loadMeshStatus(env, ctx, { request }), JSON_SHORT_CACHE);
   } else if (path === MESH_NODES_PATH) {
     res = json(await loadMeshNodes(env, ctx, { request }), JSON_SHORT_CACHE);
   } else if (path === UPDATE_PATH || path === UPDATE_CHECK_PATH) {
