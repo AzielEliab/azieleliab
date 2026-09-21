@@ -359,6 +359,7 @@ export function humanUses(mesh) {
   return 0;
 }
 
+/** rollup.live follows runtime live_nodes. software_nodes and active_nodes never fill it. */
 function rollupCounts(origin) {
   const src = origin && typeof origin === "object" ? origin : {};
   const nested = src.rollup && typeof src.rollup === "object" ? src.rollup : {};
@@ -395,7 +396,7 @@ function liveNodesFields(origin, enabled) {
     live_nodes_plane: typeof src.live_nodes_plane === "string" && src.live_nodes_plane ? src.live_nodes_plane : LIVE_NODES_PLANE,
     live_nodes_includes_viewers: included,
     includes_site_viewers: included,
-    ...(siteViewers != null ? { site_live_viewers: siteViewers } : {}),
+    site_live_viewers: siteViewers == null ? 0 : siteViewers,
     human_mesh_users: users,
     human_uses: uses,
     human_uses_complete: src.human_uses_complete === true,
@@ -545,6 +546,7 @@ function meshBase(origin) {
     mesh_nodes_runtime: MESH_NODES_RUNTIME,
     ...qnsCiteFields(),
     ...liveNodesFields(origin, enabled),
+    nodes: enabled ? meshNodesCount(origin) : 0,
     spore: sporeCite(origin),
     re_cold_store: reColdStoreCite(origin),
   };

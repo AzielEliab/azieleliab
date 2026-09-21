@@ -2441,6 +2441,11 @@ describe("pageviews", () => {
     assert.equal(beatBody.live_nodes, 39);
     assert.equal(meshBody.live_nodes, 39);
     assert.equal(meshBody.origin.live_nodes, 39);
+    assert.equal(typeof meshBody.nodes, "number");
+    assert.equal(meshBody.nodes, 28251);
+    assert.equal(countBody.nodes, 28251);
+    assert.equal(meshBody.site_live_viewers, 39);
+    assert.equal(meshBody.live_nodes_plane, "human-mesh-users-site-viewers");
     assert.equal(meshBody.mesh_cache_at, undefined);
     assert.equal(countBody.mesh_cache_at, undefined);
     assert.equal(countBody.live_nodes, meshBody.live_nodes);
@@ -3101,6 +3106,14 @@ describe("suite node mesh", () => {
       2,
     );
     assert.equal(
+      meshLiveNodesCount({ enabled: true, live_nodes: 4, software_nodes: 41, active_nodes: 41 }),
+      4,
+    );
+    assert.equal(
+      meshNodesCount({ enabled: true, nodes: 9, software_nodes: 41, active_nodes: 80 }),
+      9,
+    );
+    assert.equal(
       meshLiveNodesCount(overlaySitePresence({ enabled: true, human_mesh_users: 2, human_uses: 5 }, 3)),
       0,
     );
@@ -3220,6 +3233,10 @@ describe("suite node mesh", () => {
     const meshDoc = await mesh.json();
     assert.equal(meshDoc.ok, true);
     assert.equal(meshDoc.live_nodes, 0);
+    assert.equal(meshDoc.nodes, 0);
+    assert.equal(typeof meshDoc.nodes, "number");
+    assert.equal(meshDoc.site_live_viewers, 0);
+    assert.equal(meshDoc.live_nodes_plane, "human-mesh-users-site-viewers");
     assert.equal(meshDoc.human_mesh_users, 0);
     assert.equal(meshDoc.human_uses, 0);
     assert.match(meshDoc.live_nodes_note, /human mesh users/);
@@ -3320,6 +3337,12 @@ describe("suite node mesh", () => {
     assert.equal(doc.enabled, true);
     assert.equal(doc.mesh, "on");
     assert.equal(doc.live_nodes, 3);
+    assert.equal(typeof doc.nodes, "number");
+    assert.equal(doc.nodes, 3);
+    assert.equal(doc.site_live_viewers, 0);
+    assert.equal(doc.live_nodes_plane, "human-mesh-users-site-viewers");
+    assert.equal(doc.rollup.live, doc.live_nodes);
+    assert.notEqual(doc.rollup.live, doc.software_nodes);
     assert.equal(doc.human_mesh_users, 2);
     assert.equal(doc.human_uses, 1);
     assert.equal(doc.software_nodes, 41);
@@ -3366,6 +3389,20 @@ describe("suite node mesh", () => {
     const landingSoft = softwareHtml.match(/<div class="soft-line">[\s\S]*?<\/div>/);
     assert.ok(landingSoft);
     assert.doesNotMatch(landingSoft[0], /Live Nodes/i);
+
+    const sameOrigin = await fetchPath("/v1/mesh", {}, env);
+    const sameOriginDoc = await sameOrigin.json();
+    assert.equal(typeof sameOriginDoc.nodes, "number");
+    assert.equal(sameOriginDoc.nodes, 3);
+    assert.equal(sameOriginDoc.live_nodes, 3);
+    assert.equal(sameOriginDoc.live_nodes_plane, "human-mesh-users-site-viewers");
+    assert.notEqual(sameOriginDoc.live_nodes, sameOriginDoc.software_nodes);
+
+    const runtimeMesh = await fetchPath("/runtime/v1/mesh", {}, env);
+    const runtimeMeshDoc = await runtimeMesh.json();
+    assert.equal(runtimeMeshDoc.nodes, sameOriginDoc.nodes);
+    assert.equal(runtimeMeshDoc.live_nodes, sameOriginDoc.live_nodes);
+    assert.equal(runtimeMeshDoc.site_live_viewers, sameOriginDoc.site_live_viewers);
 
     const runtimeStatus = await fetchPath("/runtime/v1/mesh/status", {}, env);
     assert.equal(runtimeStatus.status, 200);

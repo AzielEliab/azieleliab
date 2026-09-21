@@ -624,47 +624,20 @@ const LIVE_NODES_SCRIPT = `<script>
   var el=document.getElementById("aziel-live-nodes");
   if(!el||!el.textContent)return;
   function finite(n){n=Number(n);return Number.isFinite(n)&&n>=0?n:null}
-  function numericNodes(doc){
-    if(!doc||typeof doc!=="object"||Array.isArray(doc.nodes))return null;
-    if(typeof doc.nodes==="string"&&!/^\\d+(\\.\\d+)?$/.test(String(doc.nodes).trim()))return null;
-    return finite(doc.nodes);
-  }
-  function nodesCount(d,src){
-    var docs=[d,src],i,named,u,s,legacy;
-    for(i=0;i<docs.length;i++){named=numericNodes(docs[i]);if(named!=null)return named}
-    for(i=0;i<docs.length;i++){
-      if(!docs[i])continue;
-      u=finite(docs[i].human_mesh_users);s=finite(docs[i].human_uses);
-      if(u!=null||s!=null)return (u||0)+(s||0);
-    }
-    for(i=0;i<docs.length;i++){legacy=docs[i]?finite(docs[i].live_nodes):null;if(legacy!=null)return legacy}
-    return 0;
-  }
-  function viewersIncluded(d,src){
-    function yes(doc){
-      if(!doc||typeof doc!=="object")return false;
-      if(doc.live_nodes_includes_viewers||doc.includes_site_viewers)return true;
-      if(finite(doc.site_live_viewers)!=null)return true;
-      var plane=String(doc.live_nodes_plane||"");
-      if(/viewer|site-live|page-view|website/i.test(plane))return true;
-      var c=doc.live_nodes_components;
-      if(c&&finite(c.site_live_viewers)!=null)return true;
-      return false;
-    }
-    return yes(d)||yes(src);
-  }
-  function liveCount(d,src){
-    var fleet=finite(d&&d.live_nodes);
-    if(fleet==null) fleet=finite(src&&src.live_nodes);
-    if(viewersIncluded(d,src)) return fleet==null?0:fleet;
-    return fleet==null?0:fleet;
+  function clockField(doc,key){
+    if(!doc||typeof doc!=="object")return null;
+    if(key==="nodes"&&(Array.isArray(doc.nodes)||typeof doc.nodes==="string"))return null;
+    if(key==="software_nodes"||key==="active_nodes"||key==="site_live_nodes")return null;
+    return finite(doc[key]);
   }
   function apply(d){
     if(!d)return;
-    var src=d.origin&&typeof d.origin==="object"?d.origin:d;
-    var nodes=finite(d.nodes);
-    if(nodes==null||Array.isArray(d.nodes)) nodes=nodesCount(d,src);
-    el.textContent=nodes+"/"+liveCount(d,src);
+    var src=d.origin&&typeof d.origin==="object"&&!Array.isArray(d.origin)?d.origin:null;
+    var nodes=clockField(d,"nodes");
+    if(nodes==null&&src) nodes=clockField(src,"nodes");
+    var live=clockField(d,"live_nodes");
+    if(live==null&&src) live=clockField(src,"live_nodes");
+    el.textContent=(nodes==null?0:nodes)+"/"+(live==null?0:live);
     el.title=${JSON.stringify(dualNodesTitle())};
   }
   function beat(){
