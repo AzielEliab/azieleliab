@@ -506,6 +506,104 @@
     "note": "One public Softwares version. Live GET https://aziel-runtime.vibelock.workers.dev/v1/software version is SoT. Fallback https://aziel-runtime.vibelock.workers.dev/v1/fraggate/list, then frozen 2.0.0-rc1. Do not invent a second Softwares version."
   },
   "survival": "https://www.azieleliab.com/survival",
+  "spore": {
+    "spec": "SPORE-1.0",
+    "author": "Aziel Eliab",
+    "identity": "Aziel Eliab",
+    "person_id": "https://www.azieleliab.com/#aziel",
+    "kind": "law",
+    "role": "failsafe",
+    "last_resort": true,
+    "failsafe": true,
+    "replaces_cold_shelves": false,
+    "replaces_ban_survival": false,
+    "cold_shelves_intact": true,
+    "mutual_backup_intact": true,
+    "faces": [
+      "pause",
+      "preserve",
+      "wait",
+      "physical-wipe-only"
+    ],
+    "stack": [
+      {
+        "layer": 1,
+        "id": "live-fronts",
+        "spec": "BAN-SURVIVAL-1.0",
+        "role": "failover",
+        "includes": [
+          "cap-7",
+          "calling-name",
+          "live-node-api"
+        ]
+      },
+      {
+        "layer": 2,
+        "id": "cold-shelves",
+        "spec": "COLD-MULTI-SHELF-1.0",
+        "role": "mutual-backup",
+        "mutual_backup_with": "BAN-SURVIVAL-1.0",
+        "plane_b": "slot",
+        "plane_c": "slot",
+        "replaced": false,
+        "failed": false
+      },
+      {
+        "layer": 3,
+        "id": "spore",
+        "spec": "SPORE-1.0",
+        "role": "failsafe",
+        "last_resort": true,
+        "replaces_cold_shelves": false,
+        "replaces_ban_survival": false
+      }
+    ],
+    "re_cold_store": {
+      "hook": "RE-COLD-STORE",
+      "allowed": true,
+      "trigger": "cold-shelves-wiped-or-failed",
+      "active": false,
+      "shelves_failed": false,
+      "shelves_intact": true,
+      "invent_live": false,
+      "invent_hash": false,
+      "invent_receipt": false,
+      "invent_destination": false,
+      "public_inventory_required": false,
+      "destinations": [],
+      "opaque_placement": true,
+      "note": "When cold stores are wiped or fail, the mesh may re-cold-store DNA wherever available. Never invent LIVE stores, hashes, receipts, or destinations. No required public inventory. Does not claim a wipe is happening now."
+    },
+    "software_tab": false,
+    "fraggate_slug": false,
+    "visible_1520": false,
+    "honesty": {
+      "hash_verify_pass_is_not_live": true,
+      "do_not_paint_slot_as_live": true,
+      "invented_live": false,
+      "zenodo_live": false,
+      "power_off_is_not_wipe": true,
+      "shelves_not_replaced": true,
+      "shelves_not_marked_failed": true
+    },
+    "note": "SPORE-1.0 last-resort failsafe after live fronts and cold-shelf mutual backup. pause / preserve / wait / physical-wipe-only. Not a replacement for cold shelves. Cold shelves not marked failed. No electricity is PAUSE, not death. Dormant nodes do not invent live heartbeats. On restore, reconcile forward — no rewrite of history."
+  },
+  "re_cold_store": {
+    "hook": "RE-COLD-STORE",
+    "allowed": true,
+    "trigger": "cold-shelves-wiped-or-failed",
+    "active": false,
+    "shelves_failed": false,
+    "shelves_intact": true,
+    "invent_live": false,
+    "invent_hash": false,
+    "invent_receipt": false,
+    "invent_destination": false,
+    "public_inventory_required": false,
+    "destinations": [],
+    "opaque_placement": true,
+    "note": "When cold stores are wiped or fail, the mesh may re-cold-store DNA wherever available. Never invent LIVE stores, hashes, receipts, or destinations. No required public inventory. Does not claim a wipe is happening now."
+  },
   "godlock_is_product_not_identity": true,
   "mesh_live_nodes_are_api": false,
   "live_nodes_faq": "What are Live Nodes?",

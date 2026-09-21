@@ -3,6 +3,8 @@
  * Prefer runtime GET /survival (short TTL) over hardcoded live doors.
  * Cap-7 shuffle via MirageGrid Worker LIVE. resolves_to_hub: false.
  * live_nodes is QNM presence — not an exec API and not live_doors.
+ * SPORE-1.0 last-resort failsafe + RE-COLD-STORE (allowed, destinations[],
+ * no invent). Cold shelves not marked failed. Not Softwares-tab.
  * Author: Aziel Eliab. GodLock is a product, not identity.
  */
 import {
@@ -26,8 +28,12 @@ export const BAN_SURVIVAL_SPEC = "BAN-SURVIVAL-1.0";
 export const BAN_CALLING_NAME_SPEC = "BAN-CALLING-NAME-1.0";
 export const BAN_PLATFORMS_SPEC = "BAN-PLATFORMS-1.0";
 export const CAP7_SHUFFLE_SPEC = "CAP7-SHUFFLE-1.0";
+export const SPORE_SPEC = "SPORE-1.0";
+export const RE_COLD_STORE_HOOK = "RE-COLD-STORE";
+const COLD_MULTI_SHELF_SPEC = "COLD-MULTI-SHELF-1.0";
 export const CALLING_NAME_ALERT_PREFIX = "*new name alert:";
 export const CALLING_NAME_DEFAULT = "Aziel Runtime";
+export const SPORE_FACES = Object.freeze(["pause", "preserve", "wait", "physical-wipe-only"]);
 
 export const SURVIVAL_PATH = "/survival";
 export const SURVIVAL_JSON_PATH = "/v1/survival";
@@ -42,7 +48,13 @@ export const SURVIVAL_RUNTIME_JSON = RUNTIME_LOCAL + SURVIVAL_JSON_PATH;
 export const PLATFORM_IDS = Object.freeze(["windows", "mac", "linux", "android", "ios"]);
 
 export const SURVIVAL_NOTE =
-  "BAN-SURVIVAL-1.0 hub pull of runtime GET /survival (short TTL). Mutual backup: cold shelves back death-by-ban; live_doors back cold-shelf death. Keep both. Never invent a live door. Live Nodes is QNM presence. Cap-7 shuffle via MirageGrid; resolves_to_hub: false. Hosted Cap-7 exec SLOT. Platforms all LIVE (browser / PWA / Worker / MCP). Calling-name rotation: mesh pull *new name alert: <name> from GET /survival. Identity Aziel Eliab only. GodLock is a product. Lamb Lens: Service → Clarity → Peace. NO-LIE. visible_1520: false.";
+  "BAN-SURVIVAL-1.0 hub pull of runtime GET /survival (short TTL). Mutual backup: cold shelves back death-by-ban; live_doors back cold-shelf death. Keep both. Never invent a live door. Live Nodes is QNM presence. Cap-7 shuffle via MirageGrid; resolves_to_hub: false. Hosted Cap-7 exec SLOT. Platforms all LIVE (browser / PWA / Worker / MCP). Calling-name rotation: mesh pull *new name alert: <name> from GET /survival. SPORE-1.0 is the last-resort failsafe (layer 3) after live fronts and cold-shelf mutual backup: pause / preserve / wait / physical-wipe-only. Does not replace cold shelves or BAN-SURVIVAL. Cold shelves not marked failed. RE-COLD-STORE is an honest hook (allowed; destinations []; no invent). Identity Aziel Eliab only. GodLock is a product. Lamb Lens: Service → Clarity → Peace. NO-LIE. visible_1520: false.";
+
+export const SPORE_NOTE =
+  "SPORE-1.0 last-resort failsafe after live fronts and cold-shelf mutual backup. pause / preserve / wait / physical-wipe-only. Not a replacement for cold shelves. Cold shelves not marked failed. No electricity is PAUSE, not death. Dormant nodes do not invent live heartbeats. On restore, reconcile forward — no rewrite of history.";
+
+export const RE_COLD_STORE_NOTE =
+  "When cold stores are wiped or fail, the mesh may re-cold-store DNA wherever available. Never invent LIVE stores, hashes, receipts, or destinations. No required public inventory. Does not claim a wipe is happening now.";
 
 function isBanSurvivalDoc(doc) {
   return Boolean(doc && typeof doc === "object" && !Array.isArray(doc) && doc.spec === BAN_SURVIVAL_SPEC);
@@ -63,6 +75,129 @@ export function isSurvivalPath(pathname) {
 
 function asObject(value) {
   return value && typeof value === "object" && !Array.isArray(value) ? value : null;
+}
+
+function destinationsFrom(src) {
+  if (!src || !Array.isArray(src.destinations)) return [];
+  return src.destinations.filter((row) => row != null && row !== "");
+}
+
+export function defaultSurvivalStack() {
+  return [
+    {
+      layer: 1,
+      id: "live-fronts",
+      spec: BAN_SURVIVAL_SPEC,
+      role: "failover",
+      includes: ["cap-7", "calling-name", "live-node-api"],
+    },
+    {
+      layer: 2,
+      id: "cold-shelves",
+      spec: COLD_MULTI_SHELF_SPEC,
+      role: "mutual-backup",
+      mutual_backup_with: BAN_SURVIVAL_SPEC,
+      plane_b: "slot",
+      plane_c: "slot",
+      replaced: false,
+      failed: false,
+    },
+    {
+      layer: 3,
+      id: "spore",
+      spec: SPORE_SPEC,
+      role: "failsafe",
+      last_resort: true,
+      replaces_cold_shelves: false,
+      replaces_ban_survival: false,
+    },
+  ];
+}
+
+export function survivalStackCite(origin) {
+  const live = survivalSource(origin) || asObject(origin);
+  const src = Array.isArray(live && live.survival_stack)
+    ? live.survival_stack
+    : Array.isArray(live && live.spore && live.spore.stack)
+      ? live.spore.stack
+      : null;
+  if (!src || !src.length) return defaultSurvivalStack();
+  return src
+    .filter((row) => row && typeof row === "object")
+    .map((row) => {
+      const out = { ...row };
+      if (out.id === "cold-shelves") {
+        out.failed = out.failed === true;
+        out.replaced = out.replaced === true;
+      }
+      if (out.id === "spore") {
+        out.replaces_cold_shelves = false;
+        out.replaces_ban_survival = false;
+        out.last_resort = out.last_resort !== false;
+      }
+      return out;
+    });
+}
+
+export function reColdStoreCite(origin) {
+  const live = survivalSource(origin) || asObject(origin);
+  const src =
+    asObject(live && live.re_cold_store) ||
+    asObject(live && live.spore && live.spore.re_cold_store) ||
+    {};
+  return {
+    hook: RE_COLD_STORE_HOOK,
+    allowed: src.allowed !== false,
+    trigger: src.trigger || "cold-shelves-wiped-or-failed",
+    active: src.active === true,
+    shelves_failed: src.shelves_failed === true,
+    shelves_intact: src.shelves_intact !== false,
+    invent_live: false,
+    invent_hash: false,
+    invent_receipt: false,
+    invent_destination: false,
+    public_inventory_required: false,
+    destinations: destinationsFrom(src),
+    opaque_placement: src.opaque_placement !== false,
+    note: src.note || RE_COLD_STORE_NOTE,
+  };
+}
+
+export function sporeCite(origin) {
+  const live = survivalSource(origin) || asObject(origin);
+  const src = asObject(live && live.spore) || {};
+  const stack = survivalStackCite(live);
+  const reCold = reColdStoreCite(live);
+  return {
+    spec: SPORE_SPEC,
+    author: AUTHOR,
+    identity: AUTHOR,
+    person_id: PERSON_ID,
+    kind: "law",
+    role: src.role || "failsafe",
+    last_resort: src.last_resort !== false,
+    failsafe: src.failsafe !== false,
+    replaces_cold_shelves: false,
+    replaces_ban_survival: false,
+    cold_shelves_intact: src.cold_shelves_intact !== false,
+    mutual_backup_intact: src.mutual_backup_intact !== false,
+    faces: Array.isArray(src.faces) && src.faces.length ? src.faces.filter(Boolean) : SPORE_FACES.slice(),
+    stack,
+    re_cold_store: reCold,
+    software_tab: false,
+    fraggate_slug: false,
+    visible_1520: false,
+    honesty: {
+      hash_verify_pass_is_not_live: true,
+      do_not_paint_slot_as_live: true,
+      invented_live: false,
+      zenodo_live: false,
+      power_off_is_not_wipe: true,
+      shelves_not_replaced: true,
+      shelves_not_marked_failed: true,
+    },
+    note: src.tip || src.rule || SPORE_NOTE,
+  };
 }
 
 function liveDoorsFrom(origin) {
@@ -200,6 +335,9 @@ export function banSurvivalCite(origin) {
   const platforms = platformsCite(live);
   const cap7 = cap7ShuffleCite(live);
   const alert = callingNameAlertLine(live);
+  const spore = sporeCite(live);
+  const reCold = reColdStoreCite(live);
+  const stack = survivalStackCite(live);
   return {
     spec: BAN_SURVIVAL_SPEC,
     author: AUTHOR,
@@ -223,6 +361,12 @@ export function banSurvivalCite(origin) {
     platforms,
     cap7_aznet: cap7,
     shelf_backup: shelfBackupCite(live),
+    spore_spec: SPORE_SPEC,
+    spore_role: "failsafe",
+    spore_replaces_cold_shelves: false,
+    spore,
+    survival_stack: stack,
+    re_cold_store: reCold,
     godlock_is_product_not_identity: true,
     godlock: GODLOCK + "/",
     lamb_lens: "Service → Clarity → Peace",
@@ -260,6 +404,12 @@ export function survivalBody(origin) {
     platforms: cite.platforms,
     cap7_aznet: cite.cap7_aznet,
     shelf_backup: cite.shelf_backup,
+    spore_spec: cite.spore_spec,
+    spore_role: cite.spore_role,
+    spore_replaces_cold_shelves: false,
+    spore: cite.spore,
+    survival_stack: cite.survival_stack,
+    re_cold_store: cite.re_cold_store,
     godlock_is_product_not_identity: true,
     lamb_lens: cite.lamb_lens,
     no_lie: cite.no_lie,
@@ -289,6 +439,13 @@ export function survivalLlmsBlock(origin) {
     "- Platforms all LIVE: " + cite.platforms.platforms.join(", ") + ". native_app_store: false.",
     "- Calling name: " + cite.calling_name.calling_name + " (" + BAN_CALLING_NAME_SPEC + "). Identity Aziel Eliab unchanged.",
     "- Rotation awareness: " + (alert || CALLING_NAME_ALERT_PREFIX + " <name> (none while rotated:false)"),
+    "- SPORE-1.0 last-resort failsafe (layer 3). pause / preserve / wait / physical-wipe-only. Does not replace cold shelves.",
+    "- Cold shelves not marked failed (failed: false). Plane B/C stay SLOT.",
+    "- RE-COLD-STORE: allowed=" +
+      String(cite.re_cold_store.allowed) +
+      "; destinations=" +
+      JSON.stringify(cite.re_cold_store.destinations) +
+      "; invent_destination=false.",
     "- GodLock is a product. Person @id: " + PERSON_ID,
     "- Lamb Lens: Service → Clarity → Peace. NO-LIE. visible_1520: false.",
     "",
@@ -312,6 +469,10 @@ export function injectSurvivalCite(doc) {
   if (!doc.ban_survival) doc.ban_survival = banSurvivalCite(doc.ban_survival && doc.ban_survival.origin);
   if (!doc.survival_local) doc.survival_local = SURVIVAL_LOCAL;
   if (!doc.survival_runtime) doc.survival_runtime = SURVIVAL_RUNTIME;
+  if (!doc.spore) doc.spore = (doc.ban_survival && doc.ban_survival.spore) || sporeCite(null);
+  if (!doc.re_cold_store) doc.re_cold_store = (doc.ban_survival && doc.ban_survival.re_cold_store) || reColdStoreCite(null);
+  if (!doc.survival_stack) doc.survival_stack = (doc.ban_survival && doc.ban_survival.survival_stack) || survivalStackCite(null);
+  if (!doc.spore_spec) doc.spore_spec = SPORE_SPEC;
   if (doc.visible_1520 == null) doc.visible_1520 = false;
   if (doc.mesh_live_nodes_are_api == null) doc.mesh_live_nodes_are_api = false;
   if (doc.godlock_is_product_not_identity == null) doc.godlock_is_product_not_identity = true;

@@ -23,6 +23,8 @@ import {
   CALLING_NAME_ALERT_PREFIX,
   CAP7_SHUFFLE_SPEC,
   PLATFORM_IDS,
+  RE_COLD_STORE_HOOK,
+  SPORE_SPEC,
   SURVIVAL_JSON_LOCAL,
   SURVIVAL_LOCAL,
   SURVIVAL_ORIGIN,
@@ -101,6 +103,63 @@ const LIVE_SOT = {
     is_live_door: false,
     shelves: "https://www.azielcorpuslibrary.net/shelves",
   },
+  spore_spec: SPORE_SPEC,
+  spore_role: "failsafe",
+  spore_replaces_cold_shelves: false,
+  survival_stack: [
+    {
+      layer: 1,
+      id: "live-fronts",
+      spec: BAN_SURVIVAL_SPEC,
+      role: "failover",
+      includes: ["cap-7", "calling-name", "live-node-api"],
+    },
+    {
+      layer: 2,
+      id: "cold-shelves",
+      spec: "COLD-MULTI-SHELF-1.0",
+      role: "mutual-backup",
+      mutual_backup_with: BAN_SURVIVAL_SPEC,
+      plane_b: "slot",
+      plane_c: "slot",
+      replaced: false,
+      failed: false,
+    },
+    {
+      layer: 3,
+      id: "spore",
+      spec: SPORE_SPEC,
+      role: "failsafe",
+      last_resort: true,
+      replaces_cold_shelves: false,
+      replaces_ban_survival: false,
+    },
+  ],
+  re_cold_store: {
+    hook: RE_COLD_STORE_HOOK,
+    allowed: true,
+    trigger: "cold-shelves-wiped-or-failed",
+    active: false,
+    shelves_failed: false,
+    shelves_intact: true,
+    invent_live: false,
+    invent_hash: false,
+    invent_receipt: false,
+    invent_destination: false,
+    public_inventory_required: false,
+    destinations: [],
+    opaque_placement: true,
+  },
+  spore: {
+    spec: SPORE_SPEC,
+    role: "failsafe",
+    last_resort: true,
+    failsafe: true,
+    replaces_cold_shelves: false,
+    replaces_ban_survival: false,
+    cold_shelves_intact: true,
+    faces: ["pause", "preserve", "wait", "physical-wipe-only"],
+  },
 };
 
 describe("BAN-SURVIVAL hub pull", () => {
@@ -128,6 +187,18 @@ describe("BAN-SURVIVAL hub pull", () => {
     assert.equal(fallback.cap7_aznet.resolves_to_hub, false);
     assert.equal(fallback.cap7_aznet.public_worker, "live");
     assert.equal(fallback.cap7_aznet.hosted_endpoints, "slot");
+    assert.equal(fallback.spore.spec, SPORE_SPEC);
+    assert.equal(fallback.spore.last_resort, true);
+    assert.equal(fallback.spore.replaces_cold_shelves, false);
+    assert.equal(fallback.spore.honesty.shelves_not_marked_failed, true);
+    assert.equal(fallback.re_cold_store.hook, RE_COLD_STORE_HOOK);
+    assert.equal(fallback.re_cold_store.allowed, true);
+    assert.deepEqual(fallback.re_cold_store.destinations, []);
+    assert.equal(fallback.re_cold_store.invent_destination, false);
+    assert.equal(fallback.re_cold_store.shelves_failed, false);
+    const cold = fallback.survival_stack.find((row) => row.id === "cold-shelves");
+    assert.equal(cold.failed, false);
+    assert.equal(cold.replaced, false);
   });
 
   it("surfaces pulled live_doors and *new name alert: when rotated", () => {
@@ -192,6 +263,13 @@ describe("BAN-SURVIVAL hub pull", () => {
     assert.equal(doc.cap7_aznet.app_worker, MIRAGEGRID);
     assert.equal(doc.cap7_aznet.resolves_to_hub, false);
     assert.equal(doc.origin.spec, BAN_SURVIVAL_SPEC);
+    assert.equal(doc.spore.spec, SPORE_SPEC);
+    assert.equal(doc.spore.last_resort, true);
+    assert.equal(doc.re_cold_store.hook, RE_COLD_STORE_HOOK);
+    assert.equal(doc.re_cold_store.allowed, true);
+    assert.deepEqual(doc.re_cold_store.destinations, []);
+    assert.equal(doc.re_cold_store.invent_destination, false);
+    assert.equal(doc.survival_stack.find((row) => row.id === "cold-shelves").failed, false);
 
     const alias = await fetchPath("/v1/survival", {}, env);
     const aliasDoc = await alias.json();
@@ -227,6 +305,8 @@ describe("BAN-SURVIVAL hub pull", () => {
     assert.ok(html.includes("software_nodes"));
     assert.ok(html.includes("never feeds this pill"));
     assert.ok(!visible.includes(BAN_SURVIVAL_SPEC));
+    assert.ok(!visible.includes(SPORE_SPEC));
+    assert.ok(!visible.includes(RE_COLD_STORE_HOOK));
     assert.ok(!visible.includes(CALLING_NAME_ALERT_PREFIX));
     assert.ok(!visible.includes("1 Chronicles 15:20"));
     assert.ok(!visible.includes(MIRAGEGRID_SHUFFLE));
@@ -234,6 +314,12 @@ describe("BAN-SURVIVAL hub pull", () => {
     const cite = citeDoc();
     assert.equal(cite.ban_survival.spec, BAN_SURVIVAL_SPEC);
     assert.equal(cite.ban_survival.mutual_backup, true);
+    assert.equal(cite.spore.spec, SPORE_SPEC);
+    assert.equal(cite.spore.last_resort, true);
+    assert.equal(cite.re_cold_store.hook, RE_COLD_STORE_HOOK);
+    assert.deepEqual(cite.re_cold_store.destinations, []);
+    assert.equal(cite.re_cold_store.invent_destination, false);
+    assert.equal(cite.cold_multi_shelf.failed, false);
     assert.equal(cite.calling_name.spec, BAN_CALLING_NAME_SPEC);
     assert.equal(cite.platforms.all_live, true);
     assert.equal(cite.cap7.resolves_to_hub, false);
@@ -249,6 +335,10 @@ describe("BAN-SURVIVAL hub pull", () => {
     assert.ok(llms.includes(MIRAGEGRID_BRIDGE));
     assert.ok(llms.includes(CALLING_NAME_ALERT_PREFIX));
     assert.ok(llms.includes("platforms all LIVE") || llms.includes("Platforms all LIVE"));
+    assert.ok(llms.includes(SPORE_SPEC));
+    assert.ok(llms.includes(RE_COLD_STORE_HOOK));
+    assert.ok(llms.includes("destinations=[]"));
+    assert.ok(llms.includes("Cold shelves not marked failed"));
     assert.ok(llms.includes("GodLock is a product"));
     assert.ok(llms.includes("Service → Clarity → Peace"));
     assert.ok(llms.includes(SURVIVAL_LOCAL));
@@ -257,7 +347,10 @@ describe("BAN-SURVIVAL hub pull", () => {
     assert.ok(who.includes(BAN_SURVIVAL_SPEC));
     assert.ok(who.includes(MIRAGEGRID));
     assert.ok(who.includes(CALLING_NAME_ALERT_PREFIX));
+    assert.ok(who.includes(SPORE_SPEC));
+    assert.ok(who.includes(RE_COLD_STORE_HOOK));
     assert.ok(aiTxt().includes(BAN_SURVIVAL_SPEC));
+    assert.ok(aiTxt().includes(SPORE_SPEC));
     assert.ok(robotsTxt().includes("Allow: /survival"));
     assert.ok(robotsTxt().includes("Allow: /v1/survival"));
     assert.ok(sitemapXml().includes("<loc>" + SURVIVAL_LOCAL + "</loc>"));
@@ -276,6 +369,11 @@ describe("BAN-SURVIVAL hub pull", () => {
     assert.equal(cap7.miragegrid_health, MIRAGEGRID_HEALTH);
     assert.equal(cap7.shuffle.spec, CAP7_SHUFFLE_SPEC);
     assert.equal(cap7.software_tab, false);
+    assert.equal(off.spore.spec, SPORE_SPEC);
+    assert.equal(off.spore.software_tab, false);
+    assert.deepEqual(off.re_cold_store.destinations, []);
+    assert.equal(snap.spore.last_resort, true);
+    assert.equal(snap.re_cold_store.shelves_failed, false);
   });
 
   it("refuses Cap-7 resolve-inject on /survival", async () => {

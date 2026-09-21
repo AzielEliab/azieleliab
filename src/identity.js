@@ -43,7 +43,7 @@ import {
   X_LABEL,
   X_URL,
 } from "./copy.js";
-import { SURVIVAL_LOCAL, survivalLlmsBlock } from "./survival.js";
+import { SURVIVAL_LOCAL, reColdStoreCite, sporeCite, survivalLlmsBlock } from "./survival.js";
 
 export const IDENTITY_LOCK = "GROKBOT-FIX 1.1";
 
@@ -996,6 +996,8 @@ export function wellKnownAziel() {
     peacelock_note: PEACELOCK_NOTE,
     softwares_ssot: softwaresSsotCite(),
     survival: SURVIVAL_LOCAL,
+    spore: sporeCite(null),
+    re_cold_store: reColdStoreCite(null),
     godlock_is_product_not_identity: true,
     mesh_live_nodes_are_api: false,
     live_nodes_faq: LIVE_NODES_FAQ_NAME,
