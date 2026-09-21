@@ -129,6 +129,7 @@ import {
   meshQuietLabel,
   meshSnapshot,
   meshStatusBody,
+  overlaySitePresence,
   QNM_ENABLE_BEARER,
   QNM_SPEC,
   QNS_CD,
@@ -833,6 +834,10 @@ describe("SEO routes", () => {
     assert.ok(body.includes("Allow: /v1/mesh"));
     assert.ok(body.includes("Allow: /v1/mesh/status"));
     assert.ok(body.includes("Allow: /v1/mesh/nodes"));
+    assert.ok(body.includes("Allow: /count"));
+    assert.ok(body.includes("Allow: /v1/count"));
+    assert.ok(body.includes("Allow: /heartbeat"));
+    assert.ok(body.includes("Allow: /v1/heartbeat"));
     assert.ok(body.includes("Allow: /survival"));
     assert.ok(body.includes("Allow: /v1/survival"));
     assert.ok(body.includes("Allow: /runtime/v1/mesh"));
@@ -912,6 +917,8 @@ describe("SEO routes", () => {
     assert.ok(llmsBody.includes("/v1/mesh"));
     assert.ok(llmsBody.includes("/v1/mesh/status"));
     assert.ok(llmsBody.includes("/v1/mesh/nodes"));
+    assert.ok(llmsBody.includes("/count"));
+    assert.ok(llmsBody.includes("/heartbeat"));
     assert.ok(llmsBody.includes("human mesh users"));
     assert.ok(llmsBody.includes("software_nodes never feeds Live Nodes"));
     assert.ok(llmsBody.includes("GET never enables"));
@@ -1103,6 +1110,8 @@ describe("SEO routes", () => {
     assert.ok(mapBody.includes("<loc>" + CANON_ORIGIN + "/v1/mesh</loc>"));
     assert.ok(mapBody.includes("<loc>" + CANON_ORIGIN + "/v1/mesh/status</loc>"));
     assert.ok(mapBody.includes("<loc>" + CANON_ORIGIN + "/v1/mesh/nodes</loc>"));
+    assert.ok(mapBody.includes("<loc>" + CANON_ORIGIN + "/count</loc>"));
+    assert.ok(mapBody.includes("<loc>" + CANON_ORIGIN + "/v1/count</loc>"));
     assert.ok(mapBody.includes("<loc>" + CANON_ORIGIN + "/survival</loc>"));
     assert.ok(mapBody.includes("<loc>" + CANON_ORIGIN + "/v1/survival</loc>"));
     assert.ok(mapBody.includes("<loc>" + RUNTIME_LOCAL + "/v1/mesh</loc>"));
@@ -1269,7 +1278,7 @@ describe("SEO routes", () => {
     assert.ok(html.includes('content="QNM-BUILD-1.0"'));
     assert.ok(html.includes('id="aziel-live-nodes"'));
     assert.ok(html.includes(">0/0<"));
-    assert.ok(html.includes('title="Nodes: human mesh users + human uses. Live Nodes: presence."'));
+    assert.ok(html.includes('title="Nodes: human mesh users + human uses. Live Nodes: presence + current azieleliab.com viewers."'));
     assert.ok(!html.includes(">mesh off<"));
     assert.ok(!html.includes(">Live Nodes · off<"));
     assert.ok(!html.includes("Live Nodes · "));
@@ -2267,6 +2276,49 @@ describe("pageviews", () => {
     assert.equal(opt.status, 204);
     assert.equal(opt.headers.get("access-control-allow-origin"), "*");
   });
+
+  it("counts concurrent human page viewers on Live Nodes and ignores bots and HDJ", async () => {
+    const env = envWithViews(4);
+    const human = await fetchPath("/", { headers: { "user-agent": "Mozilla/5.0" } }, env);
+    assert.equal(human.status, 200);
+    const html = await human.text();
+    assert.ok(html.includes(">0/1<"));
+    assert.ok(html.includes("/heartbeat"));
+    assert.doesNotMatch(html, /hedidntjump\.com\/count|hedidntjump\.com\/heartbeat/i);
+
+    const bot = await fetchPath("/", { headers: { "user-agent": "GPTBot/1.0" } }, env);
+    const botHtml = await bot.text();
+    assert.ok(botHtml.includes(">0/1<"));
+
+    const count = await fetchPath("/count", { headers: { "user-agent": "Mozilla/5.0" } }, env);
+    assert.equal(count.status, 200);
+    const clock = await count.json();
+    assert.equal(clock.ok, true);
+    assert.equal(clock.site_live_nodes, 1);
+    assert.equal(clock.live_nodes, 1);
+    assert.equal(clock.hdj_excluded, true);
+    assert.equal(clock.hdj, false);
+    assert.equal(clock.invent_users, false);
+    assert.equal(clock.views, 5);
+    assert.doesNotMatch(JSON.stringify(clock), /hedidntjump/i);
+
+    const beat = await fetchPath("/heartbeat", {
+      method: "POST",
+      headers: { "user-agent": "Mozilla/5.0", "content-type": "application/json" },
+      body: "{}",
+    }, env);
+    const ping = await beat.json();
+    assert.equal(ping.ok, true);
+    assert.equal(ping.heartbeat, true);
+    assert.equal(ping.site_live_nodes, 1);
+    assert.equal(ping.hdj_excluded, true);
+
+    const mesh = await fetchPath("/v1/mesh", { headers: { "user-agent": "Mozilla/5.0" } }, env);
+    const meshDoc = await mesh.json();
+    assert.equal(meshDoc.site_live_nodes, 1);
+    assert.equal(meshDoc.hdj_excluded, true);
+    assert.equal(meshDoc.site_presence_local, true);
+  });
 });
 
 describe("live software catalog", () => {
@@ -2897,6 +2949,29 @@ describe("suite node mesh", () => {
       meshLiveNodesCount({ enabled: true, nodes: 9, live_nodes: 2 }),
       2,
     );
+    assert.equal(
+      meshLiveNodesCount(overlaySitePresence({ enabled: true, human_mesh_users: 2, human_uses: 5 }, 3)),
+      5,
+    );
+    assert.equal(
+      liveNodesLabel(overlaySitePresence({
+        origin: { enabled: true, nodes: 28033, live_nodes: 4, human_mesh_users: 4, human_uses: 28029 },
+      }, 3)),
+      "28033/7",
+    );
+    assert.equal(
+      meshLiveNodesCount(overlaySitePresence({
+        origin: {
+          enabled: true,
+          live_nodes: 12,
+          live_nodes_includes_viewers: true,
+          human_mesh_users: 1,
+        },
+      }, 9)),
+      12,
+    );
+    assert.equal(overlaySitePresence(null, 2).hdj_excluded, true);
+    assert.equal(overlaySitePresence(null, 2).site_live_nodes, 2);
     const ssot = meshSnapshot({
       enabled: true,
       live_nodes: 27147,
@@ -3129,7 +3204,7 @@ describe("suite node mesh", () => {
     assert.ok(!html.includes(">Live Nodes · 41<"));
     assert.ok(!html.includes(">41/"));
     assert.ok(html.includes('id="aziel-live-nodes"'));
-    assert.ok(html.includes('title="Nodes: human mesh users + human uses. Live Nodes: presence."'));
+    assert.ok(html.includes('title="Nodes: human mesh users + human uses. Live Nodes: presence + current azieleliab.com viewers."'));
     assert.ok(html.includes('name="aziel-mesh-status"'));
     const softwarePage = await fetchPath("/software", {}, env);
     const softwareHtml = await softwarePage.text();

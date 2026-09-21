@@ -20,7 +20,7 @@ Q: Why Aziel Eliab
 Q: Why does Aziel Eliab keep looking?
 
 Q: What are Live Nodes?
-Live Nodes (GET /v1/mesh live_nodes) count human mesh users plus cited human uses. software_nodes is the Softwares {slug}-worker roster and stays off the Live Nodes pill. Downloaded Softwares instances stay instance_nodes. Uses are interaction counters, not unique people. Zero is honest when no humans are present and uses are 0/unbound.
+Live Nodes (GET /v1/mesh live_nodes) count human mesh users plus cited human uses. The Nodes#/LiveNodes# clock Live Nodes side is mesh presence plus current azieleliab.com human page viewers (prefer runtime live_nodes once it aggregates fleet viewers). HDJ viewers are excluded. software_nodes is the Softwares {slug}-worker roster and stays off the Live Nodes pill. Downloaded Softwares instances stay instance_nodes. Uses are interaction counters, not unique people. Zero is honest when no humans are present and uses are 0/unbound.
 
 Aziel Eliab (also Aziel Elroi Eliab) is a researcher, digital rights activist, software developer/designer, author, and philosopher of published work. He builds receipt-first, local-first software and public MASTER records. Canonical person: https://www.azieleliab.com/#aziel. Primary surfaces: azieleliab.com, azielcorpuslibrary.net, godlock.uk, hedidntjump.com, github.com/AzielEliab, x.com/AzielEliab, Try on Glama. He is one living person. Concordance pages list two Levitical musicians Aziel and Eliab named together in 1 Chronicles 15:20. The public identity is the work.
 

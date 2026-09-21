@@ -4,7 +4,10 @@
  * Nodes = human_mesh_users + human_uses (j.nodes preferred; fallback
  * sum or legacy j.live_nodes if nodes absent). Live Nodes = presence
  * (j.human_mesh_users, or j.live_nodes only when j.nodes is also
- * present after the runtime break). software_nodes never feeds the
+ * present after the runtime break) plus current azieleliab.com human
+ * page viewers (operator lock 2026-09-21). Prefer runtime live_nodes
+ * once it aggregates fleet viewers; until then local + mesh presence.
+ * Never invent bots. Exclude HDJ. software_nodes never feeds the
  * pill. Also fetches /v1/mesh/status and /v1/mesh/nodes
  * via AZIEL_RUNTIME (else HTTPS origin). Read-only suite presence is
  * on — display from runtime. GET never enables.
@@ -26,6 +29,7 @@ import {
 import { allowOriginRefresh } from "./costGuard.js";
 import { MESH_CACHE_URL, MESH_NODES_CACHE_URL, MESH_STATUS_CACHE_URL, MESH_TTL_SEC, readJsonSnapshot, writeJsonSnapshot } from "./edgeCache.js";
 import { fetchRuntimeJson } from "./liveCatalog.js";
+import { HDJ_EXCLUDED, runtimeAggregatesFleetViewers } from "./presence.js";
 import { reColdStoreCite, sporeCite } from "./survival.js";
 
 export const MESH_PATH = "/v1/mesh";
@@ -149,7 +153,7 @@ export const LIVE_NODES_LLMS =
 
 /** Homepage chrome title. Definitions only — no what-it-is-not coaching. */
 export const DUAL_NODES_TITLE =
-  "Nodes: human mesh users + human uses. Live Nodes: presence.";
+  "Nodes: human mesh users + human uses. Live Nodes: presence + current azieleliab.com viewers.";
 
 export const MESH_NOTE =
   "QNM-BUILD-1.0 suite rollup. live_nodes counts human mesh users plus cited human uses (USES). software_nodes is the {slug}-worker roster and never feeds Live Nodes. Read-only suite presence is on — display from runtime GET /v1/mesh. GET never enables. Operator enable requires a declared bearer (example: suite-presence). Mesh ON. Operator-armed Node Gate + neighbor heal + network ON (2026-09-17). AZVPN auto_use + vpn:true (HTTPS/WS REAL; WireGuard/OpenVPN SLOT; GET cites only, never opens a session). Channel plane wifi/bluetooth/rf/photon ON cites; worker_hardware:false. Cross-map QNS-CD-1.0 (photon QNS1 packet transfer). Local qnsd is qnm-node only. Author Aziel Eliab only.";
@@ -237,8 +241,7 @@ export function meshNodesCount(mesh) {
   return 0;
 }
 
-/** Live Nodes = presence. human_mesh_users, or live_nodes only when j.nodes is present. */
-export function meshLiveNodesCount(mesh) {
+function rawMeshPresence(mesh) {
   const docs = meshDocs(mesh);
   for (const doc of docs) {
     const users = finiteCount(doc.human_mesh_users);
@@ -250,6 +253,45 @@ export function meshLiveNodesCount(mesh) {
     if (live != null) return live;
   }
   return 0;
+}
+
+function siteLiveFrom(mesh) {
+  if (!mesh || typeof mesh !== "object") return 0;
+  const n = finiteCount(mesh.site_live_nodes);
+  return n == null ? 0 : n;
+}
+
+/**
+ * Live Nodes (clock right side) = mesh presence, plus local human page
+ * viewers until runtime /v1/mesh live_nodes aggregates fleet viewers.
+ */
+export function meshLiveNodesCount(mesh) {
+  const src = meshSource(mesh);
+  if (runtimeAggregatesFleetViewers(src)) {
+    const fleet = finiteCount(src.live_nodes);
+    if (fleet != null) return fleet;
+  }
+  return rawMeshPresence(mesh) + siteLiveFrom(mesh);
+}
+
+/** Stamp local site_live_nodes onto a mesh doc without rewriting origin. */
+export function overlaySitePresence(doc, siteLive) {
+  const n = finiteCount(siteLive) ?? 0;
+  const base = doc && typeof doc === "object" && !Array.isArray(doc) ? { ...doc } : {};
+  base.site_live_nodes = n;
+  base.site_presence_local = true;
+  base.hdj_excluded = HDJ_EXCLUDED;
+  base.mesh_live_nodes = rawMeshPresence(base);
+  base.live_nodes_includes_viewers = runtimeAggregatesFleetViewers(meshSource(base));
+  const prior = base.live_nodes_components && typeof base.live_nodes_components === "object" ? base.live_nodes_components : {};
+  base.live_nodes_components = {
+    ...prior,
+    site_live_nodes: n,
+    site_presence_local: true,
+    hdj_excluded: HDJ_EXCLUDED,
+    invent_users: false,
+  };
+  return base;
 }
 
 export function dualNodesTitle() {
@@ -357,6 +399,22 @@ export function meshIsOn(mesh) {
 
 export function liveNodesLabel(mesh) {
   return meshNodesCount(mesh) + "/" + meshLiveNodesCount(mesh);
+}
+
+export function publicClockFields(mesh) {
+  const src = mesh && typeof mesh === "object" ? mesh : {};
+  return {
+    nodes: meshNodesCount(src),
+    live_nodes: meshLiveNodesCount(src),
+    site_live_nodes: siteLiveFrom(src),
+    mesh_live_nodes: rawMeshPresence(src),
+    mesh_enabled: meshIsOn(src),
+    mesh_locked: finiteCount(src.locked_nodes) ?? 0,
+    mesh_isolated: finiteCount(src.isolated_nodes) ?? 0,
+    software_nodes: finiteCount(src.software_nodes) ?? 0,
+    uses: humanUses(src),
+    live_nodes_includes_viewers: src.live_nodes_includes_viewers === true,
+  };
 }
 
 const MESH_OPENAPI_GET = (id, summary, description) => ({

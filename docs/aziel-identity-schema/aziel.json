@@ -607,6 +607,6 @@
   "godlock_is_product_not_identity": true,
   "mesh_live_nodes_are_api": false,
   "live_nodes_faq": "What are Live Nodes?",
-  "live_nodes_faq_answer": "Live Nodes (GET /v1/mesh live_nodes) count human mesh users plus cited human uses. software_nodes is the Softwares {slug}-worker roster and stays off the Live Nodes pill. Downloaded Softwares instances stay instance_nodes. Uses are interaction counters, not unique people. Zero is honest when no humans are present and uses are 0/unbound.",
+  "live_nodes_faq_answer": "Live Nodes (GET /v1/mesh live_nodes) count human mesh users plus cited human uses. The Nodes#/LiveNodes# clock Live Nodes side is mesh presence plus current azieleliab.com human page viewers (prefer runtime live_nodes once it aggregates fleet viewers). HDJ viewers are excluded. software_nodes is the Softwares {slug}-worker roster and stays off the Live Nodes pill. Downloaded Softwares instances stay instance_nodes. Uses are interaction counters, not unique people. Zero is honest when no humans are present and uses are 0/unbound.",
   "visible_1520": false
 }
