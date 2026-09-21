@@ -37,6 +37,7 @@ import {
   countBody,
   isCountPath,
   isHeartbeatPath,
+  publishSiteLiveNodes,
   readSiteLiveNodes,
   shouldTouchPresence,
   touchSitePresence,
@@ -236,13 +237,19 @@ function noteViews(request, env, ctx) {
   else return job;
 }
 
-async function sitePresenceFor(request, env, touch) {
-  if (touch && shouldTouchPresence(request)) return touchSitePresence(env, request);
+async function sitePresenceFor(request, env, touch, ctx) {
+  if (touch && shouldTouchPresence(request)) {
+    const n = await touchSitePresence(env, request);
+    const job = publishSiteLiveNodes(env, n).catch(() => ({ ok: false, posted: false }));
+    if (ctx && typeof ctx.waitUntil === "function") ctx.waitUntil(job);
+    else await job;
+    return n;
+  }
   return readSiteLiveNodes(env);
 }
 
-async function meshWithPresence(meshDoc, env, request, touch) {
-  const site = await sitePresenceFor(request, env, touch);
+async function meshWithPresence(meshDoc, env, request, touch, ctx) {
+  const site = await sitePresenceFor(request, env, touch, ctx);
   return overlaySitePresence(meshDoc, site);
 }
 
@@ -344,7 +351,9 @@ export async function handleRequest(request, env = {}, ctx) {
     if (hit) {
       if (path === "/") await noteViews(request, env, ctx);
       if (path === "/" && shouldTouchPresence(request)) {
-        const job = touchSitePresence(env, request);
+        const job = touchSitePresence(env, request)
+          .then((n) => publishSiteLiveNodes(env, n))
+          .catch(() => ({ ok: false, posted: false }));
         if (ctx && typeof ctx.waitUntil === "function") ctx.waitUntil(job);
         else await job;
       }
@@ -405,9 +414,9 @@ export async function handleRequest(request, env = {}, ctx) {
   const doors = live && live.software;
   const htmlPresence = pageViewerPath && request.method === "GET";
   const meshDocLive = meshDoc
-    ? await meshWithPresence(meshDoc, env, request, htmlPresence)
+    ? await meshWithPresence(meshDoc, env, request, htmlPresence, ctx)
     : htmlPresence
-      ? overlaySitePresence(null, await sitePresenceFor(request, env, true))
+      ? overlaySitePresence(null, await sitePresenceFor(request, env, true, ctx))
       : null;
   const mesh = meshDocLive ? overlaySitePresence(meshSnapshot(meshDocLive.origin), meshDocLive.site_live_nodes) : null;
 
@@ -487,7 +496,7 @@ export async function handleRequest(request, env = {}, ctx) {
       }),
     );
   } else if (isHeartbeatPath(path)) {
-    const beat = await meshWithPresence(meshDoc || (await loadMesh(env, ctx, { request })), env, request, request.method === "POST");
+    const beat = await meshWithPresence(meshDoc || (await loadMesh(env, ctx, { request })), env, request, request.method === "POST", ctx);
     res = json(
       countBody({
         ...publicClockFields(beat),

@@ -1049,6 +1049,7 @@ export function llmsTxt(software = SOFTWARE, survival = null) {
     "- GET " + CANON_ORIGIN + "/v1/count",
     "- POST " + CANON_ORIGIN + "/heartbeat  (human page-viewer presence; bots ignored)",
     "- POST " + CANON_ORIGIN + "/v1/heartbeat",
+    "- POST " + RUNTIME + "/v1/mesh/site-presence  (best-effort after local human presence; host azieleliab.com; kind human-page; no bots)",
     "- GET " + SURVIVAL_LOCAL + "  (" + BAN_SURVIVAL_SPEC + " hub pull of runtime SoT; short TTL)",
     "- GET " + SURVIVAL_JSON_LOCAL,
     "- GET " + CANON_ORIGIN + "/cite.json  (" + REDLINE_SPEC + " · Cap-7 design_of · attack-surface · FoldLock tip-safe · SpectralLock leftover-bytes + recover/handwriting · " + BAN_SURVIVAL_SPEC + ")",

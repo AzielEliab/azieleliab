@@ -649,10 +649,20 @@ const LIVE_NODES_SCRIPT = `<script>
     }
     return 0;
   }
+  function runtimeIncludesSite(d,src){
+    if(d&&(d.live_nodes_includes_viewers||d.includes_site_viewers))return true;
+    if(src&&(src.includes_site_viewers||src.live_nodes_includes_viewers))return true;
+    if(src&&finite(src.site_live_viewers)!=null)return true;
+    var plane=String((src&&src.live_nodes_plane)||(d&&d.live_nodes_plane)||"");
+    if(/viewer|site-live|page-view|website/i.test(plane))return true;
+    var c=src&&src.live_nodes_components;
+    if(c&&finite(c.site_live_viewers)!=null)return true;
+    return false;
+  }
   function liveCount(d,src){
-    if(d&&d.live_nodes_includes_viewers){
-      var fleet=finite(d.mesh_live_nodes);
-      if(fleet==null) fleet=finite(src&&src.live_nodes);
+    if(runtimeIncludesSite(d,src)){
+      var fleet=finite(src&&src.live_nodes);
+      if(fleet==null) fleet=finite(d&&d.live_nodes);
       if(fleet==null) fleet=meshLive(d,src);
       return fleet||0;
     }
