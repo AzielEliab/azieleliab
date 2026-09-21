@@ -172,6 +172,7 @@ function qnsCiteFields() {
     live_nodes_note: LIVE_NODES_NOTE,
     software_nodes_note: SOFTWARE_NODES_NOTE,
     software_nodes_excluded: true,
+    instance_nodes_excluded: true,
   };
 }
 
@@ -276,8 +277,10 @@ function liveNodesFields(origin, enabled) {
     human_uses: uses,
     human_uses_complete: src.human_uses_complete === true,
     human_uses_kv: src.human_uses_kv === true,
+    human_uses_source: typeof src.human_uses_source === "string" && src.human_uses_source ? src.human_uses_source : "unbound",
     software_nodes: enabled ? finiteCount(src.software_nodes) ?? 0 : 0,
     software_nodes_note: typeof src.software_nodes_note === "string" && src.software_nodes_note ? src.software_nodes_note : SOFTWARE_NODES_NOTE,
+    instance_nodes: enabled ? finiteCount(src.instance_nodes) ?? 0 : 0,
     live_nodes_components: components,
   };
 }
@@ -481,6 +484,7 @@ export function injectMeshCite(doc) {
   if (doc.mesh_live_nodes_are_api == null) doc.mesh_live_nodes_are_api = false;
   if (doc.live_nodes_are_not_live_doors == null) doc.live_nodes_are_not_live_doors = true;
   if (doc.software_nodes_excluded == null) doc.software_nodes_excluded = true;
+  if (doc.instance_nodes_excluded == null) doc.instance_nodes_excluded = true;
   return doc;
 }
 

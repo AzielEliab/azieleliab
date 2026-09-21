@@ -2844,6 +2844,51 @@ describe("suite node mesh", () => {
     assert.equal(liveNodesCount({ enabled: true, software_nodes: 41, nodes: [{}, {}, {}] }), 0);
     assert.equal(liveNodesCount({ enabled: true, human_mesh_users: 2, human_uses: 5 }), 7);
     assert.equal(liveNodesCount({ enabled: true, live_nodes: 0, software_nodes: 41 }), 0);
+    assert.equal(
+      liveNodesCount({
+        enabled: true,
+        live_nodes: 27147,
+        human_mesh_users: 0,
+        human_uses: 27147,
+        software_nodes: 41,
+        instance_nodes: 0,
+      }),
+      27147,
+    );
+    assert.equal(
+      liveNodesLabel({
+        origin: {
+          enabled: true,
+          live_nodes: 27147,
+          human_mesh_users: 0,
+          human_uses: 27147,
+          software_nodes: 41,
+          instance_nodes: 0,
+        },
+      }),
+      "Live Nodes · 27147",
+    );
+    const ssot = meshSnapshot({
+      enabled: true,
+      live_nodes: 27147,
+      human_mesh_users: 0,
+      human_uses: 27147,
+      software_nodes: 41,
+      instance_nodes: 0,
+      human_uses_complete: true,
+      human_uses_kv: true,
+      human_uses_source: "uses.total",
+    });
+    assert.equal(ssot.live_nodes, 27147);
+    assert.equal(ssot.human_mesh_users, 0);
+    assert.equal(ssot.human_uses, 27147);
+    assert.equal(ssot.live_nodes, ssot.human_mesh_users + ssot.human_uses);
+    assert.equal(ssot.software_nodes, 41);
+    assert.equal(ssot.instance_nodes, 0);
+    assert.equal(ssot.software_nodes_excluded, true);
+    assert.equal(ssot.instance_nodes_excluded, true);
+    assert.equal(ssot.human_uses_source, "uses.total");
+    assert.notEqual(ssot.live_nodes, ssot.software_nodes);
     assert.equal(QNM_SPEC, "QNM-BUILD-1.0");
     assert.equal(QNM_ENABLE_BEARER, "suite-presence");
     const off = meshStatusBody(null);
@@ -2858,6 +2903,8 @@ describe("suite node mesh", () => {
     assert.equal(off.human_uses, 0);
     assert.match(off.live_nodes_note, /human mesh users/);
     assert.equal(off.software_nodes_excluded, true);
+    assert.equal(off.instance_nodes_excluded, true);
+    assert.equal(off.instance_nodes, 0);
     assert.deepEqual(off.rollup, { live: 0, mesh: 0, locked: 0, isolated: 0 });
     assert.deepEqual(off.bearers, []);
     assert.equal(off.qnm_spec, "QNM-BUILD-1.0");
@@ -2986,6 +3033,7 @@ describe("suite node mesh", () => {
                 human_mesh_users: 2,
                 human_uses: 1,
                 software_nodes: 41,
+                instance_nodes: 0,
                 locked_nodes: 0,
                 isolated_nodes: 0,
                 rollup: { live: 41, mesh: 3, locked: 0, isolated: 0 },
@@ -3020,6 +3068,8 @@ describe("suite node mesh", () => {
     assert.equal(doc.human_mesh_users, 2);
     assert.equal(doc.human_uses, 1);
     assert.equal(doc.software_nodes, 41);
+    assert.equal(doc.instance_nodes, 0);
+    assert.equal(doc.live_nodes, doc.human_mesh_users + doc.human_uses);
     assert.deepEqual(doc.bearers, ["suite-presence"]);
     assert.equal(doc.origin.live_nodes, 3);
 
@@ -3035,6 +3085,8 @@ describe("suite node mesh", () => {
     assert.equal(index.mesh.live_nodes, 3);
     assert.equal(index.mesh.human_mesh_users, 2);
     assert.equal(index.mesh.software_nodes, 41);
+    assert.equal(index.mesh.instance_nodes, 0);
+    assert.equal(index.mesh.live_nodes, index.mesh.human_mesh_users + index.mesh.human_uses);
     assert.deepEqual(index.mesh.bearers, ["suite-presence"]);
     assert.equal(index.mesh.qns_cd_spec, "QNS-CD-1.0");
     assert.equal(index.mesh.default, "on");
