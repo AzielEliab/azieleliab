@@ -1,8 +1,11 @@
 /**
  * Suite decentralized node mesh doors for www.azieleliab.com.
- * Live Nodes SoT is Worker GET /v1/mesh: live_nodes, live_nodes_note,
- * human_mesh_users, human_uses (aziel-runtime#151). software_nodes
- * never feeds the pill. Also fetches /v1/mesh/status and /v1/mesh/nodes
+ * Mesh SSoT is Worker GET /v1/mesh. Chrome dual counter:
+ * Nodes = human_mesh_users + human_uses (j.nodes preferred; fallback
+ * sum or legacy j.live_nodes if nodes absent). Live Nodes = presence
+ * (j.human_mesh_users, or j.live_nodes only when j.nodes is also
+ * present after the runtime break). software_nodes never feeds the
+ * pill. Also fetches /v1/mesh/status and /v1/mesh/nodes
  * via AZIEL_RUNTIME (else HTTPS origin). Read-only suite presence is
  * on — display from runtime. GET never enables.
  * QNS-CD-1.0 is hub cite / mesh.js cross-map only (photon QNS1 packet
@@ -144,6 +147,10 @@ export const SOFTWARE_NODES_NOTE =
 export const LIVE_NODES_LLMS =
   "live_nodes = human mesh users + cited human uses; software_nodes never feeds Live Nodes; GET never enables";
 
+/** Homepage chrome title. Definitions only — no what-it-is-not coaching. */
+export const DUAL_NODES_TITLE =
+  "Nodes: human mesh users + human uses. Live Nodes: presence.";
+
 export const MESH_NOTE =
   "QNM-BUILD-1.0 suite rollup. live_nodes counts human mesh users plus cited human uses (USES). software_nodes is the {slug}-worker roster and never feeds Live Nodes. Read-only suite presence is on — display from runtime GET /v1/mesh. GET never enables. Operator enable requires a declared bearer (example: suite-presence). Mesh ON. Operator-armed Node Gate + neighbor heal + network ON (2026-09-17). AZVPN auto_use + vpn:true (HTTPS/WS REAL; WireGuard/OpenVPN SLOT; GET cites only, never opens a session). Channel plane wifi/bluetooth/rf/photon ON cites; worker_hardware:false. Cross-map QNS-CD-1.0 (photon QNS1 packet transfer). Local qnsd is qnm-node only. Author Aziel Eliab only.";
 
@@ -196,6 +203,57 @@ function liveNodesFromHuman(doc) {
   const uses = finiteCount(doc.human_uses);
   if (users == null && uses == null) return null;
   return (users || 0) + (uses || 0);
+}
+
+function meshDocs(mesh) {
+  const src = meshSource(mesh);
+  const top = mesh && mesh !== src && typeof mesh === "object" ? mesh : null;
+  return [src, top].filter(Boolean);
+}
+
+/** Numeric j.nodes only. Roster arrays and URL strings stay off the clock. */
+function numericNodesField(doc) {
+  if (!doc || typeof doc !== "object") return null;
+  if (Array.isArray(doc.nodes)) return null;
+  if (typeof doc.nodes === "string" && !/^\d+(\.\d+)?$/.test(doc.nodes.trim())) return null;
+  return finiteCount(doc.nodes);
+}
+
+/** Nodes = human mesh users + human uses. Prefer j.nodes; else sum or legacy live_nodes. */
+export function meshNodesCount(mesh) {
+  const docs = meshDocs(mesh);
+  for (const doc of docs) {
+    const named = numericNodesField(doc);
+    if (named != null) return named;
+  }
+  for (const doc of docs) {
+    const composed = liveNodesFromHuman(doc);
+    if (composed != null) return composed;
+  }
+  for (const doc of docs) {
+    const legacy = finiteCount(doc.live_nodes);
+    if (legacy != null) return legacy;
+  }
+  return 0;
+}
+
+/** Live Nodes = presence. human_mesh_users, or live_nodes only when j.nodes is present. */
+export function meshLiveNodesCount(mesh) {
+  const docs = meshDocs(mesh);
+  for (const doc of docs) {
+    const users = finiteCount(doc.human_mesh_users);
+    if (users != null) return users;
+  }
+  for (const doc of docs) {
+    if (numericNodesField(doc) == null) continue;
+    const live = finiteCount(doc.live_nodes);
+    if (live != null) return live;
+  }
+  return 0;
+}
+
+export function dualNodesTitle() {
+  return DUAL_NODES_TITLE;
 }
 
 export function liveNodesCount(mesh) {
@@ -298,7 +356,7 @@ export function meshIsOn(mesh) {
 }
 
 export function liveNodesLabel(mesh) {
-  return "Live Nodes · " + liveNodesCount(mesh);
+  return meshNodesCount(mesh) + "/" + meshLiveNodesCount(mesh);
 }
 
 const MESH_OPENAPI_GET = (id, summary, description) => ({
@@ -329,7 +387,7 @@ export const MESH_OPENAPI_PATHS = {
   [MESH_NODES_PATH]: MESH_OPENAPI_GET(
     "getMeshNodes",
     "mesh nodes",
-    "QNM-BUILD-1.0 node roster. Live Nodes number comes from GET /v1/mesh live_nodes (human mesh users + cited uses), not this roster length and not software_nodes. Display from runtime (Live Nodes · 0 when unavailable). GET never enables. Cross-map QNS-CD-1.0. No public qnsd proxy. Author Aziel Eliab.",
+    "QNM-BUILD-1.0 node roster. Chrome Nodes/Live Nodes clock from GET /v1/mesh (nodes = users+uses; Live Nodes = presence). Roster length is not the pill. Display from runtime (0/0 when unavailable). GET never enables. Cross-map QNS-CD-1.0. No public qnsd proxy. Author Aziel Eliab.",
   ),
 };
 

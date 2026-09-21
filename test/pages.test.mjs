@@ -122,7 +122,9 @@ import {
   MESH_STATUS_PATH,
   liveNodesCount,
   liveNodesLabel,
+  meshLiveNodesCount,
   meshEnabled,
+  meshNodesCount,
   meshNodesBody,
   meshQuietLabel,
   meshSnapshot,
@@ -1266,9 +1268,11 @@ describe("SEO routes", () => {
     assert.ok(html.includes('name="aziel-qnm"'));
     assert.ok(html.includes('content="QNM-BUILD-1.0"'));
     assert.ok(html.includes('id="aziel-live-nodes"'));
-    assert.ok(html.includes(">Live Nodes · 0<"));
+    assert.ok(html.includes(">0/0<"));
+    assert.ok(html.includes('title="Nodes: human mesh users + human uses. Live Nodes: presence."'));
     assert.ok(!html.includes(">mesh off<"));
     assert.ok(!html.includes(">Live Nodes · off<"));
+    assert.ok(!html.includes("Live Nodes · "));
     assert.ok(!html.includes("mesh off"));
     const softLine = softwareHtml().match(/<div class="soft-line">[\s\S]*?<\/div>/);
     assert.ok(softLine);
@@ -1419,7 +1423,8 @@ describe("public entity graph phases B–D + E audit", () => {
     assert.ok(footer);
     assert.ok(footer[0].includes(ECOSYSTEM_TITLE));
     assert.ok(footer[0].includes(">Try on Glama<"));
-    assert.ok(footer[0].includes(">Live Nodes · 0<"));
+    assert.ok(footer[0].includes(">0/0<"));
+    assert.ok(!footer[0].includes("Live Nodes · "));
     assert.ok(!footer[0].includes(">mesh off<"));
     assert.ok(!footer[0].includes("mesh off"));
     assert.ok(softwarePage.indexOf('id="software"') < softwarePage.indexOf("Part of the Aziel Eliab ecosystem"));
@@ -1549,7 +1554,8 @@ describe("public entity graph phases B–D + E audit", () => {
     assert.ok(!html.includes(">mesh off<"));
     assert.ok(!html.includes(">Live Nodes · off<"));
     assert.ok(!html.includes("mesh off"));
-    assert.ok(html.includes(">Live Nodes · 0<"));
+    assert.ok(html.includes(">0/0<"));
+    assert.ok(!html.includes("Live Nodes · "));
     const cite = citeDoc();
     assert.equal(cite.mesh_default, "on");
     assert.equal(cite.mesh_get_never_enables, true);
@@ -2837,12 +2843,17 @@ describe("suite node mesh", () => {
     assert.equal(meshEnabled({ enabled: true, mesh: "on" }), true);
     assert.equal(meshQuietLabel(null), "");
     assert.equal(meshQuietLabel({ origin: { enabled: true } }), "mesh on");
-    assert.equal(liveNodesLabel(null), "Live Nodes · 0");
-    assert.equal(liveNodesLabel({ origin: { enabled: true, live_nodes: 40 } }), "Live Nodes · 40");
+    assert.equal(liveNodesLabel(null), "0/0");
+    assert.equal(liveNodesLabel({ origin: { enabled: true, live_nodes: 40 } }), "40/0");
+    assert.equal(meshNodesCount({ origin: { enabled: true, live_nodes: 40 } }), 40);
+    assert.equal(meshLiveNodesCount({ origin: { enabled: true, live_nodes: 40 } }), 0);
     assert.equal(liveNodesCount({ enabled: true, rollup: { live: 40 } }), 0);
     assert.equal(liveNodesCount({ enabled: true, rollup: { mesh: 3, live: 41 }, software_nodes: 41 }), 3);
     assert.equal(liveNodesCount({ enabled: true, software_nodes: 41, nodes: [{}, {}, {}] }), 0);
+    assert.equal(meshNodesCount({ enabled: true, software_nodes: 41, nodes: [{}, {}, {}] }), 0);
     assert.equal(liveNodesCount({ enabled: true, human_mesh_users: 2, human_uses: 5 }), 7);
+    assert.equal(meshNodesCount({ enabled: true, human_mesh_users: 2, human_uses: 5 }), 7);
+    assert.equal(meshLiveNodesCount({ enabled: true, human_mesh_users: 2, human_uses: 5 }), 2);
     assert.equal(liveNodesCount({ enabled: true, live_nodes: 0, software_nodes: 41 }), 0);
     assert.equal(
       liveNodesCount({
@@ -2866,7 +2877,25 @@ describe("suite node mesh", () => {
           instance_nodes: 0,
         },
       }),
-      "Live Nodes · 27147",
+      "27147/0",
+    );
+    assert.equal(
+      liveNodesLabel({
+        origin: {
+          enabled: true,
+          nodes: 28033,
+          live_nodes: 4,
+          human_mesh_users: 4,
+          human_uses: 28029,
+          software_nodes: 41,
+        },
+      }),
+      "28033/4",
+    );
+    assert.equal(meshNodesCount({ enabled: true, nodes: 9, live_nodes: 2, human_uses: 99 }), 9);
+    assert.equal(
+      meshLiveNodesCount({ enabled: true, nodes: 9, live_nodes: 2 }),
+      2,
     );
     const ssot = meshSnapshot({
       enabled: true,
@@ -3011,7 +3040,8 @@ describe("suite node mesh", () => {
     const html = await landing.text();
     assert.ok(!html.includes("mesh off"));
     assert.ok(!html.includes("Live Nodes · off"));
-    assert.ok(html.includes(">Live Nodes · 0<"));
+    assert.ok(html.includes(">0/0<"));
+    assert.ok(!html.includes("Live Nodes · "));
     assert.ok(!html.includes(">mesh on<"));
   });
 
@@ -3094,13 +3124,17 @@ describe("suite node mesh", () => {
     const landing = await fetchPath("/", { headers: { "user-agent": "Mozilla/5.0" } }, env);
     const html = await landing.text();
     assert.ok(html.includes(">mesh on<"));
-    assert.ok(html.includes(">Live Nodes · 3<"));
+    assert.ok(html.includes(">3/2<"));
+    assert.ok(!html.includes(">Live Nodes · 3<"));
     assert.ok(!html.includes(">Live Nodes · 41<"));
+    assert.ok(!html.includes(">41/"));
     assert.ok(html.includes('id="aziel-live-nodes"'));
+    assert.ok(html.includes('title="Nodes: human mesh users + human uses. Live Nodes: presence."'));
     assert.ok(html.includes('name="aziel-mesh-status"'));
     const softwarePage = await fetchPath("/software", {}, env);
     const softwareHtml = await softwarePage.text();
-    assert.ok(softwareHtml.includes(">Live Nodes · 3<"));
+    assert.ok(softwareHtml.includes(">3/2<"));
+    assert.ok(!softwareHtml.includes(">Live Nodes · 3<"));
     assert.ok(!softwareHtml.includes(">Live Nodes · 41<"));
     assert.ok(softwareHtml.includes('href="/v1/mesh"'));
     const landingSoft = softwareHtml.match(/<div class="soft-line">[\s\S]*?<\/div>/);
