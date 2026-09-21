@@ -640,7 +640,7 @@ const LIVE_NODES_SCRIPT = `<script>
     for(i=0;i<docs.length;i++){legacy=docs[i]?finite(docs[i].live_nodes):null;if(legacy!=null)return legacy}
     return 0;
   }
-  function liveCount(d,src){
+  function meshLive(d,src){
     var docs=[d,src],i,u,live;
     for(i=0;i<docs.length;i++){u=docs[i]?finite(docs[i].human_mesh_users):null;if(u!=null)return u}
     for(i=0;i<docs.length;i++){
@@ -649,12 +649,35 @@ const LIVE_NODES_SCRIPT = `<script>
     }
     return 0;
   }
-  fetch("/v1/mesh",{headers:{"Accept":"application/json","User-Agent":"Mozilla/5.0"}}).then(function(r){return r.json();}).then(function(d){
+  function liveCount(d,src){
+    if(d&&d.live_nodes_includes_viewers){
+      var fleet=finite(d.mesh_live_nodes);
+      if(fleet==null) fleet=finite(src&&src.live_nodes);
+      if(fleet==null) fleet=meshLive(d,src);
+      return fleet||0;
+    }
+    var mesh=finite(d&&d.mesh_live_nodes);
+    if(mesh==null) mesh=meshLive(d,src);
+    var site=finite(d&&d.site_live_nodes);
+    if(site==null) site=0;
+    return (mesh||0)+site;
+  }
+  function apply(d){
     if(!d)return;
     var src=d.origin&&typeof d.origin==="object"?d.origin:d;
-    el.textContent=nodesCount(d,src)+"/"+liveCount(d,src);
-    el.title="Nodes: human mesh users + human uses. Live Nodes: presence.";
-  }).catch(function(){});
+    var nodes=finite(d.nodes);
+    if(nodes==null||Array.isArray(d.nodes)) nodes=nodesCount(d,src);
+    el.textContent=nodes+"/"+liveCount(d,src);
+    el.title="Nodes: human mesh users + human uses. Live Nodes: presence + current azieleliab.com viewers.";
+  }
+  function beat(){
+    fetch("/heartbeat",{method:"POST",headers:{"Accept":"application/json","Content-Type":"application/json","User-Agent":"Mozilla/5.0"},body:"{}"}).then(function(r){return r.json();}).then(apply).catch(function(){
+      fetch("/v1/mesh",{headers:{"Accept":"application/json","User-Agent":"Mozilla/5.0"}}).then(function(r){return r.json();}).then(apply).catch(function(){});
+    });
+  }
+  beat();
+  setInterval(beat,25000);
+  document.addEventListener("visibilitychange",function(){if(!document.hidden)beat();});
 })();
 </script>`;
 

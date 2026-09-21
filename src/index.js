@@ -26,7 +26,21 @@ import {
   MESH_PATH,
   MESH_STATUS_PATH,
   meshSnapshot,
+  overlaySitePresence,
+  publicClockFields,
 } from "./mesh.js";
+import {
+  COUNT_PATH,
+  COUNT_V1_PATH,
+  HEARTBEAT_PATH,
+  HEARTBEAT_V1_PATH,
+  countBody,
+  isCountPath,
+  isHeartbeatPath,
+  readSiteLiveNodes,
+  shouldTouchPresence,
+  touchSitePresence,
+} from "./presence.js";
 import {
   CITE_DONT_MERGE,
   INGEST_BYTES_PATH,
@@ -222,6 +236,16 @@ function noteViews(request, env, ctx) {
   else return job;
 }
 
+async function sitePresenceFor(request, env, touch) {
+  if (touch && shouldTouchPresence(request)) return touchSitePresence(env, request);
+  return readSiteLiveNodes(env);
+}
+
+async function meshWithPresence(meshDoc, env, request, touch) {
+  const site = await sitePresenceFor(request, env, touch);
+  return overlaySitePresence(meshDoc, site);
+}
+
 export function apexRedirect(url) {
   const host = String(url.hostname || "").toLowerCase();
   if (host === APEX_HOST) {
@@ -267,6 +291,10 @@ export async function handleRequest(request, env = {}, ctx) {
     MESH_PATH,
     MESH_STATUS_PATH,
     MESH_NODES_PATH,
+    COUNT_PATH,
+    COUNT_V1_PATH,
+    HEARTBEAT_PATH,
+    HEARTBEAT_V1_PATH,
     SURVIVAL_PATH,
     SURVIVAL_JSON_PATH,
     "/person.jsonld",
@@ -281,7 +309,7 @@ export async function handleRequest(request, env = {}, ctx) {
     return new Response(null, { status: 204, headers: { ...SECURITY, ...CORS } });
   }
 
-  const allowWrite = path === "/v1/view";
+  const allowWrite = path === "/v1/view" || isHeartbeatPath(path);
   if (request.method !== "GET" && request.method !== "HEAD" && !(allowWrite && request.method === "POST")) {
     return new Response("Method Not Allowed", {
       status: 405,
@@ -315,6 +343,11 @@ export async function handleRequest(request, env = {}, ctx) {
     const hit = await matchPublicResponse(request, env);
     if (hit) {
       if (path === "/") await noteViews(request, env, ctx);
+      if (path === "/" && shouldTouchPresence(request)) {
+        const job = touchSitePresence(env, request);
+        if (ctx && typeof ctx.waitUntil === "function") ctx.waitUntil(job);
+        else await job;
+      }
       if (request.method === "HEAD") {
         return new Response(null, { status: hit.status, headers: hit.headers });
       }
@@ -341,7 +374,21 @@ export async function handleRequest(request, env = {}, ctx) {
     path === "/who-is" ||
     path === "/who-is-aziel-eliab.txt" ||
     path === "/.well-known/aziel.json";
-  const needsMesh = homeLike || path === "/v1/software";
+  const pageViewerPath =
+    homeLike ||
+    path === "/receipts" ||
+    path === INGEST_PATH ||
+    path === "/donate" ||
+    path === "/embryolock" ||
+    path === "/who";
+  const needsMesh =
+    homeLike ||
+    path === "/v1/software" ||
+    path === MESH_PATH ||
+    path === MESH_STATUS_PATH ||
+    path === MESH_NODES_PATH ||
+    isCountPath(path) ||
+    isHeartbeatPath(path);
   const needsSurvival =
     path === "/llms.txt" ||
     path === "/ai.txt" ||
@@ -356,26 +403,32 @@ export async function handleRequest(request, env = {}, ctx) {
     needsSurvival ? loadSurvival(env, ctx) : Promise.resolve(null),
   ]);
   const doors = live && live.software;
-  const mesh = meshDoc ? meshSnapshot(meshDoc.origin) : null;
+  const htmlPresence = pageViewerPath && request.method === "GET";
+  const meshDocLive = meshDoc
+    ? await meshWithPresence(meshDoc, env, request, htmlPresence)
+    : htmlPresence
+      ? overlaySitePresence(null, await sitePresenceFor(request, env, true))
+      : null;
+  const mesh = meshDocLive ? overlaySitePresence(meshSnapshot(meshDocLive.origin), meshDocLive.site_live_nodes) : null;
 
   let res;
   if (path === "/") {
-    res = html(pageHtml(await pageViews(request, env), doors, meshDoc, live && live.version));
+    res = html(pageHtml(await pageViews(request, env), doors, meshDocLive, live && live.version));
   } else if (aboutPath) {
     res = html(
-      pageHtml(await readViews(env), doors, meshDoc, live && live.version, {
+      pageHtml(await readViews(env), doors, meshDocLive, live && live.version, {
         canonical: CANON_ORIGIN + aboutPath,
       }),
     );
   } else if (azielAlias) {
     res = html(
-      pageHtml(await readViews(env), doors, meshDoc, live && live.version, {
+      pageHtml(await readViews(env), doors, meshDocLive, live && live.version, {
         section: { title: AUTHOR, description: DESCRIPTION, path: "/aziel" },
         canonical: CANON_ORIGIN + "/aziel",
       }),
     );
   } else if (tab) {
-    res = html(sectionPageHtml(tab, await readViews(env), doors, meshDoc, live && live.version));
+    res = html(sectionPageHtml(tab, await readViews(env), doors, meshDocLive, live && live.version));
   } else if (path === "/receipts") res = html(await receiptsHtml());
   else if (path === INGEST_PATH) res = html(ingestHtml());
   else if (path === INGEST_BYTES_PATH) res = text(canonicalPageBytes(), "text/plain", { cache: SEO_CACHE });
@@ -421,11 +474,27 @@ export async function handleRequest(request, env = {}, ctx) {
   } else if (path === "/v1/software") {
     res = json(softwareIndexBody(live, mesh), CATALOG_HTTP_CACHE);
   } else if (path === MESH_PATH) {
-    res = json(meshDoc || (await loadMesh(env, ctx, { request })), JSON_SHORT_CACHE);
+    res = json(meshDocLive || (await meshWithPresence(await loadMesh(env, ctx, { request }), env, request, false)), JSON_SHORT_CACHE);
   } else if (path === MESH_STATUS_PATH) {
-    res = json(await loadMeshStatus(env, ctx, { request }), JSON_SHORT_CACHE);
+    res = json(await meshWithPresence(await loadMeshStatus(env, ctx, { request }), env, request, false), JSON_SHORT_CACHE);
   } else if (path === MESH_NODES_PATH) {
-    res = json(await loadMeshNodes(env, ctx, { request }), JSON_SHORT_CACHE);
+    res = json(await meshWithPresence(await loadMeshNodes(env, ctx, { request }), env, request, false), JSON_SHORT_CACHE);
+  } else if (isCountPath(path)) {
+    res = json(
+      countBody({
+        ...publicClockFields(meshDocLive || overlaySitePresence(null, await readSiteLiveNodes(env))),
+        views: await readViews(env),
+      }),
+    );
+  } else if (isHeartbeatPath(path)) {
+    const beat = await meshWithPresence(meshDoc || (await loadMesh(env, ctx, { request })), env, request, request.method === "POST");
+    res = json(
+      countBody({
+        ...publicClockFields(beat),
+        views: await readViews(env),
+        extra: { heartbeat: request.method === "POST" },
+      }),
+    );
   } else if (path === UPDATE_PATH || path === UPDATE_CHECK_PATH) {
     res = json(await loadUpdateCheck(env, ctx, { request }), JSON_SHORT_CACHE);
   } else if (path === "/v1/stats" || (path === "/v1/view" && request.method !== "POST")) {

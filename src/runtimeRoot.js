@@ -5,7 +5,8 @@
  */
 import { AUTHOR, LIBRARY_RUNTIME, RUNTIME, RUNTIME_LOCAL, RUNTIME_PATH } from "./copy.js";
 import { injectPersonJsonLd } from "./identity.js";
-import { injectMeshDiscovery, loadMeshNodes, loadMeshStatus, MESH_NODES_PATH } from "./mesh.js";
+import { injectMeshDiscovery, loadMeshNodes, loadMeshStatus, MESH_NODES_PATH, overlaySitePresence } from "./mesh.js";
+import { readSiteLiveNodes } from "./presence.js";
 import { injectSurvivalDiscovery, isSurvivalPath, loadSurvival } from "./survival.js";
 import {
   fetchOriginUses,
@@ -251,7 +252,7 @@ export async function handleRuntimeRoot(request, url, env, ctx) {
       dest === MESH_NODES_PATH
         ? await loadMeshNodes(env, ctx, { request })
         : await loadMeshStatus(env, ctx, { request });
-    return usesResponse(doc, request.method);
+    return usesResponse(overlaySitePresence(doc, await readSiteLiveNodes(env)), request.method);
   }
   if (isSurvivalPath(runtimeDestPath(url.pathname)) && (request.method === "GET" || request.method === "HEAD")) {
     return usesResponse(await loadSurvival(env, ctx, { request }), request.method);

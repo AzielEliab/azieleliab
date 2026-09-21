@@ -38,13 +38,15 @@ About aliases `/about`, `/AzielEliab`, `/aziel-eliab` 200 the same homepage HTML
 
 ## Mesh (read-only ON)
 
-Read-only suite presence is **on**. Display `live_nodes` from aziel-runtime `GET /v1/mesh` (human mesh users + cited human uses). `software_nodes` never feeds Live Nodes. Mesh ON. Operator-armed Node Gate + neighbor heal + network ON (not a login-recovery / IP panel). AZVPN auto_use + vpn:true (HTTPS/WS REAL; WireGuard/OpenVPN SLOT; GET cites only). Channel plane wifi/bluetooth/rf/photon ON cites; worker_hardware:false. Softwares via fraggate_call only; master_33:false; FragGate sole door.
+Read-only suite presence is **on**. Display `live_nodes` from aziel-runtime `GET /v1/mesh` (human mesh users + cited human uses). The Nodes#/LiveNodes# clock Live Nodes side also includes current azieleliab.com human page viewers (`site_live_nodes`). Prefer runtime `live_nodes` once it aggregates fleet viewers; until then local + mesh presence. Never invent bots. Exclude HDJ. `software_nodes` never feeds Live Nodes. Mesh ON. Operator-armed Node Gate + neighbor heal + network ON (not a login-recovery / IP panel). AZVPN auto_use + vpn:true (HTTPS/WS REAL; WireGuard/OpenVPN SLOT; GET cites only). Channel plane wifi/bluetooth/rf/photon ON cites; worker_hardware:false. Softwares via fraggate_call only; master_33:false; FragGate sole door.
 
 | Path | What |
 |------|------|
-| `GET /v1/mesh` | Live Nodes SoT. Hoists `live_nodes`, `live_nodes_note`, `human_mesh_users`, `human_uses` from Worker `GET /v1/mesh`. Softwares count never feeds the pill. |
+| `GET /v1/mesh` | Live Nodes SoT. Hoists `live_nodes`, `live_nodes_note`, `human_mesh_users`, `human_uses` from Worker `GET /v1/mesh`. Overlays `site_live_nodes`. Softwares count never feeds the pill. |
 | `GET /v1/mesh/status` | Same-origin QNM-BUILD-1.0 rollup (runtime via `AZIEL_RUNTIME`, else HTTPS). Same Live Nodes fields. |
 | `GET /v1/mesh/nodes` | Node roster (display from runtime; Live Nodes number is `GET /v1/mesh` `live_nodes`, not roster length) |
+| `GET /count` · `/v1/count` | Public Nodes#/LiveNodes# + `site_live_nodes` (HDJ excluded) |
+| `POST /heartbeat` · `/v1/heartbeat` | Human page-viewer presence ping (5-minute window) |
 | `GET /runtime/v1/mesh` | Same JSON through the quiet `/runtime` door |
 | `GET /runtime/v1/mesh/status` | Same |
 | `GET /runtime/v1/mesh/nodes` | Same |
@@ -55,7 +57,7 @@ Read-only suite presence is **on**. Display `live_nodes` from aziel-runtime `GET
 
 `GET /v1/mesh` never enables radios. Operator enable on runtime requires a declared bearer (example: `suite-presence`). A 404 or missing origin still returns identity Aziel Eliab with `live_nodes: 0`. Public UI never renders an off-state quiet mesh label.
 
-Homepage and Softwares-tab brandrow show `Nodes#/LiveNodes#` next to Views from mesh SSoT. Nodes = human mesh users + human uses (`j.nodes` preferred; fallback sum or legacy `j.live_nodes` if `nodes` absent). Live Nodes = presence (`j.human_mesh_users`, or `j.live_nodes` only when `j.nodes` is also present). Softwares list: live `GET /v1/software` designed-purpose `one_line` / `description` (42 catalog products; VeilLock local_only; Whitestone Worker-only, FragGate status none). In-runtime placements AZVPN / MMConsensus / ToolBench / ZKAttest door to `#task-*`. Softwares UI is name + designed-purpose one_line. Plain A–Z → Gate A–Z → Lock A–Z (StaticClock is Plain). Cap-7 shuffle is MirageGrid LIVE (`https://miragegrid.vibelock.workers.dev` `/v1/health` · `/bridge` · `/v1/shuffle`); `resolves_to_hub: false`.
+Homepage and Softwares-tab brandrow show `Nodes#/LiveNodes#` next to Views from mesh SSoT plus local human page-viewer presence. Nodes = human mesh users + human uses (`j.nodes` preferred; fallback sum or legacy `j.live_nodes` if `nodes` absent). Live Nodes = mesh presence plus current azieleliab.com viewers (`site_live_nodes`). Prefer runtime `/v1/mesh` `live_nodes` once it aggregates fleet viewers. HDJ viewers stay off this clock. Softwares list: live `GET /v1/software` designed-purpose `one_line` / `description` (42 catalog products; VeilLock local_only; Whitestone Worker-only, FragGate status none). In-runtime placements AZVPN / MMConsensus / ToolBench / ZKAttest door to `#task-*`. Softwares UI is name + designed-purpose one_line. Plain A–Z → Gate A–Z → Lock A–Z (StaticClock is Plain). Cap-7 shuffle is MirageGrid LIVE (`https://miragegrid.vibelock.workers.dev` `/v1/health` · `/bridge` · `/v1/shuffle`); `resolves_to_hub: false`.
 
 Agent skill for the runtime door: https://www.azieleliab.com/runtime/v1/skill  
 Origin skill: https://aziel-runtime.vibelock.workers.dev/v1/skill
