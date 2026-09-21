@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import worker, { apexRedirect, donateCacheBustLocation, handleRequest } from "../src/index.js";
 import { donateHtml, embryoLockHtml, ecosystemHtml, hashRedirectScript, notFoundHtml, pageHtml, receiptsHtml, sectionPageHtml, spineNav, whoHtml } from "../src/page.js";
 import { incrementViews, memoryKv } from "../src/views.js";
-import { CATALOG_KV_KEY, DONATE_HTML_CACHE, HTML_CACHE, SEO_CACHE, memoryCache } from "../src/edgeCache.js";
+import { CATALOG_KV_KEY, DONATE_HTML_CACHE, HTML_CACHE, MESH_CACHE_URL, MESH_HTTP_CACHE, MESH_TTL_SEC, SEO_CACHE, cacheRequest, memoryCache } from "../src/edgeCache.js";
 import { catalogFromLiveDoc, catalogHasThisIs, liveProductHref, softwareIndexBody } from "../src/liveCatalog.js";
 import { FANOUT_MAX, allowOriginRefresh, isOperator } from "../src/costGuard.js";
 import { aiTxt, citeDoc, jsonLd, llmsTxt, robotsTxt, sitemapXml, softwareNodeId } from "../src/seo.js";
@@ -1278,7 +1278,7 @@ describe("SEO routes", () => {
     assert.ok(html.includes('content="QNM-BUILD-1.0"'));
     assert.ok(html.includes('id="aziel-live-nodes"'));
     assert.ok(html.includes(">0/0<"));
-    assert.ok(html.includes('title="Nodes: human mesh users + human uses. Live Nodes: presence + current azieleliab.com viewers."'));
+    assert.ok(html.includes('title="Nodes: human mesh users + human uses. Live Nodes: human mesh users + site viewers on godlock.uk, azieleliab.com, and azielcorpuslibrary.net."'));
     assert.ok(!html.includes(">mesh off<"));
     assert.ok(!html.includes(">Live Nodes · off<"));
     assert.ok(!html.includes("Live Nodes · "));
@@ -2282,20 +2282,21 @@ describe("pageviews", () => {
     const human = await fetchPath("/", { headers: { "user-agent": "Mozilla/5.0" } }, env);
     assert.equal(human.status, 200);
     const html = await human.text();
-    assert.ok(html.includes(">0/1<"));
+    assert.ok(html.includes(">0/0<"));
     assert.ok(html.includes("/heartbeat"));
+    assert.doesNotMatch(html, /\(mesh\|\|0\)\+site|mesh_live_nodes/);
     assert.doesNotMatch(html, /hedidntjump\.com\/count|hedidntjump\.com\/heartbeat/i);
 
     const bot = await fetchPath("/", { headers: { "user-agent": "GPTBot/1.0" } }, env);
     const botHtml = await bot.text();
-    assert.ok(botHtml.includes(">0/1<"));
+    assert.ok(botHtml.includes(">0/0<"));
 
     const count = await fetchPath("/count", { headers: { "user-agent": "Mozilla/5.0" } }, env);
     assert.equal(count.status, 200);
     const clock = await count.json();
     assert.equal(clock.ok, true);
     assert.equal(clock.site_live_nodes, 1);
-    assert.equal(clock.live_nodes, 1);
+    assert.equal(clock.live_nodes, 0);
     assert.equal(clock.hdj_excluded, true);
     assert.equal(clock.hdj, false);
     assert.equal(clock.invent_users, false);
@@ -2375,9 +2376,101 @@ describe("pageviews", () => {
     assert.equal(ping.live_nodes, 12);
     assert.equal(ping.site_live_nodes, 1);
     assert.equal(ping.includes_site_viewers, true);
+    assert.notEqual(ping.live_nodes, ping.site_live_nodes);
+    assert.notEqual(ping.live_nodes, 41);
     assert.equal(posts.length, 2);
     assert.equal(posts[1].viewers, 1);
     assert.equal(posts[1].kind, "human-page");
+  });
+
+  it("shares one fresh runtime live_nodes across /count, /heartbeat, and /v1/mesh", async () => {
+    assert.equal(MESH_TTL_SEC, 3);
+    assert.equal(MESH_HTTP_CACHE, "no-store");
+    let fleet = 39;
+    let meshGets = 0;
+    const cache = memoryCache();
+    const env = {
+      __CACHE: cache,
+      VIEWS: memoryKv(0),
+      AZIEL_RUNTIME: {
+        async fetch(req) {
+          const url = new URL(req.url);
+          if (req.method === "POST" && url.pathname === "/v1/mesh/site-presence") {
+            return new Response(JSON.stringify({ ok: true }), { status: 200 });
+          }
+          if (req.method === "GET" && url.pathname === "/v1/mesh") {
+            meshGets += 1;
+            return new Response(JSON.stringify({
+              ok: true,
+              enabled: true,
+              nodes: 28251,
+              live_nodes: fleet,
+              human_mesh_users: 0,
+              human_uses: 28251,
+              software_nodes: 41,
+              site_live_viewers: fleet,
+              live_nodes_plane: "human-mesh-users-site-viewers",
+              live_nodes_includes_viewers: true,
+              includes_site_viewers: true,
+              site_live_viewers_components: {
+                "godlock.uk": 17,
+                "azieleliab.com": 5,
+                "azielcorpuslibrary.net": 17,
+              },
+            }), { status: 200, headers: { "content-type": "application/json" } });
+          }
+          return new Response(JSON.stringify({ error: "not found" }), { status: 404 });
+        },
+      },
+    };
+
+    const count = await fetchPath("/count", { headers: { "user-agent": "Mozilla/5.0" } }, env);
+    const beat = await fetchPath("/heartbeat", {
+      method: "POST",
+      headers: { "user-agent": "Mozilla/5.0", "content-type": "application/json" },
+      body: "{}",
+    }, env);
+    const mesh = await fetchPath("/v1/mesh", { headers: { "user-agent": "Mozilla/5.0" } }, env);
+    const countBody = await count.json();
+    const beatBody = await beat.json();
+    const meshBody = await mesh.json();
+    assert.equal(count.headers.get("cache-control"), "no-store");
+    assert.equal(beat.headers.get("cache-control"), "no-store");
+    assert.equal(mesh.headers.get("cache-control"), "no-store");
+    assert.equal(countBody.live_nodes, 39);
+    assert.equal(beatBody.live_nodes, 39);
+    assert.equal(meshBody.live_nodes, 39);
+    assert.equal(meshBody.origin.live_nodes, 39);
+    assert.equal(typeof meshBody.nodes, "number");
+    assert.equal(meshBody.nodes, 28251);
+    assert.equal(countBody.nodes, 28251);
+    assert.equal(meshBody.site_live_viewers, 39);
+    assert.equal(meshBody.live_nodes_plane, "human-mesh-users-site-viewers");
+    assert.equal(meshBody.mesh_cache_at, undefined);
+    assert.equal(countBody.mesh_cache_at, undefined);
+    assert.equal(countBody.live_nodes, meshBody.live_nodes);
+    assert.equal(beatBody.live_nodes, meshBody.live_nodes);
+    assert.equal(beatBody.site_live_nodes, 1);
+    assert.notEqual(beatBody.live_nodes, beatBody.site_live_nodes);
+    assert.notEqual(countBody.live_nodes, countBody.software_nodes);
+    assert.equal(countBody.hdj_excluded, true);
+    assert.equal(meshGets, 1);
+
+    const hit = await cache.match(cacheRequest(MESH_CACHE_URL));
+    const cached = await hit.json();
+    cached.mesh_cache_at = Date.now() - (MESH_TTL_SEC + 1) * 1000;
+    await cache.put(
+      cacheRequest(MESH_CACHE_URL),
+      new Response(JSON.stringify(cached), { status: 200, headers: { "content-type": "application/json" } }),
+    );
+    fleet = 24;
+    const again = await fetchPath("/count", { headers: { "user-agent": "Mozilla/5.0" } }, env);
+    const meshAgain = await fetchPath("/v1/mesh", { headers: { "user-agent": "Mozilla/5.0" } }, env);
+    const beatAgain = await fetchPath("/v1/heartbeat", { headers: { "user-agent": "Mozilla/5.0" } }, env);
+    assert.equal((await again.json()).live_nodes, 24);
+    assert.equal((await meshAgain.json()).live_nodes, 24);
+    assert.equal((await beatAgain.json()).live_nodes, 24);
+    assert.equal(meshGets, 2);
   });
 });
 
@@ -2956,16 +3049,16 @@ describe("suite node mesh", () => {
     assert.equal(meshQuietLabel(null), "");
     assert.equal(meshQuietLabel({ origin: { enabled: true } }), "mesh on");
     assert.equal(liveNodesLabel(null), "0/0");
-    assert.equal(liveNodesLabel({ origin: { enabled: true, live_nodes: 40 } }), "40/0");
+    assert.equal(liveNodesLabel({ origin: { enabled: true, live_nodes: 40 } }), "40/40");
     assert.equal(meshNodesCount({ origin: { enabled: true, live_nodes: 40 } }), 40);
-    assert.equal(meshLiveNodesCount({ origin: { enabled: true, live_nodes: 40 } }), 0);
+    assert.equal(meshLiveNodesCount({ origin: { enabled: true, live_nodes: 40 } }), 40);
     assert.equal(liveNodesCount({ enabled: true, rollup: { live: 40 } }), 0);
     assert.equal(liveNodesCount({ enabled: true, rollup: { mesh: 3, live: 41 }, software_nodes: 41 }), 3);
     assert.equal(liveNodesCount({ enabled: true, software_nodes: 41, nodes: [{}, {}, {}] }), 0);
     assert.equal(meshNodesCount({ enabled: true, software_nodes: 41, nodes: [{}, {}, {}] }), 0);
     assert.equal(liveNodesCount({ enabled: true, human_mesh_users: 2, human_uses: 5 }), 7);
     assert.equal(meshNodesCount({ enabled: true, human_mesh_users: 2, human_uses: 5 }), 7);
-    assert.equal(meshLiveNodesCount({ enabled: true, human_mesh_users: 2, human_uses: 5 }), 2);
+    assert.equal(meshLiveNodesCount({ enabled: true, human_mesh_users: 2, human_uses: 5 }), 0);
     assert.equal(liveNodesCount({ enabled: true, live_nodes: 0, software_nodes: 41 }), 0);
     assert.equal(
       liveNodesCount({
@@ -2982,14 +3075,17 @@ describe("suite node mesh", () => {
       liveNodesLabel({
         origin: {
           enabled: true,
-          live_nodes: 27147,
+          nodes: 27147,
+          live_nodes: 39,
           human_mesh_users: 0,
           human_uses: 27147,
+          site_live_viewers: 39,
+          live_nodes_plane: "human-mesh-users-site-viewers",
           software_nodes: 41,
           instance_nodes: 0,
         },
       }),
-      "27147/0",
+      "27147/39",
     );
     assert.equal(
       liveNodesLabel({
@@ -3010,14 +3106,22 @@ describe("suite node mesh", () => {
       2,
     );
     assert.equal(
+      meshLiveNodesCount({ enabled: true, live_nodes: 4, software_nodes: 41, active_nodes: 41 }),
+      4,
+    );
+    assert.equal(
+      meshNodesCount({ enabled: true, nodes: 9, software_nodes: 41, active_nodes: 80 }),
+      9,
+    );
+    assert.equal(
       meshLiveNodesCount(overlaySitePresence({ enabled: true, human_mesh_users: 2, human_uses: 5 }, 3)),
-      5,
+      0,
     );
     assert.equal(
       liveNodesLabel(overlaySitePresence({
         origin: { enabled: true, nodes: 28033, live_nodes: 4, human_mesh_users: 4, human_uses: 28029 },
       }, 3)),
-      "28033/7",
+      "28033/4",
     );
     assert.equal(
       meshLiveNodesCount(overlaySitePresence({
@@ -3046,13 +3150,12 @@ describe("suite node mesh", () => {
     assert.equal(ssot.live_nodes, 27147);
     assert.equal(ssot.human_mesh_users, 0);
     assert.equal(ssot.human_uses, 27147);
-    assert.equal(ssot.live_nodes, ssot.human_mesh_users + ssot.human_uses);
+    assert.notEqual(ssot.live_nodes, ssot.software_nodes);
     assert.equal(ssot.software_nodes, 41);
     assert.equal(ssot.instance_nodes, 0);
     assert.equal(ssot.software_nodes_excluded, true);
     assert.equal(ssot.instance_nodes_excluded, true);
     assert.equal(ssot.human_uses_source, "uses.total");
-    assert.notEqual(ssot.live_nodes, ssot.software_nodes);
     assert.equal(QNM_SPEC, "QNM-BUILD-1.0");
     assert.equal(QNM_ENABLE_BEARER, "suite-presence");
     const off = meshStatusBody(null);
@@ -3130,6 +3233,10 @@ describe("suite node mesh", () => {
     const meshDoc = await mesh.json();
     assert.equal(meshDoc.ok, true);
     assert.equal(meshDoc.live_nodes, 0);
+    assert.equal(meshDoc.nodes, 0);
+    assert.equal(typeof meshDoc.nodes, "number");
+    assert.equal(meshDoc.site_live_viewers, 0);
+    assert.equal(meshDoc.live_nodes_plane, "human-mesh-users-site-viewers");
     assert.equal(meshDoc.human_mesh_users, 0);
     assert.equal(meshDoc.human_uses, 0);
     assert.match(meshDoc.live_nodes_note, /human mesh users/);
@@ -3230,11 +3337,18 @@ describe("suite node mesh", () => {
     assert.equal(doc.enabled, true);
     assert.equal(doc.mesh, "on");
     assert.equal(doc.live_nodes, 3);
+    assert.equal(typeof doc.nodes, "number");
+    assert.equal(doc.nodes, 3);
+    assert.equal(doc.site_live_viewers, 0);
+    assert.equal(doc.live_nodes_plane, "human-mesh-users-site-viewers");
+    assert.equal(doc.rollup.live, doc.live_nodes);
+    assert.notEqual(doc.rollup.live, doc.software_nodes);
     assert.equal(doc.human_mesh_users, 2);
     assert.equal(doc.human_uses, 1);
     assert.equal(doc.software_nodes, 41);
     assert.equal(doc.instance_nodes, 0);
-    assert.equal(doc.live_nodes, doc.human_mesh_users + doc.human_uses);
+    assert.equal(doc.live_nodes, doc.origin.live_nodes);
+    assert.notEqual(doc.live_nodes, doc.software_nodes);
     assert.deepEqual(doc.bearers, ["suite-presence"]);
     assert.equal(doc.origin.live_nodes, 3);
 
@@ -3251,7 +3365,7 @@ describe("suite node mesh", () => {
     assert.equal(index.mesh.human_mesh_users, 2);
     assert.equal(index.mesh.software_nodes, 41);
     assert.equal(index.mesh.instance_nodes, 0);
-    assert.equal(index.mesh.live_nodes, index.mesh.human_mesh_users + index.mesh.human_uses);
+    assert.notEqual(index.mesh.live_nodes, index.mesh.software_nodes);
     assert.deepEqual(index.mesh.bearers, ["suite-presence"]);
     assert.equal(index.mesh.qns_cd_spec, "QNS-CD-1.0");
     assert.equal(index.mesh.default, "on");
@@ -3259,22 +3373,36 @@ describe("suite node mesh", () => {
     const landing = await fetchPath("/", { headers: { "user-agent": "Mozilla/5.0" } }, env);
     const html = await landing.text();
     assert.ok(html.includes(">mesh on<"));
-    assert.ok(html.includes(">3/2<"));
+    assert.ok(html.includes(">3/3<"));
     assert.ok(!html.includes(">Live Nodes · 3<"));
     assert.ok(!html.includes(">Live Nodes · 41<"));
     assert.ok(!html.includes(">41/"));
     assert.ok(html.includes('id="aziel-live-nodes"'));
-    assert.ok(html.includes('title="Nodes: human mesh users + human uses. Live Nodes: presence + current azieleliab.com viewers."'));
+    assert.ok(html.includes('title="Nodes: human mesh users + human uses. Live Nodes: human mesh users + site viewers on godlock.uk, azieleliab.com, and azielcorpuslibrary.net."'));
     assert.ok(html.includes('name="aziel-mesh-status"'));
     const softwarePage = await fetchPath("/software", {}, env);
     const softwareHtml = await softwarePage.text();
-    assert.ok(softwareHtml.includes(">3/2<"));
+    assert.ok(softwareHtml.includes(">3/3<"));
     assert.ok(!softwareHtml.includes(">Live Nodes · 3<"));
     assert.ok(!softwareHtml.includes(">Live Nodes · 41<"));
     assert.ok(softwareHtml.includes('href="/v1/mesh"'));
     const landingSoft = softwareHtml.match(/<div class="soft-line">[\s\S]*?<\/div>/);
     assert.ok(landingSoft);
     assert.doesNotMatch(landingSoft[0], /Live Nodes/i);
+
+    const sameOrigin = await fetchPath("/v1/mesh", {}, env);
+    const sameOriginDoc = await sameOrigin.json();
+    assert.equal(typeof sameOriginDoc.nodes, "number");
+    assert.equal(sameOriginDoc.nodes, 3);
+    assert.equal(sameOriginDoc.live_nodes, 3);
+    assert.equal(sameOriginDoc.live_nodes_plane, "human-mesh-users-site-viewers");
+    assert.notEqual(sameOriginDoc.live_nodes, sameOriginDoc.software_nodes);
+
+    const runtimeMesh = await fetchPath("/runtime/v1/mesh", {}, env);
+    const runtimeMeshDoc = await runtimeMesh.json();
+    assert.equal(runtimeMeshDoc.nodes, sameOriginDoc.nodes);
+    assert.equal(runtimeMeshDoc.live_nodes, sameOriginDoc.live_nodes);
+    assert.equal(runtimeMeshDoc.site_live_viewers, sameOriginDoc.site_live_viewers);
 
     const runtimeStatus = await fetchPath("/runtime/v1/mesh/status", {}, env);
     assert.equal(runtimeStatus.status, 200);

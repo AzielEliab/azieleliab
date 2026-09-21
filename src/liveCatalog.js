@@ -258,7 +258,7 @@ function extrasFromLiveDoc(doc, seen) {
       enabled_default: doc.mesh.enabled_default === true ? true : false,
       path: doc.mesh.path || "/v1/mesh",
       spec: doc.mesh.spec || "QNM-BUILD-1.0",
-      note: doc.mesh.note || "Suite rollup. live_nodes counts human mesh users plus cited human uses. software_nodes never feeds Live Nodes. Read-only suite presence is on (display from runtime GET /v1/mesh). GET never enables. Operator-armed Node Gate + neighbor heal + network ON. AZVPN auto_use + vpn:true. Channel plane ON cites; worker_hardware:false.",
+      note: doc.mesh.note || "Suite rollup. live_nodes is runtime GET /v1/mesh (human mesh users plus site viewers on godlock.uk, azieleliab.com, and azielcorpuslibrary.net). software_nodes never feeds Live Nodes. Read-only suite presence is on (display from runtime GET /v1/mesh). GET never enables. Operator-armed Node Gate + neighbor heal + network ON. AZVPN auto_use + vpn:true. Channel plane ON cites; worker_hardware:false.",
     });
   }
 

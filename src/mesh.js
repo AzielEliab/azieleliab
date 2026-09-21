@@ -2,14 +2,14 @@
  * Suite decentralized node mesh doors for www.azieleliab.com.
  * Mesh SSoT is Worker GET /v1/mesh. Chrome dual counter:
  * Nodes = human_mesh_users + human_uses (j.nodes preferred; fallback
- * sum or legacy j.live_nodes if nodes absent). Live Nodes = presence
- * (j.human_mesh_users, or j.live_nodes only when j.nodes is also
- * present after the runtime break) plus current azieleliab.com human
- * page viewers (operator lock 2026-09-21). Prefer runtime live_nodes
- * once includes_site_viewers / site_live_viewers is present. Until then
- * local + mesh presence. Local updates best-effort POST site-presence.
- * Never invent bots. Exclude HDJ. software_nodes never feeds the
- * pill. Also fetches /v1/mesh/status and /v1/mesh/nodes
+ * sum or legacy j.live_nodes if nodes absent). Live Nodes = runtime
+ * field live_nodes (plane human-mesh-users-site-viewers): human mesh
+ * users plus site viewers on godlock.uk + azieleliab.com +
+ * azielcorpuslibrary.net. Operator lock 2026-09-21. The public pill
+ * does not add local site_live_nodes, software_nodes, or a second
+ * formula. Local updates best-effort POST site-presence so runtime
+ * can count this host. Never invent bots. Exclude HDJ.
+ * Also fetches /v1/mesh/status and /v1/mesh/nodes
  * via AZIEL_RUNTIME (else HTTPS origin). Read-only suite presence is
  * on — display from runtime. GET never enables.
  * QNS-CD-1.0 is hub cite / mesh.js cross-map only (photon QNS1 packet
@@ -143,21 +143,21 @@ export const VPN_CITE = Object.freeze({
 
 export const MESH_DEFAULT = "on";
 
-/** Public Live Nodes = human mesh users + cited human uses. Never Softwares. Runtime #151 SoT. */
-export const LIVE_NODES_PLANE = "human-mesh-users-uses";
+/** Public Live Nodes = runtime live_nodes. Fleet viewers. Never Softwares. */
+export const LIVE_NODES_PLANE = "human-mesh-users-site-viewers";
 export const LIVE_NODES_NOTE =
-  "Public Live Nodes (live_nodes / rollup.mesh) count human mesh users (join/heartbeat/presence with human bearers) plus the cited human uses signal (USES / human_uses). Isolated humans stay on isolated_nodes. Not Softwares catalog length. Not downloaded Softwares instances. Not software_nodes. software_nodes is the {slug}-worker roster and never feeds this pill. Uses are interaction counters, not unique people — incomplete or unbound telemetry is reported honestly (0 + complete=false). Live Nodes does not invent users. Zero is honest when no humans are present and uses are 0/unbound.";
+  "Public Live Nodes (live_nodes) equal runtime GET /v1/mesh live_nodes: human mesh users (join/heartbeat/presence with human bearers) plus concurrent website viewers (site_live_viewers) on godlock.uk, azieleliab.com, and azielcorpuslibrary.net. Isolated humans stay on isolated_nodes. HDJ is excluded. Not Softwares catalog length. Not downloaded Softwares instances. Not software_nodes. software_nodes is the {slug}-worker roster and never feeds this pill. The public pill does not add a local-only site_live_nodes count. Live Nodes does not invent users. Zero is honest when runtime live_nodes is 0.";
 export const SOFTWARE_NODES_NOTE =
   "software_nodes / rollup.software count Softwares product Workers ({slug}-worker) from suite-presence fan-out. They may appear in the mesh roster. They must never feed public Live Nodes.";
 export const LIVE_NODES_LLMS =
-  "live_nodes = human mesh users + cited human uses; software_nodes never feeds Live Nodes; GET never enables";
+  "live_nodes = runtime fleet (human mesh users + site viewers on godlock.uk + azieleliab.com + azielcorpuslibrary.net); software_nodes never feeds Live Nodes; HDJ excluded; GET never enables";
 
-/** Homepage chrome title. Definitions only — no what-it-is-not coaching. */
+/** Homepage chrome title. Fleet Live Nodes, not this site alone. */
 export const DUAL_NODES_TITLE =
-  "Nodes: human mesh users + human uses. Live Nodes: presence + current azieleliab.com viewers.";
+  "Nodes: human mesh users + human uses. Live Nodes: human mesh users + site viewers on godlock.uk, azieleliab.com, and azielcorpuslibrary.net.";
 
 export const MESH_NOTE =
-  "QNM-BUILD-1.0 suite rollup. live_nodes counts human mesh users plus cited human uses (USES). software_nodes is the {slug}-worker roster and never feeds Live Nodes. Read-only suite presence is on — display from runtime GET /v1/mesh. GET never enables. Operator enable requires a declared bearer (example: suite-presence). Mesh ON. Operator-armed Node Gate + neighbor heal + network ON (2026-09-17). AZVPN auto_use + vpn:true (HTTPS/WS REAL; WireGuard/OpenVPN SLOT; GET cites only, never opens a session). Channel plane wifi/bluetooth/rf/photon ON cites; worker_hardware:false. Cross-map QNS-CD-1.0 (photon QNS1 packet transfer). Local qnsd is qnm-node only. Author Aziel Eliab only.";
+  "QNM-BUILD-1.0 suite rollup. live_nodes is runtime GET /v1/mesh (human mesh users plus site viewers on godlock.uk, azieleliab.com, and azielcorpuslibrary.net). software_nodes is the {slug}-worker roster and never feeds Live Nodes. Read-only suite presence is on — display from runtime GET /v1/mesh. GET never enables. Operator enable requires a declared bearer (example: suite-presence). Mesh ON. Operator-armed Node Gate + neighbor heal + network ON (2026-09-17). AZVPN auto_use + vpn:true (HTTPS/WS REAL; WireGuard/OpenVPN SLOT; GET cites only, never opens a session). Channel plane wifi/bluetooth/rf/photon ON cites; worker_hardware:false. Cross-map QNS-CD-1.0 (photon QNS1 packet transfer). Local qnsd is qnm-node only. Author Aziel Eliab only.";
 
 function qnsCiteFields() {
   return {
@@ -263,16 +263,28 @@ function siteLiveFrom(mesh) {
 }
 
 /**
- * Live Nodes (clock right side) = runtime live_nodes when that document
- * includes site viewers. Otherwise mesh presence plus local human page viewers.
+ * Public Live Nodes = runtime live_nodes.
+ * A hub overlay publishes that field on the top document. Local
+ * site_live_nodes is never added. software_nodes is never used.
  */
 export function meshLiveNodesCount(mesh) {
   const src = meshSource(mesh);
-  if (runtimeAggregatesFleetViewers(src)) {
-    const fleet = finiteCount(src.live_nodes);
+  const top = mesh && mesh !== src && typeof mesh === "object" ? mesh : null;
+  if (top && top.site_presence_local === true) {
+    const published = finiteCount(top.live_nodes);
+    if (published != null) return published;
+  }
+  const docs = meshDocs(mesh);
+  for (const doc of docs) {
+    if (doc.site_presence_local === true) continue;
+    const fleet = finiteCount(doc.live_nodes);
     if (fleet != null) return fleet;
   }
-  return rawMeshPresence(mesh) + siteLiveFrom(mesh);
+  for (const doc of docs) {
+    const fleet = finiteCount(doc.live_nodes);
+    if (fleet != null) return fleet;
+  }
+  return 0;
 }
 
 /** Stamp local site_live_nodes onto a mesh doc without rewriting origin. */
@@ -283,7 +295,9 @@ export function overlaySitePresence(doc, siteLive) {
   base.site_presence_local = true;
   base.hdj_excluded = HDJ_EXCLUDED;
   base.mesh_live_nodes = rawMeshPresence(base);
-  base.live_nodes_includes_viewers = runtimeAggregatesFleetViewers(meshSource(base));
+  const included = runtimeAggregatesFleetViewers(meshSource(base));
+  base.live_nodes_includes_viewers = included;
+  base.includes_site_viewers = included;
   const prior = base.live_nodes_components && typeof base.live_nodes_components === "object" ? base.live_nodes_components : {};
   base.live_nodes_components = {
     ...prior,
@@ -345,6 +359,7 @@ export function humanUses(mesh) {
   return 0;
 }
 
+/** rollup.live follows runtime live_nodes. software_nodes and active_nodes never fill it. */
 function rollupCounts(origin) {
   const src = origin && typeof origin === "object" ? origin : {};
   const nested = src.rollup && typeof src.rollup === "object" ? src.rollup : {};
@@ -361,20 +376,27 @@ function liveNodesFields(origin, enabled) {
   const src = origin && typeof origin === "object" ? origin : {};
   const users = enabled ? humanMeshUsers(src) : 0;
   const uses = enabled ? humanUses(src) : 0;
+  const included = enabled && runtimeAggregatesFleetViewers(src);
+  const siteViewers = finiteCount(src.site_live_viewers);
   const components =
     src.live_nodes_components && typeof src.live_nodes_components === "object"
       ? src.live_nodes_components
       : {
           human_mesh_users: users,
           human_uses: uses,
+          human_uses_excluded: true,
           software_nodes_excluded: true,
           instance_nodes_excluded: true,
+          hedidntjump_excluded: HDJ_EXCLUDED,
           invent_users: false,
         };
   return {
     live_nodes: enabled ? liveNodesCount(src) : 0,
     live_nodes_note: liveNodesNote(src),
     live_nodes_plane: typeof src.live_nodes_plane === "string" && src.live_nodes_plane ? src.live_nodes_plane : LIVE_NODES_PLANE,
+    live_nodes_includes_viewers: included,
+    includes_site_viewers: included,
+    site_live_viewers: siteViewers == null ? 0 : siteViewers,
     human_mesh_users: users,
     human_uses: uses,
     human_uses_complete: src.human_uses_complete === true,
@@ -438,17 +460,17 @@ export const MESH_OPENAPI_PATHS = {
   [MESH_PATH]: MESH_OPENAPI_GET(
     "getMesh",
     "mesh",
-    "QNM-BUILD-1.0 Live Nodes SoT (live_nodes = human mesh users + cited human uses; software_nodes never feeds Live Nodes; not exec API / not live_doors / not Cap-7). Read-only suite presence is on (display from runtime GET /v1/mesh). GET never enables. Operator enable requires a declared bearer (example: suite-presence). Operator-armed Node Gate + neighbor heal + network ON. AZVPN auto_use + vpn:true (HTTPS/WS REAL; WG/OpenVPN SLOT). Channel plane wifi/bt/rf/photon ON cites; worker_hardware:false. Cites QNS-CD-1.0. No public qnsd proxy. Author Aziel Eliab.",
+    "QNM-BUILD-1.0 Live Nodes SoT (live_nodes = runtime fleet: human mesh users + site viewers on godlock.uk + azieleliab.com + azielcorpuslibrary.net; software_nodes never feeds Live Nodes; HDJ excluded; not exec API / not live_doors / not Cap-7). Read-only suite presence is on (display from runtime GET /v1/mesh). GET never enables. Operator enable requires a declared bearer (example: suite-presence). Operator-armed Node Gate + neighbor heal + network ON. AZVPN auto_use + vpn:true (HTTPS/WS REAL; WG/OpenVPN SLOT). Channel plane wifi/bt/rf/photon ON cites; worker_hardware:false. Cites QNS-CD-1.0. No public qnsd proxy. Author Aziel Eliab.",
   ),
   [MESH_STATUS_PATH]: MESH_OPENAPI_GET(
     "getMeshStatus",
     "mesh status",
-    "QNM-BUILD-1.0 suite rollup status (live_nodes = human mesh users + cited human uses; software_nodes never feeds Live Nodes; not exec API / not live_doors / not Cap-7). Read-only suite presence is on (display from runtime). GET never enables. Operator enable requires a declared bearer (example: suite-presence). Operator-armed Node Gate + neighbor heal + network ON. AZVPN auto_use + vpn:true (HTTPS/WS REAL; WG/OpenVPN SLOT). Channel plane wifi/bt/rf/photon ON cites; worker_hardware:false. Cites QNS-CD-1.0. No public qnsd proxy. Author Aziel Eliab.",
+    "QNM-BUILD-1.0 suite rollup status (live_nodes = runtime fleet: human mesh users + site viewers on godlock.uk + azieleliab.com + azielcorpuslibrary.net; software_nodes never feeds Live Nodes; HDJ excluded; not exec API / not live_doors / not Cap-7). Read-only suite presence is on (display from runtime). GET never enables. Operator enable requires a declared bearer (example: suite-presence). Operator-armed Node Gate + neighbor heal + network ON. AZVPN auto_use + vpn:true (HTTPS/WS REAL; WG/OpenVPN SLOT). Channel plane wifi/bt/rf/photon ON cites; worker_hardware:false. Cites QNS-CD-1.0. No public qnsd proxy. Author Aziel Eliab.",
   ),
   [MESH_NODES_PATH]: MESH_OPENAPI_GET(
     "getMeshNodes",
     "mesh nodes",
-    "QNM-BUILD-1.0 node roster. Chrome Nodes/Live Nodes clock from GET /v1/mesh (nodes = users+uses; Live Nodes = presence). Roster length is not the pill. Display from runtime (0/0 when unavailable). GET never enables. Cross-map QNS-CD-1.0. No public qnsd proxy. Author Aziel Eliab.",
+    "QNM-BUILD-1.0 node roster. Chrome Nodes/Live Nodes clock from GET /v1/mesh (nodes = users+uses; Live Nodes = runtime live_nodes). Roster length is not the pill. Display from runtime (0/0 when unavailable). GET never enables. Cross-map QNS-CD-1.0. No public qnsd proxy. Author Aziel Eliab.",
   ),
 };
 
@@ -524,6 +546,7 @@ function meshBase(origin) {
     mesh_nodes_runtime: MESH_NODES_RUNTIME,
     ...qnsCiteFields(),
     ...liveNodesFields(origin, enabled),
+    nodes: enabled ? meshNodesCount(origin) : 0,
     spore: sporeCite(origin),
     re_cold_store: reColdStoreCite(origin),
   };
@@ -542,13 +565,31 @@ export function meshNodesBody(origin) {
   return body;
 }
 
+function meshCacheFresh(doc) {
+  if (!doc || doc.ok !== true) return false;
+  const at = Number(doc.mesh_cache_at);
+  if (!Number.isFinite(at)) return false;
+  return Date.now() - at <= MESH_TTL_SEC * 1000;
+}
+
+function meshCacheRelease(doc) {
+  if (doc && typeof doc === "object" && "mesh_cache_at" in doc) delete doc.mesh_cache_at;
+  return doc;
+}
+
 async function loadMeshDoc(env, ctx, opts, path, cacheUrl, wrap) {
   const packed = await readJsonSnapshot(env, { cacheUrl });
-  if (packed && packed.ok) return packed;
+  if (meshCacheFresh(packed)) return meshCacheRelease(packed);
   const request = opts && opts.request;
   const allowFetch = !request || allowOriginRefresh(request, env, "mesh");
-  const body = wrap(allowFetch ? await fetchRuntimeJson(path, env, { loose: true }) : null);
-  const write = writeJsonSnapshot(env, ctx, { cacheUrl, ttlSec: MESH_TTL_SEC }, body);
+  const fetched = allowFetch ? await fetchRuntimeJson(path, env, { loose: true }) : null;
+  if (!fetched) {
+    if (packed && packed.ok === true) return meshCacheRelease(packed);
+    return wrap(null);
+  }
+  const body = wrap(fetched);
+  const cached = { ...body, mesh_cache_at: Date.now() };
+  const write = writeJsonSnapshot(env, ctx, { cacheUrl, ttlSec: MESH_TTL_SEC }, cached);
   if (write && typeof write.then === "function") await write;
   return body;
 }

@@ -624,61 +624,21 @@ const LIVE_NODES_SCRIPT = `<script>
   var el=document.getElementById("aziel-live-nodes");
   if(!el||!el.textContent)return;
   function finite(n){n=Number(n);return Number.isFinite(n)&&n>=0?n:null}
-  function numericNodes(doc){
-    if(!doc||typeof doc!=="object"||Array.isArray(doc.nodes))return null;
-    if(typeof doc.nodes==="string"&&!/^\\d+(\\.\\d+)?$/.test(String(doc.nodes).trim()))return null;
-    return finite(doc.nodes);
-  }
-  function nodesCount(d,src){
-    var docs=[d,src],i,named,u,s,legacy;
-    for(i=0;i<docs.length;i++){named=numericNodes(docs[i]);if(named!=null)return named}
-    for(i=0;i<docs.length;i++){
-      if(!docs[i])continue;
-      u=finite(docs[i].human_mesh_users);s=finite(docs[i].human_uses);
-      if(u!=null||s!=null)return (u||0)+(s||0);
-    }
-    for(i=0;i<docs.length;i++){legacy=docs[i]?finite(docs[i].live_nodes):null;if(legacy!=null)return legacy}
-    return 0;
-  }
-  function meshLive(d,src){
-    var docs=[d,src],i,u,live;
-    for(i=0;i<docs.length;i++){u=docs[i]?finite(docs[i].human_mesh_users):null;if(u!=null)return u}
-    for(i=0;i<docs.length;i++){
-      if(!docs[i]||numericNodes(docs[i])==null)continue;
-      live=finite(docs[i].live_nodes);if(live!=null)return live;
-    }
-    return 0;
-  }
-  function runtimeIncludesSite(d,src){
-    if(d&&(d.live_nodes_includes_viewers||d.includes_site_viewers))return true;
-    if(src&&(src.includes_site_viewers||src.live_nodes_includes_viewers))return true;
-    if(src&&finite(src.site_live_viewers)!=null)return true;
-    var plane=String((src&&src.live_nodes_plane)||(d&&d.live_nodes_plane)||"");
-    if(/viewer|site-live|page-view|website/i.test(plane))return true;
-    var c=src&&src.live_nodes_components;
-    if(c&&finite(c.site_live_viewers)!=null)return true;
-    return false;
-  }
-  function liveCount(d,src){
-    if(runtimeIncludesSite(d,src)){
-      var fleet=finite(src&&src.live_nodes);
-      if(fleet==null) fleet=finite(d&&d.live_nodes);
-      if(fleet==null) fleet=meshLive(d,src);
-      return fleet||0;
-    }
-    var mesh=finite(d&&d.mesh_live_nodes);
-    if(mesh==null) mesh=meshLive(d,src);
-    var site=finite(d&&d.site_live_nodes);
-    if(site==null) site=0;
-    return (mesh||0)+site;
+  function clockField(doc,key){
+    if(!doc||typeof doc!=="object")return null;
+    if(key==="nodes"&&(Array.isArray(doc.nodes)||typeof doc.nodes==="string"))return null;
+    if(key==="software_nodes"||key==="active_nodes"||key==="site_live_nodes")return null;
+    return finite(doc[key]);
   }
   function apply(d){
     if(!d)return;
-    var src=d.origin&&typeof d.origin==="object"?d.origin:d;
-    var nodes=finite(d.nodes);
-    if(nodes==null||Array.isArray(d.nodes)) nodes=nodesCount(d,src);
-    el.textContent=nodes+"/"+liveCount(d,src);
-    el.title="Nodes: human mesh users + human uses. Live Nodes: presence + current azieleliab.com viewers.";
+    var src=d.origin&&typeof d.origin==="object"&&!Array.isArray(d.origin)?d.origin:null;
+    var nodes=clockField(d,"nodes");
+    if(nodes==null&&src) nodes=clockField(src,"nodes");
+    var live=clockField(d,"live_nodes");
+    if(live==null&&src) live=clockField(src,"live_nodes");
+    el.textContent=(nodes==null?0:nodes)+"/"+(live==null?0:live);
+    el.title=${JSON.stringify(dualNodesTitle())};
   }
   function beat(){
     fetch("/heartbeat",{method:"POST",headers:{"Accept":"application/json","Content-Type":"application/json","User-Agent":"Mozilla/5.0"},body:"{}"}).then(function(r){return r.json();}).then(apply).catch(function(){

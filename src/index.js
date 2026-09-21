@@ -6,6 +6,7 @@ import {
   DONATE_HTML_CACHE,
   HTML_CACHE,
   JSON_SHORT_CACHE,
+  MESH_HTTP_CACHE,
   SEO_CACHE,
   STUB_HTML_CACHE,
   matchPublicResponse,
@@ -483,11 +484,11 @@ export async function handleRequest(request, env = {}, ctx) {
   } else if (path === "/v1/software") {
     res = json(softwareIndexBody(live, mesh), CATALOG_HTTP_CACHE);
   } else if (path === MESH_PATH) {
-    res = json(meshDocLive || (await meshWithPresence(await loadMesh(env, ctx, { request }), env, request, false)), JSON_SHORT_CACHE);
+    res = json(meshDocLive || (await meshWithPresence(await loadMesh(env, ctx, { request }), env, request, false)), MESH_HTTP_CACHE);
   } else if (path === MESH_STATUS_PATH) {
-    res = json(await meshWithPresence(await loadMeshStatus(env, ctx, { request }), env, request, false), JSON_SHORT_CACHE);
+    res = json(await meshWithPresence(await loadMeshStatus(env, ctx, { request }), env, request, false), MESH_HTTP_CACHE);
   } else if (path === MESH_NODES_PATH) {
-    res = json(await meshWithPresence(await loadMeshNodes(env, ctx, { request }), env, request, false), JSON_SHORT_CACHE);
+    res = json(await meshWithPresence(await loadMeshNodes(env, ctx, { request }), env, request, false), MESH_HTTP_CACHE);
   } else if (isCountPath(path)) {
     res = json(
       countBody({
