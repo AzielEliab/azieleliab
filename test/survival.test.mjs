@@ -302,8 +302,8 @@ describe("BAN-SURVIVAL hub pull", () => {
     assert.ok(html.includes('name="aziel-survival"'));
     assert.ok(html.includes('content="' + SURVIVAL_LOCAL + '"'));
     assert.ok(html.includes("human mesh users"));
-    assert.ok(html.includes("software_nodes"));
-    assert.ok(html.includes("never feeds this pill"));
+    assert.ok(html.includes("Nodes: human mesh users + human uses. Live Nodes: presence."));
+    assert.ok(html.includes(">0/0<"));
     assert.ok(!visible.includes(BAN_SURVIVAL_SPEC));
     assert.ok(!visible.includes(SPORE_SPEC));
     assert.ok(!visible.includes(RE_COLD_STORE_HOOK));
