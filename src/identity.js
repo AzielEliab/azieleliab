@@ -186,7 +186,7 @@ export const DISAMBIGUATING_DESCRIPTION =
 
 export const LIVE_NODES_FAQ_NAME = "What are Live Nodes?";
 export const LIVE_NODES_FAQ_ANSWER =
-  "Live Nodes on the clock follow runtime GET /v1/mesh live_nodes when that document includes site viewers (human mesh users plus site_live_viewers). Nodes stay human mesh users plus cited human uses. This hub best-effort POSTs concurrent human page viewers to runtime POST /v1/mesh/site-presence as host azieleliab.com, viewers, kind human-page after a local presence update. When runtime does not include site viewers, the clock is mesh presence plus local site_live_nodes. HDJ viewers are excluded. software_nodes is the Softwares {slug}-worker roster and stays off the Live Nodes pill. Downloaded Softwares instances stay instance_nodes. Uses are interaction counters, not unique people. Zero is honest when no humans are present and uses are 0/unbound.";
+  "Live Nodes on the clock equal runtime GET /v1/mesh live_nodes: human mesh users plus concurrent site viewers on godlock.uk, azieleliab.com, and azielcorpuslibrary.net. Nodes stay human mesh users plus cited human uses. This hub best-effort POSTs concurrent human page viewers to runtime POST /v1/mesh/site-presence as host azieleliab.com, viewers, kind human-page after a local presence update. The public pill does not add a local-only site_live_nodes figure. HDJ viewers are excluded. software_nodes is the Softwares {slug}-worker roster and stays off the Live Nodes pill. Downloaded Softwares instances stay instance_nodes. Uses are interaction counters, not unique people. Zero is honest when runtime live_nodes is 0.";
 
 export const SPECTRALLOCK_FAQ_NAME = "What is SpectralLock?";
 

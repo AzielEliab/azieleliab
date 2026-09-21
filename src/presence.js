@@ -4,7 +4,7 @@
  * Pattern from godlock.uk /count site_live_nodes (5-minute heartbeat window).
  * After a local human update, best-effort POST /v1/mesh/site-presence
  * (AZIEL_RUNTIME, else the runtime HTTPS origin). Runtime is the Live Nodes
- * SSoT once it includes site viewers — do not add the local count again.
+ * SSoT is runtime live_nodes. The public pill does not add the local count.
  * Never invent viewers. Bots are not counted. Exclude HDJ.
  * Author: Aziel Eliab.
  */
@@ -262,7 +262,7 @@ export function countBody(fields = {}) {
     live_nodes_includes_viewers: fields.live_nodes_includes_viewers === true || fields.includes_site_viewers === true,
     includes_site_viewers: fields.includes_site_viewers === true || fields.live_nodes_includes_viewers === true,
     note:
-      "Live Nodes uses runtime live_nodes when it includes site viewers. Otherwise mesh presence plus current azieleliab.com human page viewers. A local human update best-effort POSTs /v1/mesh/site-presence. HDJ is excluded. Bots are not counted.",
+      "Live Nodes is runtime GET /v1/mesh live_nodes (human mesh users plus site viewers on godlock.uk, azieleliab.com, and azielcorpuslibrary.net). /count and /heartbeat publish that same number. site_live_nodes is this host's presence report and is not added again. A local human update best-effort POSTs /v1/mesh/site-presence. HDJ is excluded. Bots are not counted.",
     ...fields.extra,
   };
 }

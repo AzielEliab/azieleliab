@@ -7,9 +7,9 @@
 
 export const CATALOG_KV_KEY = "software:catalog:v4";
 export const CATALOG_CACHE_URL = "https://www.azieleliab.com/__cache/software-catalog-v4";
-export const MESH_CACHE_URL = "https://www.azieleliab.com/__cache/mesh-v2";
-export const MESH_STATUS_CACHE_URL = "https://www.azieleliab.com/__cache/mesh-status-v2";
-export const MESH_NODES_CACHE_URL = "https://www.azieleliab.com/__cache/mesh-nodes-v2";
+export const MESH_CACHE_URL = "https://www.azieleliab.com/__cache/mesh-v3";
+export const MESH_STATUS_CACHE_URL = "https://www.azieleliab.com/__cache/mesh-status-v3";
+export const MESH_NODES_CACHE_URL = "https://www.azieleliab.com/__cache/mesh-nodes-v3";
 export const UPDATE_CHECK_CACHE_URL = "https://www.azieleliab.com/__cache/update-check-v1";
 export const SURVIVAL_CACHE_URL = "https://www.azieleliab.com/__cache/survival-v1";
 
@@ -17,7 +17,10 @@ export const CATALOG_TTL_SEC = 30;
 export const CATALOG_FALLBACK_TTL_SEC = 15;
 /** Hub /v1/software must not sit on a long SWR of THIS-IS blurbs. */
 export const CATALOG_HTTP_CACHE = "public, max-age=0, s-maxage=30, stale-while-revalidate=30";
-export const MESH_TTL_SEC = 60;
+/** Shared by /v1/mesh, /count, and /heartbeat. A few seconds, not a minute. */
+export const MESH_TTL_SEC = 3;
+/** Pill routes must not sit on CDN SWR of live_nodes / site_live_viewers. */
+export const MESH_HTTP_CACHE = "no-store";
 export const UPDATE_TTL_SEC = 60;
 /** Pull runtime /survival — short TTL, do not hardcode live doors. */
 export const SURVIVAL_TTL_SEC = 60;

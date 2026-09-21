@@ -984,7 +984,7 @@ export const SOFTWARE_EXTRAS = [
     enabled_default: false,
     path: "/v1/mesh",
     spec: "QNM-BUILD-1.0",
-    note: "Suite rollup. live_nodes counts human mesh users plus cited human uses. software_nodes never feeds Live Nodes. Read-only suite presence is on (display from runtime GET /v1/mesh). GET never enables. Operator-armed Node Gate / neighbor heal / network ON. AZVPN auto_use + vpn:true (HTTPS/WS REAL; WG/OpenVPN SLOT). Channel plane wifi/bt/rf/photon ON cites; worker_hardware:false.",
+    note: "Suite rollup. live_nodes is runtime GET /v1/mesh (human mesh users plus site viewers on godlock.uk, azieleliab.com, and azielcorpuslibrary.net). software_nodes never feeds Live Nodes. Read-only suite presence is on (display from runtime GET /v1/mesh). GET never enables. Operator-armed Node Gate / neighbor heal / network ON. AZVPN auto_use + vpn:true (HTTPS/WS REAL; WG/OpenVPN SLOT). Channel plane wifi/bt/rf/photon ON cites; worker_hardware:false.",
   },
   {
     slug: TRADES_RUNTIME_SLUG,

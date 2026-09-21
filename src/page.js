@@ -640,37 +640,24 @@ const LIVE_NODES_SCRIPT = `<script>
     for(i=0;i<docs.length;i++){legacy=docs[i]?finite(docs[i].live_nodes):null;if(legacy!=null)return legacy}
     return 0;
   }
-  function meshLive(d,src){
-    var docs=[d,src],i,u,live;
-    for(i=0;i<docs.length;i++){u=docs[i]?finite(docs[i].human_mesh_users):null;if(u!=null)return u}
-    for(i=0;i<docs.length;i++){
-      if(!docs[i]||numericNodes(docs[i])==null)continue;
-      live=finite(docs[i].live_nodes);if(live!=null)return live;
+  function viewersIncluded(d,src){
+    function yes(doc){
+      if(!doc||typeof doc!=="object")return false;
+      if(doc.live_nodes_includes_viewers||doc.includes_site_viewers)return true;
+      if(finite(doc.site_live_viewers)!=null)return true;
+      var plane=String(doc.live_nodes_plane||"");
+      if(/viewer|site-live|page-view|website/i.test(plane))return true;
+      var c=doc.live_nodes_components;
+      if(c&&finite(c.site_live_viewers)!=null)return true;
+      return false;
     }
-    return 0;
-  }
-  function runtimeIncludesSite(d,src){
-    if(d&&(d.live_nodes_includes_viewers||d.includes_site_viewers))return true;
-    if(src&&(src.includes_site_viewers||src.live_nodes_includes_viewers))return true;
-    if(src&&finite(src.site_live_viewers)!=null)return true;
-    var plane=String((src&&src.live_nodes_plane)||(d&&d.live_nodes_plane)||"");
-    if(/viewer|site-live|page-view|website/i.test(plane))return true;
-    var c=src&&src.live_nodes_components;
-    if(c&&finite(c.site_live_viewers)!=null)return true;
-    return false;
+    return yes(d)||yes(src);
   }
   function liveCount(d,src){
-    if(runtimeIncludesSite(d,src)){
-      var fleet=finite(src&&src.live_nodes);
-      if(fleet==null) fleet=finite(d&&d.live_nodes);
-      if(fleet==null) fleet=meshLive(d,src);
-      return fleet||0;
-    }
-    var mesh=finite(d&&d.mesh_live_nodes);
-    if(mesh==null) mesh=meshLive(d,src);
-    var site=finite(d&&d.site_live_nodes);
-    if(site==null) site=0;
-    return (mesh||0)+site;
+    var fleet=finite(d&&d.live_nodes);
+    if(fleet==null) fleet=finite(src&&src.live_nodes);
+    if(viewersIncluded(d,src)) return fleet==null?0:fleet;
+    return fleet==null?0:fleet;
   }
   function apply(d){
     if(!d)return;
@@ -678,7 +665,7 @@ const LIVE_NODES_SCRIPT = `<script>
     var nodes=finite(d.nodes);
     if(nodes==null||Array.isArray(d.nodes)) nodes=nodesCount(d,src);
     el.textContent=nodes+"/"+liveCount(d,src);
-    el.title="Nodes: human mesh users + human uses. Live Nodes: presence + current azieleliab.com viewers.";
+    el.title=${JSON.stringify(dualNodesTitle())};
   }
   function beat(){
     fetch("/heartbeat",{method:"POST",headers:{"Accept":"application/json","Content-Type":"application/json","User-Agent":"Mozilla/5.0"},body:"{}"}).then(function(r){return r.json();}).then(apply).catch(function(){
