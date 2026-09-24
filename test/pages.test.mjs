@@ -260,6 +260,22 @@ describe("landing copy", () => {
     assert.ok(html.includes("soft-card") || html.includes('class="card"') || html.includes('class="card lead"'));
   });
 
+  it("shows a keyboard focus ring and follows prefers-color-scheme without a download button", () => {
+    const html = pageHtml();
+    const body = html.split("<body>")[1] || "";
+    assert.match(html, /a:focus-visible,button:focus-visible,input:focus-visible/);
+    assert.match(html, /outline:2px solid var\(--focus\)/);
+    assert.doesNotMatch(html, /outline:\s*(none|0)\b/);
+    assert.match(html, /color-scheme:dark light/);
+    assert.match(html, /@media \(prefers-color-scheme: light\)/);
+    assert.match(html, /@media \(min-width:721px\)/);
+    assert.doesNotMatch(html, /@media \(max-width:/);
+    assert.ok(!body.includes('id="first-screen"'));
+    assert.doesNotMatch(body, />Download</);
+    assert.doesNotMatch(body, /what this is not/i);
+    assert.doesNotMatch(body, /1 Chronicles 15:20/);
+  });
+
   it("puts the rose-star brand mark top-left and never says everblooming sigil", async () => {
     assert.equal(BRANDMARK_NAME, "rose-star brand mark");
     assert.equal(SIGIL, CANON_ORIGIN + "/sigil.png");

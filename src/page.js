@@ -1,4 +1,4 @@
-/** Literary landing HTML. Black / gold / white. Author: Aziel Eliab. */
+/** Literary landing HTML. Dark by default; light when the visitor prefers it. Author: Aziel Eliab. */
 import {
   AUTHOR,
   CANON_ORIGIN,
@@ -219,39 +219,57 @@ const CSS = `
 :root{
   --bg:#0e0c09;
   --bg-lift:#12100c;
+  --bg-deep:#0b0907;
+  --glow:#1a160f;
   --card:#19150f;
   --ink:#ffffff;
   --ink-soft:#f4f1ea;
   --muted:#a89880;
   --line:#3a3228;
+  --lead-line:#4a3d24;
   --gold:#c9a227;
   --gold-dim:#8a7018;
+  --gold-fill:#c9a227;
+  --cta-ink:#14110a;
+  --pill-bg:#2a241c;
+  --field:#14110c;
+  --focus:#fff4cc;
+  --shadow:#00000040;
 }
 *{box-sizing:border-box}
-html,body{background:var(--bg);color:var(--ink);margin:0;min-height:100%;overflow:auto;height:auto}
-html{color-scheme:dark}
+html,body{background:var(--bg);color:var(--ink);margin:0;min-height:100%;height:auto;overflow-x:clip}
+html{color-scheme:dark light}
 body{
   font-family:Georgia,"Iowan Old Style","Palatino Linotype",Palatino,"Times New Roman",serif;
-  font-size:18px;
+  font-size:17px;
   line-height:1.7;
+  overflow-wrap:break-word;
   background:
-    radial-gradient(1200px 600px at 50% -10%, #1a160f 0%, transparent 55%),
-    linear-gradient(180deg, var(--bg-lift) 0%, var(--bg) 42%, #0b0907 100%);
+    radial-gradient(1200px 600px at 50% -10%, var(--glow) 0%, transparent 55%),
+    linear-gradient(180deg, var(--bg-lift) 0%, var(--bg) 42%, var(--bg-deep) 100%);
 }
-.wrap{max-width:40rem;margin:0 auto;padding:36px 22px 96px}
-.brandrow{display:flex;align-items:center;gap:12px;margin:0 0 28px}
+img,svg{max-width:100%}
+a:focus-visible,button:focus-visible,input:focus-visible,summary:focus-visible{
+  outline:2px solid var(--focus);
+  outline-offset:2px;
+}
+@media (forced-colors: active){
+  a:focus-visible,button:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid CanvasText}
+}
+.wrap{max-width:40rem;width:100%;margin:0 auto;padding:22px 16px 80px}
+.brandrow{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:0 0 28px;min-width:0}
 .brandmark{
   width:44px;height:44px;border-radius:12px;object-fit:cover;flex:0 0 44px;
   box-shadow:0 0 0 1px var(--gold);
 }
 .host{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;font-size:13px;letter-spacing:.12em;text-transform:lowercase;color:var(--gold);text-decoration:none}
 .host:hover{color:var(--ink)}
-.brand-meta{display:flex;flex-wrap:wrap;align-items:center;gap:10px;flex:1 1 auto}
+.brand-meta{display:flex;flex-wrap:wrap;align-items:center;gap:10px;flex:1 1 auto;min-width:0;max-width:100%}
 .pill{
   font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
   border-radius:999px;padding:6px 12px;font-size:12px;font-weight:700;
-  background:#2a241c;color:var(--ink);border:1px solid var(--gold);
-  letter-spacing:.04em;text-decoration:none;
+  background:var(--pill-bg);color:var(--ink);border:1px solid var(--gold);
+  letter-spacing:.04em;text-decoration:none;max-width:100%;
 }
 .pill:hover{color:var(--gold)}
 .pill span{color:var(--muted);font-weight:650;margin-left:6px}
@@ -267,11 +285,11 @@ p:last-child{margin-bottom:0}
   background:var(--card);
   border:1px solid var(--line);
   border-radius:16px;
-  padding:22px 22px 20px;
+  padding:18px 16px;
   margin:0 0 16px;
-  box-shadow:0 1px 0 #00000040;
+  box-shadow:0 1px 0 var(--shadow);
 }
-.card.lead{border-color:#4a3d24}
+.card.lead{border-color:var(--lead-line)}
 .card.close{border-color:var(--gold)}
 a{color:var(--ink);text-decoration:underline;text-decoration-color:var(--gold-dim);text-underline-offset:3px}
 a:hover{color:var(--gold);text-decoration-color:var(--gold)}
@@ -279,7 +297,7 @@ a:hover{color:var(--gold);text-decoration-color:var(--gold)}
 .soft-list{list-style:none;margin:0;padding:0}
 .soft-list li{margin:0 0 10px}
 .soft-list li:last-child{margin-bottom:0}
-.soft-name{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;font-size:16px;font-weight:650;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--gold);padding-bottom:1px}
+.soft-name{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;font-size:15px;font-weight:650;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--gold);padding-bottom:1px}
 .soft-name:hover{color:var(--gold)}
 .soft-purpose{color:var(--ink-soft);font-weight:400}
 .runtime-cite{margin:0 0 12px;color:var(--muted);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;font-size:14px;letter-spacing:.04em}
@@ -289,10 +307,10 @@ a:hover{color:var(--gold);text-decoration-color:var(--gold)}
   display:inline-flex;align-items:center;justify-content:center;
   font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
   font-size:15px;font-weight:750;letter-spacing:.02em;
-  background:var(--gold);color:#14110a;border:1px solid var(--gold);
-  border-radius:10px;padding:12px 18px;text-decoration:none;min-height:44px;
+  background:var(--gold-fill);color:var(--cta-ink);border:1px solid var(--gold-fill);
+  border-radius:10px;padding:12px 18px;text-decoration:none;min-height:44px;max-width:100%;
 }
-.runtime-cta:hover{color:#14110a;filter:brightness(1.08)}
+.runtime-cta:hover{color:var(--cta-ink);filter:brightness(1.08)}
 .runtime-secondary{display:flex;flex-wrap:wrap;gap:12px 18px;margin:0}
 .runtime-secondary a{
   font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
@@ -321,7 +339,7 @@ footer a:hover{color:var(--gold)}
 }
 .ecosystem ul{list-style:none;margin:0;padding:0}
 .ecosystem li{margin:0 0 6px}
-.ecosystem-secondary{opacity:.82}
+.ecosystem-secondary{opacity:.9}
 .mesh-quiet{margin:0;font-size:12px;letter-spacing:.04em}
 .awareness{margin:14px 0 0;color:var(--muted);font-size:14px;line-height:1.55}
 .awareness-note{margin:0 0 8px}
@@ -338,7 +356,7 @@ footer a:hover{color:var(--gold)}
 .spine a[aria-current="page"]{color:var(--ink);border-bottom-color:var(--gold)}
 .rail{
   border:1px solid var(--line);border-radius:12px;padding:16px 16px 14px;margin:0 0 12px;
-  background:#14110c;
+  background:var(--field);
 }
 .rail:last-child{margin-bottom:0}
 .rail h3{
@@ -356,13 +374,13 @@ footer a:hover{color:var(--gold)}
 .rail-actions button{
   font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
   font-size:13px;font-weight:700;letter-spacing:.04em;
-  background:#2a241c;color:var(--ink);border:1px solid var(--gold);
+  background:var(--pill-bg);color:var(--ink);border:1px solid var(--gold);
   border-radius:8px;padding:6px 12px;cursor:pointer;
 }
 .rail-actions button:hover{color:var(--gold)}
 .rail-actions a{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;font-size:14px}
-.qr{display:inline-block;margin:0 0 10px;background:#fff;border-radius:6px;padding:10px;line-height:0}
-.qr img{display:block;width:180px;height:180px;background:#fff;image-rendering:pixelated}
+.qr{display:inline-block;margin:0 0 10px;background:#fff;border:1px solid var(--line);border-radius:6px;padding:10px;line-height:0;max-width:100%}
+.qr img{display:block;width:180px;height:180px;max-width:100%;background:#fff;image-rendering:pixelated}
 .rail-note{margin:0;color:var(--muted);font-size:13px}
 .wallet-hint{margin:14px 0 0;color:var(--muted);font-size:14px;line-height:1.45}
 .donate-law{margin:16px 0 0;color:var(--muted);font-size:15px}
@@ -395,22 +413,45 @@ footer a:hover{color:var(--gold)}
 }
 .verify input{
   font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
-  font-size:13px;color:var(--ink);background:#14110c;border:1px solid var(--line);
-  border-radius:8px;padding:8px 10px;width:100%
+  font-size:13px;color:var(--ink);background:var(--field);border:1px solid var(--line);
+  border-radius:8px;padding:8px 10px;width:100%;max-width:100%
 }
 .verify button{
   font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
   font-size:13px;font-weight:700;letter-spacing:.04em;
-  background:#2a241c;color:var(--ink);border:1px solid var(--gold);
+  background:var(--pill-bg);color:var(--ink);border:1px solid var(--gold);
   border-radius:8px;padding:8px 12px;cursor:pointer
 }
 .verify button:hover{color:var(--gold)}
 .verify-answer{margin:0 0 12px;font-size:1.35rem;letter-spacing:.04em;color:var(--gold)}
-@media (max-width:720px){
-  .wrap{padding:22px 16px 80px}
-  body{font-size:17px}
-  .card{padding:18px 16px}
-  .soft-name{font-size:15px}
+@media (min-width:721px){
+  body{font-size:18px}
+  .wrap{padding:36px 22px 96px}
+  .card{padding:22px 22px 20px}
+  .soft-name{font-size:16px}
+}
+@media (prefers-color-scheme: light){
+  :root{
+    --bg:#f4efe4;
+    --bg-lift:#fbf7ef;
+    --bg-deep:#efe6d4;
+    --glow:#fffdf8;
+    --card:#fffdf8;
+    --ink:#1a140c;
+    --ink-soft:#2c2418;
+    --muted:#5c4e3a;
+    --line:#ddd4c4;
+    --lead-line:#c4b48a;
+    --gold:#6b4e0c;
+    --gold-dim:#6b4e0c;
+    --gold-fill:#c9a227;
+    --cta-ink:#1a140c;
+    --pill-bg:#fffdf8;
+    --field:#fffdf8;
+    --focus:#1a140c;
+    --shadow:#1a140c14;
+  }
+  html{color-scheme:light}
 }
 `;
 
@@ -520,6 +561,8 @@ function documentHead({ title, description, canonical, software, extraMeta = "",
   const ld = JSON.stringify(jsonLd(software, runtimeVersion));
   return `<meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0e0c09" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f4efe4" media="(prefers-color-scheme: light)">
 <title>${esc(title)}</title>
 <meta name="description" content="${esc(description)}">
 <meta name="author" content="${esc(AUTHOR)}">
@@ -1172,6 +1215,8 @@ export function notFoundHtml() {
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0e0c09" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f4efe4" media="(prefers-color-scheme: light)">
 <title>Not found — ${esc(AUTHOR)}</title>
 <link rel="canonical" href="${esc(CANON_ORIGIN)}/">
 ${identityDiscoveryLinks()}
