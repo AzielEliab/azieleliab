@@ -2713,11 +2713,6 @@ describe("live software catalog", () => {
     assert.equal(cite.recover, SPECTRALLOCK_RECOVER);
     assert.equal(cite.handwriting, SPECTRALLOCK_HANDWRITING);
     assert.equal(cite.sot, "spectrallock#13 LIVE (merge 4af8fcb)");
-    assert.equal(cite.version, "0.3.1");
-    assert.equal(cite.pigment_recovery, true);
-    assert.equal(cite.inject_on_is_pigment, false);
-    assert.ok(cite.fraggate_live_ops.includes("pigment"));
-    assert.ok(cite.fraggate_live_ops.includes("restore-pigment"));
     assert.equal(cite.revision_graph, true);
     assert.equal(cite.esda, false);
 

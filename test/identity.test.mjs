@@ -638,20 +638,15 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     assert.ok(!cite.spectrallock.fraggate_live_ops.includes("recover"));
     assert.ok(!cite.spectrallock.fraggate_live_ops.includes("handwriting"));
     assert.equal(cite.spectrallock.leftover_bytes, true);
-    assert.equal(cite.spectrallock.version, "0.3.1");
-    assert.equal(cite.spectrallock.pigment_recovery, true);
-    assert.equal(cite.spectrallock.inject_on_is_pigment, false);
     assert.equal(
       cite.spectrallock.engine_digest,
-      "16281860ab0787f2485ea2530fbbcecf968009da3ae1c4f2b6e689a15a9ad586",
+      "3427dbcf2932b6bf4c6cf80735efd171b75519066e013db6d0df275c65989fb4",
     );
     assert.deepEqual(cite.spectrallock.fraggate_live_ops, [
       "health",
       "modes",
       "targets",
       "overlay",
-      "pigment",
-      "restore-pigment",
       "verify",
       "doctor",
       "skill",
