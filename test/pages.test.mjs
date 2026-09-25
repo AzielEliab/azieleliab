@@ -2713,6 +2713,11 @@ describe("live software catalog", () => {
     assert.equal(cite.recover, SPECTRALLOCK_RECOVER);
     assert.equal(cite.handwriting, SPECTRALLOCK_HANDWRITING);
     assert.equal(cite.sot, "spectrallock#13 LIVE (merge 4af8fcb)");
+    assert.equal(cite.version, "0.3.1");
+    assert.equal(cite.pigment_recovery, true);
+    assert.equal(cite.inject_on_is_pigment, false);
+    assert.ok(cite.fraggate_live_ops.includes("pigment"));
+    assert.ok(cite.fraggate_live_ops.includes("restore-pigment"));
     assert.equal(cite.revision_graph, true);
     assert.equal(cite.esda, false);
 
@@ -3057,6 +3062,13 @@ describe("live software catalog", () => {
       "zsolver",
     ];
     assert.deepEqual([...CATALOG_SLUGS].sort(), [...liveSot].sort());
+    const azinterfaceCard = SOFTWARE.find((s) => s.slug === "azinterface");
+    assert.equal(azinterfaceCard.one_line, "Open the Softwares suite shell and step pre-locked page cycles.");
+    assert.match(azinterfaceCard.description, /suite shell that opens Softwares that can run on this computer/);
+    const fourd = SOFTWARE.find((s) => s.slug === "4dmap");
+    assert.equal(fourd.one_line, "Inspect the same event on time, change, graph, and place axes at once.");
+    assert.match(fourd.description, /including a library pin when the paper gives a date and a place/);
+    assert.equal(SOFTWARE.some((s) => s.slug === "trades-runtime"), false);
     const packed = catalogFromLiveDoc({
       software: liveSot.map((slug) => ({
         slug,

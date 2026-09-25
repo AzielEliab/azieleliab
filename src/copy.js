@@ -334,29 +334,31 @@ export const WHITESTONE_WEB = "https://whitestone.vibelock.workers.dev/";
 export const WHITESTONE_GITHUB = "https://github.com/AzielEliab/Whitestone";
 export const WHITESTONE_ONE_LINE = CATALOG_PURPOSE.whitestone.one_line;
 export const WHITESTONE_DESCRIPTION = CATALOG_PURPOSE.whitestone.description;
-/** SpectralLock Worker honesty after spectrallock#13 LIVE (merge 4af8fcb). Overlay digest not rehashed. */
+/** SpectralLock 0.3.1 catalog card. Leftover-bytes unredact stays on the product Worker after spectrallock#13 LIVE (merge 4af8fcb). */
 export const SPECTRALLOCK_SLUG = "spectrallock";
 export const SPECTRALLOCK_NAME = "SpectralLock";
-export const SPECTRALLOCK_VERSION = "0.3.0";
+export const SPECTRALLOCK_VERSION = "0.3.1";
 export const SPECTRALLOCK_SOT = "spectrallock#13 LIVE (merge 4af8fcb)";
 export const SPECTRALLOCK_WORKER = "https://spectrallock-download-tracker.vibelock.workers.dev/";
 export const SPECTRALLOCK_UNREDACT = SPECTRALLOCK_WORKER + "v1/unredact";
 export const SPECTRALLOCK_RECOVER = SPECTRALLOCK_WORKER + "v1/recover";
 export const SPECTRALLOCK_HANDWRITING = SPECTRALLOCK_WORKER + "v1/handwriting";
 export const SPECTRALLOCK_GITHUB = "https://github.com/AzielEliab/spectrallock";
-/** Runtime catalog digest after aziel-runtime#137. Hasher on disk — not invented. Overlay digest not rehashed in #13. */
-export const SPECTRALLOCK_DIGEST = "3427dbcf2932b6bf4c6cf80735efd171b75519066e013db6d0df275c65989fb4";
+/** Live GET /v1/software engine_digest for SpectralLock 0.3.1. Same digest as fraggate_describe. Not invented. */
+export const SPECTRALLOCK_DIGEST = "16281860ab0787f2485ea2530fbbcecf968009da3ae1c4f2b6e689a15a9ad586";
 export const SPECTRALLOCK_ONE_LINE = CATALOG_PURPOSE.spectrallock.one_line;
 export const SPECTRALLOCK_DESCRIPTION = CATALOG_PURPOSE.spectrallock.description;
 export const SPECTRALLOCK_NOTE =
-  "Leftover container bytes = honest recover path (leftover_bytes, recovered_from). Opaque rewrite with nothing left refuses SL-UNREDACT-OPAQUE — do not invent letters. Locate / lift / recover / refuse. Inject ON is paint. Worker LIVE after spectrallock#13 (merge 4af8fcb): GET|POST /v1/unredact (deep PDF + revision_graph + per-revision copies); GET|POST /v1/recover (universal artifact recover; NO-LIE; LIVE vs SLOT); GET|POST /v1/handwriting (physical ink scan heuristics). FragGate LIVE_OPS stay health / modes / targets / overlay / verify / doctor / skill. OCR after structural only. Never OCR-from-black-box. Never reconstruct covered letters from context. Lamb Lens: Service → Clarity → Peace. Author Aziel Eliab only. NO-LIE.";
+  "SpectralLock 0.3.1. Wheel paint (Spectral Harmonic Wheel) is a membership-tint plane separate from the spectral triad. Inject ON paints wheel membership, not recovered pigment. Restore lost pigment is LIVE on FragGate ops pigment and restore-pigment when pixels still carry the signal, and refuses SL-PIGMENT-GONE when the evidence is gone. pigment_recovery is true only on that path. Leftover container bytes remain the honest unredact path on the product Worker (leftover_bytes, recovered_from). Opaque rewrite with nothing left refuses SL-UNREDACT-OPAQUE. Worker LIVE after spectrallock#13 (merge 4af8fcb): GET|POST /v1/unredact (deep PDF + revision_graph + per-revision copies); GET|POST /v1/recover (universal artifact recover; NO-LIE; LIVE vs SLOT); GET|POST /v1/handwriting (physical ink scan heuristics). Those three stay off the FragGate door. FragGate LIVE_OPS: health, modes, targets, overlay, pigment, restore-pigment, verify, doctor, skill. OCR after structural only. Never OCR-from-black-box. Never reconstruct covered letters from context. Lamb Lens: Service → Clarity → Peace. Author Aziel Eliab only. NO-LIE.";
 export const SPECTRALLOCK_OCR_NOTE =
-  "OCR runs only after structural recovery and never reconstructs covered letters from context. Never OCR-from-black-box. Never claim pigment recovery, ESDA, chemical, lab, or forensic certification. Author Aziel Eliab. NO-LIE.";
+  "OCR runs only after structural recovery and never reconstructs covered letters from context. Never OCR-from-black-box. FragGate pigment and restore-pigment restore faded signal still in the pixels and refuse SL-PIGMENT-GONE when that evidence is gone. That path is not ESDA, chemical ink dating, a lab, or forensic certification. Author Aziel Eliab. NO-LIE.";
 export const SPECTRALLOCK_FRAGGATE_OPS = Object.freeze([
   "health",
   "modes",
   "targets",
   "overlay",
+  "pigment",
+  "restore-pigment",
   "verify",
   "doctor",
   "skill",
@@ -827,7 +829,7 @@ export function spectrallockCite() {
     deep_history: true,
     revision_graph: true,
     revision_copies: true,
-    pigment_recovery: false,
+    pigment_recovery: true,
     guessed_letters: false,
     heatmap_is_transcript: false,
     heatmap_is_court_finding: false,

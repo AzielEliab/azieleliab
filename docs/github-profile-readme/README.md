@@ -46,7 +46,7 @@ Website designs `azcorpus` + `azlibrary` live on the library hub. They are not e
 9. **AZHub** — Place and tether modules in a blank spatial container. [Worker](https://azhub-download-tracker.vibelock.workers.dev/) · [GitHub](https://github.com/AzielEliab/azhub)
 10. **Aziel Digital Library** — Search the public library and download azcorpus + azlibrary designs. [https://www.azielcorpuslibrary.net/](https://www.azielcorpuslibrary.net/) · [GitHub](https://github.com/AzielEliab/aziel-corpus)
 11. **AzielTether** — Keep downloaded Aziel software in sync when the central Worker is up or down. [Worker](https://azieltether-download-tracker.vibelock.workers.dev/) · [GitHub](https://github.com/AzielEliab/azieltether)
-12. **AZInterface** — Advance pre-locked page cycles in a custodial operating environment. [Worker](https://azinterface-download-tracker.vibelock.workers.dev/) · [GitHub](https://github.com/AzielEliab/azinterface)
+12. **AZInterface** — Open the Softwares suite shell and step pre-locked page cycles. [Worker](https://azinterface-download-tracker.vibelock.workers.dev/) · [GitHub](https://github.com/AzielEliab/azinterface)
 13. **AZMail** — Classify mail text, keep a local mailbox, and optionally use an anonymous ring. [Worker](https://azmail-download-tracker.vibelock.workers.dev/) · [GitHub](https://github.com/AzielEliab/azmail)
 14. **AZNet** — Check hash continuity on a silent side-net. [Worker](https://aznet-download-tracker.vibelock.workers.dev/) · [GitHub](https://github.com/AzielEliab/aznet)
 15. **AZVPN** — Open an HTTPS or WebSocket VPN session on the public concentrator. [GitHub](https://github.com/AzielEliab/aziel-runtime)

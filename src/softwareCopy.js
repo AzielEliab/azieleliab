@@ -11,7 +11,8 @@ export const CATALOG_PURPOSE = Object.freeze({
   "4dmap": Object.freeze({
     name: "4DMap",
     one_line: "Inspect the same event on time, change, graph, and place axes at once.",
-    description: "Use 4DMap to walk one event across time, change, graph, and place as recorded axes. It exists so multi-axis inspection stays a recorded walk.",
+    description:
+      "Use 4DMap to walk one event across time, change, graph, and place as recorded axes, including a library pin when the paper gives a date and a place. It exists so multi-axis inspection stays a recorded walk.",
   }),
   "azclce": Object.freeze({
     name: "AZ-CLCE",
@@ -65,8 +66,9 @@ export const CATALOG_PURPOSE = Object.freeze({
   }),
   "azinterface": Object.freeze({
     name: "AZInterface",
-    one_line: "Advance pre-locked page cycles in a custodial operating environment.",
-    description: "Use AZInterface to read and step site state through OFF, integrity, ON, FULL SHUTDOWN, and MEMORIAL. It exists so those page cycles stay locked in order.",
+    one_line: "Open the Softwares suite shell and step pre-locked page cycles.",
+    description:
+      "Use AZInterface as the suite shell that opens Softwares that can run on this computer, and to read and step site state through OFF, integrity, ON, FULL SHUTDOWN, and MEMORIAL. It exists so the desk and those page cycles stay in one custodial shell.",
   }),
   "azmail": Object.freeze({
     name: "AZMail",
