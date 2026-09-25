@@ -803,6 +803,10 @@ export function citeDoc(software = SOFTWARE, runtimeVersion = RUNTIME_VERSION, s
     doors: DOORS.map((d) => {
       const row = { label: d.label, url: d.href };
       if (d.also) row.also = { label: d.also.label, url: d.also.href };
+      if (Array.isArray(d.cites) && d.cites.length) {
+        row.cites = d.cites.map((cite) => ({ label: cite.label, url: cite.href }));
+      }
+      if (d.version) row.version = d.version;
       return row;
     }),
     person_id: PERSON_ID,
@@ -823,11 +827,88 @@ export function citeDoc(software = SOFTWARE, runtimeVersion = RUNTIME_VERSION, s
   };
 }
 
+function doorPointText(link) {
+  if (!link || !link.href) return "";
+  if (link.label && link.label !== link.href) return link.label + " " + link.href;
+  return link.href;
+}
+
 function doorIndexLines() {
   return DOORS.map((d) => {
-    const extra = d.also ? " · live " + d.also.href : "";
-    return "- " + d.label + ": " + d.href + extra;
+    const parts = [d.href];
+    const also = doorPointText(d.also);
+    if (also) parts.push(also);
+    if (Array.isArray(d.cites)) {
+      for (const cite of d.cites) {
+        const bit = doorPointText(cite);
+        if (bit) parts.push(bit);
+      }
+    }
+    if (d.version) parts.push(d.version);
+    return "- " + d.label + ": " + parts.join(" · ");
   }).join("\n");
+}
+
+/** /doors document graph. Public doors only — no Softwares catalog. */
+export function doorsPageJsonLd() {
+  const section = INDEXABLE_SECTIONS.find((s) => s.id === "doors");
+  const pageUrl = CANON_ORIGIN + "/doors";
+  const listId = pageUrl + "#list";
+  const person = { "@id": PERSON_ID };
+  const list = {
+    "@type": "ItemList",
+    "@id": listId,
+    name: "Doors",
+    numberOfItems: DOORS.length,
+    itemListElement: DOORS.map((door, i) => {
+      const item = {
+        "@type": "ListItem",
+        position: i + 1,
+        name: door.label,
+        url: door.href,
+      };
+      const bits = [];
+      const also = doorPointText(door.also);
+      if (also) bits.push(also);
+      if (Array.isArray(door.cites)) {
+        for (const cite of door.cites) {
+          const bit = doorPointText(cite);
+          if (bit) bits.push(bit);
+        }
+      }
+      if (door.version) bits.push(door.version);
+      if (bits.length) item.description = bits.join(" · ");
+      return item;
+    }),
+  };
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      personNode(),
+      {
+        "@type": "WebSite",
+        "@id": WEBSITE_ID,
+        url: CANON_ORIGIN + "/",
+        name: SITE,
+        inLanguage: "en",
+        author: person,
+        publisher: person,
+      },
+      {
+        "@type": "WebPage",
+        "@id": pageUrl + "#webpage",
+        url: pageUrl,
+        name: section ? section.title : "Doors — Aziel Eliab",
+        description: section ? section.description : "",
+        isPartOf: { "@id": WEBSITE_ID },
+        author: person,
+        about: person,
+        inLanguage: "en",
+        mainEntity: { "@id": listId },
+      },
+      list,
+    ],
+  };
 }
 
 function officialEcosystemLlmsBlock() {

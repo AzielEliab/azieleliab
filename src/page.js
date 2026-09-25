@@ -53,7 +53,7 @@ import {
   WHO_IS_ANSWER,
   whoFaqPageNode,
 } from "./identity.js";
-import { jsonLd, ROBOTS_INDEX } from "./seo.js";
+import { doorsPageJsonLd, jsonLd, ROBOTS_INDEX } from "./seo.js";
 import {
   CITE_DONT_MERGE,
   ENOUGH,
@@ -130,22 +130,28 @@ function softwareLine(items = SOFTWARE) {
   );
 }
 
+function doorPoint(link, lead) {
+  if (!link || !link.href) return "";
+  const href = link.href;
+  const label = link.label || href;
+  const prefix = lead ? esc(lead) + " " : "";
+  const body =
+    label === href
+      ? a(href, href, "door-url")
+      : a(href, label, "door-url") + " " + a(href, href, "door-url");
+  return '<span class="also">' + prefix + body + "</span>";
+}
+
 function doorRow(door) {
   const label = a(door.href, door.label, "door-label");
   const url = a(door.href, door.href, "door-url");
-  if (door.also) {
-    const live = a(door.also.href, door.also.label, "door-url");
-    return (
-      "<li>" +
-      label +
-      ' <span class="arrow" aria-hidden="true">→</span> ' +
-      url +
-      ' <span class="also">also ' +
-      live +
-      "</span></li>"
-    );
+  const extras = [];
+  if (door.also) extras.push(doorPoint(door.also, "also"));
+  if (Array.isArray(door.cites)) {
+    for (const cite of door.cites) extras.push(doorPoint(cite));
   }
-  return "<li>" + label + ' <span class="arrow" aria-hidden="true">→</span> ' + url + "</li>";
+  if (door.version) extras.push('<span class="also">' + esc(door.version) + "</span>");
+  return "<li>" + label + ' <span class="arrow" aria-hidden="true">→</span> ' + url + extras.join("") + "</li>";
 }
 
 export function spineNav(current) {
@@ -307,7 +313,7 @@ a:hover{color:var(--gold);text-decoration-color:var(--gold)}
 .door-url{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;font-size:15px;color:var(--ink-soft)}
 .door-label:hover,.door-url:hover{color:var(--gold)}
 .arrow{color:var(--gold);padding:0 4px}
-.also{display:inline;color:var(--muted);font-size:15px}
+.also{display:block;color:var(--muted);font-size:15px;margin-top:2px}
 .also .door-url{font-size:14px}
 .sign{margin-top:18px;color:var(--muted);font-style:italic}
 footer{margin-top:28px;color:var(--muted);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;font-size:13px}
@@ -490,34 +496,39 @@ document.addEventListener("click",function(e){
 })();
 </script>`;
 
-function discoveryLinks() {
+function discoveryLinks(opts = {}) {
+  const rows = [
+    ["application/json", "/cite.json", "cite.json"],
+    ["text/plain", "/llms.txt", "llms.txt"],
+    ["text/plain", "/ai.txt", "ai.txt"],
+    ["application/json", "/shelves", "shelves"],
+    ["application/json", "/v1/shelves", "shelves json"],
+    ["text/plain", "/ingest.txt", "ingest page bytes"],
+    ["application/json", "/verify", "verify tip"],
+    ["application/json", "/reexpand", "re-expand law"],
+    ["application/json", "/v1/update/check", "update check"],
+    ["application/json", "/v1/mesh", "mesh / Nodes/Live Nodes"],
+    ["application/json", "/v1/mesh/status", "mesh status"],
+    ["application/json", "/v1/mesh/nodes", "mesh nodes"],
+    ["application/json", "/runtime/openapi.json", "OpenAPI"],
+  ];
+  if (!opts.doorsOnly) {
+    rows.push(
+      ["application/json", "/v1/software", "software catalog"],
+      ["application/json", "/runtime/v1/fraggate/list", "FragGate list"],
+    );
+  }
   return [
     identityDiscoveryLinks(),
-    ...[
-      ["application/json", "/cite.json", "cite.json"],
-      ["text/plain", "/llms.txt", "llms.txt"],
-      ["text/plain", "/ai.txt", "ai.txt"],
-      ["application/json", "/shelves", "shelves"],
-      ["application/json", "/v1/shelves", "shelves json"],
-      ["text/plain", "/ingest.txt", "ingest page bytes"],
-      ["application/json", "/verify", "verify tip"],
-      ["application/json", "/reexpand", "re-expand law"],
-      ["application/json", "/v1/software", "software catalog"],
-      ["application/json", "/v1/update/check", "update check"],
-      ["application/json", "/v1/mesh", "mesh / Nodes/Live Nodes"],
-      ["application/json", "/v1/mesh/status", "mesh status"],
-      ["application/json", "/v1/mesh/nodes", "mesh nodes"],
-      ["application/json", "/runtime/openapi.json", "OpenAPI"],
-      ["application/json", "/runtime/v1/fraggate/list", "FragGate list"],
-    ].map(
+    ...rows.map(
       ([type, href, title]) =>
         '<link rel="alternate" type="' + type + '" href="' + href + '" title="' + title + '">',
     ),
   ].join("\n");
 }
 
-function documentHead({ title, description, canonical, software, extraMeta = "", runtimeVersion }) {
-  const ld = JSON.stringify(jsonLd(software, runtimeVersion));
+function documentHead({ title, description, canonical, software, extraMeta = "", runtimeVersion, doorsOnly = false }) {
+  const ld = JSON.stringify(doorsOnly ? doorsPageJsonLd() : jsonLd(software, runtimeVersion));
   return `<meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${esc(title)}</title>
@@ -548,21 +559,24 @@ function documentHead({ title, description, canonical, software, extraMeta = "",
 <meta name="twitter:description" content="${esc(description)}">
 <meta name="twitter:image" content="${esc(SIGIL)}">
 <meta name="twitter:image:alt" content="${esc(AUTHOR)}">
-${discoveryLinks()}
+${discoveryLinks({ doorsOnly })}
 ${extraMeta}
 <script type="application/ld+json">${ld}</script>
 <style>${CSS}</style>`;
 }
 
-function quietDiscoveryMeta() {
+function quietDiscoveryMeta(opts = {}) {
+  const catalog = opts.doorsOnly
+    ? ""
+    : `<meta name="aziel-software-catalog" content="${esc(CANON_ORIGIN)}/v1/software">
+<meta name="aziel-fraggate-list" content="${esc(CANON_ORIGIN)}/runtime/v1/fraggate/list">
+`;
   return `<meta name="aziel-update-check" content="${esc(CANON_ORIGIN)}/v1/update/check">
 <meta name="aziel-mesh-status" content="${esc(MESH_STATUS_LOCAL)}">
 <meta name="aziel-survival" content="${esc(SURVIVAL_LOCAL)}">
 <meta name="aziel-qns-cd" content="${esc(QNS_CD_SPEC)}">
 <meta name="aziel-qnm" content="${esc(QNM_SPEC)}">
-<meta name="aziel-software-catalog" content="${esc(CANON_ORIGIN)}/v1/software">
-<meta name="aziel-fraggate-list" content="${esc(CANON_ORIGIN)}/runtime/v1/fraggate/list">
-<meta name="aziel-ingest-tip" content="${esc(tipString())}">`;
+${catalog}<meta name="aziel-ingest-tip" content="${esc(tipString())}">`;
 }
 
 function brandRow(innerMeta = "") {
@@ -909,7 +923,8 @@ ${RUNTIME_VERSION_SCRIPT}
 }
 
 export function sectionPageHtml(section, views = 0, softwareItems = SOFTWARE, mesh = null, runtimeVersion = RUNTIME_VERSION) {
-  const doorsSoftware = softwareItems && softwareItems.length ? softwareItems : SOFTWARE;
+  const doorsOnly = Boolean(section && section.id === "doors");
+  const doorsSoftware = !doorsOnly && softwareItems && softwareItems.length ? softwareItems : SOFTWARE;
   const meshQuiet = meshQuietHtml(mesh);
   const heading = (section && section.heading) || (section && section.title) || AUTHOR;
   const title = (section && section.title) || AUTHOR;
@@ -923,9 +938,10 @@ ${documentHead({
   title,
   description,
   canonical,
-  software: doorsSoftware,
-  extraMeta: quietDiscoveryMeta(),
+  software: doorsOnly ? null : doorsSoftware,
+  extraMeta: quietDiscoveryMeta({ doorsOnly }),
   runtimeVersion,
+  doorsOnly,
 })}
 ${hashRedirectScript()}
 </head>
@@ -936,7 +952,7 @@ ${brandRow("\n      " + viewsPill(views) + "\n      " + liveNodesPill(mesh))}
   <h1>${esc(heading)}</h1>
   <section class="card lead" id="${attr(section.hash || section.id)}">
     <h2>${esc(heading)}</h2>
-    ${tabArticle(section, doorsSoftware)}
+    ${tabArticle(section, doorsOnly ? [] : doorsSoftware)}
   </section>
 ${literaryFooter(meshQuiet)}
 </main>

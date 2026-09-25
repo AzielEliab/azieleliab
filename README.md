@@ -286,13 +286,10 @@ Every label and URL is hyperlinked.
 - Research → https://www.azielcorpuslibrary.net/ · also https://www.azielcorpuslibrary.net/AzielEliab
 - GodLock → https://godlock.uk/
 - He Didn't Jump → https://www.hedidntjump.com/
-- Runtime → https://www.azieleliab.com/runtime · also https://aziel-runtime.vibelock.workers.dev/ (**2.0.0-rc1**, SoT main `6a3798a` / version_id `105fa1ee`)
-- Try on Glama → https://glama.ai/mcp/servers/AzielEliab/aziel-runtime (primary Runtime CTA; verified Glama listing for AzielEliab/aziel-runtime — not an invented server id)
-- Official Runtime → https://aziel-runtime.vibelock.workers.dev/ (secondary Worker link)
-- Trades-Runtime → https://trades-runtime.vibelock.workers.dev/ · also https://glama.ai/mcp/servers/AzielEliab/trades-runtime (sister product extra; live_backends false)
-- Suite pack → https://aziel-runtime.vibelock.workers.dev/download (GET /download)
-- Source on GitHub → https://github.com/AzielEliab/aziel-runtime
-- Documentation / Architecture → https://github.com/AzielEliab/aziel-runtime/tree/main/docs/2.0
+- Runtime → https://www.azieleliab.com/runtime · also Try on Glama https://glama.ai/mcp/servers/AzielEliab/aziel-runtime (one Runtime door; same-origin primary; Glama label is exactly "Try on Glama"; Worker origin is not a second Runtime door on `/doors`)
+- Trades-Runtime 0.3.4 → https://trades-runtime.vibelock.workers.dev/ · MCP https://trades-runtime.vibelock.workers.dev/mcp · OpenAPI https://trades-runtime.vibelock.workers.dev/openapi.json · cite https://trades-runtime.vibelock.workers.dev/cite.json · llms https://trades-runtime.vibelock.workers.dev/llms.txt (sister product extra; not a Softwares-tab card; not fraggate_call; live_backends false; public Softwares/cite)
+- Homepage Runtime panel (not the Doors tab): Try on Glama https://glama.ai/mcp/servers/AzielEliab/aziel-runtime (primary CTA) · Official Runtime https://aziel-runtime.vibelock.workers.dev/ · Suite pack https://aziel-runtime.vibelock.workers.dev/download · Source on GitHub https://github.com/AzielEliab/aziel-runtime · Documentation / Architecture https://github.com/AzielEliab/aziel-runtime/tree/main/docs/2.0 (**2.0.0-rc1**, SoT main `6a3798a` / version_id `105fa1ee`)
+- Ecosystem footer names Aziel Runtime once, at https://www.azieleliab.com/runtime. Try on Glama stays its own label.
 - X → https://x.com/AzielEliab
 - Donate → https://www.azieleliab.com/donate
 

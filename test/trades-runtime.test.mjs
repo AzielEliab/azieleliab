@@ -4,7 +4,6 @@ import {
   PERSON_ID,
   SOFTWARE,
   DOORS,
-  GLAMA_TRADES,
   SOFTWARE_EXTRAS,
   SISTER_PRODUCTS_NOTE,
   TRADES_RUNTIME,
@@ -248,15 +247,27 @@ describe("Trades-Runtime sister-product machine cite", () => {
     assert.equal(labels[trades + 1], "X @AzielEliab");
     const door = DOORS[trades];
     assert.equal(door.href, TRADES_RUNTIME + "/");
-    assert.equal(door.also.href, GLAMA_TRADES);
-    assert.equal(door.also.label, GLAMA_TRADES);
+    assert.equal(door.also.label, "MCP");
+    assert.equal(door.also.href, TRADES_RUNTIME_MCP);
+    assert.equal(door.version, TRADES_RUNTIME_VERSION);
     const section = indexableSection("/doors");
     assert.match(section.description, /Runtime, Trades-Runtime, X @AzielEliab/);
-    const html = sectionPageHtml(section);
-    assert.ok(html.includes(">Trades-Runtime<"));
-    assert.ok(html.includes('href="' + TRADES_RUNTIME + '/"'));
-    assert.ok(html.includes('href="' + GLAMA_TRADES + '"'));
-    assert.equal(html.includes('class="soft-name">Trades-Runtime'), false);
+    const html = sectionPageHtml(section, 0, SOFTWARE);
+    const card = html.match(/<section class="card lead" id="doors">[\s\S]*?<\/section>/)[0];
+    assert.ok(card.includes(">Trades-Runtime<"));
+    assert.ok(card.includes('href="' + TRADES_RUNTIME + '/"'));
+    assert.ok(card.includes(">" + TRADES_RUNTIME_MCP + "<"));
+    assert.ok(card.includes(">" + TRADES_RUNTIME_OPENAPI + "<"));
+    assert.ok(card.includes(">" + TRADES_RUNTIME_CITE + "<"));
+    assert.ok(card.includes(">" + TRADES_RUNTIME_LLMS + "<"));
+    assert.equal(card.includes('class="soft-name">Trades-Runtime'), false);
+    assert.doesNotMatch(card, /class="soft-name"|class="soft-list"/);
+    const cite = citeDoc();
+    const cited = cite.doors.find((d) => d.label === TRADES_RUNTIME_NAME);
+    assert.equal(cited.url, TRADES_RUNTIME + "/");
+    assert.equal(cited.also.url, TRADES_RUNTIME_MCP);
+    assert.equal(cited.version, "0.3.4");
+    assert.ok(llmsTxt().includes("MCP " + TRADES_RUNTIME_MCP));
     assert.equal(tradesRuntimeCite().version, "0.3.4");
     assert.equal(tradesRuntimeCite().live_backends, false);
     assert.equal(tradesRuntimeCite().fraggate_call, false);
