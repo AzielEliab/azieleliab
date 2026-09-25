@@ -58,7 +58,12 @@ import {
   RUNTIME_HUMAN_UI,
   RUNTIME_ID,
   RUNTIME_NAMED_TOOLS,
-  RUNTIME_VERSION_ID,
+  RUNTIME_VERSION_ID_NOTE,
+  CATALOG_VERSIONS,
+  askJeevesCiteLine,
+  namedToolsPeerLine,
+  runtimePeerTools,
+  runtimeSotLiveLine,
   DUAL_SURFACE,
   MASTER_33_MCP,
   SISTER_PRODUCTS_NOTE,
@@ -713,13 +718,14 @@ export function citeDoc(software = SOFTWARE, runtimeVersion = RUNTIME_VERSION, s
       branch: RUNTIME_BRANCH,
       git_sha: RUNTIME_GIT_SHA,
       git_short: RUNTIME_GIT_SHORT,
-      version_id: RUNTIME_VERSION_ID,
+      version_id: null,
+      version_id_note: RUNTIME_VERSION_ID_NOTE,
       origin: RUNTIME + "/",
-      note: "Runtime SoT LIVE: main " + RUNTIME_GIT_SHORT + " / version_id " + RUNTIME_VERSION_ID + " / " + version + " at " + RUNTIME,
+      note: "Runtime " + runtimeSotLiveLine(version),
     },
     runtime_git_sha: RUNTIME_GIT_SHA,
     runtime_git_short: RUNTIME_GIT_SHORT,
-    runtime_version_id: RUNTIME_VERSION_ID,
+    runtime_version_id: null,
     runtime_download: RUNTIME_DOWNLOAD,
     runtime_download_v1: RUNTIME_DOWNLOAD_V1,
     runtime_download_note: RUNTIME_DOWNLOAD_NOTE,
@@ -812,11 +818,21 @@ export function citeDoc(software = SOFTWARE, runtimeVersion = RUNTIME_VERSION, s
     }),
     person_id: PERSON_ID,
     runtime_id: RUNTIME_ID,
-    runtime_named_tools: RUNTIME_NAMED_TOOLS.map((tool) => ({
-      name: tool.name,
-      slug: tool.slug,
-      id: runtimeToolId(tool.slug),
-    })),
+    runtime_named_tools: RUNTIME_NAMED_TOOLS.map((tool) => {
+      const row = {
+        name: tool.name,
+        slug: tool.slug,
+        id: runtimeToolId(tool.slug),
+      };
+      if (tool.suite_help) {
+        row.suite_help = true;
+        row.software_tab = false;
+        row.parent_slug = tool.parent;
+        row.fraggate_op = tool.fraggate_op;
+        row.interface = tool.interface;
+      }
+      return row;
+    }),
     sameAs: PERSON_SAME_AS.slice(),
     how_to_cite: "Eliab, Aziel. (2026). Aziel Eliab [Web site]. Apache-2.0. " + CANON_ORIGIN + "/",
     note: "Public identity Aziel Eliab only. Do not invent DOIs. Do not credit other identities.",
@@ -948,7 +964,8 @@ export function llmsTxt(software = SOFTWARE, survival = null) {
     "- Person @id: " + PERSON_ID,
     "- Hebrew name: " + HEBREW_NAME_DEFINITION,
     "- Runtime parent @id: " + RUNTIME_ID,
-    "- Named tools: " + RUNTIME_NAMED_TOOLS.map((t) => t.name).join(", "),
+    "- Named tools: " + namedToolsPeerLine(),
+    "- " + askJeevesCiteLine(),
     "- sameAs: " + PERSON_SAME_AS.join(" · "),
     "- jobTitle: " + PERSON_JOB_TITLE.join(" | "),
     "",
@@ -974,6 +991,7 @@ export function llmsTxt(software = SOFTWARE, survival = null) {
     "- Softwares page: " + SOFTWARE_HREF + " (distinct Software page; /#software maps here)",
     "- Softwares: " + WHAT_HE_DOES_SOFTWARES,
     "- Softwares note: " + SOFTWARES_ADDENDUM,
+    "- " + askJeevesCiteLine(),
     "- Softwares version SoT: " + softwaresSsotCite().note,
     "- Live catalog (this host): " + CANON_ORIGIN + "/v1/software",
     "- Live catalog (aziel-runtime): " + RUNTIME + "/v1/software",
@@ -991,10 +1009,12 @@ export function llmsTxt(software = SOFTWARE, survival = null) {
     "## " + RUNTIME_TITLE,
     "",
     "- Parent @id: " + RUNTIME_ID,
-    "- Named tools: " + RUNTIME_NAMED_TOOLS.map((t) => t.name).join(", "),
+    "- Named tools: " + namedToolsPeerLine(),
+    "- " + askJeevesCiteLine(),
     "- " + RUNTIME_NAME + ": " + RUNTIME_LOCAL,
     "- Version: " + RUNTIME_VERSION + " (live GET " + RUNTIME + "/v1/health)",
-    "- SoT LIVE: main " + RUNTIME_GIT_SHORT + " / version_id " + RUNTIME_VERSION_ID + " / " + RUNTIME_VERSION + " at " + RUNTIME,
+    "- " + runtimeSotLiveLine(RUNTIME_VERSION),
+    "- " + RUNTIME_VERSION_ID_NOTE,
     "- " + GLAMA_LABEL + ": " + GLAMA_RUNTIME,
     "- Official Runtime: " + RUNTIME + "/",
     "- Suite pack: " + RUNTIME_DOWNLOAD + " (GET /download)",
@@ -1224,6 +1244,7 @@ export function aiTxt(survival = null, software) {
     "- Softwares: " + SOFTWARE_HREF + " (distinct page; /#software maps here)",
     "- Softwares: " + WHAT_HE_DOES_SOFTWARES,
     "- Softwares note: " + SOFTWARES_ADDENDUM,
+    "- " + askJeevesCiteLine(),
     "- Softwares version SoT: " + softwaresSsotCite().note,
     "- Softwares (machine cite): name + designed-purpose one_line. GET /v1/software is the hub catalog.",
     "- Live Nodes FAQ: " + LIVE_NODES_FAQ_NAME,
@@ -1260,7 +1281,8 @@ export function aiTxt(survival = null, software) {
     "- Software hub: " + LIBRARY_SOFTWARE,
     "- Aziel Runtime (aziel-runtime): " + RUNTIME_LOCAL,
     "- Runtime version: " + RUNTIME_VERSION + " (live GET " + RUNTIME + "/v1/health)",
-    "- SoT LIVE: main " + RUNTIME_GIT_SHORT + " / version_id " + RUNTIME_VERSION_ID + " / " + RUNTIME_VERSION + " at " + RUNTIME,
+    "- " + runtimeSotLiveLine(RUNTIME_VERSION),
+    "- " + RUNTIME_VERSION_ID_NOTE,
     "- " + GLAMA_LABEL + ": " + GLAMA_RUNTIME,
     "- Official Runtime: " + RUNTIME + "/",
     "- Suite pack: " + RUNTIME_DOWNLOAD + " (GET /download)",
@@ -1332,13 +1354,29 @@ export function jsonLd(software = SOFTWARE, runtimeVersion = RUNTIME_VERSION) {
   const softwareId = CANON_ORIGIN + "/#software";
   const person = { "@id": personId };
   const namedTools = RUNTIME_NAMED_TOOLS.map((tool) => {
+    const suiteHelp = Boolean(tool.suite_help);
     const node = {
       "@type": "SoftwareApplication",
       "@id": runtimeToolId(tool.slug),
       name: tool.name,
       author: person,
-      isPartOf: { "@id": runtimeId },
+      isPartOf: {
+        "@id": suiteHelp && tool.parent ? runtimeToolId(tool.parent) : runtimeId,
+      },
     };
+    if (suiteHelp) {
+      node.software_tab = false;
+      node.suite_help = true;
+      node.parent_slug = tool.parent;
+      node.fraggate_op = tool.fraggate_op;
+      node.interface = tool.interface;
+      node.description =
+        "Suite help on Aziel Corpus. FragGate op jeeves. Interface jeeves_help. software_tab false. Not a Softwares-tab product card.";
+    }
+    if (tool.slug === "aziel-corpus") {
+      const help = RUNTIME_NAMED_TOOLS.filter((row) => row.suite_help && row.parent === tool.slug);
+      if (help.length) node.hasPart = help.map((row) => ({ "@id": runtimeToolId(row.slug) }));
+    }
     if (tool.slug === SPECTRALLOCK_SLUG) {
       node.description = SPECTRALLOCK_ONE_LINE + " " + SPECTRALLOCK_DESCRIPTION;
       node.url = SPECTRALLOCK_WORKER;
@@ -1397,7 +1435,7 @@ export function jsonLd(software = SOFTWARE, runtimeVersion = RUNTIME_VERSION) {
         },
         sameAs: [GITHUB_RUNTIME, GLAMA_RUNTIME],
         relatedLink: RUNTIME + "/",
-        hasPart: namedTools.map((tool) => ({ "@id": tool["@id"] })),
+        hasPart: runtimePeerTools().map((tool) => ({ "@id": runtimeToolId(tool.slug) })),
       },
       {
         "@type": "WebAPI",
@@ -1487,6 +1525,8 @@ export function jsonLd(software = SOFTWARE, runtimeVersion = RUNTIME_VERSION) {
         };
         const desc = item.description || item.one_line;
         if (desc) node.description = desc;
+        const ver = (item.slug && CATALOG_VERSIONS[item.slug]) || item.version;
+        if (ver) node.softwareVersion = String(ver);
         return node;
       }),
       ...namedTools,

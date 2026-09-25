@@ -30,7 +30,6 @@ import {
   RUNTIME_NAMED_LINE,
   RUNTIME_TITLE,
   RUNTIME_VERSION,
-  RUNTIME_VERSION_ID,
   SIGIL,
   SOFTWARE,
   SOFTWARE_SECTION,
@@ -737,8 +736,6 @@ export function runtimeCiteHtml(version) {
     "</span>" +
     " · main " +
     esc(RUNTIME_GIT_SHORT) +
-    " · version_id " +
-    esc(RUNTIME_VERSION_ID) +
     "</p>"
   );
 }

@@ -29,11 +29,13 @@ Person `sameAs` lattice (AZindex): [GitHub AzielEliab](https://github.com/AzielE
 
 Machine identity (mirror copies in [docs/aziel-identity-schema/](docs/aziel-identity-schema/)): [`/person.jsonld`](https://www.azieleliab.com/person.jsonld) · [`/identity.jsonld`](https://www.azieleliab.com/identity.jsonld) · [`/graph.jsonld`](https://www.azieleliab.com/graph.jsonld) · [`/who`](https://www.azieleliab.com/who) · [`/who-is-aziel-eliab.txt`](https://www.azieleliab.com/who-is-aziel-eliab.txt) · [`/.well-known/aziel.json`](https://www.azieleliab.com/.well-known/aziel.json).
 
-Runtime `SoftwareApplication` `sameAs`: [AzielEliab/aziel-runtime](https://github.com/AzielEliab/aziel-runtime) + [Try on Glama](https://glama.ai/mcp/servers/AzielEliab/aziel-runtime). Worker origin is `relatedLink` / endpoint, not the identity page. Version cite **2.0.0-rc1**. SoT LIVE: main **6a3798a** / version_id **105fa1ee**.
+Runtime `SoftwareApplication` `sameAs`: [AzielEliab/aziel-runtime](https://github.com/AzielEliab/aziel-runtime) + [Try on Glama](https://glama.ai/mcp/servers/AzielEliab/aziel-runtime). Worker origin is `relatedLink` / endpoint, not the identity page. Version cite **2.0.0-rc1**. SoT LIVE: main **231b02f** / 2.0.0-rc1. Live GET `/v1/software` does not expose `version_id`.
 
-`hasPart` is **named tools only** — not MCP ops/methods/verbs. Each child is `https://www.azieleliab.com/runtime#<slug>`:
+`hasPart` is **named tools only** — not MCP ops/methods/verbs, and not Ask Jeeves. Each runtime peer is `https://www.azieleliab.com/runtime#<slug>`:
 
-FragGate · ForgeReceipts · DecisionGate · TemporalLock · TrajectoryLock · PeaceLock · GodLock · AZ-OS · AZCoherence · 4DMap · Aziel Corpus · Ask Jeeves · AZBrowser · AZMail · AZHub · AZInterface · SpectralLock · ShadowLock · FoldLock · CodeLock · VibeLock
+FragGate · ForgeReceipts · DecisionGate · TemporalLock · TrajectoryLock · PeaceLock · GodLock · AZ-OS · AZCoherence · 4DMap · Aziel Corpus · AZBrowser · AZMail · AZHub · AZInterface · SpectralLock · ShadowLock · FoldLock · CodeLock · VibeLock
+
+Ask Jeeves is suite help on Aziel Corpus (`https://www.azieleliab.com/runtime#jeeves` isPartOf `https://www.azieleliab.com/runtime#aziel-corpus`). FragGate op `jeeves`. Interface `jeeves_help`. `software_tab` false. Not a Softwares-tab card. Softwares count stays 42.
 
 ## Ecosystem
 
@@ -45,7 +47,7 @@ Part of the Aziel Eliab ecosystem. Cross-links for humans, Google, and AI crawle
 | Corpus | [https://www.azielcorpuslibrary.net/](https://www.azielcorpuslibrary.net/) · [Aziel Eliab](https://www.azielcorpuslibrary.net/AzielEliab) · [Software](https://www.azielcorpuslibrary.net/software) · [Runtime front door](https://www.azielcorpuslibrary.net/runtime) |
 | GodLock | [https://godlock.uk/](https://godlock.uk/) · [Aziel Eliab](https://godlock.uk/AzielEliab) · [repo](https://github.com/AzielEliab/godlock) |
 | He Didn't Jump | [https://www.hedidntjump.com/](https://www.hedidntjump.com/) |
-| aziel-runtime **2.0.0-rc1** | [GitHub](https://github.com/AzielEliab/aziel-runtime) · [Official Runtime](https://aziel-runtime.vibelock.workers.dev/) · [Suite pack](https://aziel-runtime.vibelock.workers.dev/download) · [docs/2.0](https://github.com/AzielEliab/aziel-runtime/tree/main/docs/2.0) · SoT main `6a3798a` / version_id `105fa1ee` |
+| aziel-runtime **2.0.0-rc1** | [GitHub](https://github.com/AzielEliab/aziel-runtime) · [Official Runtime](https://aziel-runtime.vibelock.workers.dev/) · [Suite pack](https://aziel-runtime.vibelock.workers.dev/download) · [docs/2.0](https://github.com/AzielEliab/aziel-runtime/tree/main/docs/2.0) · SoT main `231b02f` / 2.0.0-rc1 |
 | Trades-Runtime 0.3.4 | Sister product extra (local-first BYO HVAC/plumbing/electrical/sewer/cross-trades; live_backends false; public Softwares/cite) · [Worker](https://trades-runtime.vibelock.workers.dev/) · [GitHub](https://github.com/AzielEliab/trades-runtime) · [download](https://trades-runtime.vibelock.workers.dev/download) · [OpenAPI](https://trades-runtime.vibelock.workers.dev/openapi.json) · [MCP](https://trades-runtime.vibelock.workers.dev/mcp) · [cite](https://trades-runtime.vibelock.workers.dev/cite.json) · [llms](https://trades-runtime.vibelock.workers.dev/llms.txt) |
 | Try on Glama | [https://glama.ai/mcp/servers/AzielEliab/aziel-runtime](https://glama.ai/mcp/servers/AzielEliab/aziel-runtime) (primary Runtime CTA; verified listing) |
 | GitHub AzielEliab | [https://github.com/AzielEliab](https://github.com/AzielEliab) |
@@ -288,7 +290,7 @@ Every label and URL is hyperlinked.
 - He Didn't Jump → https://www.hedidntjump.com/
 - Runtime → https://www.azieleliab.com/runtime · also Try on Glama https://glama.ai/mcp/servers/AzielEliab/aziel-runtime (one Runtime door; same-origin primary; Glama label is exactly "Try on Glama"; Worker origin is not a second Runtime door on `/doors`)
 - Trades-Runtime → https://trades-runtime.vibelock.workers.dev/ — Shadow-first local BYO runtime for HVAC/plumbing/electrical/sewer/cross-trades. BYO ServiceTitan+ProBooks. Human authority. live_backends false. · also MCP (visible label only; target https://trades-runtime.vibelock.workers.dev/mcp; sister product extra; not a Softwares-tab card; not fraggate_call; live_backends false; public Softwares/cite)
-- Homepage Runtime panel (not the Doors tab): Try on Glama https://glama.ai/mcp/servers/AzielEliab/aziel-runtime (primary CTA) · Official Runtime https://aziel-runtime.vibelock.workers.dev/ · Suite pack https://aziel-runtime.vibelock.workers.dev/download · Source on GitHub https://github.com/AzielEliab/aziel-runtime · Documentation / Architecture https://github.com/AzielEliab/aziel-runtime/tree/main/docs/2.0 (**2.0.0-rc1**, SoT main `6a3798a` / version_id `105fa1ee`)
+- Homepage Runtime panel (not the Doors tab): Try on Glama https://glama.ai/mcp/servers/AzielEliab/aziel-runtime (primary CTA) · Official Runtime https://aziel-runtime.vibelock.workers.dev/ · Suite pack https://aziel-runtime.vibelock.workers.dev/download · Source on GitHub https://github.com/AzielEliab/aziel-runtime · Documentation / Architecture https://github.com/AzielEliab/aziel-runtime/tree/main/docs/2.0 (**2.0.0-rc1**, SoT main `231b02f` / 2.0.0-rc1)
 - Ecosystem footer names Aziel Runtime once, at the Worker https://aziel-runtime.vibelock.workers.dev/. Try on Glama stays its own label. "Aziel Runtime on GitHub" is not a second footer name.
 - X → https://x.com/AzielEliab
 - Donate → https://www.azieleliab.com/donate

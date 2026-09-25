@@ -48,11 +48,18 @@ export const RUNTIME_NAME = "aziel-runtime";
 export const RUNTIME_TITLE = "Aziel Runtime";
 /** Certification-freeze cite. Prefer live GET /v1/health.version when it answers. */
 export const RUNTIME_VERSION = "2.0.0-rc1";
-/** Operator SoT LIVE: main 6a3798a. Live GET /v1/software.git_sha when it answers. */
-export const RUNTIME_GIT_SHA = "6a3798af3a94bfba3ed2e7aaadeed8777ea32bb4";
-export const RUNTIME_GIT_SHORT = "6a3798a";
-/** Operator SoT LIVE version_id. Do not invent a different id. */
-export const RUNTIME_VERSION_ID = "105fa1ee";
+/**
+ * Operator SoT LIVE git from GET /v1/software.git_sha at this edit.
+ * Short form is the first 7 hex digits. Suite version stays 2.0.0-rc1.
+ */
+export const RUNTIME_GIT_SHA = "231b02fcbb7b50fbd52762a49329042bc1715fe9";
+export const RUNTIME_GIT_SHORT = "231b02f";
+/**
+ * Live GET /v1/software, /v1/health, and /cite.json do not expose version_id.
+ * Do not keep claiming a certification id the Worker no longer publishes.
+ */
+export const RUNTIME_VERSION_ID_NOTE =
+  "Live GET /v1/software, /v1/health, and /cite.json do not expose version_id.";
 export const RUNTIME_BRANCH = "main";
 export const MASTER_33_MCP = false;
 /** Counted suite pack on the runtime Worker. */
@@ -217,6 +224,7 @@ export const RUNTIME_ID = RUNTIME_LOCAL + "#runtime";
 /**
  * Named Runtime tools only. Not MCP ops/methods/verbs.
  * @id is https://www.azieleliab.com/runtime#<slug>. Names are exact spellings.
+ * Ask Jeeves is suite help on Aziel Corpus (software_tab false), not a peer card.
  */
 export const RUNTIME_NAMED_TOOLS = [
   { slug: "fraggate", name: "FragGate" },
@@ -230,7 +238,14 @@ export const RUNTIME_NAMED_TOOLS = [
   { slug: "azcoherence", name: "AZCoherence" },
   { slug: "4dmap", name: "4DMap" },
   { slug: "aziel-corpus", name: "Aziel Corpus" },
-  { slug: "askjeeves", name: "Ask Jeeves" },
+  {
+    slug: "jeeves",
+    name: "Ask Jeeves",
+    suite_help: true,
+    parent: "aziel-corpus",
+    fraggate_op: "jeeves",
+    interface: "jeeves_help",
+  },
   { slug: "azbrowser", name: "AZBrowser" },
   { slug: "azmail", name: "AZMail" },
   { slug: "azhub", name: "AZHub" },
@@ -248,6 +263,32 @@ export function runtimeToolId(slug) {
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
   return RUNTIME_LOCAL + "#" + (raw || "tool");
+}
+
+/** Named tools that are runtime hasPart peers. Suite help is not a peer. */
+export function runtimePeerTools() {
+  return RUNTIME_NAMED_TOOLS.filter((tool) => !tool.suite_help);
+}
+
+export function namedToolsPeerLine() {
+  return runtimePeerTools()
+    .map((tool) => tool.name)
+    .join(", ");
+}
+
+/** Frozen SoT LIVE line. Suite version stays 2.0.0-rc1. version_id is not claimed. */
+export function runtimeSotLiveLine(version = RUNTIME_VERSION) {
+  return "SoT LIVE: main " + RUNTIME_GIT_SHORT + " / " + version + " at " + RUNTIME;
+}
+
+export function askJeevesCiteLine() {
+  return (
+    "Ask Jeeves is suite help on Aziel Corpus (FragGate op jeeves, interface jeeves_help). software_tab false. Not a Softwares-tab product card. Catalog count stays 42. @id " +
+    runtimeToolId("jeeves") +
+    " isPartOf " +
+    runtimeToolId("aziel-corpus") +
+    "."
+  );
 }
 
 export const RUNTIME_NAMED_LINE =
@@ -586,6 +627,55 @@ export const CATALOG_SLUGS = [
   "zkattest",
   "zsolver",
 ];
+
+/**
+ * Product versions from live GET /v1/software at git 231b02f.
+ * JSON-LD softwareVersion only. Not a Softwares-tab row and not a Doors field.
+ */
+export const CATALOG_VERSIONS = Object.freeze({
+  "4dmap": "0.3.0",
+  ark: "0.1.0",
+  azai: "0.3.1",
+  azbot: "0.2.0",
+  azbrowser: "0.1.0",
+  azchat: "0.1.0",
+  azclce: "0.3.0",
+  azcoherence: "0.1.0",
+  azhub: "0.1.0",
+  "aziel-corpus": "2.6.2",
+  azieltether: "0.1.0",
+  azinterface: "0.1.0",
+  azmail: "0.1.0",
+  aznet: "0.1.0",
+  azos: "0.3.0",
+  azvpn: "0.1.0",
+  chronolock: "0.1.0",
+  codelock: "0.1.0",
+  decisiongate: "0.1.0",
+  embryolock: "1.2.0",
+  employeelock: "0.1.0",
+  foldlock: "0.8.0",
+  forgereceipts: "0.3.0",
+  glossafilter: "0.1.0",
+  godlock: "0.1.0",
+  mialock: "0.1.1",
+  miragegrid: "0.2.0",
+  mmconsensus: "0.1.0",
+  peacelock: "0.1.0",
+  postking: "0.1.0",
+  shadowlock: "0.2.0",
+  spectrallock: "0.3.1",
+  staticclock: "0.2.0",
+  temporallock: "0.2.0",
+  toolbench: "0.1.0",
+  trajectorylock: "0.1.0",
+  veillock: "0.2.0",
+  vibelock: "0.3.0",
+  whistlelock: "0.1.0",
+  whitestone: "1.6.0",
+  zkattest: "0.1.0",
+  zsolver: "0.2.0",
+});
 
 /** Catalog `name` for each documented slug. */
 export const CATALOG_NAMES = {

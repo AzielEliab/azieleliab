@@ -102,7 +102,7 @@ Machine identity (identical bytes under [docs/aziel-identity-schema/](aziel-iden
 
 ### Runtime `hasPart` (named tools only)
 
-Not MCP ops (`fraggate_call`, `runtime_run`, …). Child `@id` is `https://www.azieleliab.com/runtime#<slug>`.
+Not MCP ops (`fraggate_call`, `runtime_run`, …). Not Ask Jeeves. Child `@id` is `https://www.azieleliab.com/runtime#<slug>`. SoT LIVE: main `231b02f` / 2.0.0-rc1. Live GET `/v1/software` does not expose `version_id`.
 
 | slug | name |
 |------|------|
@@ -117,7 +117,6 @@ Not MCP ops (`fraggate_call`, `runtime_run`, …). Child `@id` is `https://www.a
 | azcoherence | AZCoherence |
 | 4dmap | 4DMap |
 | aziel-corpus | Aziel Corpus |
-| askjeeves | Ask Jeeves |
 | azbrowser | AZBrowser |
 | azmail | AZMail |
 | azhub | AZHub |
@@ -127,6 +126,8 @@ Not MCP ops (`fraggate_call`, `runtime_run`, …). Child `@id` is `https://www.a
 | foldlock | FoldLock |
 | codelock | CodeLock |
 | vibelock | VibeLock |
+
+Ask Jeeves is suite help on Aziel Corpus, not a `hasPart` peer and not a Softwares-tab card. `@id` `https://www.azieleliab.com/runtime#jeeves` isPartOf `https://www.azieleliab.com/runtime#aziel-corpus`. FragGate op `jeeves`. Interface `jeeves_help`. `software_tab` false. Softwares count stays 42.
 
 ## Ecosystem cross-references
 
