@@ -248,7 +248,7 @@ describe("GitHub-side SEO / ecosystem docs", () => {
       ["AZHub", "Place and tether modules in a blank spatial container."],
       ["Aziel Digital Library", "Search the public library and download azcorpus + azlibrary designs."],
       ["AzielTether", "Keep downloaded Aziel software in sync when the central Worker is up or down."],
-      ["AZInterface", "Advance pre-locked page cycles in a custodial operating environment."],
+      ["AZInterface", "Open the Softwares suite shell and step pre-locked page cycles."],
       ["AZMail", "Classify mail text, keep a local mailbox, and optionally use an anonymous ring."],
       ["AZNet", "Check hash continuity on a silent side-net."],
       ["AZVPN", "Open an HTTPS or WebSocket VPN session on the public concentrator."],
