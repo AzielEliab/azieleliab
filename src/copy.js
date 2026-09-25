@@ -206,7 +206,7 @@ export const ECOSYSTEM_LINKS = [
   { label: "GodLock", href: GODLOCK + "/" },
   { label: "He Didn't Jump", href: HEDIDNTJUMP + "/" },
   { label: "GitHub AzielEliab", href: GITHUB },
-  { label: RUNTIME_TITLE, href: RUNTIME_LOCAL },
+  { label: RUNTIME_TITLE, href: RUNTIME + "/" },
   { label: GLAMA_LABEL, href: GLAMA_RUNTIME },
   { label: X_LABEL, href: X_URL },
 ];

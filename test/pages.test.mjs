@@ -831,7 +831,7 @@ describe("doors", () => {
     assert.ok(html.includes(section.description));
   });
 
-  it("keeps /doors to the public list: one Runtime door, no Softwares catalog bleed", () => {
+  it("keeps /doors to one Runtime door and does not re-host the homepage Runtime panel", () => {
     const runtimeDoors = DOORS.filter((d) => d.label === "Runtime" || d.label === "Aziel Runtime");
     assert.equal(runtimeDoors.length, 1);
     assert.equal(runtimeDoors[0].href, RUNTIME_LOCAL);
@@ -839,26 +839,21 @@ describe("doors", () => {
     assert.equal(runtimeDoors[0].also.href, GLAMA_RUNTIME);
     assert.notEqual(runtimeDoors[0].also.href, RUNTIME + "/");
     const html = doorsHtml();
-    const withoutStyle = html.replace(/<style>[\s\S]*?<\/style>/g, "");
-    const card = html.match(/<section class="card lead" id="doors">[\s\S]*?<\/section>/)[0];
+    const body = html.split("<body>")[1].split("</body>")[0];
+    const card = body.match(/<section class="card lead" id="doors">[\s\S]*?<\/section>/)[0];
     assert.equal(card.split(">Runtime<").length - 1, 1);
     assert.ok(card.includes(">Try on Glama<"));
     assert.ok(card.includes(">" + GLAMA_RUNTIME + "<"));
-    assert.doesNotMatch(card, /aziel-runtime\.vibelock\.workers\.dev/);
-    assert.doesNotMatch(withoutStyle, /class="soft-name"|class="soft-list"|class="soft-line"/);
-    assert.doesNotMatch(withoutStyle, /Whitestone|4DMap|AZBrowser|software catalog|FragGate list|aziel-software-catalog/);
-    assert.doesNotMatch(card, /aziel-runtime\.vibelock\.workers\.dev/);
+    assert.doesNotMatch(card, /aziel-runtime\.vibelock\.workers\.dev|id="runtime"|class="runtime-cta"|Official Runtime|Suite pack/);
+    assert.doesNotMatch(body, /class="soft-name"|class="soft-list"|class="soft-line"|id="runtime"|class="runtime-cta"|Official Runtime|Suite pack/);
     assert.doesNotMatch(html, />Aziel Runtime on GitHub</);
-    const footer = html.match(/<nav class="ecosystem"[\s\S]*?<\/nav>/);
+    const footer = body.match(/<nav class="ecosystem"[\s\S]*?<\/nav>/);
     assert.ok(footer);
     assert.equal(footer[0].split(">Aziel Runtime<").length - 1, 1);
-    assert.ok(footer[0].includes('href="' + RUNTIME_LOCAL + '"'));
+    assert.ok(footer[0].includes('href="' + RUNTIME + '/"'));
     assert.ok(footer[0].includes(">Try on Glama<"));
-    assert.doesNotMatch(footer[0], /aziel-runtime\.vibelock\.workers\.dev|Aziel Runtime on GitHub/);
-    const ld = JSON.parse(html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]);
-    assert.equal(ld["@graph"].some((n) => n["@type"] === "ItemList" && n["@id"] === CANON_ORIGIN + "/#software"), false);
-    assert.equal(ld["@graph"].some((n) => n["@id"] === CANON_ORIGIN + "/doors#list"), true);
-    assert.equal(ld["@graph"].some((n) => n["@type"] === "SoftwareApplication"), false);
+    assert.doesNotMatch(footer[0], /Aziel Runtime on GitHub/);
+    assert.equal((footer[0].match(/aziel-runtime\.vibelock\.workers\.dev/g) || []).length, 1);
   });
 });
 
@@ -1473,7 +1468,7 @@ describe("public entity graph phases B–D + E audit", () => {
         ["GodLock", "https://godlock.uk/", false],
         ["He Didn't Jump", "https://www.hedidntjump.com/", false],
         ["GitHub AzielEliab", "https://github.com/AzielEliab", false],
-        ["Aziel Runtime", "https://www.azieleliab.com/runtime", false],
+        ["Aziel Runtime", "https://aziel-runtime.vibelock.workers.dev/", false],
         ["Try on Glama", "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime", false],
         ["X @AzielEliab", "https://x.com/AzielEliab", false],
       ],
@@ -1486,9 +1481,10 @@ describe("public entity graph phases B–D + E audit", () => {
       assert.ok(block.includes('href="' + link.href + '"'), link.label);
       assert.ok(block.includes(">" + link.label + "<"), link.label);
     }
-    assert.match(block, /href="https:\/\/www\.azieleliab\.com\/runtime"[^>]*>Aziel Runtime</);
+    assert.match(block, /href="https:\/\/aziel-runtime\.vibelock\.workers\.dev\/"[^>]*>Aziel Runtime</);
     assert.equal(block.split(">Aziel Runtime<").length - 1, 1);
-    assert.doesNotMatch(block, /Aziel Runtime on GitHub|aziel-runtime\.vibelock\.workers\.dev/);
+    assert.doesNotMatch(block, /Aziel Runtime on GitHub/);
+    assert.equal((block.match(/aziel-runtime\.vibelock\.workers\.dev/g) || []).length, 1);
     assert.doesNotMatch(block, /Try \/ Deploy on Glama|Try\/Deploy on Glama/);
 
     const html = pageHtml();

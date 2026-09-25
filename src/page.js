@@ -53,7 +53,7 @@ import {
   WHO_IS_ANSWER,
   whoFaqPageNode,
 } from "./identity.js";
-import { doorsPageJsonLd, jsonLd, ROBOTS_INDEX } from "./seo.js";
+import { jsonLd, ROBOTS_INDEX } from "./seo.js";
 import {
   CITE_DONT_MERGE,
   ENOUGH,
@@ -496,39 +496,34 @@ document.addEventListener("click",function(e){
 })();
 </script>`;
 
-function discoveryLinks(opts = {}) {
-  const rows = [
-    ["application/json", "/cite.json", "cite.json"],
-    ["text/plain", "/llms.txt", "llms.txt"],
-    ["text/plain", "/ai.txt", "ai.txt"],
-    ["application/json", "/shelves", "shelves"],
-    ["application/json", "/v1/shelves", "shelves json"],
-    ["text/plain", "/ingest.txt", "ingest page bytes"],
-    ["application/json", "/verify", "verify tip"],
-    ["application/json", "/reexpand", "re-expand law"],
-    ["application/json", "/v1/update/check", "update check"],
-    ["application/json", "/v1/mesh", "mesh / Nodes/Live Nodes"],
-    ["application/json", "/v1/mesh/status", "mesh status"],
-    ["application/json", "/v1/mesh/nodes", "mesh nodes"],
-    ["application/json", "/runtime/openapi.json", "OpenAPI"],
-  ];
-  if (!opts.doorsOnly) {
-    rows.push(
-      ["application/json", "/v1/software", "software catalog"],
-      ["application/json", "/runtime/v1/fraggate/list", "FragGate list"],
-    );
-  }
+function discoveryLinks() {
   return [
     identityDiscoveryLinks(),
-    ...rows.map(
+    ...[
+      ["application/json", "/cite.json", "cite.json"],
+      ["text/plain", "/llms.txt", "llms.txt"],
+      ["text/plain", "/ai.txt", "ai.txt"],
+      ["application/json", "/shelves", "shelves"],
+      ["application/json", "/v1/shelves", "shelves json"],
+      ["text/plain", "/ingest.txt", "ingest page bytes"],
+      ["application/json", "/verify", "verify tip"],
+      ["application/json", "/reexpand", "re-expand law"],
+      ["application/json", "/v1/software", "software catalog"],
+      ["application/json", "/v1/update/check", "update check"],
+      ["application/json", "/v1/mesh", "mesh / Nodes/Live Nodes"],
+      ["application/json", "/v1/mesh/status", "mesh status"],
+      ["application/json", "/v1/mesh/nodes", "mesh nodes"],
+      ["application/json", "/runtime/openapi.json", "OpenAPI"],
+      ["application/json", "/runtime/v1/fraggate/list", "FragGate list"],
+    ].map(
       ([type, href, title]) =>
         '<link rel="alternate" type="' + type + '" href="' + href + '" title="' + title + '">',
     ),
   ].join("\n");
 }
 
-function documentHead({ title, description, canonical, software, extraMeta = "", runtimeVersion, doorsOnly = false }) {
-  const ld = JSON.stringify(doorsOnly ? doorsPageJsonLd() : jsonLd(software, runtimeVersion));
+function documentHead({ title, description, canonical, software, extraMeta = "", runtimeVersion }) {
+  const ld = JSON.stringify(jsonLd(software, runtimeVersion));
   return `<meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${esc(title)}</title>
@@ -559,24 +554,21 @@ function documentHead({ title, description, canonical, software, extraMeta = "",
 <meta name="twitter:description" content="${esc(description)}">
 <meta name="twitter:image" content="${esc(SIGIL)}">
 <meta name="twitter:image:alt" content="${esc(AUTHOR)}">
-${discoveryLinks({ doorsOnly })}
+${discoveryLinks()}
 ${extraMeta}
 <script type="application/ld+json">${ld}</script>
 <style>${CSS}</style>`;
 }
 
-function quietDiscoveryMeta(opts = {}) {
-  const catalog = opts.doorsOnly
-    ? ""
-    : `<meta name="aziel-software-catalog" content="${esc(CANON_ORIGIN)}/v1/software">
-<meta name="aziel-fraggate-list" content="${esc(CANON_ORIGIN)}/runtime/v1/fraggate/list">
-`;
+function quietDiscoveryMeta() {
   return `<meta name="aziel-update-check" content="${esc(CANON_ORIGIN)}/v1/update/check">
 <meta name="aziel-mesh-status" content="${esc(MESH_STATUS_LOCAL)}">
 <meta name="aziel-survival" content="${esc(SURVIVAL_LOCAL)}">
 <meta name="aziel-qns-cd" content="${esc(QNS_CD_SPEC)}">
 <meta name="aziel-qnm" content="${esc(QNM_SPEC)}">
-${catalog}<meta name="aziel-ingest-tip" content="${esc(tipString())}">`;
+<meta name="aziel-software-catalog" content="${esc(CANON_ORIGIN)}/v1/software">
+<meta name="aziel-fraggate-list" content="${esc(CANON_ORIGIN)}/runtime/v1/fraggate/list">
+<meta name="aziel-ingest-tip" content="${esc(tipString())}">`;
 }
 
 function brandRow(innerMeta = "") {
@@ -923,8 +915,7 @@ ${RUNTIME_VERSION_SCRIPT}
 }
 
 export function sectionPageHtml(section, views = 0, softwareItems = SOFTWARE, mesh = null, runtimeVersion = RUNTIME_VERSION) {
-  const doorsOnly = Boolean(section && section.id === "doors");
-  const doorsSoftware = !doorsOnly && softwareItems && softwareItems.length ? softwareItems : SOFTWARE;
+  const doorsSoftware = softwareItems && softwareItems.length ? softwareItems : SOFTWARE;
   const meshQuiet = meshQuietHtml(mesh);
   const heading = (section && section.heading) || (section && section.title) || AUTHOR;
   const title = (section && section.title) || AUTHOR;
@@ -938,10 +929,9 @@ ${documentHead({
   title,
   description,
   canonical,
-  software: doorsOnly ? null : doorsSoftware,
-  extraMeta: quietDiscoveryMeta({ doorsOnly }),
+  software: doorsSoftware,
+  extraMeta: quietDiscoveryMeta(),
   runtimeVersion,
-  doorsOnly,
 })}
 ${hashRedirectScript()}
 </head>
@@ -952,7 +942,7 @@ ${brandRow("\n      " + viewsPill(views) + "\n      " + liveNodesPill(mesh))}
   <h1>${esc(heading)}</h1>
   <section class="card lead" id="${attr(section.hash || section.id)}">
     <h2>${esc(heading)}</h2>
-    ${tabArticle(section, doorsOnly ? [] : doorsSoftware)}
+    ${tabArticle(section, doorsSoftware)}
   </section>
 ${literaryFooter(meshQuiet)}
 </main>
