@@ -60,6 +60,17 @@ export const RUNTIME_GIT_SHORT = "231b02f";
  */
 export const RUNTIME_VERSION_ID_NOTE =
   "Live GET /v1/software, /v1/health, and /cite.json do not expose version_id.";
+
+/** Copy version_id only when the live document exposes a non-empty string. */
+export function exposedVersionId(doc) {
+  if (!doc || typeof doc !== "object" || Array.isArray(doc)) return null;
+  if (!Object.prototype.hasOwnProperty.call(doc, "version_id")) return null;
+  if (typeof doc.version_id !== "string") return null;
+  const id = doc.version_id.trim();
+  if (!id || id.length > 80) return null;
+  if (!/^[A-Za-z0-9._:-]+$/.test(id)) return null;
+  return id;
+}
 export const RUNTIME_BRANCH = "main";
 export const MASTER_33_MCP = false;
 /** Counted suite pack on the runtime Worker. */
@@ -276,9 +287,20 @@ export function namedToolsPeerLine() {
     .join(", ");
 }
 
-/** Frozen SoT LIVE line. Suite version stays 2.0.0-rc1. version_id is not claimed. */
-export function runtimeSotLiveLine(version = RUNTIME_VERSION) {
-  return "SoT LIVE: main " + RUNTIME_GIT_SHORT + " / " + version + " at " + RUNTIME;
+/** Frozen SoT LIVE line. version_id is included only when a pin actually has one. */
+export function runtimeSotLiveLine(version = RUNTIME_VERSION, sot) {
+  const short = sot && sot.git_short ? String(sot.git_short) : RUNTIME_GIT_SHORT;
+  const ver = sot && sot.version ? String(sot.version) : version;
+  const id = sot && typeof sot.version_id === "string" && sot.version_id ? sot.version_id : "";
+  if (id) return "SoT LIVE: main " + short + " / version_id " + id + " / " + ver + " at " + RUNTIME;
+  return "SoT LIVE: main " + short + " / " + ver + " at " + RUNTIME;
+}
+
+export function runtimeVersionIdNote(sot) {
+  if (sot && typeof sot.version_id === "string" && sot.version_id) {
+    return "version_id " + sot.version_id + " from live GET /v1/software.";
+  }
+  return RUNTIME_VERSION_ID_NOTE;
 }
 
 export function askJeevesCiteLine() {

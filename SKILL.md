@@ -22,6 +22,7 @@ Runtime parent `@id`: https://www.azieleliab.com/runtime#runtime (`hasPart` name
 Runtime version: **2.0.0-rc1**
 Runtime SoT LIVE: main **231b02f** / 2.0.0-rc1 at https://aziel-runtime.vibelock.workers.dev
 Live GET `/v1/software` does not expose `version_id`.
+SoT outlet: `hub-azieleliab` (`SOT-OUTLET-1.0`). `GET /v1/mesh/outlet`, `POST /v1/mesh/outlet/sync` (`dry_run` then `confirm`), `GET /v1/mesh/outlet/receipt`. Pull live `GET /v1/software` or a signed `sot_sync` that matches that pull. Unreachable keeps last-known. Contract: `docs/sot-outlet.md`.
 Ask Jeeves is suite help on Aziel Corpus (FragGate op `jeeves`, interface `jeeves_help`, `software_tab` false). Not a Softwares-tab card. Softwares count stays 42. `@id` https://www.azieleliab.com/runtime#jeeves isPartOf https://www.azieleliab.com/runtime#aziel-corpus.
 
 Softwares list: https://www.azieleliab.com/software (`/#software` maps here)

@@ -58,12 +58,12 @@ import {
   RUNTIME_HUMAN_UI,
   RUNTIME_ID,
   RUNTIME_NAMED_TOOLS,
-  RUNTIME_VERSION_ID_NOTE,
   CATALOG_VERSIONS,
   askJeevesCiteLine,
   namedToolsPeerLine,
   runtimePeerTools,
   runtimeSotLiveLine,
+  runtimeVersionIdNote,
   DUAL_SURFACE,
   MASTER_33_MCP,
   SISTER_PRODUCTS_NOTE,
@@ -114,6 +114,7 @@ import {
   X_LABEL,
   X_URL,
 } from "./copy.js";
+import { outletLlmsLines, sotOutletCite } from "./sotOutlet.js";
 import {
   ABOUT_ALIAS_HREFS,
   ABOUT_MACHINE_HREFS,
@@ -571,9 +572,22 @@ export function sitemapXml(now = new Date(), software = SOFTWARE) {
   );
 }
 
-export function citeDoc(software = SOFTWARE, runtimeVersion = RUNTIME_VERSION, survival = null) {
+function sotLine(version, sot) {
+  const pin = sot && sot.git_sha ? sot : null;
+  const line = runtimeSotLiveLine(pin && pin.version ? pin.version : version, pin);
+  if (pin && pin.status === "unreachable") {
+    return line + " Last-known kept. Live GET /v1/software unreachable.";
+  }
+  return line;
+}
+
+export function citeDoc(software = SOFTWARE, runtimeVersion = RUNTIME_VERSION, survival = null, sot = null) {
   const doorsSoftware = software && software.length ? software : SOFTWARE;
-  const version = resolveRuntimeVersion(runtimeVersion);
+  const pin = sot && sot.git_sha ? sot : null;
+  const version = pin && pin.version ? pin.version : resolveRuntimeVersion(runtimeVersion);
+  const gitSha = pin ? pin.git_sha : RUNTIME_GIT_SHA;
+  const gitShort = pin ? pin.git_short : RUNTIME_GIT_SHORT;
+  const versionId = pin && pin.version_id ? pin.version_id : null;
   const ingest = ingestRecord();
   const banSurvival = banSurvivalCite(survival);
   return {
@@ -713,19 +727,21 @@ export function citeDoc(software = SOFTWARE, runtimeVersion = RUNTIME_VERSION, s
     runtime_origin: RUNTIME + "/",
     runtime_version: version,
     runtime_sot: {
-      live: true,
+      live: !(pin && pin.status === "unreachable"),
+      status: pin && pin.status ? pin.status : "last-known",
       version,
       branch: RUNTIME_BRANCH,
-      git_sha: RUNTIME_GIT_SHA,
-      git_short: RUNTIME_GIT_SHORT,
-      version_id: null,
-      version_id_note: RUNTIME_VERSION_ID_NOTE,
+      git_sha: gitSha,
+      git_short: gitShort,
+      version_id: versionId,
+      version_id_note: runtimeVersionIdNote(pin),
       origin: RUNTIME + "/",
-      note: "Runtime " + runtimeSotLiveLine(version),
+      note: "Runtime " + sotLine(version, pin),
     },
-    runtime_git_sha: RUNTIME_GIT_SHA,
-    runtime_git_short: RUNTIME_GIT_SHORT,
-    runtime_version_id: null,
+    runtime_git_sha: gitSha,
+    runtime_git_short: gitShort,
+    runtime_version_id: versionId,
+    sot_outlet: sotOutletCite(pin),
     runtime_download: RUNTIME_DOWNLOAD,
     runtime_download_v1: RUNTIME_DOWNLOAD_V1,
     runtime_download_note: RUNTIME_DOWNLOAD_NOTE,
@@ -923,7 +939,7 @@ function sisterProductsLlmsBlock() {
   ].join("\n");
 }
 
-export function llmsTxt(software = SOFTWARE, survival = null) {
+export function llmsTxt(software = SOFTWARE, survival = null, sot = null) {
   const doorsSoftware = software && software.length ? software : SOFTWARE;
   const softwareLines = doorsSoftware
     .map((s) => {
@@ -1012,9 +1028,9 @@ export function llmsTxt(software = SOFTWARE, survival = null) {
     "- Named tools: " + namedToolsPeerLine(),
     "- " + askJeevesCiteLine(),
     "- " + RUNTIME_NAME + ": " + RUNTIME_LOCAL,
-    "- Version: " + RUNTIME_VERSION + " (live GET " + RUNTIME + "/v1/health)",
-    "- " + runtimeSotLiveLine(RUNTIME_VERSION),
-    "- " + RUNTIME_VERSION_ID_NOTE,
+    "- Version: " + ((sot && sot.version) || RUNTIME_VERSION) + " (live GET " + RUNTIME + "/v1/health)",
+    "- " + sotLine(RUNTIME_VERSION, sot),
+    "- " + runtimeVersionIdNote(sot && sot.git_sha ? sot : null),
     "- " + GLAMA_LABEL + ": " + GLAMA_RUNTIME,
     "- Official Runtime: " + RUNTIME + "/",
     "- Suite pack: " + RUNTIME_DOWNLOAD + " (GET /download)",
@@ -1118,6 +1134,7 @@ export function llmsTxt(software = SOFTWARE, survival = null) {
     "- GET " + RUNTIME_LOCAL + "/v1/mesh  (QNM-BUILD-1.0 Live Nodes SoT; " + LIVE_NODES_LLMS + ")",
     "- GET " + RUNTIME_LOCAL + "/v1/mesh/status  (QNM-BUILD-1.0 suite rollup; " + LIVE_NODES_LLMS + ")",
     "- GET " + RUNTIME_LOCAL + "/v1/mesh/nodes",
+    ...outletLlmsLines(),
     "- GET " + SURVIVAL_RUNTIME + "  (" + BAN_SURVIVAL_SPEC + ")",
     "- GET " + RUNTIME_LOCAL + "/v1/survival",
     "- GET " + TRADES_RUNTIME + "/  (sister product Trades-Runtime)",
@@ -1139,7 +1156,7 @@ export function llmsTxt(software = SOFTWARE, survival = null) {
   ].join("\n");
 }
 
-export function aiTxt(survival = null, software) {
+export function aiTxt(survival = null, software, sot = null) {
   const bots = AI_CRAWLER_AGENTS.flatMap((agent) => ["", "User-agent: " + agent, "Allow: /"]);
   return [
     "# Aziel Eliab — AI crawl policy",
@@ -1280,9 +1297,9 @@ export function aiTxt(survival = null, software) {
     "- shelves JSON: " + SHELVES_JSON_HREF,
     "- Software hub: " + LIBRARY_SOFTWARE,
     "- Aziel Runtime (aziel-runtime): " + RUNTIME_LOCAL,
-    "- Runtime version: " + RUNTIME_VERSION + " (live GET " + RUNTIME + "/v1/health)",
-    "- " + runtimeSotLiveLine(RUNTIME_VERSION),
-    "- " + RUNTIME_VERSION_ID_NOTE,
+    "- Runtime version: " + ((sot && sot.version) || RUNTIME_VERSION) + " (live GET " + RUNTIME + "/v1/health)",
+    "- " + sotLine(RUNTIME_VERSION, sot),
+    "- " + runtimeVersionIdNote(sot && sot.git_sha ? sot : null),
     "- " + GLAMA_LABEL + ": " + GLAMA_RUNTIME,
     "- Official Runtime: " + RUNTIME + "/",
     "- Suite pack: " + RUNTIME_DOWNLOAD + " (GET /download)",
@@ -1292,6 +1309,7 @@ export function aiTxt(survival = null, software) {
     "- Mesh: " + CANON_ORIGIN + "/v1/mesh (QNM-BUILD-1.0 Live Nodes SoT; " + LIVE_NODES_LLMS + ")",
     "- Mesh status: " + CANON_ORIGIN + "/v1/mesh/status (QNM-BUILD-1.0 suite rollup; " + LIVE_NODES_LLMS + ")",
     "- Mesh nodes: " + CANON_ORIGIN + "/v1/mesh/nodes",
+    ...outletLlmsLines(),
     "- Operator enable requires a declared bearer (example: suite-presence). Read-only suite presence is on (display from runtime).",
     "- Mesh ON. Operator-armed Node Gate + neighbor heal + network ON.",
     "- AZVPN auto_use + vpn:true (HTTPS/WS REAL; WireGuard/OpenVPN SLOT). GET cites only.",
@@ -1344,9 +1362,10 @@ export function softwareNodeId(item) {
   return CANON_ORIGIN + "/#software-" + (raw || "item");
 }
 
-export function jsonLd(software = SOFTWARE, runtimeVersion = RUNTIME_VERSION) {
+export function jsonLd(software = SOFTWARE, runtimeVersion = RUNTIME_VERSION, sot = null) {
   const doorsSoftware = software && software.length ? software : SOFTWARE;
-  const version = resolveRuntimeVersion(runtimeVersion);
+  const pin = sot && sot.git_sha ? sot : null;
+  const version = pin && pin.version ? pin.version : resolveRuntimeVersion(runtimeVersion);
   const personId = PERSON_ID;
   const siteId = WEBSITE_ID;
   const runtimeId = RUNTIME_ID;
@@ -1410,6 +1429,13 @@ export function jsonLd(software = SOFTWARE, runtimeVersion = RUNTIME_VERSION) {
         applicationCategory: "DeveloperApplication",
         operatingSystem: "Cloudflare Workers",
         softwareVersion: version,
+        ...(pin
+          ? {
+              git_sha: pin.git_sha,
+              git_short: pin.git_short,
+              version_id: pin.version_id || null,
+            }
+          : {}),
         url: RUNTIME_LOCAL,
         description:
           "Same-origin Aziel Runtime (aziel-runtime) door for agents. OpenAPI " +

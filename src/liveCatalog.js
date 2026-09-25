@@ -23,6 +23,7 @@ import {
   RUNTIME_VERSION,
   RUNTIME_VERSION_ID_NOTE,
   SOFTWARE,
+  exposedVersionId,
   SOFTWARE_EXTRAS,
   TRADES_RUNTIME,
   TRADES_RUNTIME_SLUG,
@@ -409,6 +410,8 @@ function packedCatalog(products, extras, source, via, version, extra) {
     version: resolveRuntimeVersion(version),
     ...catalogGit(extra),
   };
+  const versionId = exposedVersionId(extra) || exposedVersionId(packed);
+  if (versionId) packed.version_id = versionId;
   const tabs = extra && extra.tab_placement_slugs;
   if (Array.isArray(tabs) && tabs.length) packed.tab_placement_slugs = tabs;
   return packed;
@@ -425,7 +428,11 @@ export async function fetchFreshSoftware(env) {
         "live",
         SOFTWARE_CATALOG_PATH,
         softwareDoc.version,
-        { tab_placement_slugs: packed.tab_placement_slugs, git_sha: softwareDoc.git_sha },
+        {
+          tab_placement_slugs: packed.tab_placement_slugs,
+          git_sha: softwareDoc.git_sha,
+          version_id: softwareDoc.version_id,
+        },
       );
     }
   }
@@ -439,7 +446,11 @@ export async function fetchFreshSoftware(env) {
         "fraggate-list",
         FRAGGATE_LIST_PATH,
         listDoc.version,
-        { tab_placement_slugs: packed.tab_placement_slugs, git_sha: listDoc.git_sha },
+        {
+          tab_placement_slugs: packed.tab_placement_slugs,
+          git_sha: listDoc.git_sha,
+          version_id: listDoc.version_id,
+        },
       );
     }
   }
@@ -485,6 +496,7 @@ function normalizePacked(packed) {
   return packedCatalog(products, extras, packed.source || "fallback", packed.via || null, packed.version, {
     tab_placement_slugs: packed.tab_placement_slugs,
     git_sha: packed.git_sha,
+    version_id: packed.version_id,
   });
 }
 
@@ -511,8 +523,10 @@ export function softwareIndexBody(live, mesh) {
     version: resolveRuntimeVersion(packed.version),
     git_sha: packed.git_sha || RUNTIME_GIT_SHA,
     git_short: packed.git_short || (packed.git_sha ? String(packed.git_sha).slice(0, 7) : RUNTIME_GIT_SHORT),
-    version_id: null,
-    version_id_note: RUNTIME_VERSION_ID_NOTE,
+    version_id: exposedVersionId(packed),
+    version_id_note: exposedVersionId(packed)
+      ? "version_id from live GET /v1/software."
+      : RUNTIME_VERSION_ID_NOTE,
     suite_download: RUNTIME_DOWNLOAD,
     door: "fraggate",
     sort_law: "plain A–Z → gate A–Z → lock A–Z",

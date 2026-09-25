@@ -31,6 +31,8 @@ Machine identity (mirror copies in [docs/aziel-identity-schema/](docs/aziel-iden
 
 Runtime `SoftwareApplication` `sameAs`: [AzielEliab/aziel-runtime](https://github.com/AzielEliab/aziel-runtime) + [Try on Glama](https://glama.ai/mcp/servers/AzielEliab/aziel-runtime). Worker origin is `relatedLink` / endpoint, not the identity page. Version cite **2.0.0-rc1**. SoT LIVE: main **231b02f** / 2.0.0-rc1. Live GET `/v1/software` does not expose `version_id`.
 
+This hub is mesh outlet `hub-azieleliab` (`SOT-OUTLET-1.0`). A runtime SoT fan-out discovers `GET /v1/mesh/outlet`, then `POST /v1/mesh/outlet/sync` with `dry_run: true` and again with `confirm: true`. Confirm rewrites the frozen cite on `/cite.json`, `/llms.txt`, `/ai.txt`, JSON-LD, and the homepage runtime line. The trust anchor is live `GET /v1/software` (same-account `AZIEL_RUNTIME` first). A signed `sot_sync` body is accepted only when it matches that pull. If the live SoT does not answer, the last confirmed pin stays, or the frozen `231b02f` pin when nothing has been confirmed, and the status says unreachable. `version_id` is copied only when live exposes it. Sync does not add Softwares rows and does not change download counters. Contract: [docs/sot-outlet.md](docs/sot-outlet.md).
+
 `hasPart` is **named tools only** — not MCP ops/methods/verbs, and not Ask Jeeves. Each runtime peer is `https://www.azieleliab.com/runtime#<slug>`:
 
 FragGate · ForgeReceipts · DecisionGate · TemporalLock · TrajectoryLock · PeaceLock · GodLock · AZ-OS · AZCoherence · 4DMap · Aziel Corpus · AZBrowser · AZMail · AZHub · AZInterface · SpectralLock · ShadowLock · FoldLock · CodeLock · VibeLock

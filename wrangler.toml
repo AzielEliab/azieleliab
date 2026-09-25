@@ -13,9 +13,10 @@ head_sampling_rate = 1
 
 # Pageview counter. Also stores host-local /runtime API uses under
 # key prefix `runtime_uses|`, concurrent page-viewer presence under
-# `presence|sessions`, and the packed Software snapshot
-# `software:catalog:v4` (no list/walk; no separate namespace).
-# Soft fan-out caps are cost/abuse protection, not content rationing.
+# `presence|sessions`, the packed Software snapshot `software:catalog:v4`,
+# and the SoT outlet pin `sot:outlet:hub-azieleliab` (no list/walk; no
+# separate namespace). Soft fan-out caps are cost/abuse protection, not
+# content rationing.
 [[kv_namespaces]]
 binding = "VIEWS"
 id = "61eedc98e4244a2b85f1cdd8b52beee1"
