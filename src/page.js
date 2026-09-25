@@ -135,8 +135,9 @@ function doorPoint(link, lead) {
   const href = link.href;
   const label = link.label || href;
   const prefix = lead ? esc(lead) + " " : "";
-  const body =
-    label === href
+  const body = link.labelOnly
+    ? a(href, label, "door-url")
+    : label === href
       ? a(href, href, "door-url")
       : a(href, label, "door-url") + " " + a(href, href, "door-url");
   return '<span class="also">' + prefix + body + "</span>";

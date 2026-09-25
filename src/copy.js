@@ -1127,7 +1127,7 @@ export const DOORS = [
     label: TRADES_RUNTIME_NAME,
     href: TRADES_RUNTIME + "/",
     purpose: TRADES_RUNTIME_ONE_LINE,
-    also: { label: "MCP", href: TRADES_RUNTIME_MCP },
+    also: { label: "MCP", href: TRADES_RUNTIME_MCP, labelOnly: true },
   },
   { label: X_LABEL, href: X_URL },
 ];

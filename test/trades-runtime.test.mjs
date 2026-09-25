@@ -169,6 +169,12 @@ describe("Trades-Runtime sister-product machine cite", () => {
     assert.deepEqual(trades.author, { "@id": PERSON_ID });
     assert.equal(trades.isPartOf["@id"], "https://www.azieleliab.com/#website");
     assert.ok(trades.sameAs.includes(TRADES_RUNTIME_GITHUB));
+    assert.deepEqual(trades.relatedLink, [
+      TRADES_RUNTIME_OPENAPI,
+      TRADES_RUNTIME_MCP,
+      TRADES_RUNTIME_CITE,
+      TRADES_RUNTIME_LLMS,
+    ]);
     assert.ok(trades.description.includes("live_backends false"));
     assert.ok(trades.description.includes(AI_CLIENTS_SENTENCE));
     const catalogApps = ld["@graph"].filter(
@@ -250,6 +256,7 @@ describe("Trades-Runtime sister-product machine cite", () => {
     assert.equal(door.purpose, TRADES_RUNTIME_ONE_LINE);
     assert.equal(door.also.label, "MCP");
     assert.equal(door.also.href, TRADES_RUNTIME_MCP);
+    assert.equal(door.also.labelOnly, true);
     assert.equal(door.version, undefined);
     assert.equal(door.cites, undefined);
     const section = indexableSection("/doors");
@@ -260,8 +267,10 @@ describe("Trades-Runtime sister-product machine cite", () => {
     assert.ok(card.includes('class="door-purpose"'));
     assert.ok(card.includes(TRADES_RUNTIME_ONE_LINE));
     assert.ok(card.includes('href="' + TRADES_RUNTIME + '/"'));
+    assert.equal((card.match(/class="also"/g) || []).length, 3);
+    assert.ok(card.includes('href="' + TRADES_RUNTIME_MCP + '"'));
     assert.ok(card.includes(">MCP<"));
-    assert.ok(card.includes(">" + TRADES_RUNTIME_MCP + "<"));
+    assert.equal(card.includes(">" + TRADES_RUNTIME_MCP + "<"), false);
     assert.equal(card.includes(TRADES_RUNTIME_OPENAPI), false);
     assert.equal(card.includes(TRADES_RUNTIME_CITE), false);
     assert.equal(card.includes(TRADES_RUNTIME_LLMS), false);
