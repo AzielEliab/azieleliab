@@ -89,6 +89,7 @@ import {
   TRADES_RUNTIME_LLMS,
   TRADES_RUNTIME_MCP,
   TRADES_RUNTIME_NAME,
+  TRADES_RUNTIME_ONE_LINE,
   TRADES_RUNTIME_OPENAPI,
   TRADES_RUNTIME_VERSION,
   RUNTIME_ID,
@@ -808,23 +809,24 @@ describe("doors", () => {
     assert.equal(labels[trades + 1], "X @AzielEliab");
     const door = DOORS[trades];
     assert.equal(door.href, TRADES_RUNTIME + "/");
-    assert.equal(door.version, "0.3.4");
+    assert.equal(door.purpose, TRADES_RUNTIME_ONE_LINE);
+    assert.equal(door.version, undefined);
+    assert.equal(door.cites, undefined);
     assert.equal(door.also.label, "MCP");
     assert.equal(door.also.href, TRADES_RUNTIME_MCP);
-    assert.deepEqual(
-      door.cites.map((cite) => cite.href),
-      [TRADES_RUNTIME_OPENAPI, TRADES_RUNTIME_CITE, TRADES_RUNTIME_LLMS],
-    );
     const html = doorsHtml();
     const card = html.match(/<section class="card lead" id="doors">[\s\S]*?<\/section>/);
     assert.ok(card);
     assert.ok(card[0].includes(">Trades-Runtime<"));
+    assert.ok(card[0].includes('class="door-purpose"'));
+    assert.ok(card[0].includes(TRADES_RUNTIME_ONE_LINE));
     assert.ok(card[0].includes('href="' + TRADES_RUNTIME + '/"'));
+    assert.ok(card[0].includes(">MCP<"));
     assert.ok(card[0].includes(">" + TRADES_RUNTIME_MCP + "<"));
-    assert.ok(card[0].includes(">" + TRADES_RUNTIME_OPENAPI + "<"));
-    assert.ok(card[0].includes(">" + TRADES_RUNTIME_CITE + "<"));
-    assert.ok(card[0].includes(">" + TRADES_RUNTIME_LLMS + "<"));
-    assert.ok(card[0].includes(">0.3.4<"));
+    assert.equal(card[0].includes(TRADES_RUNTIME_OPENAPI), false);
+    assert.equal(card[0].includes(TRADES_RUNTIME_CITE), false);
+    assert.equal(card[0].includes(TRADES_RUNTIME_LLMS), false);
+    assert.equal(card[0].includes(">0.3.4<"), false);
     assert.doesNotMatch(card[0], /class="soft-|id="software"|id="runtime"/);
     const section = indexableSection("/doors");
     assert.match(section.description, /Runtime, Trades-Runtime/);
