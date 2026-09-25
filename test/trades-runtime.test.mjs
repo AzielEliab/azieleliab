@@ -169,6 +169,12 @@ describe("Trades-Runtime sister-product machine cite", () => {
     assert.deepEqual(trades.author, { "@id": PERSON_ID });
     assert.equal(trades.isPartOf["@id"], "https://www.azieleliab.com/#website");
     assert.ok(trades.sameAs.includes(TRADES_RUNTIME_GITHUB));
+    assert.deepEqual(trades.relatedLink, [
+      TRADES_RUNTIME_OPENAPI,
+      TRADES_RUNTIME_MCP,
+      TRADES_RUNTIME_CITE,
+      TRADES_RUNTIME_LLMS,
+    ]);
     assert.ok(trades.description.includes("live_backends false"));
     assert.ok(trades.description.includes(AI_CLIENTS_SENTENCE));
     const catalogApps = ld["@graph"].filter(
@@ -247,26 +253,38 @@ describe("Trades-Runtime sister-product machine cite", () => {
     assert.equal(labels[trades + 1], "X @AzielEliab");
     const door = DOORS[trades];
     assert.equal(door.href, TRADES_RUNTIME + "/");
+    assert.equal(door.purpose, TRADES_RUNTIME_ONE_LINE);
     assert.equal(door.also.label, "MCP");
     assert.equal(door.also.href, TRADES_RUNTIME_MCP);
-    assert.equal(door.version, TRADES_RUNTIME_VERSION);
+    assert.equal(door.also.labelOnly, true);
+    assert.equal(door.version, undefined);
+    assert.equal(door.cites, undefined);
     const section = indexableSection("/doors");
     assert.match(section.description, /Runtime, Trades-Runtime, X @AzielEliab/);
     const html = sectionPageHtml(section, 0, SOFTWARE);
     const card = html.match(/<section class="card lead" id="doors">[\s\S]*?<\/section>/)[0];
     assert.ok(card.includes(">Trades-Runtime<"));
+    assert.ok(card.includes('class="door-purpose"'));
+    assert.ok(card.includes(TRADES_RUNTIME_ONE_LINE));
     assert.ok(card.includes('href="' + TRADES_RUNTIME + '/"'));
-    assert.ok(card.includes(">" + TRADES_RUNTIME_MCP + "<"));
-    assert.ok(card.includes(">" + TRADES_RUNTIME_OPENAPI + "<"));
-    assert.ok(card.includes(">" + TRADES_RUNTIME_CITE + "<"));
-    assert.ok(card.includes(">" + TRADES_RUNTIME_LLMS + "<"));
+    assert.equal((card.match(/class="also"/g) || []).length, 3);
+    assert.ok(card.includes('href="' + TRADES_RUNTIME_MCP + '"'));
+    assert.ok(card.includes(">MCP<"));
+    assert.equal(card.includes(">" + TRADES_RUNTIME_MCP + "<"), false);
+    assert.equal(card.includes(TRADES_RUNTIME_OPENAPI), false);
+    assert.equal(card.includes(TRADES_RUNTIME_CITE), false);
+    assert.equal(card.includes(TRADES_RUNTIME_LLMS), false);
+    assert.equal(card.includes(">0.3.4<"), false);
     assert.equal(card.includes('class="soft-name">Trades-Runtime'), false);
     assert.doesNotMatch(card, /class="soft-name"|class="soft-list"/);
     const cite = citeDoc();
     const cited = cite.doors.find((d) => d.label === TRADES_RUNTIME_NAME);
     assert.equal(cited.url, TRADES_RUNTIME + "/");
+    assert.equal(cited.purpose, TRADES_RUNTIME_ONE_LINE);
+    assert.equal(cited.also.label, "MCP");
     assert.equal(cited.also.url, TRADES_RUNTIME_MCP);
-    assert.equal(cited.version, "0.3.4");
+    assert.equal(cited.version, undefined);
+    assert.equal(cited.cites, undefined);
     assert.ok(llmsTxt().includes("MCP " + TRADES_RUNTIME_MCP));
     assert.equal(tradesRuntimeCite().version, "0.3.4");
     assert.equal(tradesRuntimeCite().live_backends, false);

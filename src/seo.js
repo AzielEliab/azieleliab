@@ -802,6 +802,7 @@ export function citeDoc(software = SOFTWARE, runtimeVersion = RUNTIME_VERSION, s
     }),
     doors: DOORS.map((d) => {
       const row = { label: d.label, url: d.href };
+      if (d.purpose) row.purpose = d.purpose;
       if (d.also) row.also = { label: d.also.label, url: d.also.href };
       if (Array.isArray(d.cites) && d.cites.length) {
         row.cites = d.cites.map((cite) => ({ label: cite.label, url: cite.href }));
@@ -836,6 +837,7 @@ function doorPointText(link) {
 function doorIndexLines() {
   return DOORS.map((d) => {
     const parts = [d.href];
+    if (d.purpose) parts.push(d.purpose);
     const also = doorPointText(d.also);
     if (also) parts.push(also);
     if (Array.isArray(d.cites)) {

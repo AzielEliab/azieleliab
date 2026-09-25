@@ -135,8 +135,9 @@ function doorPoint(link, lead) {
   const href = link.href;
   const label = link.label || href;
   const prefix = lead ? esc(lead) + " " : "";
-  const body =
-    label === href
+  const body = link.labelOnly
+    ? a(href, label, "door-url")
+    : label === href
       ? a(href, href, "door-url")
       : a(href, label, "door-url") + " " + a(href, href, "door-url");
   return '<span class="also">' + prefix + body + "</span>";
@@ -146,6 +147,7 @@ function doorRow(door) {
   const label = a(door.href, door.label, "door-label");
   const url = a(door.href, door.href, "door-url");
   const extras = [];
+  if (door.purpose) extras.push('<span class="door-purpose">' + esc(door.purpose) + "</span>");
   if (door.also) extras.push(doorPoint(door.also, "also"));
   if (Array.isArray(door.cites)) {
     for (const cite of door.cites) extras.push(doorPoint(cite));
@@ -315,6 +317,7 @@ a:hover{color:var(--gold);text-decoration-color:var(--gold)}
 .arrow{color:var(--gold);padding:0 4px}
 .also{display:block;color:var(--muted);font-size:15px;margin-top:2px}
 .also .door-url{font-size:14px}
+.door-purpose{display:block;color:var(--muted);font-size:15px;line-height:1.45;margin-top:2px;font-weight:400}
 .sign{margin-top:18px;color:var(--muted);font-style:italic}
 footer{margin-top:28px;color:var(--muted);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;font-size:13px}
 footer a{color:var(--muted)}
