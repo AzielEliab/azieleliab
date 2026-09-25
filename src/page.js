@@ -30,7 +30,6 @@ import {
   RUNTIME_NAMED_LINE,
   RUNTIME_TITLE,
   RUNTIME_VERSION,
-  RUNTIME_VERSION_ID,
   SIGIL,
   SOFTWARE,
   SOFTWARE_SECTION,
@@ -516,6 +515,7 @@ function discoveryLinks() {
       ["application/json", "/v1/mesh", "mesh / Nodes/Live Nodes"],
       ["application/json", "/v1/mesh/status", "mesh status"],
       ["application/json", "/v1/mesh/nodes", "mesh nodes"],
+      ["application/json", "/v1/mesh/outlet", "SoT outlet hub-azieleliab"],
       ["application/json", "/runtime/openapi.json", "OpenAPI"],
       ["application/json", "/runtime/v1/fraggate/list", "FragGate list"],
     ].map(
@@ -525,8 +525,8 @@ function discoveryLinks() {
   ].join("\n");
 }
 
-function documentHead({ title, description, canonical, software, extraMeta = "", runtimeVersion }) {
-  const ld = JSON.stringify(jsonLd(software, runtimeVersion));
+function documentHead({ title, description, canonical, software, extraMeta = "", runtimeVersion, sot = null }) {
+  const ld = JSON.stringify(jsonLd(software, runtimeVersion, sot));
   return `<meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${esc(title)}</title>
@@ -727,8 +727,11 @@ function runtimeDoorsHtml() {
   );
 }
 
-export function runtimeCiteHtml(version) {
-  const ver = resolveRuntimeVersion(version);
+export function runtimeCiteHtml(version, sot) {
+  const pin = sot && sot.git_sha ? sot : null;
+  const ver = pin && pin.version ? pin.version : resolveRuntimeVersion(version);
+  const short = pin && pin.git_short ? pin.git_short : RUNTIME_GIT_SHORT;
+  const id = pin && pin.version_id ? " · version_id " + esc(pin.version_id) : "";
   return (
     '<p class="runtime-cite">' +
     esc(RUNTIME_NAME) +
@@ -736,9 +739,8 @@ export function runtimeCiteHtml(version) {
     esc(ver) +
     "</span>" +
     " · main " +
-    esc(RUNTIME_GIT_SHORT) +
-    " · version_id " +
-    esc(RUNTIME_VERSION_ID) +
+    esc(short) +
+    id +
     "</p>"
   );
 }
@@ -889,6 +891,7 @@ ${documentHead({
   software: doorsSoftware,
   extraMeta: quietDiscoveryMeta(),
   runtimeVersion,
+  sot: opts && opts.sot,
 })}
 ${hashRedirectScript()}
 </head>
@@ -900,7 +903,7 @@ ${brandRow("\n      " + viewsPill(views) + "\n      " + liveNodesPill(mesh))}
   <article class="card lead">${paragraphs(PROSE.open)}</article>
   <section class="card" id="runtime">
     <h2>${esc(RUNTIME_TITLE)}</h2>
-    ${runtimeCiteHtml(runtimeVersion)}
+    ${runtimeCiteHtml(runtimeVersion, opts && opts.sot)}
     <p class="runtime-named">${esc(RUNTIME_NAMED_LINE)}</p>
     ${runtimeDoorsHtml()}
   </section>
@@ -917,7 +920,7 @@ ${RUNTIME_VERSION_SCRIPT}
 </html>`;
 }
 
-export function sectionPageHtml(section, views = 0, softwareItems = SOFTWARE, mesh = null, runtimeVersion = RUNTIME_VERSION) {
+export function sectionPageHtml(section, views = 0, softwareItems = SOFTWARE, mesh = null, runtimeVersion = RUNTIME_VERSION, sot = null) {
   const doorsSoftware = softwareItems && softwareItems.length ? softwareItems : SOFTWARE;
   const meshQuiet = meshQuietHtml(mesh);
   const heading = (section && section.heading) || (section && section.title) || AUTHOR;
@@ -935,6 +938,7 @@ ${documentHead({
   software: doorsSoftware,
   extraMeta: quietDiscoveryMeta(),
   runtimeVersion,
+  sot,
 })}
 ${hashRedirectScript()}
 </head>

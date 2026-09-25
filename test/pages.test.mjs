@@ -360,8 +360,12 @@ describe("software doors", () => {
     assert.equal(cite.runtime_doors[1].label, "Official Runtime");
     assert.equal(cite.runtime_doors[1].primary, false);
     assert.equal(cite.runtime_doors[2].label, "Suite pack");
-    assert.equal(cite.runtime_sot.git_short, "6a3798a");
-    assert.equal(cite.runtime_sot.version_id, "105fa1ee");
+    assert.equal(cite.runtime_sot.git_short, "231b02f");
+    assert.equal(cite.runtime_sot.git_sha, "231b02fcbb7b50fbd52762a49329042bc1715fe9");
+    assert.equal(cite.runtime_sot.version_id, null);
+    assert.match(cite.runtime_sot.version_id_note, /do not expose version_id/);
+    assert.equal(cite.runtime_sot.note, "Runtime SoT LIVE: main 231b02f / 2.0.0-rc1 at https://aziel-runtime.vibelock.workers.dev");
+    assert.doesNotMatch(cite.runtime_sot.note, /105fa1ee|version_id/);
     assert.equal("" in cite, false);
     assert.equal(cite.master_33, false);
     assert.equal(cite.mcp.softwares, "fraggate_call only");
@@ -1128,8 +1132,12 @@ describe("SEO routes", () => {
     assert.equal(citeBody.worker_hardware, false);
     assert.equal("" in citeBody, false);
     assert.equal(citeBody.master_33, false);
-    assert.equal(citeBody.runtime_version_id, "105fa1ee");
-    assert.equal(citeBody.runtime_git_short, "6a3798a");
+    assert.equal(citeBody.runtime_version_id, null);
+    assert.equal(citeBody.runtime_git_short, "231b02f");
+    assert.equal(citeBody.runtime_git_sha, "231b02fcbb7b50fbd52762a49329042bc1715fe9");
+    assert.match(llmsBody, /SoT LIVE: main 231b02f \/ 2\.0\.0-rc1 at https:\/\/aziel-runtime\.vibelock\.workers\.dev/);
+    assert.match(aiBody, /SoT LIVE: main 231b02f \/ 2\.0\.0-rc1 at https:\/\/aziel-runtime\.vibelock\.workers\.dev/);
+    assert.doesNotMatch(llmsBody + aiBody, /6a3798a|105fa1ee/);
     assert.equal(citeBody.runtime_download, "https://aziel-runtime.vibelock.workers.dev/download");
     assert.equal(citeBody.mcp.door, "fraggate");
     assert.equal(citeBody.dual_surface.master_33, false);
@@ -1460,7 +1468,8 @@ describe("public entity graph phases B–D + E audit", () => {
     assert.equal(runtime.sourceCode.codeRepository, GITHUB_RUNTIME);
     assert.equal(runtime.relatedLink, RUNTIME + "/");
     assert.equal(runtime["@id"], RUNTIME_ID);
-    assert.equal(runtime.hasPart.length, RUNTIME_NAMED_TOOLS.length);
+    assert.equal(runtime.hasPart.length, RUNTIME_NAMED_TOOLS.filter((tool) => !tool.suite_help).length);
+    assert.ok(!runtime.hasPart.some((part) => String(part["@id"]).endsWith("#jeeves")));
     assert.equal(api.url, RUNTIME_LOCAL);
     assert.equal(api.endpoint["@type"], "EntryPoint");
     assert.equal(api.endpoint.url, RUNTIME + "/");
@@ -1561,7 +1570,7 @@ describe("public entity graph phases B–D + E audit", () => {
         ["azcoherence", "AZCoherence"],
         ["4dmap", "4DMap"],
         ["aziel-corpus", "Aziel Corpus"],
-        ["askjeeves", "Ask Jeeves"],
+        ["jeeves", "Ask Jeeves"],
         ["azbrowser", "AZBrowser"],
         ["azmail", "AZMail"],
         ["azhub", "AZHub"],
@@ -1587,22 +1596,49 @@ describe("public entity graph phases B–D + E audit", () => {
     assert.ok(!runtime.sameAs.includes(RUNTIME + "/"));
     assert.equal(runtime.url, RUNTIME_LOCAL);
     assert.equal(runtime.relatedLink, RUNTIME + "/");
+    const peers = RUNTIME_NAMED_TOOLS.filter((tool) => !tool.suite_help);
+    assert.equal(peers.length, 20);
     assert.deepEqual(
       runtime.hasPart,
-      RUNTIME_NAMED_TOOLS.map((tool) => ({ "@id": runtimeToolId(tool.slug) })),
+      peers.map((tool) => ({ "@id": runtimeToolId(tool.slug) })),
     );
+    assert.ok(!runtime.hasPart.some((part) => part["@id"] === runtimeToolId("jeeves")));
 
     const named = ld["@graph"].filter(
       (n) => n["@type"] === "SoftwareApplication" && n.isPartOf && n.isPartOf["@id"] === RUNTIME_ID,
     );
-    assert.equal(named.length, RUNTIME_NAMED_TOOLS.length);
-    for (const tool of RUNTIME_NAMED_TOOLS) {
+    assert.equal(named.length, peers.length);
+    for (const tool of peers) {
       const node = named.find((n) => n["@id"] === runtimeToolId(tool.slug));
       assert.ok(node, tool.slug);
       assert.equal(node.name, tool.name);
       assert.deepEqual(node.author, { "@id": PERSON_ID });
       assert.deepEqual(node.isPartOf, { "@id": RUNTIME_ID });
     }
+
+    const jeeves = ld["@graph"].find((n) => n["@id"] === runtimeToolId("jeeves"));
+    const corpus = ld["@graph"].find((n) => n["@id"] === runtimeToolId("aziel-corpus"));
+    assert.ok(jeeves);
+    assert.equal(jeeves.name, "Ask Jeeves");
+    assert.equal(jeeves.suite_help, true);
+    assert.equal(jeeves.software_tab, false);
+    assert.equal(jeeves.fraggate_op, "jeeves");
+    assert.equal(jeeves.interface, "jeeves_help");
+    assert.equal(jeeves.parent_slug, "aziel-corpus");
+    assert.deepEqual(jeeves.isPartOf, { "@id": runtimeToolId("aziel-corpus") });
+    assert.ok(corpus);
+    assert.deepEqual(corpus.hasPart, [{ "@id": runtimeToolId("jeeves") }]);
+    const softwareList = ld["@graph"].find((n) => n["@id"] === CANON_ORIGIN + "/#software");
+    assert.equal(softwareList.numberOfItems, 42);
+    assert.ok(!softwareList.itemListElement.some((row) => row.name === "Ask Jeeves"));
+    const card4d = ld["@graph"].find((n) => n["@id"] === CANON_ORIGIN + "/#software-4dmap");
+    const cardUi = ld["@graph"].find((n) => n["@id"] === CANON_ORIGIN + "/#software-azinterface");
+    assert.equal(card4d.softwareVersion, "0.3.0");
+    assert.equal(cardUi.softwareVersion, "0.1.0");
+    assert.equal(
+      ld["@graph"].filter((n) => n["@id"] && String(n["@id"]).startsWith(CANON_ORIGIN + "/#software-") && n.softwareVersion).length,
+      42,
+    );
 
     const blob = JSON.stringify(ld);
     assert.doesNotMatch(blob, /\/software\/aziel-runtime/);

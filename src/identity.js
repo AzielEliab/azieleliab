@@ -789,14 +789,15 @@ export function sectionPageNodes() {
   return INDEXABLE_SECTIONS.map(sectionPageNode);
 }
 
-export function runtimeApplicationNode() {
-  return {
+export function runtimeApplicationNode(sot) {
+  const pin = sot && sot.git_sha ? sot : null;
+  const node = {
     "@type": "SoftwareApplication",
     "@id": RUNTIME_ID,
     name: RUNTIME_TITLE,
     applicationCategory: "DeveloperApplication",
     operatingSystem: "Cloudflare Workers",
-    softwareVersion: RUNTIME_VERSION,
+    softwareVersion: pin && pin.version ? pin.version : RUNTIME_VERSION,
     url: RUNTIME_LOCAL,
     description: SITE_COVERAGE[4].blurb,
     author: personRef,
@@ -805,6 +806,12 @@ export function runtimeApplicationNode() {
     codeRepository: GITHUB_RUNTIME,
     sameAs: [GITHUB_RUNTIME, GLAMA_RUNTIME],
   };
+  if (pin) {
+    node.git_sha = pin.git_sha;
+    node.git_short = pin.git_short;
+    node.version_id = pin.version_id || null;
+  }
+  return node;
 }
 
 export function statsDatasetNode() {
@@ -836,7 +843,7 @@ export function statsDatasetNode() {
   };
 }
 
-export function graphJsonLd(software) {
+export function graphJsonLd(software, sot = null) {
   return {
     "@context": "https://schema.org",
     "@graph": [
@@ -845,7 +852,7 @@ export function graphJsonLd(software) {
       aboutPageNode(),
       ...sectionPageNodes(),
       ...hubWebsiteNodes(),
-      runtimeApplicationNode(),
+      runtimeApplicationNode(sot),
       statsDatasetNode(),
     ],
   };

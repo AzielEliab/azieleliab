@@ -67,6 +67,7 @@ import {
 } from "./identity.js";
 import { aiTxt, citeDoc, CONTENT_SIGNAL, llmsTxt, robotsTxt, sitemapXml } from "./seo.js";
 import { helpBody, isHelpPath } from "./help.js";
+import { handleSotOutlet, isSotOutletPath, loadSurfacePin } from "./sotOutlet.js";
 import {
   azGeneratorCallRefuse,
   azGeneratorCite,
@@ -286,6 +287,10 @@ export async function handleRequest(request, env = {}, ctx) {
   const attack = await attackSimRefuse(request, url, path);
   if (attack) return attack;
 
+  if (isSotOutletPath(path)) {
+    return handleSotOutlet(request, env, path);
+  }
+
   if (isRuntimeRequest(url.pathname)) {
     const runtime = await handleRuntimeRoot(request, url, env, ctx);
     if (runtime) return runtime;
@@ -407,10 +412,11 @@ export async function handleRequest(request, env = {}, ctx) {
     path === "/who-is-aziel-eliab.txt" ||
     path === SURVIVAL_PATH ||
     path === SURVIVAL_JSON_PATH;
-  const [live, meshDoc, survival] = await Promise.all([
+  const [live, meshDoc, survival, surfaceSot] = await Promise.all([
     needsLive ? loadLiveSoftware(env, ctx) : Promise.resolve(null),
     needsMesh ? loadMesh(env, ctx) : Promise.resolve(null),
     needsSurvival ? loadSurvival(env, ctx) : Promise.resolve(null),
+    needsLive ? loadSurfacePin(env) : Promise.resolve(null),
   ]);
   const doors = live && live.software;
   const htmlPresence = pageViewerPath && request.method === "GET";
@@ -423,11 +429,12 @@ export async function handleRequest(request, env = {}, ctx) {
 
   let res;
   if (path === "/") {
-    res = html(pageHtml(await pageViews(request, env), doors, meshDocLive, live && live.version));
+    res = html(pageHtml(await pageViews(request, env), doors, meshDocLive, live && live.version, { sot: surfaceSot }));
   } else if (aboutPath) {
     res = html(
       pageHtml(await readViews(env), doors, meshDocLive, live && live.version, {
         canonical: CANON_ORIGIN + aboutPath,
+        sot: surfaceSot,
       }),
     );
   } else if (azielAlias) {
@@ -435,10 +442,11 @@ export async function handleRequest(request, env = {}, ctx) {
       pageHtml(await readViews(env), doors, meshDocLive, live && live.version, {
         section: { title: AUTHOR, description: DESCRIPTION, path: "/aziel" },
         canonical: CANON_ORIGIN + "/aziel",
+        sot: surfaceSot,
       }),
     );
   } else if (tab) {
-    res = html(sectionPageHtml(tab, await readViews(env), doors, meshDocLive, live && live.version));
+    res = html(sectionPageHtml(tab, await readViews(env), doors, meshDocLive, live && live.version, surfaceSot));
   } else if (path === "/receipts") res = html(await receiptsHtml());
   else if (path === INGEST_PATH) res = html(ingestHtml());
   else if (path === INGEST_BYTES_PATH) res = text(canonicalPageBytes(), "text/plain", { cache: SEO_CACHE });
@@ -456,18 +464,18 @@ export async function handleRequest(request, env = {}, ctx) {
   } else if (path === "/donate") res = html(donateHtml(), 200, DONATE_HTML_CACHE);
   else if (path === "/embryolock") res = html(embryoLockHtml(), 200, STUB_HTML_CACHE);
   else if (path === "/robots.txt") res = text(robotsTxt(), "text/plain", { cache: SEO_CACHE });
-  else if (path === "/llms.txt") res = text(llmsTxt(doors, survival), "text/plain", { cache: SEO_CACHE });
+  else if (path === "/llms.txt") res = text(llmsTxt(doors, survival, surfaceSot), "text/plain", { cache: SEO_CACHE });
   else if (path === "/person.jsonld" || path === "/identity.jsonld" || path === "/.well-known/person.jsonld") {
     res = text(prettyJson(personJsonLd()), "application/ld+json", { cache: SEO_CACHE, cors: true });
   } else if (path === "/graph.jsonld") {
-    res = text(prettyJson(graphJsonLd(doors)), "application/ld+json", { cache: SEO_CACHE, cors: true });
+    res = text(prettyJson(graphJsonLd(doors, surfaceSot)), "application/ld+json", { cache: SEO_CACHE, cors: true });
   } else if (path === "/who") {
     res = html(whoHtml());
   } else if (path === "/who-is-aziel-eliab.txt" || path === "/who-is") {
     res = text(whoIsTxt(survival, doors), "text/plain", { cache: SEO_CACHE });
   } else if (path === "/.well-known/aziel.json") {
     res = text(prettyJson(wellKnownAziel()), "application/json", { cache: SEO_CACHE, cors: true });
-  } else if (path === "/ai.txt") res = text(aiTxt(survival, doors), "text/plain", { cache: SEO_CACHE });
+  } else if (path === "/ai.txt") res = text(aiTxt(survival, doors, surfaceSot), "text/plain", { cache: SEO_CACHE });
   else if (isHelpPath(path)) res = text(helpBody(path), "text/plain", { cache: SEO_CACHE });
   else if (path === SURVIVAL_PATH || path === SURVIVAL_JSON_PATH) {
     res = json(survival || (await loadSurvival(env, ctx, { request })), JSON_SHORT_CACHE);
@@ -478,7 +486,7 @@ export async function handleRequest(request, env = {}, ctx) {
       cors: true,
     });
   } else if (path === "/cite.json") {
-    res = text(JSON.stringify(citeDoc(doors, live && live.version, survival), null, 1) + "\n", "application/json", { cache: SEO_CACHE });
+    res = text(JSON.stringify(citeDoc(doors, live && live.version, survival, surfaceSot), null, 1) + "\n", "application/json", { cache: SEO_CACHE });
   } else if (path === "/sitemap.xml") {
     res = text(sitemapXml(new Date(), doors), "application/xml", { cache: SEO_CACHE });
   } else if (path === "/v1/software") {
