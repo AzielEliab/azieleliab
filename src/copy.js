@@ -94,7 +94,7 @@ export const TRADES_RUNTIME = "https://trades-runtime.vibelock.workers.dev";
 export const TRADES_RUNTIME_GITHUB = "https://github.com/AzielEliab/trades-runtime";
 export const TRADES_RUNTIME_SLUG = "trades-runtime";
 export const TRADES_RUNTIME_NAME = "Trades-Runtime";
-export const TRADES_RUNTIME_VERSION = "0.3.3";
+export const TRADES_RUNTIME_VERSION = "0.3.4";
 export const TRADES_RUNTIME_DOWNLOAD = TRADES_RUNTIME + "/download";
 export const TRADES_RUNTIME_OPENAPI = TRADES_RUNTIME + "/openapi.json";
 export const TRADES_RUNTIME_MCP = TRADES_RUNTIME + "/mcp";
@@ -206,8 +206,7 @@ export const ECOSYSTEM_LINKS = [
   { label: "GodLock", href: GODLOCK + "/" },
   { label: "He Didn't Jump", href: HEDIDNTJUMP + "/" },
   { label: "GitHub AzielEliab", href: GITHUB },
-  { label: "Aziel Runtime on GitHub", href: GITHUB_RUNTIME },
-  { label: "Aziel Runtime", href: RUNTIME + "/", secondary: true },
+  { label: RUNTIME_TITLE, href: RUNTIME + "/" },
   { label: GLAMA_LABEL, href: GLAMA_RUNTIME },
   { label: X_LABEL, href: X_URL },
 ];
@@ -488,7 +487,10 @@ export const TAB_PAGES = [
     hash: "doors",
     heading: "Doors",
     title: "Doors — Aziel Eliab",
-    description: "Public doors for Aziel Eliab: GitHub AzielEliab, Corpus, GodLock, He Didn't Jump, Runtime, X @AzielEliab.",
+    description:
+      "Public doors for Aziel Eliab: GitHub AzielEliab, Corpus, GodLock, He Didn't Jump, Runtime, " +
+      TRADES_RUNTIME_NAME +
+      ", X @AzielEliab.",
   },
 ];
 
@@ -1120,7 +1122,18 @@ export const DOORS = [
   { label: "Research", href: LIBRARY + "/", also: { label: LIBRARY_AZIEL, href: LIBRARY_AZIEL } },
   { label: "GodLock", href: GODLOCK + "/" },
   { label: "He Didn't Jump", href: HEDIDNTJUMP + "/" },
-  { label: "Runtime", href: RUNTIME_LOCAL, also: { label: RUNTIME + "/", href: RUNTIME + "/" } },
+  { label: "Runtime", href: RUNTIME_LOCAL, also: { label: GLAMA_LABEL, href: GLAMA_RUNTIME } },
+  {
+    label: TRADES_RUNTIME_NAME,
+    href: TRADES_RUNTIME + "/",
+    version: TRADES_RUNTIME_VERSION,
+    also: { label: "MCP", href: TRADES_RUNTIME_MCP },
+    cites: [
+      { label: "OpenAPI", href: TRADES_RUNTIME_OPENAPI },
+      { label: "cite", href: TRADES_RUNTIME_CITE },
+      { label: "llms", href: TRADES_RUNTIME_LLMS },
+    ],
+  },
   { label: X_LABEL, href: X_URL },
 ];
 

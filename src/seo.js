@@ -803,6 +803,10 @@ export function citeDoc(software = SOFTWARE, runtimeVersion = RUNTIME_VERSION, s
     doors: DOORS.map((d) => {
       const row = { label: d.label, url: d.href };
       if (d.also) row.also = { label: d.also.label, url: d.also.href };
+      if (Array.isArray(d.cites) && d.cites.length) {
+        row.cites = d.cites.map((cite) => ({ label: cite.label, url: cite.href }));
+      }
+      if (d.version) row.version = d.version;
       return row;
     }),
     person_id: PERSON_ID,
@@ -823,10 +827,25 @@ export function citeDoc(software = SOFTWARE, runtimeVersion = RUNTIME_VERSION, s
   };
 }
 
+function doorPointText(link) {
+  if (!link || !link.href) return "";
+  if (link.label && link.label !== link.href) return link.label + " " + link.href;
+  return link.href;
+}
+
 function doorIndexLines() {
   return DOORS.map((d) => {
-    const extra = d.also ? " · live " + d.also.href : "";
-    return "- " + d.label + ": " + d.href + extra;
+    const parts = [d.href];
+    const also = doorPointText(d.also);
+    if (also) parts.push(also);
+    if (Array.isArray(d.cites)) {
+      for (const cite of d.cites) {
+        const bit = doorPointText(cite);
+        if (bit) parts.push(bit);
+      }
+    }
+    if (d.version) parts.push(d.version);
+    return "- " + d.label + ": " + parts.join(" · ");
   }).join("\n");
 }
 

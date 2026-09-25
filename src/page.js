@@ -130,22 +130,28 @@ function softwareLine(items = SOFTWARE) {
   );
 }
 
+function doorPoint(link, lead) {
+  if (!link || !link.href) return "";
+  const href = link.href;
+  const label = link.label || href;
+  const prefix = lead ? esc(lead) + " " : "";
+  const body =
+    label === href
+      ? a(href, href, "door-url")
+      : a(href, label, "door-url") + " " + a(href, href, "door-url");
+  return '<span class="also">' + prefix + body + "</span>";
+}
+
 function doorRow(door) {
   const label = a(door.href, door.label, "door-label");
   const url = a(door.href, door.href, "door-url");
-  if (door.also) {
-    const live = a(door.also.href, door.also.label, "door-url");
-    return (
-      "<li>" +
-      label +
-      ' <span class="arrow" aria-hidden="true">→</span> ' +
-      url +
-      ' <span class="also">also ' +
-      live +
-      "</span></li>"
-    );
+  const extras = [];
+  if (door.also) extras.push(doorPoint(door.also, "also"));
+  if (Array.isArray(door.cites)) {
+    for (const cite of door.cites) extras.push(doorPoint(cite));
   }
-  return "<li>" + label + ' <span class="arrow" aria-hidden="true">→</span> ' + url + "</li>";
+  if (door.version) extras.push('<span class="also">' + esc(door.version) + "</span>");
+  return "<li>" + label + ' <span class="arrow" aria-hidden="true">→</span> ' + url + extras.join("") + "</li>";
 }
 
 export function spineNav(current) {
@@ -307,7 +313,7 @@ a:hover{color:var(--gold);text-decoration-color:var(--gold)}
 .door-url{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;font-size:15px;color:var(--ink-soft)}
 .door-label:hover,.door-url:hover{color:var(--gold)}
 .arrow{color:var(--gold);padding:0 4px}
-.also{display:inline;color:var(--muted);font-size:15px}
+.also{display:block;color:var(--muted);font-size:15px;margin-top:2px}
 .also .door-url{font-size:14px}
 .sign{margin-top:18px;color:var(--muted);font-style:italic}
 footer{margin-top:28px;color:var(--muted);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;font-size:13px}

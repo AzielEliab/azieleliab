@@ -92,7 +92,7 @@ The ARK — Keep a local deniable vault; one phrase opens one vault. Whitestone 
 - AZMail — Classify mail text, keep a local mailbox, and optionally use an anonymous ring.
 - AZNet — Check hash continuity on a silent side-net.
 - AZVPN — Open an HTTPS or WebSocket VPN session on the public concentrator.
-- ForgeReceipts — Mint, check hashes, and import or export receipts you keep on the client.
+- ForgeReceipts — Mint and hash-check client-held receipts so retries of one request stay linked.
 - Glossa Filter — Render one intent across the bundled peer phrasings.
 - MirageGrid — Assign a short-lived session node and cite mesh-name metadata.
 - MMConsensus — Tally consensus from opinions you already posted.
@@ -113,7 +113,7 @@ The ARK — Keep a local deniable vault; one phrase opens one vault. Whitestone 
 - M.I.A.Lock — Map missing-person events and rank Doe notices as compatibility leads.
 - PeaceLock — Record chosen silence or chosen inaction as a hash-chained receipt.
 - ShadowLock — Observe a job list you already have, then discard the observation.
-- SpectralLock — Preview a small overlay on an image and recover leftover container bytes.
+- SpectralLock — Preview a 256-pixel overlay, paint membership from the Spectral Harmonic Wheel, and restore faded pigment where the pixels still carry it.
 - TemporalLock — Build and check hashes on a receipt timeline you keep on the client.
 - TrajectoryLock — Test whether observations fit a declared geometric line.
 - VeilLock — Follow local camera and screen steps for apps on your own device.
