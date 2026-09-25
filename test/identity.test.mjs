@@ -242,7 +242,11 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     assert.match(LIVE_NODES_FAQ_ANSWER, /software_nodes/);
     assert.doesNotMatch(LIVE_NODES_FAQ_ANSWER, /THIS-IS-NOT|THIS IS NOT/i);
     assert.ok(answers.includes(SPECTRALLOCK_FAQ_ANSWER));
-    assert.ok(SPECTRALLOCK_FAQ_ANSWER.includes("Preview a small overlay on an image and recover leftover container bytes"));
+    assert.ok(
+      SPECTRALLOCK_FAQ_ANSWER.includes(
+        "Preview a 256-pixel overlay, paint membership from the Spectral Harmonic Wheel, and restore faded pigment where the pixels still carry it",
+      ),
+    );
     assert.ok(SPECTRALLOCK_FAQ_ANSWER.includes("It exists as a hosted overlay preview"));
     assert.doesNotMatch(SPECTRALLOCK_FAQ_ANSWER, /never invent/i);
     assert.doesNotMatch(SPECTRALLOCK_FAQ_ANSWER, /THIS-IS-NOT|THIS IS NOT/i);
@@ -257,7 +261,11 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     assert.ok(SOFTWARES_ADDENDUM.includes("one phrase opens one vault"));
     assert.ok(SOFTWARES_ADDENDUM.includes("Whitestone"));
     assert.ok(SOFTWARES_ADDENDUM.includes("Case Mode"));
-    assert.ok(SPECTRALLOCK_SOFTWARES_LINE.includes("Preview a small overlay on an image and recover leftover container bytes"));
+    assert.ok(
+      SPECTRALLOCK_SOFTWARES_LINE.includes(
+        "Preview a 256-pixel overlay, paint membership from the Spectral Harmonic Wheel, and restore faded pigment where the pixels still carry it",
+      ),
+    );
     assert.doesNotMatch(SPECTRALLOCK_SOFTWARES_LINE, /never invent/i);
     assert.doesNotMatch(SPECTRALLOCK_SOFTWARES_LINE, /THIS-IS-NOT|THIS IS NOT/i);
     assert.doesNotMatch(MISSION.underrated_material, /SpectralLock\/TrajectoryLock advisory only/);
@@ -524,13 +532,21 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     assert.ok(llms.includes("AZDOC-A011CAD23671"));
     for (const name of WHAT_HE_DOES_FAQ_NAMES) assert.ok(llms.includes(name), "llms " + name);
     assert.ok(llms.includes(SPECTRALLOCK_FAQ_NAME));
-    assert.ok(llms.includes("Preview a small overlay on an image and recover leftover container bytes"));
+    assert.ok(
+      llms.includes(
+        "Preview a 256-pixel overlay, paint membership from the Spectral Harmonic Wheel, and restore faded pigment where the pixels still carry it",
+      ),
+    );
     assert.doesNotMatch(llms.split("## Software")[1].split("## Aziel Runtime")[0], /THIS-IS-NOT|THIS IS NOT|THIS IS:|never invent letters|verified-status|needs verified/i);
     const aiHasBrief = aiTxt();
     assert.ok(aiHasBrief.includes(WHAT_AZIEL_ELIAB_DOES));
     assert.ok(aiHasBrief.includes(WHAT_HE_DOES_SOFTWARES));
     assert.ok(aiHasBrief.includes(SPECTRALLOCK_FAQ_NAME));
-    assert.ok(aiHasBrief.includes("Preview a small overlay on an image and recover leftover container bytes"));
+    assert.ok(
+      aiHasBrief.includes(
+        "Preview a 256-pixel overlay, paint membership from the Spectral Harmonic Wheel, and restore faded pigment where the pixels still carry it",
+      ),
+    );
     assert.doesNotMatch(
       aiHasBrief.slice(aiHasBrief.indexOf("- Softwares:"), aiHasBrief.indexOf("- Receipts:")),
       /THIS-IS-NOT|THIS IS NOT|THIS IS:|never invent letters|verified-status|needs verified/i,

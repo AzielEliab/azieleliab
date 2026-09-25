@@ -499,7 +499,7 @@ export const PERSON_KNOWS_ABOUT = [
   "FragGate",
   "GodLock",
   "Aziel Digital Library",
-  "SpectralLock — Preview a small overlay on an image and recover leftover container bytes.",
+  "SpectralLock — " + SPECTRALLOCK_ONE_LINE,
   "Marion Zioncheck historical archive",
   "Hebrew name forms for Aziel Elroi Eliab (SEO / onomastic tether only)",
   HEBREW_NAME_DEFINITION,

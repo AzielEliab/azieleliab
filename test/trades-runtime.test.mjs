@@ -3,6 +3,8 @@ import { describe, it } from "node:test";
 import {
   PERSON_ID,
   SOFTWARE,
+  DOORS,
+  GLAMA_TRADES,
   SOFTWARE_EXTRAS,
   SISTER_PRODUCTS_NOTE,
   TRADES_RUNTIME,
@@ -60,7 +62,7 @@ describe("Trades-Runtime sister-product machine cite", () => {
   it("keeps trades-runtime as extras / sister product, never Softwares-tab", () => {
     assert.equal(TRADES_RUNTIME, "https://trades-runtime.vibelock.workers.dev");
     assert.equal(TRADES_RUNTIME_GITHUB, "https://github.com/AzielEliab/trades-runtime");
-    assert.equal(TRADES_RUNTIME_VERSION, "0.3.3");
+    assert.equal(TRADES_RUNTIME_VERSION, "0.3.4");
     assert.equal(isSoftwareExtra(TRADES_RUNTIME_SLUG, TRADES_RUNTIME_NAME), true);
     assert.equal(isSoftwareExtra("trades-runtime", "Trades-Runtime"), true);
     assert.ok(!SOFTWARE.some((s) => s.slug === TRADES_RUNTIME_SLUG || s.name === TRADES_RUNTIME_NAME));
@@ -236,5 +238,28 @@ describe("Trades-Runtime sister-product machine cite", () => {
     assert.equal(liveExtra.href, TRADES_RUNTIME + "/");
     assert.equal(liveExtra.live_backends, false);
     assert.equal(liveExtra.public_softwares_cite, true);
+  });
+
+  it("lists Trades-Runtime on /doors after Runtime, linking the giveaway Worker", () => {
+    const labels = DOORS.map((d) => d.label);
+    const runtime = labels.indexOf("Runtime");
+    const trades = labels.indexOf(TRADES_RUNTIME_NAME);
+    assert.equal(trades, runtime + 1);
+    assert.equal(labels[trades + 1], "X @AzielEliab");
+    const door = DOORS[trades];
+    assert.equal(door.href, TRADES_RUNTIME + "/");
+    assert.equal(door.also.href, GLAMA_TRADES);
+    assert.equal(door.also.label, GLAMA_TRADES);
+    const section = indexableSection("/doors");
+    assert.match(section.description, /Runtime, Trades-Runtime, X @AzielEliab/);
+    const html = sectionPageHtml(section);
+    assert.ok(html.includes(">Trades-Runtime<"));
+    assert.ok(html.includes('href="' + TRADES_RUNTIME + '/"'));
+    assert.ok(html.includes('href="' + GLAMA_TRADES + '"'));
+    assert.equal(html.includes('class="soft-name">Trades-Runtime'), false);
+    assert.equal(tradesRuntimeCite().version, "0.3.4");
+    assert.equal(tradesRuntimeCite().live_backends, false);
+    assert.equal(tradesRuntimeCite().fraggate_call, false);
+    assert.equal(tradesRuntimeCite().software_tab, false);
   });
 });

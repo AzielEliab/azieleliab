@@ -122,7 +122,7 @@ Not MCP ops (`fraggate_call`, `runtime_run`, …). Child `@id` is `https://www.a
 | azmail | AZMail |
 | azhub | AZHub |
 | azinterface | AZInterface |
-| spectrallock | SpectralLock — Preview a small overlay on an image and recover leftover container bytes. |
+| spectrallock | SpectralLock — Preview a 256-pixel overlay, paint membership from the Spectral Harmonic Wheel, and restore faded pigment where the pixels still carry it. |
 | shadowlock | ShadowLock |
 | foldlock | FoldLock |
 | codelock | CodeLock |

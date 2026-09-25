@@ -85,8 +85,9 @@ export const CATALOG_PURPOSE = Object.freeze({
   }),
   "forgereceipts": Object.freeze({
     name: "ForgeReceipts",
-    one_line: "Mint, check hashes, and import or export receipts you keep on the client.",
-    description: "Use ForgeReceipts to package local receipts and check their hashes. It exists so evidence packaging stays client-held.",
+    one_line: "Mint and hash-check client-held receipts so retries of one request stay linked.",
+    description:
+      "Use ForgeReceipts to package local receipts and check their hashes. It exists so request_id, attempt_n, parent_receipt_id, correlation_id, and outcome are hashed into the receipt. ledger_tip.prev is call-order only (prev_is_retry_parent false).",
   }),
   "glossafilter": Object.freeze({
     name: "Glossa Filter",
@@ -190,8 +191,10 @@ export const CATALOG_PURPOSE = Object.freeze({
   }),
   "spectrallock": Object.freeze({
     name: "SpectralLock",
-    one_line: "Preview a small overlay on an image and recover leftover container bytes.",
-    description: "Use SpectralLock for a 256-pixel overlay preview with an optional inject true|false color switch, plus a metadata-hash check. Inject ON paints membership. Leftover-bytes recover reads present container bytes (object id / offset / stream) on the product Worker. It exists as a hosted overlay preview.",
+    one_line:
+      "Preview a 256-pixel overlay, paint membership from the Spectral Harmonic Wheel, and restore faded pigment where the pixels still carry it.",
+    description:
+      "Use SpectralLock 0.3.1 for a hosted overlay whose wheel-paint plane is separate from the spectral triad. Restore lost pigment is live under SpectralLock on FragGate ops pigment and restore-pigment. AMOE stays on the suite project map and is not a live product. It exists as a hosted overlay preview.",
   }),
   "temporallock": Object.freeze({
     name: "TemporalLock",

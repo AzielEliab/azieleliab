@@ -46,7 +46,7 @@ Part of the Aziel Eliab ecosystem. Cross-links for humans, Google, and AI crawle
 | GodLock | [https://godlock.uk/](https://godlock.uk/) · [Aziel Eliab](https://godlock.uk/AzielEliab) · [repo](https://github.com/AzielEliab/godlock) |
 | He Didn't Jump | [https://www.hedidntjump.com/](https://www.hedidntjump.com/) |
 | aziel-runtime **2.0.0-rc1** | [GitHub](https://github.com/AzielEliab/aziel-runtime) · [Official Runtime](https://aziel-runtime.vibelock.workers.dev/) · [Suite pack](https://aziel-runtime.vibelock.workers.dev/download) · [docs/2.0](https://github.com/AzielEliab/aziel-runtime/tree/main/docs/2.0) · SoT main `6a3798a` / version_id `105fa1ee` |
-| Trades-Runtime 0.3.3 | Sister product extra (local-first BYO HVAC/plumbing/electrical/sewer/cross-trades; live_backends false; public Softwares/cite) · [Worker](https://trades-runtime.vibelock.workers.dev/) · [GitHub](https://github.com/AzielEliab/trades-runtime) · [download](https://trades-runtime.vibelock.workers.dev/download) · [OpenAPI](https://trades-runtime.vibelock.workers.dev/openapi.json) · [MCP](https://trades-runtime.vibelock.workers.dev/mcp) · [cite](https://trades-runtime.vibelock.workers.dev/cite.json) · [llms](https://trades-runtime.vibelock.workers.dev/llms.txt) |
+| Trades-Runtime 0.3.4 | Sister product extra (local-first BYO HVAC/plumbing/electrical/sewer/cross-trades; live_backends false; public Softwares/cite) · [Worker](https://trades-runtime.vibelock.workers.dev/) · [GitHub](https://github.com/AzielEliab/trades-runtime) · [download](https://trades-runtime.vibelock.workers.dev/download) · [OpenAPI](https://trades-runtime.vibelock.workers.dev/openapi.json) · [MCP](https://trades-runtime.vibelock.workers.dev/mcp) · [cite](https://trades-runtime.vibelock.workers.dev/cite.json) · [llms](https://trades-runtime.vibelock.workers.dev/llms.txt) |
 | Try on Glama | [https://glama.ai/mcp/servers/AzielEliab/aziel-runtime](https://glama.ai/mcp/servers/AzielEliab/aziel-runtime) (primary Runtime CTA; verified listing) |
 | GitHub AzielEliab | [https://github.com/AzielEliab](https://github.com/AzielEliab) |
 | X @AzielEliab | [https://x.com/AzielEliab](https://x.com/AzielEliab) |
@@ -233,7 +233,7 @@ Fallback snapshot (used only when live catalog is unreachable):
 | M.I.A.Lock | https://mialock-download-tracker.vibelock.workers.dev/ |
 | PeaceLock | https://peacelock-download-tracker.vibelock.workers.dev/ (public git https://github.com/AzielEliab/peacelock; runtime is local-only) |
 | ShadowLock | https://shadowlock-download-tracker.vibelock.workers.dev/ |
-| SpectralLock | https://spectrallock-download-tracker.vibelock.workers.dev/ (Preview a small overlay on an image and recover leftover container bytes.) |
+| SpectralLock | https://spectrallock-download-tracker.vibelock.workers.dev/ (Preview a 256-pixel overlay, paint membership from the Spectral Harmonic Wheel, and restore faded pigment where the pixels still carry it.) |
 | Whitestone | https://whitestone-download-tracker.vibelock.workers.dev/ (Advise on short Criminal, Civil, and Divorce questions with historical as-of and Case Mode. Session-only. FragGate status none.) |
 | TemporalLock | https://temporallock-download-tracker.vibelock.workers.dev/ |
 | TrajectoryLock | https://trajectorylock-download-tracker.vibelock.workers.dev/ |
@@ -289,7 +289,7 @@ Every label and URL is hyperlinked.
 - Runtime → https://www.azieleliab.com/runtime · also https://aziel-runtime.vibelock.workers.dev/ (**2.0.0-rc1**, SoT main `6a3798a` / version_id `105fa1ee`)
 - Try on Glama → https://glama.ai/mcp/servers/AzielEliab/aziel-runtime (primary Runtime CTA; verified Glama listing for AzielEliab/aziel-runtime — not an invented server id)
 - Official Runtime → https://aziel-runtime.vibelock.workers.dev/ (secondary Worker link)
-- Trades-Runtime → https://trades-runtime.vibelock.workers.dev/ (sister product extra; live_backends false)
+- Trades-Runtime → https://trades-runtime.vibelock.workers.dev/ · also https://glama.ai/mcp/servers/AzielEliab/trades-runtime (sister product extra; live_backends false)
 - Suite pack → https://aziel-runtime.vibelock.workers.dev/download (GET /download)
 - Source on GitHub → https://github.com/AzielEliab/aziel-runtime
 - Documentation / Architecture → https://github.com/AzielEliab/aziel-runtime/tree/main/docs/2.0

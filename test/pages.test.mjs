@@ -35,6 +35,7 @@ import {
   DONATE_TITLE,
   DONATE_XRP_TAG_NOTE,
   DOORS,
+  GLAMA_TRADES,
   ECOSYSTEM_LINKS,
   ECOSYSTEM_TITLE,
   LIBRARY,
@@ -84,6 +85,9 @@ import {
   WHO_HREF,
   RUNTIME,
   RUNTIME_DOCS,
+  TRADES_RUNTIME,
+  TRADES_RUNTIME_NAME,
+  TRADES_RUNTIME_VERSION,
   RUNTIME_ID,
   RUNTIME_NAMED_LINE,
   RUNTIME_NAMED_TOOLS,
@@ -790,6 +794,26 @@ describe("doors", () => {
     assert.match(aiTxt(), /## Doors[\s\S]*He Didn't Jump: https:\/\/www\.hedidntjump\.com\//);
     assert.ok(sitemapXml().includes("<loc>" + HEDIDNTJUMP + "/</loc>"));
     assert.ok(sitemapXml().includes("<loc>https://github.com/AzielEliab/peacelock</loc>"));
+  });
+
+  it("lists Trades-Runtime on /doors beside Runtime, linking the giveaway Worker", () => {
+    assert.equal(TRADES_RUNTIME_VERSION, "0.3.4");
+    const labels = DOORS.map((d) => d.label);
+    const runtime = labels.indexOf("Runtime");
+    const trades = labels.indexOf(TRADES_RUNTIME_NAME);
+    assert.equal(trades, runtime + 1);
+    assert.equal(labels[trades + 1], "X @AzielEliab");
+    const door = DOORS[trades];
+    assert.equal(door.href, TRADES_RUNTIME + "/");
+    assert.equal(door.also.href, GLAMA_TRADES);
+    const html = doorsHtml();
+    assert.ok(html.includes(">Trades-Runtime<"));
+    assert.ok(html.includes('href="' + TRADES_RUNTIME + '/"'));
+    assert.ok(html.includes('href="' + GLAMA_TRADES + '"'));
+    assert.ok(html.includes("https://trades-runtime.vibelock.workers.dev/"));
+    const section = indexableSection("/doors");
+    assert.match(section.description, /Runtime, Trades-Runtime/);
+    assert.ok(html.includes(section.description));
   });
 });
 
@@ -2626,7 +2650,10 @@ describe("live software catalog", () => {
     assert.equal(fallback.description, SPECTRALLOCK_DESCRIPTION);
     assert.equal(fallback.engine_digest, SPECTRALLOCK_DIGEST);
     assert.equal(fallback.worker_home, SPECTRALLOCK_WORKER);
-    assert.match(fallback.one_line, /Preview a small overlay on an image and recover leftover container bytes/);
+    assert.match(
+      fallback.one_line,
+      /Preview a 256-pixel overlay, paint membership from the Spectral Harmonic Wheel, and restore faded pigment where the pixels still carry it/,
+    );
     assert.match(fallback.description, /It exists as a hosted overlay preview/);
     assert.doesNotMatch(fallback.one_line, /never invent|THIS-IS-NOT|THIS IS NOT/i);
     assert.doesNotMatch(fallback.description, /never invent|THIS-IS-NOT|THIS IS NOT/i);
@@ -2649,7 +2676,11 @@ describe("live software catalog", () => {
     const softwareVisible = softwareHtml().match(/<div class="soft-line">[\s\S]*?<\/div>/);
     assert.ok(softwareVisible);
     assert.ok(softwareVisible[0].includes(">SpectralLock<"));
-    assert.ok(softwareVisible[0].includes("Preview a small overlay on an image and recover leftover container bytes"));
+    assert.ok(
+      softwareVisible[0].includes(
+        "Preview a 256-pixel overlay, paint membership from the Spectral Harmonic Wheel, and restore faded pigment where the pixels still carry it",
+      ),
+    );
     assert.ok(!softwareVisible[0].includes("/v1/recover"));
     assert.ok(!softwareVisible[0].includes("/v1/handwriting"));
     assert.ok(!softwareVisible[0].includes("revision_graph"));
@@ -2703,7 +2734,11 @@ describe("live software catalog", () => {
     const spectralApp = ld["@graph"].find((n) => n["@id"] === softwareNodeId(spectral));
     assert.equal(spectralApp.description, SPECTRALLOCK_DESCRIPTION);
     const namedSpectral = ld["@graph"].find((n) => n["@id"] === "https://www.azieleliab.com/runtime#spectrallock");
-    assert.ok(namedSpectral.description.includes("Preview a small overlay on an image and recover leftover container bytes"));
+    assert.ok(
+      namedSpectral.description.includes(
+        "Preview a 256-pixel overlay, paint membership from the Spectral Harmonic Wheel, and restore faded pigment where the pixels still carry it",
+      ),
+    );
     assert.doesNotMatch(namedSpectral.description, /never invent|THIS-IS-NOT|THIS IS NOT/i);
   });
 
