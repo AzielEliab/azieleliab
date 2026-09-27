@@ -61,7 +61,7 @@ describe("Trades-Runtime sister-product machine cite", () => {
   it("keeps trades-runtime as extras / sister product, never Softwares-tab", () => {
     assert.equal(TRADES_RUNTIME, "https://trades-runtime.vibelock.workers.dev");
     assert.equal(TRADES_RUNTIME_GITHUB, "https://github.com/AzielEliab/trades-runtime");
-    assert.equal(TRADES_RUNTIME_VERSION, "0.3.4");
+    assert.equal(TRADES_RUNTIME_VERSION, "0.4.9");
     assert.equal(isSoftwareExtra(TRADES_RUNTIME_SLUG, TRADES_RUNTIME_NAME), true);
     assert.equal(isSoftwareExtra("trades-runtime", "Trades-Runtime"), true);
     assert.ok(!SOFTWARE.some((s) => s.slug === TRADES_RUNTIME_SLUG || s.name === TRADES_RUNTIME_NAME));
@@ -274,7 +274,7 @@ describe("Trades-Runtime sister-product machine cite", () => {
     assert.equal(card.includes(TRADES_RUNTIME_OPENAPI), false);
     assert.equal(card.includes(TRADES_RUNTIME_CITE), false);
     assert.equal(card.includes(TRADES_RUNTIME_LLMS), false);
-    assert.equal(card.includes(">0.3.4<"), false);
+    assert.equal(card.includes(">0.4.9<"), false);
     assert.equal(card.includes('class="soft-name">Trades-Runtime'), false);
     assert.doesNotMatch(card, /class="soft-name"|class="soft-list"/);
     const cite = citeDoc();
@@ -286,7 +286,7 @@ describe("Trades-Runtime sister-product machine cite", () => {
     assert.equal(cited.version, undefined);
     assert.equal(cited.cites, undefined);
     assert.ok(llmsTxt().includes("MCP " + TRADES_RUNTIME_MCP));
-    assert.equal(tradesRuntimeCite().version, "0.3.4");
+    assert.equal(tradesRuntimeCite().version, "0.4.9");
     assert.equal(tradesRuntimeCite().live_backends, false);
     assert.equal(tradesRuntimeCite().fraggate_call, false);
     assert.equal(tradesRuntimeCite().software_tab, false);

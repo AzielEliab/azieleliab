@@ -105,7 +105,7 @@ Sister products cited honestly. aziel-runtime fraggate_call does not execute the
 
 ### Trades-Runtime (trades-runtime)
 Shadow-first local BYO runtime for HVAC/plumbing/electrical/sewer/cross-trades. BYO ServiceTitan+ProBooks. Human authority. live_backends false.
-Version: 0.3.4
+Version: 0.4.9
 Worker: https://trades-runtime.vibelock.workers.dev/
 GitHub: https://github.com/AzielEliab/trades-runtime
 Download: https://trades-runtime.vibelock.workers.dev/download

@@ -25,8 +25,8 @@ import {
   RECEIPTS_HREF,
   RECEIPTS_TITLE,
   RUNTIME_DOORS,
-  RUNTIME_GIT_SHORT,
   RUNTIME_NAME,
+  runtimeTip,
   RUNTIME_NAMED_LINE,
   RUNTIME_TITLE,
   RUNTIME_VERSION,
@@ -729,9 +729,10 @@ function runtimeDoorsHtml() {
 
 export function runtimeCiteHtml(version, sot) {
   const pin = sot && sot.git_sha ? sot : null;
+  const tip = runtimeTip(pin);
   const ver = pin && pin.version ? pin.version : resolveRuntimeVersion(version);
-  const short = pin && pin.git_short ? pin.git_short : RUNTIME_GIT_SHORT;
-  const id = pin && pin.version_id ? " · version_id " + esc(pin.version_id) : "";
+  const short = tip.git_short;
+  const id = tip.version_id ? " · version_id " + esc(tip.version_id) : "";
   return (
     '<p class="runtime-cite">' +
     esc(RUNTIME_NAME) +

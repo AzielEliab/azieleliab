@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import { handleRequest } from "../src/index.js";
-import { RUNTIME_GIT_SHA, RUNTIME_GIT_SHORT, RUNTIME_VERSION } from "../src/copy.js";
+import { RUNTIME_GIT_SHA, RUNTIME_GIT_SHORT, RUNTIME_VERSION, RUNTIME_VERSION_ID } from "../src/copy.js";
 import { VIEW_KEY, memoryKv } from "../src/views.js";
 import {
   OUTLET_ID,
@@ -91,7 +91,7 @@ describe("SoT outlet hub-azieleliab", () => {
     assert.equal(doc.authority, SOT_AUTHORITY);
     assert.equal(doc.pull.reads, SOT_AUTHORITY);
     assert.equal(doc.push.kind, "sot_sync");
-    assert.equal(doc.frozen.version_id, null);
+    assert.equal(doc.frozen.version_id, RUNTIME_VERSION_ID);
     assert.equal(doc.frozen.git_short, RUNTIME_GIT_SHORT);
     assert.equal(doc.status, "last-known");
     assert.match(doc.rules.version_id, /Never invented/);
@@ -117,7 +117,7 @@ describe("SoT outlet hub-azieleliab", () => {
 
     const before = await (await get(env, "/cite.json")).json();
     assert.equal(before.runtime_sot.git_sha, RUNTIME_GIT_SHA);
-    assert.equal(before.runtime_sot.version_id, null);
+    assert.equal(before.runtime_sot.version_id, RUNTIME_VERSION_ID);
     assert.equal(before.sot_outlet.outlet_id, OUTLET_ID);
 
     const beforeWrites = views.writes().slice();
@@ -150,7 +150,7 @@ describe("SoT outlet hub-azieleliab", () => {
     assert.match(llms, new RegExp("SoT LIVE: main " + LIVE_SHORT));
     assert.match(ai, new RegExp("SoT LIVE: main " + LIVE_SHORT));
     assert.match(llms, /\/v1\/mesh\/outlet\/sync/);
-    assert.doesNotMatch(llms + ai, /105fa1ee/);
+    assert.doesNotMatch(llms + ai, /105fa1ee|be1d6dca/);
 
     const home = await (await get(env, "/")).text();
     assert.match(home, new RegExp("main " + LIVE_SHORT));
@@ -252,7 +252,7 @@ describe("SoT outlet hub-azieleliab", () => {
     assert.equal(projectSot({ version: RUNTIME_VERSION, git_sha: LIVE_SHA, count: 42, version_id: null }).sot.version_id, null);
     assert.equal(projectSot({ version: RUNTIME_VERSION, git_sha: LIVE_SHA, count: 42, version_id: "" }).sot.version_id, null);
     assert.equal(projectSot({ version: RUNTIME_VERSION, git_sha: "abc", count: 42 }).ok, false);
-    assert.equal(frozenSot().version_id, null);
+    assert.equal(frozenSot().version_id, RUNTIME_VERSION_ID);
 
     const views = kv(0);
     const env = envWith(liveDoc({ version_id: "c0ffee01" }), views);

@@ -52,14 +52,18 @@ export const RUNTIME_VERSION = "2.0.0-rc1";
  * Operator SoT LIVE git from GET /v1/software.git_sha at this edit.
  * Short form is the first 7 hex digits. Suite version stays 2.0.0-rc1.
  */
-export const RUNTIME_GIT_SHA = "231b02fcbb7b50fbd52762a49329042bc1715fe9";
-export const RUNTIME_GIT_SHORT = "231b02f";
+export const RUNTIME_GIT_SHA = "70cc0b06786ad925be49da16d7f8893095df330b";
+export const RUNTIME_GIT_SHORT = "70cc0b0";
 /**
- * Live GET /v1/software, /v1/health, and /cite.json do not expose version_id.
- * Do not keep claiming a certification id the Worker no longer publishes.
+ * Last-known version_id from live GET /v1/software.
+ * Live note: env.CF_VERSION_METADATA.id, read at serve time. Not a baked suite identity.
+ * A later pin that omits version_id stays omitted. This constant is the cold pin only.
  */
+export const RUNTIME_VERSION_ID = "be1d6dca-01a9-4d7e-95da-3fffb617a989";
 export const RUNTIME_VERSION_ID_NOTE =
-  "Live GET /v1/software, /v1/health, and /cite.json do not expose version_id.";
+  "version_id " +
+  RUNTIME_VERSION_ID +
+  " from live GET /v1/software (CF_VERSION_METADATA.id; last-known pin).";
 
 /** Copy version_id only when the live document exposes a non-empty string. */
 export function exposedVersionId(doc) {
@@ -112,7 +116,7 @@ export const TRADES_RUNTIME = "https://trades-runtime.vibelock.workers.dev";
 export const TRADES_RUNTIME_GITHUB = "https://github.com/AzielEliab/trades-runtime";
 export const TRADES_RUNTIME_SLUG = "trades-runtime";
 export const TRADES_RUNTIME_NAME = "Trades-Runtime";
-export const TRADES_RUNTIME_VERSION = "0.3.4";
+export const TRADES_RUNTIME_VERSION = "0.4.9";
 export const TRADES_RUNTIME_DOWNLOAD = TRADES_RUNTIME + "/download";
 export const TRADES_RUNTIME_OPENAPI = TRADES_RUNTIME + "/openapi.json";
 export const TRADES_RUNTIME_MCP = TRADES_RUNTIME + "/mcp";
@@ -287,19 +291,48 @@ export function namedToolsPeerLine() {
     .join(", ");
 }
 
-/** Frozen SoT LIVE line. version_id is included only when a pin actually has one. */
+/**
+ * Cold tip when no outlet pin is loaded.
+ * A pin with git_sha keeps its own version_id, including null when live omits it.
+ */
+export function runtimeTip(sot) {
+  if (sot && sot.git_sha) {
+    const sha = String(sot.git_sha);
+    const id = typeof sot.version_id === "string" && sot.version_id ? sot.version_id : null;
+    return {
+      version: sot.version ? String(sot.version) : RUNTIME_VERSION,
+      git_sha: sha,
+      git_short: sot.git_short ? String(sot.git_short) : sha.slice(0, 7),
+      version_id: id,
+      from_pin: true,
+    };
+  }
+  return {
+    version: RUNTIME_VERSION,
+    git_sha: RUNTIME_GIT_SHA,
+    git_short: RUNTIME_GIT_SHORT,
+    version_id: RUNTIME_VERSION_ID,
+    from_pin: false,
+  };
+}
+
+/** Frozen SoT LIVE line. version_id is included only when the tip actually has one. */
 export function runtimeSotLiveLine(version = RUNTIME_VERSION, sot) {
-  const short = sot && sot.git_short ? String(sot.git_short) : RUNTIME_GIT_SHORT;
-  const ver = sot && sot.version ? String(sot.version) : version;
-  const id = sot && typeof sot.version_id === "string" && sot.version_id ? sot.version_id : "";
-  if (id) return "SoT LIVE: main " + short + " / version_id " + id + " / " + ver + " at " + RUNTIME;
+  const tip = runtimeTip(sot);
+  const short = tip.git_short;
+  const ver = sot && sot.version ? String(sot.version) : version || tip.version;
+  if (tip.version_id) {
+    return "SoT LIVE: main " + short + " / version_id " + tip.version_id + " / " + ver + " at " + RUNTIME;
+  }
   return "SoT LIVE: main " + short + " / " + ver + " at " + RUNTIME;
 }
 
 export function runtimeVersionIdNote(sot) {
-  if (sot && typeof sot.version_id === "string" && sot.version_id) {
-    return "version_id " + sot.version_id + " from live GET /v1/software.";
+  const tip = runtimeTip(sot);
+  if (tip.version_id && tip.from_pin) {
+    return "version_id " + tip.version_id + " from live GET /v1/software.";
   }
+  if (tip.from_pin) return "This pin omits version_id. It is not invented.";
   return RUNTIME_VERSION_ID_NOTE;
 }
 
@@ -651,8 +684,8 @@ export const CATALOG_SLUGS = [
 ];
 
 /**
- * Product versions from live GET /v1/software at git 231b02f.
- * JSON-LD softwareVersion only. Not a Softwares-tab row and not a Doors field.
+ * JSON-LD softwareVersion fallback when a live row omits version.
+ * Not a Softwares-tab row and not a Doors field. Catalog count stays 42.
  */
 export const CATALOG_VERSIONS = Object.freeze({
   "4dmap": "0.3.0",

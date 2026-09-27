@@ -512,7 +512,10 @@
       "sameAs": [
         "https://github.com/AzielEliab/aziel-runtime",
         "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime"
-      ]
+      ],
+      "git_sha": "70cc0b06786ad925be49da16d7f8893095df330b",
+      "git_short": "70cc0b0",
+      "version_id": "be1d6dca-01a9-4d7e-95da-3fffb617a989"
     },
     {
       "@type": "Dataset",
