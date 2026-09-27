@@ -16,6 +16,7 @@ import {
   RUNTIME_GIT_SHORT,
   RUNTIME_NAME,
   RUNTIME_VERSION,
+  RUNTIME_VERSION_ID,
   exposedVersionId,
   runtimeSotLiveLine,
 } from "./copy.js";
@@ -81,7 +82,7 @@ export function frozenSot() {
     git_sha: RUNTIME_GIT_SHA,
     git_short: RUNTIME_GIT_SHORT,
     branch: RUNTIME_BRANCH,
-    version_id: null,
+    version_id: RUNTIME_VERSION_ID,
     count: null,
     source: "frozen",
     authority: SOT_AUTHORITY,

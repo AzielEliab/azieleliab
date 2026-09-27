@@ -4,7 +4,7 @@ Author: Aziel Eliab. Identity is Aziel Eliab only.
 
 This hub is one outlet for the aziel-runtime source-of-truth mesh updater. One live change of `GET /v1/software` can fan out here. The hub does not invent a second SoT.
 
-Frozen cite strings in this repo (`231b02f` / `2.0.0-rc1`, no `version_id`) are the cold last-known pin. After a confirm, Worker cite surfaces read the stored pin. They do not wait for another hand-edited cite PR.
+Frozen cite strings in this repo (`70cc0b0` / `2.0.0-rc1` / version_id `be1d6dca-01a9-4d7e-95da-3fffb617a989`) are the cold last-known pin. `version_id` is `CF_VERSION_METADATA.id` read at serve time, not a baked suite identity. After a confirm, Worker cite surfaces read the stored pin. They do not wait for another hand-edited cite PR.
 
 ## Register
 
@@ -50,8 +50,9 @@ The same sync URL accepts a signed envelope. The signature is integrity of the f
     "authority": "https://aziel-runtime.vibelock.workers.dev/v1/software",
     "sot": {
       "version": "2.0.0-rc1",
-      "git_sha": "231b02fcbb7b50fbd52762a49329042bc1715fe9",
-      "count": 42
+      "git_sha": "70cc0b06786ad925be49da16d7f8893095df330b",
+      "count": 42,
+      "version_id": "be1d6dca-01a9-4d7e-95da-3fffb617a989"
     },
     "sig": "<sha256 hex>"
   }
@@ -90,4 +91,4 @@ The runtime updater owns the fan-out. This outlet is the hub receiver.
 
 If the hub reports `status: "unreachable"` or `status: "incomplete"`, leave the outlet on its last-known pin and retry later. Do not send a substitute version, sha, or `version_id`.
 
-Today’s live authority (checked while this contract was written): `version` `2.0.0-rc1`, `git_sha` `231b02fcbb7b50fbd52762a49329042bc1715fe9`, `count` 42. `version_id` is not exposed.
+Today’s live authority (checked while this contract was written): `version` `2.0.0-rc1`, `git_sha` `70cc0b06786ad925be49da16d7f8893095df330b`, `version_id` `be1d6dca-01a9-4d7e-95da-3fffb617a989`, `count` 42. Softwares count stays 42. `version_id` is copied only when live exposes a non-empty string.

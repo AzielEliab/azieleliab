@@ -52,8 +52,7 @@ import {
   RUNTIME_DOWNLOAD,
   RUNTIME_DOWNLOAD_NOTE,
   RUNTIME_DOWNLOAD_V1,
-  RUNTIME_GIT_SHA,
-  RUNTIME_GIT_SHORT,
+  runtimeTip,
   RUNTIME_BRANCH,
   RUNTIME_HUMAN_UI,
   RUNTIME_ID,
@@ -584,10 +583,11 @@ function sotLine(version, sot) {
 export function citeDoc(software = SOFTWARE, runtimeVersion = RUNTIME_VERSION, survival = null, sot = null) {
   const doorsSoftware = software && software.length ? software : SOFTWARE;
   const pin = sot && sot.git_sha ? sot : null;
+  const tip = runtimeTip(pin);
   const version = pin && pin.version ? pin.version : resolveRuntimeVersion(runtimeVersion);
-  const gitSha = pin ? pin.git_sha : RUNTIME_GIT_SHA;
-  const gitShort = pin ? pin.git_short : RUNTIME_GIT_SHORT;
-  const versionId = pin && pin.version_id ? pin.version_id : null;
+  const gitSha = tip.git_sha;
+  const gitShort = tip.git_short;
+  const versionId = tip.version_id;
   const ingest = ingestRecord();
   const banSurvival = banSurvivalCite(survival);
   return {
@@ -1365,6 +1365,7 @@ export function softwareNodeId(item) {
 export function jsonLd(software = SOFTWARE, runtimeVersion = RUNTIME_VERSION, sot = null) {
   const doorsSoftware = software && software.length ? software : SOFTWARE;
   const pin = sot && sot.git_sha ? sot : null;
+  const tip = runtimeTip(pin);
   const version = pin && pin.version ? pin.version : resolveRuntimeVersion(runtimeVersion);
   const personId = PERSON_ID;
   const siteId = WEBSITE_ID;
@@ -1429,13 +1430,9 @@ export function jsonLd(software = SOFTWARE, runtimeVersion = RUNTIME_VERSION, so
         applicationCategory: "DeveloperApplication",
         operatingSystem: "Cloudflare Workers",
         softwareVersion: version,
-        ...(pin
-          ? {
-              git_sha: pin.git_sha,
-              git_short: pin.git_short,
-              version_id: pin.version_id || null,
-            }
-          : {}),
+        git_sha: tip.git_sha,
+        git_short: tip.git_short,
+        version_id: tip.version_id,
         url: RUNTIME_LOCAL,
         description:
           "Same-origin Aziel Runtime (aziel-runtime) door for agents. OpenAPI " +

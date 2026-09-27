@@ -102,7 +102,7 @@ Machine identity (identical bytes under [docs/aziel-identity-schema/](aziel-iden
 
 ### Runtime `hasPart` (named tools only)
 
-Not MCP ops (`fraggate_call`, `runtime_run`, …). Not Ask Jeeves. Child `@id` is `https://www.azieleliab.com/runtime#<slug>`. SoT LIVE: main `231b02f` / 2.0.0-rc1. Live GET `/v1/software` does not expose `version_id`.
+Not MCP ops (`fraggate_call`, `runtime_run`, …). Not Ask Jeeves. Child `@id` is `https://www.azieleliab.com/runtime#<slug>`. SoT LIVE: main `70cc0b0` / version_id `be1d6dca-01a9-4d7e-95da-3fffb617a989` / 2.0.0-rc1. Live GET `/v1/software` exposes `version_id` (`CF_VERSION_METADATA.id`, serve-time; last-known pin).
 
 | slug | name |
 |------|------|

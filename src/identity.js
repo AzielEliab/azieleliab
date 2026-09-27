@@ -36,6 +36,7 @@ import {
   RUNTIME_LOCAL,
   RUNTIME_TITLE,
   RUNTIME_VERSION,
+  runtimeTip,
   SOFTWARE_HREF,
   WEBSITE_ID,
   WHO_HREF,
@@ -791,6 +792,7 @@ export function sectionPageNodes() {
 
 export function runtimeApplicationNode(sot) {
   const pin = sot && sot.git_sha ? sot : null;
+  const tip = runtimeTip(pin);
   const node = {
     "@type": "SoftwareApplication",
     "@id": RUNTIME_ID,
@@ -805,12 +807,10 @@ export function runtimeApplicationNode(sot) {
     license: "https://www.apache.org/licenses/LICENSE-2.0",
     codeRepository: GITHUB_RUNTIME,
     sameAs: [GITHUB_RUNTIME, GLAMA_RUNTIME],
+    git_sha: tip.git_sha,
+    git_short: tip.git_short,
+    version_id: tip.version_id,
   };
-  if (pin) {
-    node.git_sha = pin.git_sha;
-    node.git_short = pin.git_short;
-    node.version_id = pin.version_id || null;
-  }
   return node;
 }
 

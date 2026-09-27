@@ -21,6 +21,7 @@ import {
   RUNTIME_LOCAL,
   RUNTIME_SLUG,
   RUNTIME_VERSION,
+  RUNTIME_VERSION_ID,
   RUNTIME_VERSION_ID_NOTE,
   SOFTWARE,
   exposedVersionId,
@@ -387,6 +388,15 @@ function isUsableLiveCatalog(packed) {
   return true;
 }
 
+function catalogVersionIdNote(packed) {
+  const id = exposedVersionId(packed);
+  if (id && (packed.source === "live" || packed.source === "fraggate-list")) {
+    return "version_id " + id + " from live GET /v1/software.";
+  }
+  if (id) return RUNTIME_VERSION_ID_NOTE;
+  return "This catalog pin omits version_id.";
+}
+
 function catalogGit(extra, packed) {
   const sha = String((extra && extra.git_sha) || (packed && packed.git_sha) || "").trim();
   if (!sha) return {};
@@ -396,6 +406,8 @@ function catalogGit(extra, packed) {
 function fallbackCatalog(source, via) {
   return packedCatalog(SOFTWARE, SOFTWARE_EXTRAS, source, via, RUNTIME_VERSION, {
     tab_placement_slugs: Object.keys(CATALOG_RUNTIME_HOME),
+    git_sha: RUNTIME_GIT_SHA,
+    version_id: RUNTIME_VERSION_ID,
   });
 }
 
@@ -524,9 +536,7 @@ export function softwareIndexBody(live, mesh) {
     git_sha: packed.git_sha || RUNTIME_GIT_SHA,
     git_short: packed.git_short || (packed.git_sha ? String(packed.git_sha).slice(0, 7) : RUNTIME_GIT_SHORT),
     version_id: exposedVersionId(packed),
-    version_id_note: exposedVersionId(packed)
-      ? "version_id from live GET /v1/software."
-      : RUNTIME_VERSION_ID_NOTE,
+    version_id_note: catalogVersionIdNote(packed),
     suite_download: RUNTIME_DOWNLOAD,
     door: "fraggate",
     sort_law: "plain A–Z → gate A–Z → lock A–Z",
