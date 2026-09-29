@@ -16,7 +16,7 @@ Every public website on the Aziel Eliab profile. One-line what/why. Hub About bo
 
 | URL | What |
 |-----|------|
-| https://www.azieleliab.com/ | Official Person hub / Softwares / research landing |
+| https://www.azieleliab.com/ | Film theater front page. Hub (Person `#aziel`) is `/aziel` after Enter. Softwares stay on `/software`. |
 | https://www.azielcorpuslibrary.net/ | Digital Library MASTER |
 | https://godlock.uk/ | GodLock challenge/score product |
 | https://www.hedidntjump.com/ | Zioncheck 7 Aug 1936 archive |

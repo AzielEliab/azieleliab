@@ -510,7 +510,7 @@ export const MIRAGEGRID_DOWNLOAD = "https://miragegrid-download-tracker.vibelock
 
 export const DESCRIPTION =
   "Aziel Eliab. You don’t get to know me. You get to understand the work. Public identity Aziel Eliab only.";
-/** About surfaces 200 with the same homepage HTML so they are indexable. */
+/** About surfaces 200 with the same hub HTML so they are indexable. `/` is the film theater. */
 export const ABOUT_PATHS = ["/about", "/AzielEliab", "/aziel-eliab"];
 export const ABOUT_HREF = CANON_ORIGIN + "/";
 /** Visible HTML who-is page (H1 + who-answer). Machine twin remains /who-is-aziel-eliab.txt. */
@@ -550,7 +550,8 @@ export const MISSION_PATH = "/mission";
 
 /**
  * First-class tab pages. Each is its own URL — not a homepage hash target.
- * /runtime stays the aziel-runtime door. /aziel stays the Person homepage alias.
+ * /runtime stays the aziel-runtime door. /aziel is the hub (Person #aziel).
+ * `/` is the film theater only; Enter navigates here.
  */
 export const TAB_PAGES = [
   {

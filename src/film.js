@@ -1,9 +1,12 @@
 /**
- * Film gate for /. Assets are the SuperGrok theater files
- * (aziel-runtime.mp4, poster, grain, og). Enter opens the existing hub at #aziel.
+ * Film theater for /. This document is the only front page.
+ * Assets are the SuperGrok theater files (aziel-runtime.mp4, poster, grain, og).
+ * Enter navigates to the hub at /aziel. The hub is not mounted under this page.
  * Author: Aziel Eliab.
  */
-import { LIBRARY, LIBRARY_RUNTIME, RUNTIME_VERSION } from "./copy.js";
+import { AUTHOR, AZIEL_PATH, CANON_ORIGIN, DESCRIPTION, HASH_REDIRECTS, LIBRARY, LIBRARY_RUNTIME, RUNTIME_VERSION } from "./copy.js";
+import { personJsonLdScript } from "./identity.js";
+import { ROBOTS_INDEX } from "./seo.js";
 
 export const FILM_MP4_PATH = "/film/aziel-runtime.mp4";
 export const FILM_POSTER_PATH = "/film/poster.jpg";
@@ -134,7 +137,7 @@ export function filmGateHtml() {
         <p class="eyebrow">a film · the face withheld</p>
         <h1>You don’t get to know me.</h1>
         <p class="deck">You get to understand the work.</p>
-        <a class="enter" href="#aziel">Enter</a>
+        <a class="enter" href="${AZIEL_PATH}">Enter</a>
       </div>
     </div>
   </div></div>
@@ -147,7 +150,7 @@ export function filmGateHtml() {
       <div><dt>Law</dt><dd>The public identity is the work. Receipt-first. Local-first.</dd></div>
     </dl>
     <nav class="doors" aria-label="Film doors">
-      <a href="#aziel">www.azieleliab.com</a>
+      <a href="${AZIEL_PATH}">www.azieleliab.com</a>
       <a href="${LIBRARY}/" target="_blank" rel="noreferrer">azielcorpuslibrary.net</a>
       <a href="${LIBRARY_RUNTIME}" target="_blank" rel="noreferrer">runtime</a>
     </nav>
@@ -198,7 +201,7 @@ export const THEATER_CSS = `
 .theater .download{margin:1.4rem 0 0}
 .theater .download a{color:#b0f0c4;letter-spacing:.18em;text-transform:uppercase;border-bottom:1px solid #b0f0c473;padding-bottom:.12rem;font-size:.72rem;text-decoration:none}
 .theater .download a:hover{color:#e6d4b5;border-color:#e6d4b5}
-#aziel{scroll-margin-top:1rem}
+html,body{margin:0;background:#07090f}
 @media (width>=740px){.theater .facts{grid-template-columns:1fr 1fr 1fr;gap:1.25rem}}
 @media (width<=720px){
   .theater .mast{letter-spacing:.14em;gap:.7rem;padding:.85rem .9rem .15rem;font-size:.62rem}
@@ -213,6 +216,56 @@ export const THEATER_CSS = `
   .theater .stage.is-playing .gate{position:static;background:none}
 }
 `;
+
+function esc(s) {
+  return String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+}
+
+/** #aziel and retired homepage hashes leave the theater for the real route. */
+function theaterHashScript() {
+  const map = { ...HASH_REDIRECTS, aziel: AZIEL_PATH };
+  return (
+    "<script>(function(){var map=" +
+    JSON.stringify(map) +
+    ';var h=String(location.hash||"").replace(/^#/,"");if(map[h])location.replace(map[h]);})();</script>'
+  );
+}
+
+/** Sole document for GET /. No hub markup, Softwares grid, or site chrome. */
+export function filmTheaterHtml() {
+  const canonical = CANON_ORIGIN + "/";
+  const image = CANON_ORIGIN + FILM_OG_PATH;
+  return `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+${theaterHashScript()}
+<title>${esc(AUTHOR)}</title>
+<meta name="description" content="${esc(DESCRIPTION)}">
+<meta name="author" content="${esc(AUTHOR)}">
+<meta name="robots" content="${esc(ROBOTS_INDEX)}">
+<link rel="canonical" href="${esc(canonical)}">
+<link rel="icon" href="${esc(CANON_ORIGIN)}/sigil.png" type="image/png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="${esc(AUTHOR)}">
+<meta property="og:title" content="${esc(AUTHOR)}">
+<meta property="og:description" content="${esc(DESCRIPTION)}">
+<meta property="og:url" content="${esc(canonical)}">
+<meta property="og:image" content="${esc(image)}">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="${esc(AUTHOR)}">
+<meta name="twitter:description" content="${esc(DESCRIPTION)}">
+<meta name="twitter:image" content="${esc(image)}">
+${FILM_PRELOAD}
+${personJsonLdScript()}
+<style>${THEATER_CSS}</style>
+</head>
+<body>
+${filmGateHtml()}
+</body>
+</html>`;
+}
 
 export const FILM_PRELOAD =
   '<link rel="preconnect" href="https://fonts.googleapis.com">' +
