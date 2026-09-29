@@ -54,6 +54,7 @@ import {
   reexpandDoc,
   verifyPastedHash,
 } from "./ingest.js";
+import { filmAssetResponse, isFilmAssetPath } from "./film.js";
 import { donateHtml, embryoLockHtml, ingestHtml, notFoundHtml, pageHtml, receiptsHtml, sectionPageHtml, verifyHtml, whoHtml } from "./page.js";
 import { donateQrResponse } from "./qr.js";
 import { sigilResponse } from "./sigil.js";
@@ -346,6 +347,10 @@ export async function handleRequest(request, env = {}, ctx) {
     return sigilPng;
   }
 
+  if (isFilmAssetPath(path)) {
+    return filmAssetResponse(path, request, env, SECURITY);
+  }
+
   // Bare /donate is still HITing old stroke-SVG HTML at the CF edge
   // (s-maxage=3600). Force a new cache key so PNG <img> rails stick.
   if (path === "/donate" && !url.searchParams.has("v")) {
@@ -429,7 +434,7 @@ export async function handleRequest(request, env = {}, ctx) {
 
   let res;
   if (path === "/") {
-    res = html(pageHtml(await pageViews(request, env), doors, meshDocLive, live && live.version, { sot: surfaceSot }));
+    res = html(pageHtml(await pageViews(request, env), doors, meshDocLive, live && live.version, { sot: surfaceSot, entryFilm: true }));
   } else if (aboutPath) {
     res = html(
       pageHtml(await readViews(env), doors, meshDocLive, live && live.version, {
