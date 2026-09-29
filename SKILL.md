@@ -37,7 +37,7 @@ Same tip in Receipts-tab first-screen HTML (`/receipts`), `/ingest`, `/cite.json
 
 GitHub About / indexing (no Worker UI change): [docs/github-seo.md](docs/github-seo.md). Homepage `https://www.azieleliab.com/`. Cross-link Corpus, GodLock, He Didn't Jump, aziel-runtime, Trades-Runtime (sister product extra; `live_backends` false), GitHub AzielEliab, Try on Glama, X @AzielEliab, Donate.
 
-About aliases `/about`, `/AzielEliab`, `/aziel-eliab` 200 the same homepage HTML. Tab pages `/why`, `/software`, `/research`, `/doors` are distinct URLs. `/aziel` 200s the homepage (Person `#aziel`). `/mission` 301s to `/`. Old hashes `/#why` `/#software` `/#research` `/#doors` (`/#mission`) map to those paths.
+`/` is the film theater only. Enter navigates to `/aziel`. The hub is not mounted under the theater. About aliases `/about`, `/AzielEliab`, `/aziel-eliab` 200 the same hub HTML as `/aziel`. Tab pages `/why`, `/software`, `/research`, `/doors` are distinct URLs. `/aziel` is the hub (Person `#aziel`). `/mission` 301s to `/`. Old hashes `/#why` `/#software` `/#research` `/#doors` (`/#mission`) map to those paths. `/#aziel` on the theater replaces to `/aziel`.
 
 ## Mesh (read-only ON)
 

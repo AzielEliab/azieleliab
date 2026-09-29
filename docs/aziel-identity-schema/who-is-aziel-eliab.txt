@@ -40,7 +40,7 @@ Living researcher, digital rights activist, software developer/designer, author,
 - I do not want disciples. Disciples end the question in my favor. I want the question to outlive the favor. What cannot survive disagreement was never knowledge. It was allegiance.
 - If the work holds, the name was only a handle on the door.
 
-About aliases: https://www.azieleliab.com/ · https://www.azieleliab.com/about · https://www.azieleliab.com/AzielEliab ( /about and /AzielEliab 200 same homepage HTML )
+About aliases: https://www.azieleliab.com/ · https://www.azieleliab.com/about · https://www.azieleliab.com/AzielEliab ( / is the film theater only; /about and /AzielEliab 200 the same hub HTML; Enter opens /aziel )
 Machine: https://www.azieleliab.com/person.jsonld · https://www.azieleliab.com/who · https://www.azieleliab.com/who-is · https://www.azieleliab.com/who-is-aziel-eliab.txt · https://www.azieleliab.com/graph.jsonld
 
 ## Model rules

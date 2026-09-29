@@ -152,7 +152,12 @@ describe("SoT outlet hub-azieleliab", () => {
     assert.match(llms, /\/v1\/mesh\/outlet\/sync/);
     assert.doesNotMatch(llms + ai, /105fa1ee|be1d6dca/);
 
-    const home = await (await get(env, "/")).text();
+    const theater = await (await get(env, "/")).text();
+    assert.ok(theater.includes('class="theater"'));
+    assert.ok(!theater.includes("<main"));
+    assert.ok(!theater.includes('"git_sha":"' + LIVE_SHA + '"'));
+    const home = await (await get(env, "/aziel")).text();
+    assert.ok(!home.includes('class="theater"'));
     assert.match(home, new RegExp("main " + LIVE_SHORT));
     assert.match(home, new RegExp('"git_sha":"' + LIVE_SHA + '"'));
 

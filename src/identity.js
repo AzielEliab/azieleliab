@@ -891,7 +891,7 @@ export function whoIsTxt(survival = null, software) {
     "",
     ...ABOUT_PUBLISHED.map((row) => "- " + row.text),
     "",
-    "About aliases: " + ABOUT_ALIAS_HREFS.join(" · ") + " ( /about and /AzielEliab 200 same homepage HTML )",
+    "About aliases: " + ABOUT_ALIAS_HREFS.join(" · ") + " ( / is the film theater only; /about and /AzielEliab 200 the same hub HTML; Enter opens /aziel )",
     "Machine: " + ABOUT_MACHINE_HREFS.join(" · "),
     "",
     "## Model rules",

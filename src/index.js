@@ -54,7 +54,7 @@ import {
   reexpandDoc,
   verifyPastedHash,
 } from "./ingest.js";
-import { filmAssetResponse, isFilmAssetPath } from "./film.js";
+import { filmAssetResponse, filmTheaterHtml, isFilmAssetPath } from "./film.js";
 import { donateHtml, embryoLockHtml, ingestHtml, notFoundHtml, pageHtml, receiptsHtml, sectionPageHtml, verifyHtml, whoHtml } from "./page.js";
 import { donateQrResponse } from "./qr.js";
 import { sigilResponse } from "./sigil.js";
@@ -271,12 +271,6 @@ export function routePath(pathname) {
   return pathname || "/";
 }
 
-async function pageViews(request, env) {
-  const ua = request.headers.get("user-agent") || "";
-  if (isBot(ua)) return readViews(env);
-  return incrementViews(env);
-}
-
 export async function handleRequest(request, env = {}, ctx) {
   const url = new URL(request.url);
   const toWww = apexRedirect(url);
@@ -382,9 +376,10 @@ export async function handleRequest(request, env = {}, ctx) {
   const aboutPath = aboutAliasPath(path);
   const tab = tabPage(path);
   const azielAlias = path === "/aziel";
-  const homeLike = path === "/" || Boolean(aboutPath) || Boolean(tab) || azielAlias;
+  const hubLike = Boolean(aboutPath) || Boolean(tab) || azielAlias;
+  const homeLike = path === "/" || hubLike;
   const needsLive =
-    homeLike ||
+    hubLike ||
     path === "/llms.txt" ||
     path === "/ai.txt" ||
     path === "/cite.json" ||
@@ -402,7 +397,7 @@ export async function handleRequest(request, env = {}, ctx) {
     path === "/embryolock" ||
     path === "/who";
   const needsMesh =
-    homeLike ||
+    hubLike ||
     path === "/v1/software" ||
     path === MESH_PATH ||
     path === MESH_STATUS_PATH ||
@@ -434,7 +429,8 @@ export async function handleRequest(request, env = {}, ctx) {
 
   let res;
   if (path === "/") {
-    res = html(pageHtml(await pageViews(request, env), doors, meshDocLive, live && live.version, { sot: surfaceSot, entryFilm: true }));
+    await noteViews(request, env, ctx);
+    res = html(filmTheaterHtml());
   } else if (aboutPath) {
     res = html(
       pageHtml(await readViews(env), doors, meshDocLive, live && live.version, {

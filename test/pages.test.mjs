@@ -972,7 +972,8 @@ describe("SEO routes", () => {
     assert.ok(llmsBody.includes("Runtime parent @id: " + RUNTIME_ID));
     assert.ok(llmsBody.includes("Named tools: FragGate, ForgeReceipts"));
     assert.ok(llmsBody.includes(SOFTWARE_HREF + "  (distinct Software page; /#software maps here)"));
-    assert.ok(llmsBody.includes(CANON_ORIGIN + "/about  (200 same homepage — About Aziel Eliab)"));
+    assert.ok(llmsBody.includes(CANON_ORIGIN + "/about  (200 same hub HTML — About Aziel Eliab)"));
+    assert.ok(llmsBody.includes(CANON_ORIGIN + "/  (film theater only; Enter opens /aziel; no hub HTML in this document)"));
     assert.ok(llmsBody.includes(CANON_ORIGIN + "/mission  (301 to / ; Mission/Status strip removed)"));
     assert.ok(llmsBody.includes("Softwares list: " + SOFTWARE_HREF));
     assert.ok(llmsBody.includes("Softwares page: " + SOFTWARE_HREF + " (distinct Software page; /#software maps here)"));
@@ -1953,22 +1954,34 @@ describe("runtime proxy", () => {
 });
 
 describe("worker routing", () => {
-  it("serves the landing on GET /", async () => {
+  it("serves the film theater alone on GET /", async () => {
     const res = await fetchPath("/");
     assert.equal(res.status, 200);
     assert.match(res.headers.get("content-type"), /text\/html/);
     assert.equal(res.headers.get("Content-Signal"), "search=yes, ai-input=yes, ai-train=yes");
     const body = await res.text();
-    assert.ok(body.includes('<h1 id="aziel">Aziel Eliab</h1>'));
+    assert.ok(body.includes('class="theater"'));
+    assert.ok(body.includes('href="/aziel"'));
+    assert.ok(!body.includes('href="#aziel"'));
+    assert.ok(!body.includes("<main"));
+    assert.ok(!body.includes('class="brandrow"'));
+    assert.ok(!body.includes('aria-label="Spine"'));
+    assert.ok(!body.includes('<h1 id="aziel">'));
+    assert.ok(!body.includes('class="soft-'));
+    assert.ok(!body.includes('id="views"'));
+    assert.ok(!body.includes('id="aziel-live-nodes"'));
     assert.ok(!body.includes('id="doors"'));
-    assert.ok(body.includes('href="' + CANON_ORIGIN + "/doors" + '"'));
     assert.doesNotMatch(body, /<section class="card" id="donate">/);
     assert.ok(!body.includes('id="donate"'));
     assert.ok(!body.includes('class="rails"'));
-    assert.ok(!body.includes("Nothing is free.</p>"));
-    assert.ok(body.includes('aria-label="Spine"'));
-    assert.ok(body.includes(">" + DONATE_TITLE + "<"));
-    assert.ok(body.includes('href="' + DONATE_HREF + '"'));
+    const hub = await fetchPath("/aziel");
+    const hubBody = await hub.text();
+    assert.ok(hubBody.includes('<h1 id="aziel">Aziel Eliab</h1>'));
+    assert.ok(hubBody.includes('aria-label="Spine"'));
+    assert.ok(hubBody.includes('href="' + CANON_ORIGIN + "/doors" + '"'));
+    assert.ok(hubBody.includes(">" + DONATE_TITLE + "<"));
+    assert.ok(hubBody.includes('href="' + DONATE_HREF + '"'));
+    assert.ok(!hubBody.includes('class="theater"'));
   });
 
   it("301s apex to www", async () => {
@@ -2022,11 +2035,18 @@ describe("worker routing", () => {
     assert.equal(SOFTWARE_HREF, CANON_ORIGIN + "/software");
     const html = await fetchPath("/");
     const home = await html.text();
+    assert.ok(home.includes('class="theater"'));
     assert.ok(!home.includes('id="software"'));
     assert.ok(!home.includes("<h2>Software</h2>"));
-    assert.ok(home.includes('"@type":"SoftwareApplication"'));
-    assert.ok(home.includes('"@id":"' + softwareNodeId({ name: "AZAI" }) + '"') || home.includes("#software-azai"));
-    assert.ok(home.includes('href="' + SOFTWARE_HREF + '"'));
+    assert.ok(!home.includes('"@type":"SoftwareApplication"'));
+    assert.ok(!home.includes("#software-azai"));
+    const hubRes = await fetchPath("/aziel");
+    const hub = await hubRes.text();
+    assert.ok(!hub.includes('id="software"'));
+    assert.ok(!hub.includes("<h2>Software</h2>"));
+    assert.ok(hub.includes('"@type":"SoftwareApplication"'));
+    assert.ok(hub.includes('"@id":"' + softwareNodeId({ name: "AZAI" }) + '"') || hub.includes("#software-azai"));
+    assert.ok(hub.includes('href="' + SOFTWARE_HREF + '"'));
 
     for (const path of ["/software", "/software/"]) {
       const res = await fetchPath(path);
@@ -2352,13 +2372,20 @@ describe("pageviews", () => {
     const human = await fetchPath("/", { headers: { "user-agent": "Mozilla/5.0" } }, env);
     assert.equal(human.status, 200);
     const html = await human.text();
-    assert.ok(html.includes('id="views"'));
-    assert.ok(html.includes(">5<span>views</span>"));
+    assert.ok(html.includes('class="theater"'));
+    assert.ok(!html.includes('id="views"'));
+    assert.ok(!html.includes("<main"));
     assert.ok(html.includes("You don’t get to know me."));
+    const hub = await fetchPath("/aziel", { headers: { "user-agent": "Mozilla/5.0" } }, env);
+    const hubHtml = await hub.text();
+    assert.ok(hubHtml.includes('id="views"'));
+    assert.ok(hubHtml.includes(">5<span>views</span>"));
+    assert.ok(!hubHtml.includes('class="theater"'));
 
     const bot = await fetchPath("/", { headers: { "user-agent": "GPTBot/1.0" } }, env);
     const botHtml = await bot.text();
-    assert.ok(botHtml.includes(">5<span>views</span>"));
+    assert.ok(botHtml.includes('class="theater"'));
+    assert.ok(!botHtml.includes('id="views"'));
 
     const stats = await fetchPath("/v1/stats", {}, env);
     assert.equal(stats.status, 200);
@@ -2397,14 +2424,17 @@ describe("pageviews", () => {
     const human = await fetchPath("/", { headers: { "user-agent": "Mozilla/5.0" } }, env);
     assert.equal(human.status, 200);
     const html = await human.text();
-    assert.ok(html.includes(">0/0<"));
-    assert.ok(html.includes("/heartbeat"));
+    assert.ok(html.includes('class="theater"'));
+    assert.ok(!html.includes(">0/0<"));
+    assert.ok(!html.includes('id="aziel-live-nodes"'));
+    assert.ok(!html.includes("/heartbeat"));
     assert.doesNotMatch(html, /\(mesh\|\|0\)\+site|mesh_live_nodes/);
     assert.doesNotMatch(html, /hedidntjump\.com\/count|hedidntjump\.com\/heartbeat/i);
 
     const bot = await fetchPath("/", { headers: { "user-agent": "GPTBot/1.0" } }, env);
     const botHtml = await bot.text();
-    assert.ok(botHtml.includes(">0/0<"));
+    assert.ok(botHtml.includes('class="theater"'));
+    assert.ok(!botHtml.includes(">0/0<"));
 
     const count = await fetchPath("/count", { headers: { "user-agent": "Mozilla/5.0" } }, env);
     assert.equal(count.status, 200);
@@ -2466,8 +2496,10 @@ describe("pageviews", () => {
     const human = await fetchPath("/", { headers: { "user-agent": "Mozilla/5.0" } }, env);
     assert.equal(human.status, 200);
     const html = await human.text();
-    assert.ok(html.includes(">4/12<"));
+    assert.ok(html.includes('class="theater"'));
+    assert.ok(!html.includes(">4/12<"));
     assert.ok(!html.includes(">4/13<"));
+    assert.ok(!html.includes('id="aziel-live-nodes"'));
     assert.equal(posts.length, 1);
     assert.deepEqual(posts[0], { host: "azieleliab.com", viewers: 1, kind: "human-page" });
 
@@ -2644,13 +2676,18 @@ describe("live software catalog", () => {
 
     const landing = await fetchPath("/", { headers: { "user-agent": "Mozilla/5.0" } }, env);
     const html = await landing.text();
+    assert.ok(html.includes('class="theater"'));
+    assert.ok(!html.includes("#software-newlock"));
+    assert.ok(!html.includes('class="soft-name">'));
+    const hub = await fetchPath("/aziel", {}, env);
+    const hubHtml = await hub.text();
+    assert.ok(!hubHtml.includes('class="soft-name">NewLock<'));
+    assert.ok(hubHtml.includes("#software-newlock"));
     const softwares = await fetchPath("/software", {}, env);
     assert.equal(softwares.status, 200);
     const softwareBody = await softwares.text();
     assert.ok(softwareBody.includes(">NewLock<"));
     assert.ok(softwareBody.includes('id="software"'));
-    assert.ok(!html.includes('class="soft-name">NewLock<'));
-    assert.ok(html.includes("#software-newlock"));
     assert.ok(softwareBody.includes('href="https://newlock-download-tracker.vibelock.workers.dev/"'));
     assert.ok(softwareBody.includes(">AZAI<"));
     assert.ok(softwareBody.includes(">DecisionGATE<"));
@@ -2861,13 +2898,19 @@ describe("live software catalog", () => {
 
     const landing = await fetchPath("/", { headers: { "user-agent": "Mozilla/5.0" } }, env);
     const html = await landing.text();
+    assert.ok(html.includes('class="theater"'));
+    assert.ok(!html.includes('class="soft-name">'));
+    const hub = await fetchPath("/aziel", {}, env);
+    const hubHtml = await hub.text();
     const software = await fetchPath("/software", {}, env);
     const softwareBody = await software.text();
-    assert.ok(!html.includes('class="soft-name">' + RUNTIME_NAME + "<"));
+    assert.ok(!hubHtml.includes('class="soft-name">' + RUNTIME_NAME + "<"));
     assert.ok(!softwareBody.includes('class="soft-name">' + RUNTIME_NAME + "<"));
     assert.doesNotMatch(html, /runtime 1\.6\.15 FragGate/);
+    assert.doesNotMatch(hubHtml, /runtime 1\.6\.15 FragGate/);
     assert.doesNotMatch(softwareBody, /runtime 1\.6\.15 FragGate/);
     assert.doesNotMatch(html, /Run them without me/);
+    assert.doesNotMatch(hubHtml, /Run them without me/);
     assert.match(softwareBody, /<h2>Software<\/h2>\s*<div class="soft-line">/);
     const idx = (name) => softwareBody.indexOf(">" + name + "<");
     assert.ok(idx("AZAI") < idx("DecisionGATE"));
@@ -3419,11 +3462,17 @@ describe("suite node mesh", () => {
 
     const landing = await fetchPath("/", { headers: { "user-agent": "Mozilla/5.0" } });
     const html = await landing.text();
+    assert.ok(html.includes('class="theater"'));
     assert.ok(!html.includes("mesh off"));
-    assert.ok(!html.includes("Live Nodes · off"));
-    assert.ok(html.includes(">0/0<"));
-    assert.ok(!html.includes("Live Nodes · "));
-    assert.ok(!html.includes(">mesh on<"));
+    assert.ok(!html.includes(">0/0<"));
+    assert.ok(!html.includes('id="aziel-live-nodes"'));
+    const hub = await fetchPath("/aziel", { headers: { "user-agent": "Mozilla/5.0" } });
+    const hubHtml = await hub.text();
+    assert.ok(!hubHtml.includes("mesh off"));
+    assert.ok(!hubHtml.includes("Live Nodes · off"));
+    assert.ok(hubHtml.includes(">0/0<"));
+    assert.ok(!hubHtml.includes("Live Nodes · "));
+    assert.ok(!hubHtml.includes(">mesh on<"));
   });
 
   it("attaches origin mesh when the runtime binding answers", async () => {
@@ -3511,14 +3560,22 @@ describe("suite node mesh", () => {
 
     const landing = await fetchPath("/", { headers: { "user-agent": "Mozilla/5.0" } }, env);
     const html = await landing.text();
-    assert.ok(html.includes(">mesh on<"));
-    assert.ok(html.includes(">3/3<"));
-    assert.ok(!html.includes(">Live Nodes · 3<"));
-    assert.ok(!html.includes(">Live Nodes · 41<"));
-    assert.ok(!html.includes(">41/"));
-    assert.ok(html.includes('id="aziel-live-nodes"'));
-    assert.ok(html.includes('title="Nodes: human mesh users + human uses. Live Nodes: human mesh users + site viewers on godlock.uk, azieleliab.com, and azielcorpuslibrary.net."'));
-    assert.ok(html.includes('name="aziel-mesh-status"'));
+    assert.ok(html.includes('class="theater"'));
+    assert.ok(!html.includes(">mesh on<"));
+    assert.ok(!html.includes(">3/3<"));
+    assert.ok(!html.includes('id="aziel-live-nodes"'));
+    assert.ok(!html.includes('name="aziel-mesh-status"'));
+    const hub = await fetchPath("/aziel", { headers: { "user-agent": "Mozilla/5.0" } }, env);
+    const hubHtml = await hub.text();
+    assert.ok(hubHtml.includes(">mesh on<"));
+    assert.ok(hubHtml.includes(">3/3<"));
+    assert.ok(!hubHtml.includes(">4/13<"));
+    assert.ok(!hubHtml.includes(">Live Nodes · 3<"));
+    assert.ok(!hubHtml.includes(">Live Nodes · 41<"));
+    assert.ok(!hubHtml.includes(">41/"));
+    assert.ok(hubHtml.includes('id="aziel-live-nodes"'));
+    assert.ok(hubHtml.includes('title="Nodes: human mesh users + human uses. Live Nodes: human mesh users + site viewers on godlock.uk, azieleliab.com, and azielcorpuslibrary.net."'));
+    assert.ok(hubHtml.includes('name="aziel-mesh-status"'));
     const softwarePage = await fetchPath("/software", {}, env);
     const softwareHtml = await softwarePage.text();
     assert.ok(softwareHtml.includes(">3/3<"));
@@ -3604,7 +3661,10 @@ describe("edge cache and cost", () => {
     assert.equal(home.headers.get("cache-control"), HTML_CACHE);
     assert.doesNotMatch(home.headers.get("cache-control"), /no-store/i);
     const homeBody = await home.text();
-    assert.ok(homeBody.includes("#software-azai") || homeBody.includes(">AZAI<"));
+    assert.ok(homeBody.includes('class="theater"'));
+    assert.ok(!homeBody.includes("#software-azai"));
+    assert.ok(!homeBody.includes(">AZAI<"));
+    assert.ok(!homeBody.includes("<main"));
     const softwareRes = await fetchPath("/software");
     assert.equal(softwareRes.status, 200);
     assert.ok((await softwareRes.text()).includes(">AZAI<"));
@@ -3679,8 +3739,13 @@ describe("edge cache and cost", () => {
 
     const home = await fetchPath("/", { headers: { "user-agent": "Mozilla/5.0" } }, env);
     const html = await home.text();
-    assert.ok(html.includes("#software-newlock"));
-    assert.ok(html.includes("#software-azai"));
+    assert.ok(html.includes('class="theater"'));
+    assert.ok(!html.includes("#software-newlock"));
+    assert.ok(!html.includes("#software-azai"));
+    const hub = await fetchPath("/aziel", { headers: { "user-agent": "Mozilla/5.0" } }, env);
+    const hubHtml = await hub.text();
+    assert.ok(hubHtml.includes("#software-newlock"));
+    assert.ok(hubHtml.includes("#software-azai"));
     const softwarePage = await fetchPath("/software", {}, env);
     const softwareBody = await softwarePage.text();
     assert.ok(softwareBody.includes(">NewLock<"));
@@ -3705,12 +3770,17 @@ describe("edge cache and cost", () => {
     };
 
     const a = await fetchPath("/", { headers: { "user-agent": "Mozilla/5.0" } }, env);
-    assert.ok((await a.text()).includes(">5<span>views</span>"));
+    const aBody = await a.text();
+    assert.ok(aBody.includes('class="theater"'));
+    assert.ok(!aBody.includes('id="views"'));
+    assert.ok(!aBody.includes(">5<span>views</span>"));
     const getsAfterFirst = gets;
 
     const b = await fetchPath("/", { headers: { "user-agent": "Mozilla/5.0" } }, env);
     assert.equal(b.status, 200);
-    assert.ok((await b.text()).includes('id="views"'));
+    const bBody = await b.text();
+    assert.ok(bBody.includes('class="theater"'));
+    assert.ok(!bBody.includes('id="views"'));
 
     const stats = await fetchPath("/v1/stats", {}, env);
     assert.deepEqual(await stats.json(), {
@@ -3782,12 +3852,13 @@ describe("edge cache and cost", () => {
 });
 
 describe("film entry", () => {
-  it("opens / on the film gate and keeps the hub at #aziel", async () => {
+  it("serves only the film theater at / and opens the hub after Enter", async () => {
     const res = await fetchPath("/");
     assert.equal(res.status, 200);
     const body = await res.text();
     assert.ok(body.includes('class="theater"'));
-    assert.ok(body.includes('href="#aziel"'));
+    assert.ok(body.includes('href="/aziel"'));
+    assert.ok(!body.includes('href="#aziel"'));
     assert.ok(body.includes(">Enter</a>"));
     assert.ok(body.includes("/film/aziel-runtime.mp4?v=2"));
     assert.ok(body.includes('poster="/film/poster.jpg"'));
@@ -3795,10 +3866,23 @@ describe("film entry", () => {
     assert.ok(body.includes("Cormorant Garamond"));
     assert.ok(body.includes("IBM Plex Mono"));
     assert.ok(body.includes("No caption track was published"));
-    assert.ok(body.includes('<h1 id="aziel">Aziel Eliab</h1>'));
     assert.ok(body.includes("You don’t get to know me."));
-    assert.ok(body.includes('aria-label="Spine"'));
+    assert.ok(body.includes('"aziel":"/aziel"'));
+    assert.ok(!body.includes('<h1 id="aziel">'));
+    assert.ok(!body.includes("<main"));
+    assert.ok(!body.includes('aria-label="Spine"'));
+    assert.ok(!body.includes('class="brandrow"'));
+    assert.ok(!body.includes('class="soft-'));
+    assert.ok(!body.includes('id="views"'));
     assert.ok(!body.includes("scrollIntoView"));
+    assert.ok(body.includes('"@type":"Person"'));
+    assert.ok(body.includes("https://www.azieleliab.com/#aziel"));
+    const hub = await fetchPath("/aziel");
+    const hubBody = await hub.text();
+    assert.ok(!hubBody.includes('class="theater"'));
+    assert.ok(hubBody.includes('<h1 id="aziel">Aziel Eliab</h1>'));
+    assert.ok(hubBody.includes('<main class="wrap">'));
+    assert.ok(hubBody.includes('aria-label="Spine"'));
     const about = await fetchPath("/about");
     const aboutBody = await about.text();
     assert.ok(!aboutBody.includes('class="theater"'));
