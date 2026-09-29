@@ -77,6 +77,7 @@ import {
   tipString,
   verifyPastedHash,
 } from "./ingest.js";
+import { FILM_PRELOAD, THEATER_CSS, filmGateHtml } from "./film.js";
 import {
   RECEIPT_LATTICE,
   RECEIPT_SPEC,
@@ -525,7 +526,7 @@ function discoveryLinks() {
   ].join("\n");
 }
 
-function documentHead({ title, description, canonical, software, extraMeta = "", runtimeVersion, sot = null }) {
+function documentHead({ title, description, canonical, software, extraMeta = "", runtimeVersion, sot = null, extraCss = "" }) {
   const ld = JSON.stringify(jsonLd(software, runtimeVersion, sot));
   return `<meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -560,7 +561,7 @@ function documentHead({ title, description, canonical, software, extraMeta = "",
 ${discoveryLinks()}
 ${extraMeta}
 <script type="application/ld+json">${ld}</script>
-<style>${CSS}</style>`;
+<style>${CSS}${extraCss}</style>`;
 }
 
 function quietDiscoveryMeta() {
@@ -882,6 +883,9 @@ export function pageHtml(views = 0, softwareItems = SOFTWARE, mesh = null, runti
   const title = (section && section.title) || AUTHOR;
   const description = (section && section.description) || DESCRIPTION;
   const canonical = (opts && opts.canonical) || (section ? CANON_ORIGIN + section.path : CANON_ORIGIN + "/");
+  const entryFilm = Boolean(opts && opts.entryFilm);
+  const discovery =
+    quietDiscoveryMeta() + (entryFilm ? "\n" + FILM_PRELOAD : "");
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -890,13 +894,15 @@ ${documentHead({
   description,
   canonical,
   software: doorsSoftware,
-  extraMeta: quietDiscoveryMeta(),
+  extraMeta: discovery,
   runtimeVersion,
   sot: opts && opts.sot,
+  extraCss: entryFilm ? THEATER_CSS : "",
 })}
 ${hashRedirectScript()}
 </head>
 <body>
+${entryFilm ? filmGateHtml() : ""}
 <main class="wrap">
 ${brandRow("\n      " + viewsPill(views) + "\n      " + liveNodesPill(mesh))}
   <h1 id="aziel">${esc(PROSE.title)}</h1>

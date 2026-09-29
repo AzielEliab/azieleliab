@@ -33,3 +33,10 @@ custom_domain = true
 [[routes]]
 pattern = "www.azieleliab.com"
 custom_domain = true
+
+# Film stills and aziel-runtime.mp4. The Worker runs first and serves
+# these through the ASSETS binding (local tests read public/ from disk).
+[assets]
+directory = "./public"
+binding = "ASSETS"
+run_worker_first = true

@@ -3780,3 +3780,62 @@ describe("edge cache and cost", () => {
     assert.equal(allowOriginRefresh(new Request("https://www.azieleliab.com/"), {}, "update"), true);
   });
 });
+
+describe("film entry", () => {
+  it("opens / on the film gate and keeps the hub at #aziel", async () => {
+    const res = await fetchPath("/");
+    assert.equal(res.status, 200);
+    const body = await res.text();
+    assert.ok(body.includes('class="theater"'));
+    assert.ok(body.includes('href="#aziel"'));
+    assert.ok(body.includes(">Enter</a>"));
+    assert.ok(body.includes("/film/aziel-runtime.mp4?v=2"));
+    assert.ok(body.includes('poster="/film/poster.jpg"'));
+    assert.ok(body.includes("controls"));
+    assert.ok(body.includes("Cormorant Garamond"));
+    assert.ok(body.includes("IBM Plex Mono"));
+    assert.ok(body.includes("No caption track was published"));
+    assert.ok(body.includes('<h1 id="aziel">Aziel Eliab</h1>'));
+    assert.ok(body.includes("You don’t get to know me."));
+    assert.ok(body.includes('aria-label="Spine"'));
+    assert.ok(!body.includes("scrollIntoView"));
+    const about = await fetchPath("/about");
+    const aboutBody = await about.text();
+    assert.ok(!aboutBody.includes('class="theater"'));
+    assert.ok(aboutBody.includes('<h1 id="aziel">Aziel Eliab</h1>'));
+  });
+
+  it("serves the film file, poster, and a byte range from this origin", async () => {
+    const head = await fetchPath("/film/aziel-runtime.mp4", { method: "HEAD" });
+    assert.equal(head.status, 200);
+    assert.match(head.headers.get("content-type"), /video\/mp4/);
+    assert.equal(head.headers.get("accept-ranges"), "bytes");
+    assert.ok(Number(head.headers.get("content-length")) > 1000000);
+
+    const range = await fetchPath("/film/aziel-runtime.mp4?v=2", {
+      headers: { range: "bytes=4-7" },
+    });
+    assert.equal(range.status, 206);
+    assert.equal(range.headers.get("content-range"), "bytes 4-7/" + head.headers.get("content-length"));
+    const brand = new TextDecoder().decode(await range.arrayBuffer());
+    assert.equal(brand, "ftyp");
+
+    const poster = await fetchPath("/film/poster.jpg");
+    assert.equal(poster.status, 200);
+    assert.match(poster.headers.get("content-type"), /image\/jpeg/);
+    const jpg = new Uint8Array(await poster.arrayBuffer());
+    assert.equal(jpg[0], 0xff);
+    assert.equal(jpg[1], 0xd8);
+
+    const grain = await fetchPath("/film/grain.png");
+    assert.equal(grain.status, 200);
+    assert.match(grain.headers.get("content-type"), /image\/png/);
+
+    const og = await fetchPath("/og.jpg");
+    assert.equal(og.status, 200);
+    assert.match(og.headers.get("content-type"), /image\/jpeg/);
+
+    const missing = await fetchPath("/film/missing.mp4");
+    assert.equal(missing.status, 404);
+  });
+});
