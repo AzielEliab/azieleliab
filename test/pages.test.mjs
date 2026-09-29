@@ -3792,6 +3792,8 @@ describe("film entry", () => {
     assert.ok(body.includes("/film/aziel-runtime.mp4?v=2"));
     assert.ok(body.includes('poster="/film/poster.jpg"'));
     assert.ok(body.includes("controls"));
+    assert.ok(body.includes("Cormorant Garamond"));
+    assert.ok(body.includes("IBM Plex Mono"));
     assert.ok(body.includes("No caption track was published"));
     assert.ok(body.includes('<h1 id="aziel">Aziel Eliab</h1>'));
     assert.ok(body.includes("You don’t get to know me."));

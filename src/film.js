@@ -161,7 +161,7 @@ export function filmGateHtml() {
 export const THEATER_CSS = `
 .theater{background:radial-gradient(80% 50% at 50% -10%,#303a5873,#0000 60%),#07090f;min-height:100dvh;position:relative;overflow:hidden;color:#f3ead8}
 .theater .grain{pointer-events:none;z-index:1;opacity:.09;mix-blend-mode:overlay;background-image:url(${FILM_GRAIN_PATH});background-size:160px 160px;position:absolute;inset:0}
-.theater .mast{letter-spacing:.22em;text-transform:uppercase;color:#e6d4b5;align-items:baseline;gap:1.25rem;padding:1.1rem 1.4rem .2rem;font-size:.72rem;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;display:flex;position:relative;z-index:2}
+.theater .mast{letter-spacing:.22em;text-transform:uppercase;color:#e6d4b5;align-items:baseline;gap:1.25rem;padding:1.1rem 1.4rem .2rem;font-size:.72rem;font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;display:flex;position:relative;z-index:2}
 .theater .mast-dim{color:#e6d4b58c}
 .theater .mast-door{color:#b0f0c4;letter-spacing:.28em;margin-left:auto}
 .theater .stage-wrap{padding:.85rem 1.1rem .2rem;position:relative;z-index:2}
@@ -176,25 +176,25 @@ export const THEATER_CSS = `
 .theater .gate-still{object-fit:cover;filter:saturate(.85) contrast(1.05);width:100%;height:100%;position:absolute;inset:0}
 .theater .gate-veil{background:linear-gradient(#07090f59 0%,#07090f47 58%,#07090fc7 100%);position:absolute;inset:0}
 .theater .gate-copy{text-align:center;max-width:38rem;padding:1.2rem;position:relative}
-.theater .eyebrow{letter-spacing:.28em;text-transform:uppercase;color:#b0f0c4;margin:0 0 .85rem;font-size:.68rem;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
-.theater .gate-copy h1{letter-spacing:-.02em;color:#f3ead8;margin:0;font-family:Georgia,"Iowan Old Style","Palatino Linotype",Palatino,"Times New Roman",serif;font-size:clamp(2.1rem,5vw,4.1rem);font-weight:500;line-height:.95}
-.theater .deck{color:#e6d4b5e0;margin:.85rem 0 1.4rem;font-family:Georgia,"Iowan Old Style",Palatino,"Times New Roman",serif;font-size:clamp(1.15rem,2.4vw,1.7rem);font-style:italic}
-.theater .enter{appearance:none;display:inline-block;color:#07090f;letter-spacing:.24em;text-transform:uppercase;background:#e6d4b5;border:0;padding:.72rem 1.4rem;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.72rem;text-decoration:none}
+.theater .eyebrow{letter-spacing:.28em;text-transform:uppercase;color:#b0f0c4;margin:0 0 .85rem;font-size:.68rem;font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.theater .gate-copy h1{letter-spacing:-.02em;color:#f3ead8;margin:0;font-family:"Cormorant Garamond",Georgia,"Times New Roman",serif;font-size:clamp(2.1rem,5vw,4.1rem);font-weight:500;line-height:.95}
+.theater .deck{color:#e6d4b5e0;margin:.85rem 0 1.4rem;font-family:"Cormorant Garamond",Georgia,"Times New Roman",serif;font-size:clamp(1.15rem,2.4vw,1.7rem);font-style:italic}
+.theater .enter{appearance:none;display:inline-block;color:#07090f;letter-spacing:.24em;text-transform:uppercase;background:#e6d4b5;border:0;padding:.72rem 1.4rem;font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.72rem;text-decoration:none}
 .theater .enter:hover{background:#b0f0c4;color:#07090f}
 .theater .enter:focus-visible{outline-offset:3px;outline:1px solid #b0f0c4}
 .theater .stage.is-playing .gate-still,.theater .stage.is-playing .gate-veil{display:none}
 .theater .stage.is-playing .gate{inset:auto 0 2.75rem 0;background:linear-gradient(#0000,#07090fcc)}
 .theater .film-fallback{color:#f3ead8;padding:1rem}
 .theater .colophon{width:min(820px,100% - 2.2rem);margin:1.6rem auto 3.2rem;position:relative;z-index:2}
-.theater .thesis{color:#f0e6d2;margin:0 0 .85rem;font-family:Georgia,"Iowan Old Style",Palatino,"Times New Roman",serif;font-size:clamp(1.35rem,2.5vw,1.85rem);line-height:1.25}
+.theater .thesis{color:#f0e6d2;margin:0 0 .85rem;font-family:"Cormorant Garamond",Georgia,"Times New Roman",serif;font-size:clamp(1.35rem,2.5vw,1.85rem);line-height:1.25}
 .theater .thesis.soft{color:#e6d4b5c7;margin-bottom:1.6rem;font-style:italic}
 .theater .facts{border-top:1px solid #e6d4b538;grid-template-columns:1fr;gap:.9rem;margin:0 0 1.5rem;padding-top:1.1rem;display:grid}
-.theater .facts dt{letter-spacing:.22em;text-transform:uppercase;color:#b0f0c4;margin-bottom:.35rem;font-size:.64rem;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.theater .facts dt{letter-spacing:.22em;text-transform:uppercase;color:#b0f0c4;margin-bottom:.35rem;font-size:.64rem;font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
 .theater .facts dd{color:#e6d4b5d1;margin:0;font-size:.78rem;line-height:1.45}
 .theater .doors{flex-wrap:wrap;gap:.7rem 1.2rem;display:flex;list-style:none;margin:0;padding:0}
 .theater .doors a{color:#e6d4b5;letter-spacing:.04em;border-bottom:1px solid #e6d4b566;padding-bottom:.12rem;font-size:.75rem;text-decoration:none}
 .theater .doors a:hover{color:#b0f0c4;border-color:#b0f0c4}
-.theater .close-line{color:#e6d4b59e;margin:1.6rem 0 0;font-family:Georgia,"Iowan Old Style",Palatino,"Times New Roman",serif;font-size:1.15rem;font-style:italic}
+.theater .close-line{color:#e6d4b59e;margin:1.6rem 0 0;font-family:"Cormorant Garamond",Georgia,"Times New Roman",serif;font-size:1.15rem;font-style:italic}
 .theater .download{margin:1.4rem 0 0}
 .theater .download a{color:#b0f0c4;letter-spacing:.18em;text-transform:uppercase;border-bottom:1px solid #b0f0c473;padding-bottom:.12rem;font-size:.72rem;text-decoration:none}
 .theater .download a:hover{color:#e6d4b5;border-color:#e6d4b5}
@@ -214,4 +214,10 @@ export const THEATER_CSS = `
 }
 `;
 
-export const FILM_PRELOAD = '<link rel="preload" as="image" href="' + FILM_POSTER_PATH + '">';
+export const FILM_PRELOAD =
+  '<link rel="preconnect" href="https://fonts.googleapis.com">' +
+  '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' +
+  '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=IBM+Plex+Mono:wght@400;500&display=swap">' +
+  '<link rel="preload" as="image" href="' +
+  FILM_POSTER_PATH +
+  '">';
