@@ -2,6 +2,10 @@
 import {
   AUTHOR,
   CANON_ORIGIN,
+  COMICS,
+  COMICS_DESCRIPTION,
+  COMICS_HREF,
+  COMICS_TITLE,
   DESCRIPTION,
   DONATE_COPY,
   DONATE_DESCRIPTION,
@@ -979,6 +983,74 @@ function receiptItem(entry) {
     esc(eventMetadataSentence(entry)) +
     "</p></li>"
   );
+}
+
+const COMICS_CSS = `
+.wrap.comics{max-width:48rem}
+.reels{list-style:none;margin:0;padding:0}
+.reels>li{margin:0 0 16px}
+.reels h2{
+  font-family:Georgia,"Iowan Old Style","Palatino Linotype",Palatino,"Times New Roman",serif;
+  font-size:1.45rem;font-weight:600;letter-spacing:-.02em;text-transform:none;
+  color:var(--ink);margin:0 0 12px;
+}
+.reels video{
+  width:100%;aspect-ratio:16/9;background:#000;border-radius:12px;display:block;
+  border:1px solid var(--line);
+}
+.reel-x{margin:12px 0 0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase}
+`;
+
+export function comicsHtml() {
+  const reels = COMICS.map((film) => {
+    return (
+      '<li class="card">' +
+      "<h2>" +
+      esc(film.title) +
+      "</h2>" +
+      '<video controls playsinline preload="metadata" poster="' +
+      attr(film.poster) +
+      '" aria-label="' +
+      attr(film.title) +
+      '">' +
+      '<source src="' +
+      attr(film.src) +
+      '" type="video/mp4">' +
+      "</video>" +
+      '<p class="reel-x">' +
+      a(film.x, "X") +
+      "</p></li>"
+    );
+  }).join("");
+  return `<!doctype html>
+<html lang="en">
+<head>
+${documentHead({
+  title: COMICS_TITLE + " — " + AUTHOR,
+  description: COMICS_DESCRIPTION,
+  canonical: COMICS_HREF,
+  extraMeta: quietDiscoveryMeta(),
+  extraCss: COMICS_CSS,
+})}
+${hashRedirectScript()}
+</head>
+<body>
+<main class="wrap comics">
+${brandRow()}
+  ${spineNav("comics")}
+  <h1>${esc(COMICS_TITLE)}</h1>
+  <article class="card lead">
+    <p>${esc(COMICS_DESCRIPTION)}</p>
+  </article>
+  <ol class="reels">${reels}</ol>
+  <footer>
+    ${ecosystemHtml()}
+    <p>${esc(AUTHOR)} · ${a(CANON_ORIGIN + "/", AUTHOR)} · ${a(CANON_ORIGIN + "/cite.json", "cite.json")} · Apache-2.0</p>
+  </footer>
+</main>
+${COPY_SCRIPT}
+</body>
+</html>`;
 }
 
 export async function receiptsHtml() {

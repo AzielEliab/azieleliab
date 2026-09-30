@@ -4,7 +4,7 @@
  * Enter navigates to the hub at /aziel. The hub is not mounted under this page.
  * Author: Aziel Eliab.
  */
-import { AUTHOR, AZIEL_PATH, CANON_ORIGIN, DESCRIPTION, HASH_REDIRECTS, LIBRARY, LIBRARY_RUNTIME, RUNTIME_VERSION } from "./copy.js";
+import { AUTHOR, AZIEL_PATH, CANON_ORIGIN, COMICS, DESCRIPTION, HASH_REDIRECTS, LIBRARY, LIBRARY_RUNTIME, RUNTIME_VERSION } from "./copy.js";
 import { personJsonLdScript } from "./identity.js";
 import { ROBOTS_INDEX } from "./seo.js";
 
@@ -20,6 +20,16 @@ const FILES = {
   [FILM_GRAIN_PATH]: { file: "film/grain.png", type: "image/png" },
   [FILM_OG_PATH]: { file: "og.jpg", type: "image/jpeg" },
 };
+
+for (const film of COMICS) {
+  const src = String(film.src || "").split("?")[0];
+  const poster = String(film.poster || "").split("?")[0];
+  if (src && !FILES[src]) FILES[src] = { file: src.replace(/^\//, ""), type: "video/mp4" };
+  if (poster && !FILES[poster]) {
+    const type = poster.endsWith(".png") ? "image/png" : "image/jpeg";
+    FILES[poster] = { file: poster.replace(/^\//, ""), type };
+  }
+}
 
 export function isFilmAssetPath(pathname) {
   return Object.prototype.hasOwnProperty.call(FILES, String(pathname || ""));

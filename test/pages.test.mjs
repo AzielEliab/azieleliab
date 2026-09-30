@@ -1,7 +1,7 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import worker, { apexRedirect, donateCacheBustLocation, handleRequest } from "../src/index.js";
-import { donateHtml, embryoLockHtml, ecosystemHtml, hashRedirectScript, notFoundHtml, pageHtml, receiptsHtml, sectionPageHtml, spineNav, whoHtml } from "../src/page.js";
+import { comicsHtml, donateHtml, embryoLockHtml, ecosystemHtml, hashRedirectScript, notFoundHtml, pageHtml, receiptsHtml, sectionPageHtml, spineNav, whoHtml } from "../src/page.js";
 import { incrementViews, memoryKv } from "../src/views.js";
 import { CATALOG_KV_KEY, DONATE_HTML_CACHE, HTML_CACHE, MESH_CACHE_URL, MESH_HTTP_CACHE, MESH_TTL_SEC, SEO_CACHE, cacheRequest, memoryCache } from "../src/edgeCache.js";
 import { catalogFromLiveDoc, catalogHasThisIs, liveProductHref, softwareIndexBody } from "../src/liveCatalog.js";
@@ -34,6 +34,11 @@ import {
   DONATE_SIGN,
   DONATE_TITLE,
   DONATE_XRP_TAG_NOTE,
+  COMICS,
+  COMICS_DESCRIPTION,
+  COMICS_HREF,
+  COMICS_PATH,
+  COMICS_TITLE,
   DOORS,
   ECOSYSTEM_LINKS,
   ECOSYSTEM_TITLE,
@@ -2308,11 +2313,11 @@ describe("AZL-DONATE-1.0", () => {
     assert.equal(DONATE_HREF, CANON_ORIGIN + DONATE_PATH + "?v=png");
     assert.deepEqual(
       SPINE.map((s) => s.label),
-      ["Why", "Software", "Research", "Doors", "Receipts", "Donate"],
+      ["Why", "Software", "Research", "Doors", "Receipts", "Comics", "Donate"],
     );
     assert.deepEqual(
       SPINE.map((s) => s.href),
-      [CANON_ORIGIN + "/why", SOFTWARE_HREF, CANON_ORIGIN + "/research", CANON_ORIGIN + "/doors", RECEIPTS_HREF, DONATE_HREF],
+      [CANON_ORIGIN + "/why", SOFTWARE_HREF, CANON_ORIGIN + "/research", CANON_ORIGIN + "/doors", RECEIPTS_HREF, COMICS_HREF, DONATE_HREF],
     );
     const homeNav = spineNav("home");
     assert.ok(homeNav.includes(">" + DONATE_TITLE + "<"));
@@ -3921,5 +3926,91 @@ describe("film entry", () => {
 
     const missing = await fetchPath("/film/missing.mp4");
     assert.equal(missing.status, 404);
+  });
+});
+
+describe("Comics tab", () => {
+  it("puts Comics on the spine and plays four films oldest first at /comics", async () => {
+    assert.equal(COMICS_PATH, "/comics");
+    assert.equal(COMICS_HREF, CANON_ORIGIN + "/comics");
+    assert.equal(COMICS_TITLE, "Comics");
+    assert.deepEqual(
+      COMICS.map((film) => film.title),
+      ["The Aziel-Runtime", "Aziel Runtime", "The Field", "The Receipts"],
+    );
+    assert.equal(SOFTWARE.length, 42);
+    assert.equal(CATALOG_SLUGS.length, 42);
+
+    const nav = spineNav("comics");
+    assert.ok(nav.includes(">Comics<"));
+    assert.ok(nav.includes('href="' + COMICS_HREF + '"'));
+    assert.ok(nav.includes('aria-current="page"'));
+    assert.ok(pageHtml().includes('href="' + COMICS_HREF + '"'));
+
+    const theater = await fetchPath("/");
+    const theaterBody = await theater.text();
+    assert.ok(theaterBody.includes('class="theater"'));
+    assert.ok(!theaterBody.includes('aria-label="Spine"'));
+    assert.ok(!theaterBody.includes("/comics/the-field.mp4"));
+    assert.ok(!theaterBody.includes("The Record"));
+
+    for (const path of ["/comics", "/comics/"]) {
+      const res = await fetchPath(path);
+      assert.equal(res.status, 200, path);
+      assert.match(res.headers.get("content-type"), /text\/html/, path);
+      const body = await res.text();
+      assert.equal(comicsHtml(), body);
+      assert.ok(body.includes("<title>Comics — " + AUTHOR + "</title>"), path);
+      assert.ok(body.includes('rel="canonical" href="' + COMICS_HREF + '"'), path);
+      assert.ok(body.includes("<h1>Comics</h1>"), path);
+      assert.ok(body.includes(COMICS_DESCRIPTION), path);
+      assert.ok(!body.includes("The Record"), path);
+      assert.ok(!body.includes("aziel-corpus-the-record"), path);
+      let at = -1;
+      for (const film of COMICS) {
+        const titleAt = body.indexOf("<h2>" + film.title + "</h2>");
+        assert.ok(titleAt > at, film.title);
+        at = titleAt;
+        assert.ok(body.includes('poster="' + film.poster + '"'), film.poster);
+        assert.ok(body.includes('src="' + film.src + '"'), film.src);
+        assert.ok(body.includes('href="' + film.x + '"'), film.x);
+        assert.ok(body.includes('aria-label="' + film.title + '"'), film.title);
+      }
+    }
+
+    const head = await fetchPath("/comics", { method: "HEAD" });
+    assert.equal(head.status, 200);
+    assert.equal(await head.text(), "");
+    const post = await fetchPath("/comics", { method: "POST" });
+    assert.equal(post.status, 405);
+    const apex = await handleRequest(new Request("https://azieleliab.com/comics"));
+    assert.equal(apex.status, 301);
+    assert.equal(apex.headers.get("location"), COMICS_HREF);
+
+    const robots = robotsTxt();
+    const ai = aiTxt();
+    const map = sitemapXml();
+    assert.ok(robots.includes("Allow: /comics"));
+    assert.ok(robots.includes("Allow: /comics/"));
+    assert.ok(ai.includes("Allow: /comics"));
+    assert.ok(map.includes("<loc>" + COMICS_HREF + "</loc>"));
+    assert.ok(llmsTxt().includes(COMICS_HREF));
+
+    for (const film of COMICS) {
+      const asset = await fetchPath(film.src, { method: "HEAD" });
+      assert.equal(asset.status, 200, film.src);
+      assert.match(asset.headers.get("content-type"), /video\/mp4/, film.src);
+      assert.equal(asset.headers.get("accept-ranges"), "bytes", film.src);
+      assert.ok(Number(asset.headers.get("content-length")) > 100000, film.src);
+      const range = await fetchPath(film.src, { headers: { range: "bytes=4-7" } });
+      assert.equal(range.status, 206, film.src);
+      assert.equal(new TextDecoder().decode(await range.arrayBuffer()), "ftyp", film.src);
+      const poster = await fetchPath(film.poster);
+      assert.equal(poster.status, 200, film.poster);
+      assert.match(poster.headers.get("content-type"), /image\/jpeg/, film.poster);
+      const jpg = new Uint8Array(await poster.arrayBuffer());
+      assert.equal(jpg[0], 0xff, film.poster);
+      assert.equal(jpg[1], 0xd8, film.poster);
+    }
   });
 });
