@@ -1,5 +1,5 @@
 /** azieleliab.com landing Worker. Author: Aziel Eliab. */
-import { aboutAliasPath, APEX_HOST, AUTHOR, CANON_ORIGIN, DESCRIPTION, isMissionPath, tabPage } from "./copy.js";
+import { aboutAliasPath, APEX_HOST, AUTHOR, CANON_ORIGIN, COMICS_PATH, DESCRIPTION, isMissionPath, tabPage } from "./copy.js";
 import {
   DONATE_CACHE_BUST,
   CATALOG_HTTP_CACHE,
@@ -55,7 +55,7 @@ import {
   verifyPastedHash,
 } from "./ingest.js";
 import { filmAssetResponse, filmTheaterHtml, isFilmAssetPath } from "./film.js";
-import { donateHtml, embryoLockHtml, ingestHtml, notFoundHtml, pageHtml, receiptsHtml, sectionPageHtml, verifyHtml, whoHtml } from "./page.js";
+import { comicsHtml, donateHtml, embryoLockHtml, ingestHtml, notFoundHtml, pageHtml, receiptsHtml, sectionPageHtml, verifyHtml, whoHtml } from "./page.js";
 import { donateQrResponse } from "./qr.js";
 import { sigilResponse } from "./sigil.js";
 import { handleRuntimeRoot, isRuntimeRequest } from "./runtimeRoot.js";
@@ -392,6 +392,7 @@ export async function handleRequest(request, env = {}, ctx) {
   const pageViewerPath =
     homeLike ||
     path === "/receipts" ||
+    path === COMICS_PATH ||
     path === INGEST_PATH ||
     path === "/donate" ||
     path === "/embryolock" ||
@@ -449,6 +450,7 @@ export async function handleRequest(request, env = {}, ctx) {
   } else if (tab) {
     res = html(sectionPageHtml(tab, await readViews(env), doors, meshDocLive, live && live.version, surfaceSot));
   } else if (path === "/receipts") res = html(await receiptsHtml());
+  else if (path === COMICS_PATH) res = html(comicsHtml());
   else if (path === INGEST_PATH) res = html(ingestHtml());
   else if (path === INGEST_BYTES_PATH) res = text(canonicalPageBytes(), "text/plain", { cache: SEO_CACHE });
   else if (path === VERIFY_PATH) {

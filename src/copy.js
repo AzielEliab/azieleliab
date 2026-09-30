@@ -543,6 +543,44 @@ export const RECEIPTS_HREF = CANON_ORIGIN + RECEIPTS_PATH;
 export const RECEIPTS_TITLE = "Receipts";
 export const RECEIPTS_DESCRIPTION =
   "This host’s action-receipt chain. Hash, request sentence, output sentence, event metadata. Newest first.";
+export const COMICS_PATH = "/comics";
+export const COMICS_HREF = CANON_ORIGIN + COMICS_PATH;
+export const COMICS_TITLE = "Comics";
+export const COMICS_DESCRIPTION = "Four short films, oldest first.";
+/**
+ * Comics release order, oldest first.
+ * Titles are the film names. x is the public status URL for that film.
+ */
+export const COMICS = [
+  {
+    id: "the-aziel-runtime",
+    title: "The Aziel-Runtime",
+    src: "/comics/the-aziel-runtime-15s.mp4",
+    poster: "/comics/the-aziel-runtime-15s.jpg",
+    x: "https://x.com/AzielEliab/status/2104282094448849359",
+  },
+  {
+    id: "aziel-runtime",
+    title: "Aziel Runtime",
+    src: "/film/aziel-runtime.mp4",
+    poster: "/film/poster.jpg",
+    x: "https://x.com/AzielEliab/status/2104947208911233447",
+  },
+  {
+    id: "the-field",
+    title: "The Field",
+    src: "/comics/the-field.mp4",
+    poster: "/comics/the-field.jpg",
+    x: "https://x.com/AzielEliab/status/2105278542359756834",
+  },
+  {
+    id: "the-receipts",
+    title: "The Receipts",
+    src: "/comics/the-receipts.mp4",
+    poster: "/comics/the-receipts.jpg",
+    x: "https://x.com/AzielEliab/status/2105369707427893288",
+  },
+];
 export const AZIEL_PATH = "/aziel";
 export const AZIEL_HREF = CANON_ORIGIN + AZIEL_PATH;
 /** Retired homepage Mission/Status strip. 301 to /. */
@@ -1258,6 +1296,7 @@ export const SPINE = [
   { id: "research", label: "Research", href: RESEARCH_HREF },
   { id: "doors", label: "Doors", href: DOORS_HREF },
   { id: "receipts", label: "Receipts", href: RECEIPTS_HREF },
+  { id: "comics", label: "Comics", href: COMICS_HREF },
   { id: "donate", label: "Donate", href: DONATE_HREF },
 ];
 

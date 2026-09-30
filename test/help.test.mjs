@@ -176,7 +176,7 @@ describe("human help addendum", () => {
   it("leaves homepage Softwares/Doors spine alone", () => {
     assert.deepEqual(
       SPINE.map((s) => s.label),
-      ["Why", "Software", "Research", "Doors", "Receipts", "Donate"],
+      ["Why", "Software", "Research", "Doors", "Receipts", "Comics", "Donate"],
     );
     const nav = spineNav("home");
     assert.ok(!nav.includes("Help"));
