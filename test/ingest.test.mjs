@@ -212,7 +212,7 @@ describe("Growth-ON Allow and public doors", () => {
     for (const html of pages) {
       const shown = visible(html);
       assert.doesNotMatch(shown, /1 Chronicles 15:20/);
-      assert.ok(!shown.includes(VISIBLE_LOCK_LINE));
+      assert.ok(!(shown.split("<body>")[1] || "").includes(VISIBLE_LOCK_LINE));
     }
     assert.ok(!visible(whoHtml()).includes(VISIBLE_LOCK_LINE));
   });

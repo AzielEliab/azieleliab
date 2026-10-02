@@ -11,6 +11,7 @@ import {
   ABOUT_PATHS,
   AUTHOR,
   CANON_ORIGIN,
+  DESCRIPTION,
   CATALOG_GITHUB_FALLBACK,
   CATALOG_LATER_SLUGS,
   CATALOG_NAMES,
@@ -227,7 +228,8 @@ describe("landing copy", () => {
     assert.ok(home.includes("azieleliab.com"));
     const visible = home.split("<body>")[1] || "";
     assert.ok(!visible.includes(VISIBLE_LOCK_LINE));
-    assert.ok(!home.includes(VISIBLE_LOCK_LINE));
+    assert.ok(home.includes('name="description" content="' + DESCRIPTION + '"'));
+    assert.ok(home.includes('property="og:description" content="' + DESCRIPTION + '"'));
     assert.ok(visible.includes("You don’t get to know me."));
     assert.ok(home.includes("<title>Aziel Eliab</title>"));
   });
@@ -1319,12 +1321,13 @@ describe("SEO routes", () => {
     );
     assert.doesNotMatch(ld["@graph"][0].disambiguatingDescription, /euaziel|Aziel S\.|Flutter/i);
     assert.ok(ld["@graph"][0].description.includes("1 Chronicles 15:20"));
-    assert.ok(ld["@graph"][0].description.includes("researcher, digital rights activist, software developer/designer, author, and philosopher of published work"));
+    assert.ok(ld["@graph"][0].description.includes("online pseudonymous developer, researcher, author, and digital-rights activist"));
     assert.deepEqual(ld["@graph"][0].jobTitle, [
+      "online pseudonymous developer",
       "researcher",
+      "author",
       "digital rights activist",
       "software developer/designer",
-      "author",
       "philosopher of published work",
     ]);
     assert.ok(ld["@graph"][0].knowsLanguage.includes("he"));
@@ -2086,7 +2089,7 @@ describe("worker routing", () => {
     const visible = body.replace(/<script[\s\S]*?<\/script>/g, "").replace(/<style>[\s\S]*?<\/style>/g, "");
     assert.ok(visible.includes("<h1>Who is Aziel Eliab</h1>"));
     assert.ok(!visible.includes(VISIBLE_LOCK_LINE));
-    assert.ok(!body.includes(VISIBLE_LOCK_LINE));
+    assert.ok(!body.replace(/<script[\s\S]*?<\/script>/g, "").includes(VISIBLE_LOCK_LINE));
     assert.ok(body.includes("<title>Who is Aziel Eliab</title>"));
     assert.equal(whoHtml(), body);
     const robots = await fetchPath("/robots.txt");
@@ -3871,6 +3874,10 @@ describe("film entry", () => {
     assert.ok(body.includes("Cormorant Garamond"));
     assert.ok(body.includes("IBM Plex Mono"));
     assert.ok(body.includes("No caption track was published"));
+    assert.ok(body.includes("<h1>You don’t get to know me.</h1>"));
+    assert.ok(body.includes('name="description" content="' + DESCRIPTION + '"'));
+    assert.ok(body.includes('property="og:description" content="' + DESCRIPTION + '"'));
+    assert.ok(!(body.split("<body>")[1] || "").includes(DESCRIPTION));
     assert.ok(body.includes("You don’t get to know me."));
     assert.ok(body.includes('"aziel":"/aziel"'));
     assert.ok(!body.includes('<h1 id="aziel">'));
@@ -3886,6 +3893,9 @@ describe("film entry", () => {
     const hubBody = await hub.text();
     assert.ok(!hubBody.includes('class="theater"'));
     assert.ok(hubBody.includes('<h1 id="aziel">Aziel Eliab</h1>'));
+    assert.ok(hubBody.includes('name="description" content="' + DESCRIPTION + '"'));
+    assert.ok(hubBody.includes('property="og:description" content="' + DESCRIPTION + '"'));
+    assert.ok(!(hubBody.split("<body>")[1] || "").includes(DESCRIPTION));
     assert.ok(hubBody.includes('<main class="wrap">'));
     assert.ok(hubBody.includes('aria-label="Spine"'));
     const about = await fetchPath("/about");

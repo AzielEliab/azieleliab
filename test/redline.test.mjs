@@ -167,7 +167,7 @@ describe("REDLINE-2026-09-14 AZindex cite", () => {
       ["who", visible(whoHtml())],
       ["donate", visible(donateHtml())],
     ]) {
-      assert.ok(!html.includes(VISIBLE_LOCK_LINE), name);
+      assert.ok(!(html.split("<body>")[1] || "").includes(VISIBLE_LOCK_LINE), name);
     }
     assert.doesNotMatch(visible(pageHtml()), /1 Chronicles 15:20/);
     assert.doesNotMatch(visible(donateHtml()), /1 Chronicles 15:20/);

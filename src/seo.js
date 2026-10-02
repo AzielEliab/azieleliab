@@ -321,6 +321,52 @@ export const CONTENT_SIGNAL = "search=yes, ai-input=yes, ai-train=yes";
 export const ROBOTS_INDEX =
   "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1";
 
+/**
+ * Dedicated azieleliab.com IndexNow key.
+ * Not the He Didn't Jump key (4241818f-5799-488c-9457-da724a30831c).
+ */
+export const INDEXNOW_KEY = "74f44bd8-2322-41ed-bbb0-23594a6646f8";
+export const INDEXNOW_HOST = "www.azieleliab.com";
+export const INDEXNOW_KEY_PATH = "/" + INDEXNOW_KEY + ".txt";
+export const INDEXNOW_WELL_KNOWN_PATH = "/.well-known/indexnow-key.txt";
+export const INDEXNOW_KEY_LOCATION = CANON_ORIGIN + INDEXNOW_KEY_PATH;
+export const INDEXNOW_ENDPOINT = "https://api.indexnow.org/indexnow";
+/** Identity URLs to submit after the key file is live. No Zenodo. No x.com/AzielElroiEliab. */
+export const INDEXNOW_PING_URLS = [
+  CANON_ORIGIN + "/",
+  CANON_ORIGIN + "/aziel",
+  CANON_ORIGIN + "/about",
+  CANON_ORIGIN + "/person.jsonld",
+  CANON_ORIGIN + "/identity.jsonld",
+  CANON_ORIGIN + "/graph.jsonld",
+  CANON_ORIGIN + "/who",
+  CANON_ORIGIN + "/who-is",
+  CANON_ORIGIN + "/who-is-aziel-eliab.txt",
+  CANON_ORIGIN + "/llms.txt",
+  CANON_ORIGIN + "/ai.txt",
+  CANON_ORIGIN + "/.well-known/aziel.json",
+  CANON_ORIGIN + "/.well-known/person.jsonld",
+  CANON_ORIGIN + "/cite.json",
+  CANON_ORIGIN + "/sitemap.xml",
+];
+
+export function indexNowPayload() {
+  return {
+    host: INDEXNOW_HOST,
+    key: INDEXNOW_KEY,
+    keyLocation: INDEXNOW_KEY_LOCATION,
+    urlList: INDEXNOW_PING_URLS.slice(),
+  };
+}
+
+/** Identity-lock revision. Sitemap lastmod is never older than this day. */
+export const SITEMAP_LASTMOD_FLOOR = "2026-10-02";
+
+export function sitemapLastmod(now = new Date()) {
+  const day = now.toISOString().slice(0, 10);
+  return day > SITEMAP_LASTMOD_FLOOR ? day : SITEMAP_LASTMOD_FLOOR;
+}
+
 const PUBLIC_ALLOW = [
   "/",
   "/software",
@@ -373,6 +419,8 @@ const PUBLIC_ALLOW = [
   "/who/",
   "/.well-known/aziel.json",
   "/.well-known/person.jsonld",
+  "/.well-known/indexnow-key.txt",
+  INDEXNOW_KEY_PATH,
   "/sitemap.xml",
   "/robots.txt",
   "/v1/stats",
@@ -465,7 +513,7 @@ const SITEMAP_RANK = {
 };
 
 export function sitemapXml(now = new Date(), software = SOFTWARE) {
-  const lastmod = now.toISOString().slice(0, 10);
+  const lastmod = sitemapLastmod(now);
   const doors = software && software.length ? software : SOFTWARE;
   const locs = [
     CANON_ORIGIN + "/",
@@ -956,6 +1004,8 @@ export function llmsTxt(software = SOFTWARE, survival = null, sot = null) {
   return [
     "# Aziel Eliab",
     "",
+    DESCRIPTION,
+    "",
     "Author: " + AUTHOR,
     "Also known as: " + AUTHOR_AKA_LIST.join(" | ") + " (alternateName only)",
     "Primary credit: " + AUTHOR,
@@ -1172,6 +1222,8 @@ export function aiTxt(survival = null, software, sot = null) {
     "#",
     "# Allow the public landing and same-origin /runtime aziel-runtime door.",
     "",
+    DESCRIPTION,
+    "",
     "User-agent: *",
     "Allow: /",
     "Allow: /software",
@@ -1224,6 +1276,8 @@ export function aiTxt(survival = null, software, sot = null) {
     "Allow: /who/",
     "Allow: /.well-known/aziel.json",
     "Allow: /.well-known/person.jsonld",
+    "Allow: /.well-known/indexnow-key.txt",
+    "Allow: " + INDEXNOW_KEY_PATH,
     "Allow: /robots.txt",
     "Allow: /sitemap.xml",
     "Allow: /v1/stats",

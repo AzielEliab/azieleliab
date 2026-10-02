@@ -509,7 +509,7 @@ export const MIRAGEGRID_SHUFFLE = MIRAGEGRID + "/v1/shuffle";
 export const MIRAGEGRID_DOWNLOAD = "https://miragegrid-download-tracker.vibelock.workers.dev";
 
 export const DESCRIPTION =
-  "Aziel Eliab. You don’t get to know me. You get to understand the work. Public identity Aziel Eliab only.";
+  "Aziel Eliab (also Aziel Elroi Eliab) is an online pseudonymous developer, researcher, author, and digital-rights activist. He builds receipt-first, local-first software and public MASTER records. Canonical Person https://www.azieleliab.com/#aziel.";
 /** About surfaces 200 with the same hub HTML so they are indexable. `/` is the film theater. */
 export const ABOUT_PATHS = ["/about", "/AzielEliab", "/aziel-eliab"];
 export const ABOUT_HREF = CANON_ORIGIN + "/";
