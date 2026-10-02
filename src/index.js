@@ -66,7 +66,17 @@ import {
   wellKnownAziel,
   whoIsTxt,
 } from "./identity.js";
-import { aiTxt, citeDoc, CONTENT_SIGNAL, llmsTxt, robotsTxt, sitemapXml } from "./seo.js";
+import {
+  aiTxt,
+  citeDoc,
+  CONTENT_SIGNAL,
+  INDEXNOW_KEY,
+  INDEXNOW_KEY_PATH,
+  INDEXNOW_WELL_KNOWN_PATH,
+  llmsTxt,
+  robotsTxt,
+  sitemapXml,
+} from "./seo.js";
 import { helpBody, isHelpPath } from "./help.js";
 import { handleSotOutlet, isSotOutletPath, loadSurfacePin } from "./sotOutlet.js";
 import {
@@ -466,7 +476,9 @@ export async function handleRequest(request, env = {}, ctx) {
     res = json(reexpandDoc(), SEO_CACHE);
   } else if (path === "/donate") res = html(donateHtml(), 200, DONATE_HTML_CACHE);
   else if (path === "/embryolock") res = html(embryoLockHtml(), 200, STUB_HTML_CACHE);
-  else if (path === "/robots.txt") res = text(robotsTxt(), "text/plain", { cache: SEO_CACHE });
+  else if (path === INDEXNOW_KEY_PATH || path === INDEXNOW_WELL_KNOWN_PATH) {
+    res = text(INDEXNOW_KEY + "\n", "text/plain", { cache: SEO_CACHE });
+  } else if (path === "/robots.txt") res = text(robotsTxt(), "text/plain", { cache: SEO_CACHE });
   else if (path === "/llms.txt") res = text(llmsTxt(doors, survival, surfaceSot), "text/plain", { cache: SEO_CACHE });
   else if (path === "/person.jsonld" || path === "/identity.jsonld" || path === "/.well-known/person.jsonld") {
     res = text(prettyJson(personJsonLd()), "application/ld+json", { cache: SEO_CACHE, cors: true });

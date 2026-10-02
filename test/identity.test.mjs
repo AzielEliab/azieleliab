@@ -3,7 +3,22 @@ import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import worker from "../src/index.js";
 import { donateHtml, embryoLockHtml, pageHtml, sectionPageHtml, whoHtml } from "../src/page.js";
-import { aiTxt, citeDoc, jsonLd, llmsTxt, robotsTxt, sitemapXml } from "../src/seo.js";
+import {
+  aiTxt,
+  citeDoc,
+  INDEXNOW_ENDPOINT,
+  INDEXNOW_KEY,
+  INDEXNOW_KEY_LOCATION,
+  INDEXNOW_KEY_PATH,
+  INDEXNOW_PING_URLS,
+  INDEXNOW_WELL_KNOWN_PATH,
+  indexNowPayload,
+  jsonLd,
+  llmsTxt,
+  robotsTxt,
+  SITEMAP_LASTMOD_FLOOR,
+  sitemapXml,
+} from "../src/seo.js";
 import {
   ARK_DOWNLOAD,
   AUTHOR_AKA_LIST,
@@ -88,7 +103,8 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     assert.equal(person["@id"], PERSON_ID);
     assert.equal(person.name, "Aziel Eliab");
     assert.equal(person.description, personDescription());
-    assert.ok(person.description.startsWith(WHAT_AZIEL_ELIAB_DOES));
+    assert.ok(person.description.startsWith(VISIBLE_LOCK_LINE));
+    assert.ok(person.description.includes(WHAT_AZIEL_ELIAB_DOES));
     assert.ok(person.description.includes(WHO_IS_ANSWER));
     assert.ok(person.description.includes(HEBREW_NAME_DEFINITION));
     assert.equal(person.disambiguatingDescription, DISAMBIGUATING_DESCRIPTION);
@@ -142,8 +158,21 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
   it("locks living researcher copy and 15:20 concordance mention", () => {
     const person = personJsonLd();
     assert.equal(person["@id"], "https://www.azieleliab.com/#aziel");
-    assert.ok(person.description.startsWith(WHAT_AZIEL_ELIAB_DOES));
-    assert.match(person.description, /Aziel Eliab \(also Aziel Elroi Eliab\) is a researcher, digital rights activist, software developer\/designer, author, and philosopher of published work/);
+    assert.ok(person.description.startsWith(VISIBLE_LOCK_LINE));
+    assert.ok(person.description.includes(WHAT_AZIEL_ELIAB_DOES));
+    assert.match(person.description, /Aziel Eliab \(also Aziel Elroi Eliab\) is an online pseudonymous developer, researcher, author, and digital-rights activist/);
+    assert.deepEqual(person.jobTitle, [
+      "online pseudonymous developer",
+      "researcher",
+      "author",
+      "digital rights activist",
+      "software developer/designer",
+      "philosopher of published work",
+    ]);
+    assert.ok(person.knowsAbout.includes("online pseudonymous developer"));
+    assert.ok(person.knowsAbout.includes("digital-rights activist"));
+    assert.ok(!person.sameAs.some((href) => /zenodo/i.test(href)));
+    assert.ok(!person.sameAs.includes("https://x.com/AzielElroiEliab"));
     assert.match(person.description, /two Levitical musicians Aziel and Eliab named together in 1 Chronicles 15:20/);
     assert.ok(person.description.includes(HEBREW_NAME_DEFINITION));
     assert.ok(PERSON_KNOWS_ABOUT.includes(HEBREW_NAME_DEFINITION));
@@ -411,6 +440,7 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     assert.ok(visible.includes("<h1>Who is Aziel Eliab</h1>"));
     assert.ok(visible.includes(WHO_IS_ANSWER));
     assert.ok(!visible.includes(VISIBLE_LOCK_LINE));
+    assert.ok(!visible.split("<body>")[1].includes(VISIBLE_LOCK_LINE));
     assert.ok(!visible.includes(WHAT_AZIEL_ELIAB_DOES));
     assert.ok(!visible.includes(WHY_AZIEL_ELIAB_DOES));
     assert.ok(!visible.includes(RESEARCH_ADDENDUM));
@@ -418,7 +448,7 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     assert.ok(!visible.includes(SOFTWARES_ADDENDUM));
     assert.ok(!visible.includes("deniable vault"));
     assert.ok(!visible.includes(ARK_DOWNLOAD));
-    assert.ok(!body.includes(VISIBLE_LOCK_LINE));
+    assert.ok(!body.replace(/<script[\s\S]*?<\/script>/g, "").includes(VISIBLE_LOCK_LINE));
     assert.ok(body.includes("<title>Who is Aziel Eliab</title>"));
     assert.ok(body.includes('name="description" content="' + WHO_DESCRIPTION + '"'));
     assert.ok(body.includes('rel="canonical" href="' + WHO_HREF + '"'));
@@ -583,7 +613,7 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     assert.ok(html.includes('href="/person.jsonld"'));
     assert.ok(html.includes('href="/graph.jsonld"'));
     assert.ok(html.includes('href="/who-is-aziel-eliab.txt"'));
-    assert.ok(!html.includes(VISIBLE_LOCK_LINE));
+    assert.ok(html.includes('name="description" content="' + VISIBLE_LOCK_LINE + '"'));
     const visibleBody = html.split("<body>")[1] || "";
     assert.ok(!visibleBody.includes(VISIBLE_LOCK_LINE));
     assert.ok(!visibleBody.includes(SOFTWARES_ADDENDUM));
@@ -728,6 +758,43 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
       assert.ok(person.sameAs.includes("https://github.com/azieltherevealerofthesealed-arch"), path);
       assert.ok(!person.alternateName.some((n) => /Everblooming|Flower That Holds The Name/i.test(n)), path);
     }
+  });
+
+  it("serves a dedicated IndexNow key and bumps sitemap lastmod for identity URLs", async () => {
+    assert.notEqual(INDEXNOW_KEY, "4241818f-5799-488c-9457-da724a30831c");
+    assert.match(INDEXNOW_KEY, /^[0-9a-f-]{8,128}$/);
+    assert.equal(INDEXNOW_ENDPOINT, "https://api.indexnow.org/indexnow");
+    const payload = indexNowPayload();
+    assert.equal(payload.host, "www.azieleliab.com");
+    assert.equal(payload.key, INDEXNOW_KEY);
+    assert.equal(payload.keyLocation, INDEXNOW_KEY_LOCATION);
+    assert.equal(payload.keyLocation, CANON_ORIGIN + INDEXNOW_KEY_PATH);
+    assert.ok(payload.urlList.includes(CANON_ORIGIN + "/"));
+    assert.ok(payload.urlList.includes(CANON_ORIGIN + "/aziel"));
+    assert.ok(payload.urlList.includes(CANON_ORIGIN + "/person.jsonld"));
+    assert.ok(payload.urlList.includes(CANON_ORIGIN + "/llms.txt"));
+    assert.ok(payload.urlList.includes(CANON_ORIGIN + "/ai.txt"));
+    assert.deepEqual(payload.urlList, INDEXNOW_PING_URLS);
+    assert.ok(!payload.urlList.some((href) => /zenodo|AzielElroiEliab/i.test(href)));
+    const key = await fetchPath(INDEXNOW_KEY_PATH);
+    const wellKnown = await fetchPath(INDEXNOW_WELL_KNOWN_PATH);
+    assert.equal(key.status, 200);
+    assert.equal(wellKnown.status, 200);
+    assert.match(contentType(key), /text\/plain/);
+    assert.match(contentType(wellKnown), /text\/plain/);
+    assert.equal((await key.text()).trim(), INDEXNOW_KEY);
+    assert.equal((await wellKnown.text()).trim(), INDEXNOW_KEY);
+    const robots = robotsTxt();
+    assert.ok(robots.includes("Allow: " + INDEXNOW_KEY_PATH));
+    assert.ok(robots.includes("Allow: " + INDEXNOW_WELL_KNOWN_PATH));
+    assert.ok(robots.includes("Content-Signal: search=yes, ai-input=yes, ai-train=yes"));
+    assert.ok(robots.includes("Allow: /"));
+    const map = sitemapXml(new Date("2020-01-15T00:00:00.000Z"));
+    assert.ok(map.includes("<lastmod>" + SITEMAP_LASTMOD_FLOOR + "</lastmod>"));
+    assert.ok(!map.includes("<lastmod>2020-01-15</lastmod>"));
+    assert.ok(llmsTxt().includes(VISIBLE_LOCK_LINE));
+    assert.ok(aiTxt().includes(VISIBLE_LOCK_LINE));
+    assert.ok(llmsTxt().startsWith("# Aziel Eliab\n\n" + VISIBLE_LOCK_LINE));
   });
 
   it("keeps docs/aziel-identity-schema copies in lockstep with generators", () => {

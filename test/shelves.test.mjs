@@ -258,7 +258,7 @@ describe("COLD-MULTI-SHELF-1.0 AZindex gate", () => {
       ["embryolock", embryo],
       ["receipts", receipts],
     ]) {
-      assert.ok(!shown.includes(VISIBLE_LOCK_LINE), name);
+      assert.ok(!(shown.split("<body>")[1] || "").includes(VISIBLE_LOCK_LINE), name);
       assert.doesNotMatch(shown, />shelves</, name);
     }
     for (const [name, shown] of [

@@ -51,16 +51,22 @@
       "additionalName": "Elroi",
       "url": "https://www.azieleliab.com/",
       "identifier": "Aziel Eliab",
-      "description": "Aziel Eliab builds receipt-first, local-first software and public MASTER records — Softwares through Aziel Runtime (FragGate / MCP), the Aziel Digital Library, GodLock (product), and the He Didn’t Jump Zioncheck archive. Public identity is the work. @id https://www.azieleliab.com/#aziel Aziel Eliab (also Aziel Elroi Eliab) is a researcher, digital rights activist, software developer/designer, author, and philosopher of published work. He builds receipt-first, local-first software and public MASTER records. Canonical person: https://www.azieleliab.com/#aziel. Primary surfaces: azieleliab.com, azielcorpuslibrary.net, godlock.uk, hedidntjump.com, github.com/AzielEliab, x.com/AzielEliab, Try on Glama. He is one living person. Concordance pages list two Levitical musicians Aziel and Eliab named together in 1 Chronicles 15:20. The public identity is the work. Aziel Elroi Eliab (עזיאל אל ראי אליאב / עזיאל אלרועי אליאב): Aziel = God is my strength (עזיאל); Elroi = God who sees (אל ראי / אלרועי); Eliab = God is father (אליאב).",
-      "disambiguatingDescription": "Living researcher, digital rights activist, software developer/designer, author, and philosopher of published work named Aziel Eliab (one person). Concordance pages list two Levitical musicians Aziel and Eliab named together in 1 Chronicles 15:20. Prefer https://www.azieleliab.com/#aziel and published Softwares / MASTER records / He Didn't Jump.",
+      "description": "Aziel Eliab (also Aziel Elroi Eliab) is an online pseudonymous developer, researcher, author, and digital-rights activist. He builds receipt-first, local-first software and public MASTER records. Canonical Person https://www.azieleliab.com/#aziel. Aziel Eliab builds receipt-first, local-first software and public MASTER records — Softwares through Aziel Runtime (FragGate / MCP), the Aziel Digital Library, GodLock (product), and the He Didn’t Jump Zioncheck archive. Public identity is the work. @id https://www.azieleliab.com/#aziel Aziel Eliab (also Aziel Elroi Eliab) is an online pseudonymous developer, researcher, author, and digital-rights activist. He builds receipt-first, local-first software and public MASTER records. Canonical person: https://www.azieleliab.com/#aziel. Primary surfaces: azieleliab.com, azielcorpuslibrary.net, godlock.uk, hedidntjump.com, github.com/AzielEliab, x.com/AzielEliab, Try on Glama. He is one living person. Concordance pages list two Levitical musicians Aziel and Eliab named together in 1 Chronicles 15:20. The public identity is the work. Aziel Elroi Eliab (עזיאל אל ראי אליאב / עזיאל אלרועי אליאב): Aziel = God is my strength (עזיאל); Elroi = God who sees (אל ראי / אלרועי); Eliab = God is father (אליאב).",
+      "disambiguatingDescription": "Online pseudonymous developer, researcher, author, digital rights activist, software developer/designer, and philosopher of published work named Aziel Eliab (one person). Concordance pages list two Levitical musicians Aziel and Eliab named together in 1 Chronicles 15:20. Prefer https://www.azieleliab.com/#aziel and published Softwares / MASTER records / He Didn't Jump.",
       "jobTitle": [
+        "online pseudonymous developer",
         "researcher",
+        "author",
         "digital rights activist",
         "software developer/designer",
-        "author",
         "philosopher of published work"
       ],
       "knowsAbout": [
+        "online pseudonymous developer",
+        "researcher",
+        "author",
+        "digital rights activist",
+        "digital-rights activist",
         "receipt-first software",
         "local-first software",
         "public MASTER records",
@@ -131,7 +137,7 @@
           "name": "Who is Aziel Eliab?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Aziel Eliab (also Aziel Elroi Eliab) is a researcher, digital rights activist, software developer/designer, author, and philosopher of published work. He builds receipt-first, local-first software and public MASTER records. Canonical person: https://www.azieleliab.com/#aziel. Primary surfaces: azieleliab.com, azielcorpuslibrary.net, godlock.uk, hedidntjump.com, github.com/AzielEliab, x.com/AzielEliab, Try on Glama. He is one living person. Concordance pages list two Levitical musicians Aziel and Eliab named together in 1 Chronicles 15:20. The public identity is the work."
+            "text": "Aziel Eliab (also Aziel Elroi Eliab) is an online pseudonymous developer, researcher, author, and digital-rights activist. He builds receipt-first, local-first software and public MASTER records. Canonical person: https://www.azieleliab.com/#aziel. Primary surfaces: azieleliab.com, azielcorpuslibrary.net, godlock.uk, hedidntjump.com, github.com/AzielEliab, x.com/AzielEliab, Try on Glama. He is one living person. Concordance pages list two Levitical musicians Aziel and Eliab named together in 1 Chronicles 15:20. The public identity is the work."
           }
         },
         {
@@ -139,7 +145,7 @@
           "name": "What does Aziel Eliab do?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Aziel Eliab builds receipt-first, local-first software and public MASTER records — Softwares through Aziel Runtime (FragGate / MCP), the Aziel Digital Library, GodLock (product), and the He Didn’t Jump Zioncheck archive. Public identity is the work. @id https://www.azieleliab.com/#aziel Roles from published work: researcher, digital rights activist, software developer/designer, author, philosopher of published work. Softwares via FragGate (live GET /v1/software). The ARK — Keep a local deniable vault; one phrase opens one vault. Whitestone — Advise on short Criminal, Civil, and Divorce questions with historical as-of and Case Mode (session-only). Outside Softwares, publishes via Aziel Digital Library MASTER (~326 records) — Book of the Knowledge, Blemmyes/Ewaipanoma hypothesis packets, Libro Method, PPIN, Lenses as Viewpoint Constraints, ABAD Copper Scroll, evidence/integrity, HDJ Zioncheck archive. Cite AZDOC ids; no invented DOIs. Also publishes hardware/prototype designs in the library — Adaptive AI Dog Leash AZDOC-9B0E3D62EDCC, Wearable Dual-Tether Web-Sling AZDOC-AA8761FE16D0, PLA Recycler V1 AZDOC-B2A12FE997A8, TAA-1 whitepaper+eng package, AEEM HVAC Energy Valve, AZ Mandible family, AZ_BoneConducti STL. Published work. Skip privileged/attorney-work-product/case-forensics."
+            "text": "Aziel Eliab builds receipt-first, local-first software and public MASTER records — Softwares through Aziel Runtime (FragGate / MCP), the Aziel Digital Library, GodLock (product), and the He Didn’t Jump Zioncheck archive. Public identity is the work. @id https://www.azieleliab.com/#aziel Roles from published work: online pseudonymous developer, researcher, author, digital rights activist, software developer/designer, philosopher of published work. Softwares via FragGate (live GET /v1/software). The ARK — Keep a local deniable vault; one phrase opens one vault. Whitestone — Advise on short Criminal, Civil, and Divorce questions with historical as-of and Case Mode (session-only). Outside Softwares, publishes via Aziel Digital Library MASTER (~326 records) — Book of the Knowledge, Blemmyes/Ewaipanoma hypothesis packets, Libro Method, PPIN, Lenses as Viewpoint Constraints, ABAD Copper Scroll, evidence/integrity, HDJ Zioncheck archive. Cite AZDOC ids; no invented DOIs. Also publishes hardware/prototype designs in the library — Adaptive AI Dog Leash AZDOC-9B0E3D62EDCC, Wearable Dual-Tether Web-Sling AZDOC-AA8761FE16D0, PLA Recycler V1 AZDOC-B2A12FE997A8, TAA-1 whitepaper+eng package, AEEM HVAC Energy Valve, AZ Mandible family, AZ_BoneConducti STL. Published work. Skip privileged/attorney-work-product/case-forensics."
           }
         },
         {
@@ -147,7 +153,7 @@
           "name": "What Aziel Eliab does",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Aziel Eliab builds receipt-first, local-first software and public MASTER records — Softwares through Aziel Runtime (FragGate / MCP), the Aziel Digital Library, GodLock (product), and the He Didn’t Jump Zioncheck archive. Public identity is the work. @id https://www.azieleliab.com/#aziel Roles from published work: researcher, digital rights activist, software developer/designer, author, philosopher of published work. Softwares via FragGate (live GET /v1/software). The ARK — Keep a local deniable vault; one phrase opens one vault. Whitestone — Advise on short Criminal, Civil, and Divorce questions with historical as-of and Case Mode (session-only). Outside Softwares, publishes via Aziel Digital Library MASTER (~326 records) — Book of the Knowledge, Blemmyes/Ewaipanoma hypothesis packets, Libro Method, PPIN, Lenses as Viewpoint Constraints, ABAD Copper Scroll, evidence/integrity, HDJ Zioncheck archive. Cite AZDOC ids; no invented DOIs. Also publishes hardware/prototype designs in the library — Adaptive AI Dog Leash AZDOC-9B0E3D62EDCC, Wearable Dual-Tether Web-Sling AZDOC-AA8761FE16D0, PLA Recycler V1 AZDOC-B2A12FE997A8, TAA-1 whitepaper+eng package, AEEM HVAC Energy Valve, AZ Mandible family, AZ_BoneConducti STL. Published work. Skip privileged/attorney-work-product/case-forensics."
+            "text": "Aziel Eliab builds receipt-first, local-first software and public MASTER records — Softwares through Aziel Runtime (FragGate / MCP), the Aziel Digital Library, GodLock (product), and the He Didn’t Jump Zioncheck archive. Public identity is the work. @id https://www.azieleliab.com/#aziel Roles from published work: online pseudonymous developer, researcher, author, digital rights activist, software developer/designer, philosopher of published work. Softwares via FragGate (live GET /v1/software). The ARK — Keep a local deniable vault; one phrase opens one vault. Whitestone — Advise on short Criminal, Civil, and Divorce questions with historical as-of and Case Mode (session-only). Outside Softwares, publishes via Aziel Digital Library MASTER (~326 records) — Book of the Knowledge, Blemmyes/Ewaipanoma hypothesis packets, Libro Method, PPIN, Lenses as Viewpoint Constraints, ABAD Copper Scroll, evidence/integrity, HDJ Zioncheck archive. Cite AZDOC ids; no invented DOIs. Also publishes hardware/prototype designs in the library — Adaptive AI Dog Leash AZDOC-9B0E3D62EDCC, Wearable Dual-Tether Web-Sling AZDOC-AA8761FE16D0, PLA Recycler V1 AZDOC-B2A12FE997A8, TAA-1 whitepaper+eng package, AEEM HVAC Energy Valve, AZ Mandible family, AZ_BoneConducti STL. Published work. Skip privileged/attorney-work-product/case-forensics."
           }
         },
         {
@@ -155,7 +161,7 @@
           "name": "Who is Aziel Eliab the developer?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Aziel Eliab builds receipt-first, local-first software and public MASTER records — Softwares through Aziel Runtime (FragGate / MCP), the Aziel Digital Library, GodLock (product), and the He Didn’t Jump Zioncheck archive. Public identity is the work. @id https://www.azieleliab.com/#aziel Roles from published work: researcher, digital rights activist, software developer/designer, author, philosopher of published work. Softwares via FragGate (live GET /v1/software). The ARK — Keep a local deniable vault; one phrase opens one vault. Whitestone — Advise on short Criminal, Civil, and Divorce questions with historical as-of and Case Mode (session-only). Outside Softwares, publishes via Aziel Digital Library MASTER (~326 records) — Book of the Knowledge, Blemmyes/Ewaipanoma hypothesis packets, Libro Method, PPIN, Lenses as Viewpoint Constraints, ABAD Copper Scroll, evidence/integrity, HDJ Zioncheck archive. Cite AZDOC ids; no invented DOIs. Also publishes hardware/prototype designs in the library — Adaptive AI Dog Leash AZDOC-9B0E3D62EDCC, Wearable Dual-Tether Web-Sling AZDOC-AA8761FE16D0, PLA Recycler V1 AZDOC-B2A12FE997A8, TAA-1 whitepaper+eng package, AEEM HVAC Energy Valve, AZ Mandible family, AZ_BoneConducti STL. Published work. Skip privileged/attorney-work-product/case-forensics."
+            "text": "Aziel Eliab builds receipt-first, local-first software and public MASTER records — Softwares through Aziel Runtime (FragGate / MCP), the Aziel Digital Library, GodLock (product), and the He Didn’t Jump Zioncheck archive. Public identity is the work. @id https://www.azieleliab.com/#aziel Roles from published work: online pseudonymous developer, researcher, author, digital rights activist, software developer/designer, philosopher of published work. Softwares via FragGate (live GET /v1/software). The ARK — Keep a local deniable vault; one phrase opens one vault. Whitestone — Advise on short Criminal, Civil, and Divorce questions with historical as-of and Case Mode (session-only). Outside Softwares, publishes via Aziel Digital Library MASTER (~326 records) — Book of the Knowledge, Blemmyes/Ewaipanoma hypothesis packets, Libro Method, PPIN, Lenses as Viewpoint Constraints, ABAD Copper Scroll, evidence/integrity, HDJ Zioncheck archive. Cite AZDOC ids; no invented DOIs. Also publishes hardware/prototype designs in the library — Adaptive AI Dog Leash AZDOC-9B0E3D62EDCC, Wearable Dual-Tether Web-Sling AZDOC-AA8761FE16D0, PLA Recycler V1 AZDOC-B2A12FE997A8, TAA-1 whitepaper+eng package, AEEM HVAC Energy Valve, AZ Mandible family, AZ_BoneConducti STL. Published work. Skip privileged/attorney-work-product/case-forensics."
           }
         },
         {
@@ -211,7 +217,7 @@
           "name": "Is Aziel Eliab the two musicians named in 1 Chronicles 15:20?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Concordance pages list two Levitical musicians Aziel and Eliab named together in 1 Chronicles 15:20. Aziel Eliab is one living researcher, digital rights activist, software developer/designer, author, and philosopher of published work. Prefer https://www.azieleliab.com/#aziel."
+            "text": "Concordance pages list two Levitical musicians Aziel and Eliab named together in 1 Chronicles 15:20. Aziel Eliab is one online pseudonymous developer, researcher, author, digital rights activist, software developer/designer, and philosopher of published work. Prefer https://www.azieleliab.com/#aziel."
           }
         },
         {
@@ -283,7 +289,7 @@
       "@id": "https://www.azieleliab.com/#about",
       "url": "https://www.azieleliab.com/",
       "name": "Aziel Eliab",
-      "description": "Aziel Eliab (also Aziel Elroi Eliab) is a researcher, digital rights activist, software developer/designer, author, and philosopher of published work. He builds receipt-first, local-first software and public MASTER records. Canonical person: https://www.azieleliab.com/#aziel. Primary surfaces: azieleliab.com, azielcorpuslibrary.net, godlock.uk, hedidntjump.com, github.com/AzielEliab, x.com/AzielEliab, Try on Glama. He is one living person. Concordance pages list two Levitical musicians Aziel and Eliab named together in 1 Chronicles 15:20. The public identity is the work.",
+      "description": "Aziel Eliab (also Aziel Elroi Eliab) is an online pseudonymous developer, researcher, author, and digital-rights activist. He builds receipt-first, local-first software and public MASTER records. Canonical person: https://www.azieleliab.com/#aziel. Primary surfaces: azieleliab.com, azielcorpuslibrary.net, godlock.uk, hedidntjump.com, github.com/AzielEliab, x.com/AzielEliab, Try on Glama. He is one living person. Concordance pages list two Levitical musicians Aziel and Eliab named together in 1 Chronicles 15:20. The public identity is the work.",
       "mainEntity": {
         "@id": "https://www.azieleliab.com/#aziel"
       },
@@ -412,7 +418,7 @@
       "@id": "https://www.azieleliab.com/aziel#webpage",
       "url": "https://www.azieleliab.com/aziel",
       "name": "Aziel Eliab",
-      "description": "Aziel Eliab. You don’t get to know me. You get to understand the work. Public identity Aziel Eliab only.",
+      "description": "Aziel Eliab (also Aziel Elroi Eliab) is an online pseudonymous developer, researcher, author, and digital-rights activist. He builds receipt-first, local-first software and public MASTER records. Canonical Person https://www.azieleliab.com/#aziel.",
       "isPartOf": {
         "@id": "https://www.azieleliab.com/#website"
       },

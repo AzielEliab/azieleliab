@@ -102,7 +102,7 @@ describe("human help addendum", () => {
 
   it("defines Aziel Eliab by the work, with Softwares / receipts / donate / hubs", () => {
     const help = helpTxt();
-    assert.ok(help.includes("Aziel Eliab is a living researcher"));
+    assert.ok(help.includes("online pseudonymous developer, researcher, author, and digital-rights activist"));
     assert.ok(help.includes(PERSON_ID));
     assert.ok(help.includes("Softwares via FragGate"));
     assert.ok(help.includes(CANON_ORIGIN + "/software"));
