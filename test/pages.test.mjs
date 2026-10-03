@@ -3940,14 +3940,14 @@ describe("film entry", () => {
 });
 
 describe("Comics tab", () => {
-  it("puts Comics on the spine and plays five films oldest first at /comics", async () => {
+  it("puts Comics on the spine and plays six films oldest first at /comics", async () => {
     assert.equal(COMICS_PATH, "/comics");
     assert.equal(COMICS_HREF, CANON_ORIGIN + "/comics");
     assert.equal(COMICS_TITLE, "Comics");
-    assert.equal(COMICS_DESCRIPTION, "Five short films, oldest first.");
+    assert.equal(COMICS_DESCRIPTION, "Six short films, oldest first.");
     assert.deepEqual(
       COMICS.map((film) => film.title),
-      ["The Aziel-Runtime", "Aziel Runtime", "The Field", "The Receipts", "THE PSYOP"],
+      ["The Aziel-Runtime", "Aziel Runtime", "The Field", "The Receipts", "THE PSYOP", "Aziel Boards the Plane"],
     );
     assert.equal(SOFTWARE.length, 42);
     assert.equal(CATALOG_SLUGS.length, 42);
@@ -3965,6 +3965,8 @@ describe("Comics tab", () => {
     assert.ok(!theaterBody.includes("/comics/the-field.mp4"));
     assert.ok(!theaterBody.includes("/comics/the-psyop.mp4"));
     assert.ok(!theaterBody.includes("THE PSYOP"));
+    assert.ok(!theaterBody.includes("/comics/aziel-boards-the-plane.mp4"));
+    assert.ok(!theaterBody.includes("Aziel Boards the Plane"));
     assert.ok(!theaterBody.includes("The Record"));
 
     for (const path of ["/comics", "/comics/"]) {
@@ -4022,10 +4024,10 @@ describe("Comics tab", () => {
     assert.ok(ai.includes("Allow: /comics"));
     assert.ok(map.includes("<loc>" + COMICS_HREF + "</loc>"));
     assert.ok(llmsTxt().includes(COMICS_HREF));
-    assert.ok(llmsTxt().includes("five short films, oldest first"));
-    assert.ok(ai.includes("five short films, oldest first"));
-    assert.ok(!llmsTxt().includes("four short films"));
-    assert.ok(!ai.includes("four short films"));
+    assert.ok(llmsTxt().includes("six short films, oldest first"));
+    assert.ok(ai.includes("six short films, oldest first"));
+    assert.ok(!llmsTxt().includes("five short films"));
+    assert.ok(!ai.includes("five short films"));
 
     for (const film of COMICS) {
       const asset = await fetchPath(film.src, { method: "HEAD" });
