@@ -28,9 +28,11 @@ import {
   PERSON_ID,
   PERSON_SAME_AS,
   RUNTIME_ID,
+  SOFTWARE,
   TAB_PAGES,
   WHO_HREF,
 } from "../src/copy.js";
+import { loadLiveSoftware } from "../src/liveCatalog.js";
 import {
   CONCORDANCE_FAQ_ANSWER,
   CONCORDANCE_FAQ_NAME,
@@ -87,6 +89,28 @@ import {
 } from "../src/identity.js";
 
 const read = (rel) => readFileSync(new URL("../" + rel, import.meta.url), "utf8");
+
+/** Honest one_lines from live GET /v1/software. softwarePurposeLines emits these on graph and who-is. */
+const HONEST_PURPOSE = {
+  AZAI: "Run a Lamb Lens check (Service → Clarity → Peace) or the adaptive AZAI Guide.",
+  AZChat:
+    "Join a room from the all-rooms list, where a hosted room appears, and a private room requires a passphrase. The product mesh hop starts off.",
+  "Aziel Digital Library":
+    "Search the public library with Ask Jeeves suite help and download azcorpus + azlibrary designs.",
+  AZNet:
+    "Check hash continuity on the Cap-7 and .aziel name plane. Track 2 packet reachability stays NOT-READY (STANDS-until-demonstrated) in failover order LAN, Wi-Fi, Bluetooth, RF, photon light flashes.",
+  MirageGrid:
+    "Assign a short-lived session node and cite Cap-7 mesh-name metadata from a factory that is not a public ICANN registrar. Cap-7 geo, sticky session, and land rotation are LIVE on the Cap-7 plane, not a public egress IP, not a residential IP, and not AZVPN.",
+  VibeLock:
+    "Assess AI deepfake risk in mp4, mp3, and other audio and video. Physics and related signals are heuristic. Linguistics is experimental. Vibration is measured only with a body-coupled track.",
+};
+
+function softwareWithHonestPurpose(software = SOFTWARE) {
+  return software.map((item) => {
+    const one_line = HONEST_PURPOSE[item.name];
+    return one_line ? { ...item, one_line } : item;
+  });
+}
 
 async function fetchPath(path) {
   return worker.fetch(new Request("https://www.azieleliab.com" + path), {});
@@ -224,7 +248,9 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     assert.equal(res.status, 200);
     assert.match(contentType(res), /application\/ld\+json/);
     const doc = JSON.parse(await res.text());
-    assert.deepEqual(doc, graphJsonLd());
+    const live = await loadLiveSoftware();
+    const honest = softwareWithHonestPurpose(live.software);
+    assert.deepEqual(doc, graphJsonLd(honest));
     const types = doc["@graph"].map((n) => n["@type"]);
     assert.ok(types.includes("Person"));
     assert.equal(doc["@graph"].filter((n) => n["@type"] === "Person").length, 1);
@@ -309,6 +335,9 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     assert.ok(softwareFaq.acceptedAnswer.text.includes(WHAT_HE_DOES_SOFTWARES));
     assert.ok(softwareFaq.acceptedAnswer.text.includes("The ARK"));
     assert.ok(softwareFaq.acceptedAnswer.text.includes("Inspect the same event on time, change, graph, and place axes at once"));
+    for (const [name, one] of Object.entries(HONEST_PURPOSE)) {
+      assert.ok(softwareFaq.acceptedAnswer.text.includes(name + " — " + one), name);
+    }
     assert.doesNotMatch(softwareFaq.acceptedAnswer.text, /never invent/i);
     assert.ok(answers.includes(SOFTWARE_DEVELOPER_ANSWER));
     assert.ok(answers.includes(CONCORDANCE_FAQ_ANSWER));
@@ -370,7 +399,9 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     assert.equal(res.status, 200);
     assert.match(contentType(res), /text\/plain/);
     const body = await res.text();
-    assert.equal(body, whoIsTxt());
+    const live = await loadLiveSoftware();
+    const honest = softwareWithHonestPurpose(live.software);
+    assert.equal(body, whoIsTxt(null, honest));
     const alias = await fetchPath("/who-is");
     assert.equal(alias.status, 200);
     assert.match(contentType(alias), /text\/plain/);
@@ -389,6 +420,9 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     assert.ok(body.includes("## Softwares"));
     assert.ok(body.includes(WHAT_HE_DOES_SOFTWARES));
     assert.ok(body.includes(SOFTWARES_ADDENDUM));
+    for (const [name, one] of Object.entries(HONEST_PURPOSE)) {
+      assert.ok(body.includes("- " + name + " — " + one), name);
+    }
     assert.ok(body.includes("Keep a local deniable vault"));
     assert.ok(body.includes("Whitestone — Advise on short Criminal, Civil, and Divorce questions"));
     assert.ok(body.includes(SPECTRALLOCK_SOFTWARES_LINE));
