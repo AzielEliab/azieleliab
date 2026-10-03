@@ -994,6 +994,7 @@ const COMICS_CSS = `
   font-size:1.45rem;font-weight:600;letter-spacing:-.02em;text-transform:none;
   color:var(--ink);margin:0 0 12px;
 }
+.reel-line{margin:0 0 12px;color:var(--ink-soft)}
 .reels video{
   width:100%;aspect-ratio:16/9;background:#000;border-radius:12px;display:block;
   border:1px solid var(--line);
@@ -1003,11 +1004,14 @@ const COMICS_CSS = `
 
 export function comicsHtml() {
   const reels = COMICS.map((film) => {
+    const line = film.line ? '<p class="reel-line">' + esc(film.line) + "</p>" : "";
+    const x = film.x ? '<p class="reel-x">' + a(film.x, "X") + "</p>" : "";
     return (
       '<li class="card">' +
       "<h2>" +
       esc(film.title) +
       "</h2>" +
+      line +
       '<video controls playsinline preload="metadata" poster="' +
       attr(film.poster) +
       '" aria-label="' +
@@ -1017,9 +1021,8 @@ export function comicsHtml() {
       attr(film.src) +
       '" type="video/mp4">' +
       "</video>" +
-      '<p class="reel-x">' +
-      a(film.x, "X") +
-      "</p></li>"
+      x +
+      "</li>"
     );
   }).join("");
   return `<!doctype html>

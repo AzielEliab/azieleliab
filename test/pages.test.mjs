@@ -3940,13 +3940,14 @@ describe("film entry", () => {
 });
 
 describe("Comics tab", () => {
-  it("puts Comics on the spine and plays four films oldest first at /comics", async () => {
+  it("puts Comics on the spine and plays five films oldest first at /comics", async () => {
     assert.equal(COMICS_PATH, "/comics");
     assert.equal(COMICS_HREF, CANON_ORIGIN + "/comics");
     assert.equal(COMICS_TITLE, "Comics");
+    assert.equal(COMICS_DESCRIPTION, "Five short films, oldest first.");
     assert.deepEqual(
       COMICS.map((film) => film.title),
-      ["The Aziel-Runtime", "Aziel Runtime", "The Field", "The Receipts"],
+      ["The Aziel-Runtime", "Aziel Runtime", "The Field", "The Receipts", "THE PSYOP"],
     );
     assert.equal(SOFTWARE.length, 42);
     assert.equal(CATALOG_SLUGS.length, 42);
@@ -3962,6 +3963,8 @@ describe("Comics tab", () => {
     assert.ok(theaterBody.includes('class="theater"'));
     assert.ok(!theaterBody.includes('aria-label="Spine"'));
     assert.ok(!theaterBody.includes("/comics/the-field.mp4"));
+    assert.ok(!theaterBody.includes("/comics/the-psyop.mp4"));
+    assert.ok(!theaterBody.includes("THE PSYOP"));
     assert.ok(!theaterBody.includes("The Record"));
 
     for (const path of ["/comics", "/comics/"]) {
@@ -3983,8 +3986,22 @@ describe("Comics tab", () => {
         at = titleAt;
         assert.ok(body.includes('poster="' + film.poster + '"'), film.poster);
         assert.ok(body.includes('src="' + film.src + '"'), film.src);
-        assert.ok(body.includes('href="' + film.x + '"'), film.x);
         assert.ok(body.includes('aria-label="' + film.title + '"'), film.title);
+        const liEnd = body.indexOf("</li>", titleAt);
+        const card = body.slice(titleAt, liEnd);
+        if (film.line) {
+          const lineAt = card.indexOf(film.line);
+          const videoAt = card.indexOf("<video");
+          assert.ok(lineAt > 0 && lineAt < videoAt, film.id);
+        } else {
+          assert.equal(card.includes('class="reel-line"'), false, film.id);
+        }
+        if (film.x) {
+          assert.ok(card.includes('href="' + film.x + '"'), film.x);
+        } else {
+          assert.equal(card.includes('class="reel-x"'), false, film.id);
+          assert.equal(card.includes("href="), false, film.id);
+        }
       }
     }
 
@@ -4005,6 +4022,10 @@ describe("Comics tab", () => {
     assert.ok(ai.includes("Allow: /comics"));
     assert.ok(map.includes("<loc>" + COMICS_HREF + "</loc>"));
     assert.ok(llmsTxt().includes(COMICS_HREF));
+    assert.ok(llmsTxt().includes("five short films, oldest first"));
+    assert.ok(ai.includes("five short films, oldest first"));
+    assert.ok(!llmsTxt().includes("four short films"));
+    assert.ok(!ai.includes("four short films"));
 
     for (const film of COMICS) {
       const asset = await fetchPath(film.src, { method: "HEAD" });

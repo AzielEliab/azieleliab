@@ -546,10 +546,11 @@ export const RECEIPTS_DESCRIPTION =
 export const COMICS_PATH = "/comics";
 export const COMICS_HREF = CANON_ORIGIN + COMICS_PATH;
 export const COMICS_TITLE = "Comics";
-export const COMICS_DESCRIPTION = "Four short films, oldest first.";
+export const COMICS_DESCRIPTION = "Five short films, oldest first.";
 /**
  * Comics release order, oldest first.
- * Titles are the film names. x is the public status URL for that film.
+ * Titles are the film names. x is the public status URL when that film has a post.
+ * line is an optional sentence under the title. Omit both when absent.
  */
 export const COMICS = [
   {
@@ -579,6 +580,13 @@ export const COMICS = [
     src: "/comics/the-receipts.mp4",
     poster: "/comics/the-receipts.jpg",
     x: "https://x.com/AzielEliab/status/2105369707427893288",
+  },
+  {
+    id: "the-psyop",
+    title: "THE PSYOP",
+    src: "/comics/the-psyop.mp4",
+    poster: "/comics/the-psyop.jpg",
+    line: "Don't cut. Keep rolling. It's just a movie. ...probably.",
   },
 ];
 export const AZIEL_PATH = "/aziel";
