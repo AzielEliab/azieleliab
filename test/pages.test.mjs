@@ -1,6 +1,6 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import worker, { apexRedirect, donateCacheBustLocation, handleRequest } from "../src/index.js";
+import worker, { apexRedirect, donateCacheBustLocation, handleRequest, httpsRedirect } from "../src/index.js";
 import { comicsHtml, donateHtml, embryoLockHtml, ecosystemHtml, hashRedirectScript, notFoundHtml, pageHtml, receiptsHtml, sectionPageHtml, spineNav, whoHtml } from "../src/page.js";
 import { incrementViews, memoryKv } from "../src/views.js";
 import { CATALOG_KV_KEY, DONATE_HTML_CACHE, HTML_CACHE, MESH_CACHE_URL, MESH_HTTP_CACHE, MESH_TTL_SEC, SEO_CACHE, cacheRequest, memoryCache } from "../src/edgeCache.js";
@@ -1959,6 +1959,121 @@ describe("runtime proxy", () => {
     );
     assert.equal(routed.status, 200);
   });
+
+  it("republishes the runtime OpenAPI, MCP card, and longer llms index at root discovery paths", async () => {
+    const spec = {
+      openapi: "3.1.0",
+      info: { title: "Aziel Runtime", version: "2.0.0-rc1" },
+      servers: [{ url: RUNTIME_ORIGIN }],
+      paths: { "/v1/health": { get: {} } },
+    };
+    const card = {
+      name: "aziel-runtime",
+      url: RUNTIME_ORIGIN + "/mcp",
+      endpoint: "POST /mcp",
+      remotes: [{ type: "streamable-http", url: RUNTIME_ORIGIN + "/mcp" }],
+      tools: { names: ["fraggate_call"] },
+    };
+    const runtimeLlms = "# Aziel Runtime\n\nlonger machine index\n/v1/mesh/status\n";
+    const env = runtimeEnv(async (req) => {
+      const u = new URL(req.url);
+      if (u.pathname === "/openapi.json") {
+        return new Response(JSON.stringify(spec), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        });
+      }
+      if (u.pathname === "/mcp.json" || u.pathname === "/.well-known/mcp.json") {
+        return new Response(JSON.stringify(card), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        });
+      }
+      if (u.pathname === "/llms.txt") {
+        return new Response(runtimeLlms, {
+          status: 200,
+          headers: { "Content-Type": "text/plain; charset=utf-8" },
+        });
+      }
+      return new Response(JSON.stringify({ error: "not found" }), { status: 404 });
+    });
+
+    const openapi = await fetchPath("/openapi.json", {}, env);
+    assert.equal(openapi.status, 200);
+    assert.match(openapi.headers.get("content-type"), /json/);
+    assert.equal(openapi.headers.get("Content-Signal"), "search=yes, ai-input=yes, ai-train=yes");
+    const oj = await openapi.json();
+    assert.equal(oj.openapi, "3.1.0");
+    assert.equal(oj.info.title, "Aziel Runtime");
+    assert.equal(oj.servers[0].url, RUNTIME_LOCAL);
+    const viaRuntime = await (await fetchPath("/runtime/openapi.json", {}, env)).json();
+    assert.equal(viaRuntime.info.title, "Aziel Runtime");
+    assert.equal(viaRuntime.servers[0].url, RUNTIME_LOCAL);
+
+    const mcp = await fetchPath("/mcp.json", {}, env);
+    const well = await fetchPath("/.well-known/mcp.json", {}, env);
+    assert.equal(mcp.status, 200);
+    assert.equal(well.status, 200);
+    const mcpDoc = await mcp.json();
+    const wellDoc = await well.json();
+    assert.equal(mcpDoc.url, RUNTIME_LOCAL + "/mcp");
+    assert.equal(wellDoc.remotes[0].url, RUNTIME_LOCAL + "/mcp");
+    assert.equal(mcpDoc.endpoint, "POST /mcp");
+    assert.deepEqual(mcpDoc.tools.names, ["fraggate_call"]);
+    assert.deepEqual(wellDoc.tools.names, mcpDoc.tools.names);
+
+    const full = await fetchPath("/llms-full.txt", {}, env);
+    assert.equal(full.status, 200);
+    const fullBody = await full.text();
+    assert.ok(fullBody.startsWith("# Aziel Runtime"));
+    assert.notEqual(fullBody, llmsTxt());
+    assert.equal(fullBody, await (await fetchPath("/runtime/llms.txt", {}, env)).text());
+
+    const posted = await fetchPath("/openapi.json", { method: "POST" }, env);
+    assert.equal(posted.status, 405);
+
+    const map = sitemapXml();
+    for (const href of [
+      CANON_ORIGIN + "/openapi.json",
+      CANON_ORIGIN + "/llms-full.txt",
+      CANON_ORIGIN + "/mcp.json",
+      CANON_ORIGIN + "/.well-known/mcp.json",
+    ]) {
+      assert.equal(map.split("<loc>" + href + "</loc>").length - 1, 1, href);
+    }
+    const robots = robotsTxt();
+    assert.match(robots, /^Allow: \/openapi\.json$/m);
+    assert.match(robots, /^Allow: \/llms-full\.txt$/m);
+    assert.match(robots, /^Allow: \/mcp\.json$/m);
+    assert.match(robots, /^Allow: \/\.well-known\/mcp\.json$/m);
+    assert.doesNotMatch(robots, /Disallow:/);
+    assert.match(robots, /User-agent: GPTBot\nAllow: \//);
+    assert.match(robots, /User-agent: ClaudeBot\nAllow: \//);
+    assert.match(robots, /User-agent: PerplexityBot\nAllow: \//);
+    assert.match(robots, /User-agent: Google-Extended\nAllow: \//);
+    assert.equal(robotsTxt().includes("Content-Signal: search=yes, ai-input=yes, ai-train=yes"), true);
+
+    const cite = citeDoc();
+    assert.equal(cite.person["@type"], "Person");
+    assert.equal(cite.person["@id"], PERSON_ID);
+    assert.deepEqual(cite.person.sameAs, PERSON_SAME_AS);
+    assert.equal(cite.doi, null);
+
+    const home = await fetchPath("/");
+    const homeHtml = await home.text();
+    const visible = homeHtml.split("<body>")[1] || "";
+    assert.ok(homeHtml.includes('href="/openapi.json"'));
+    assert.ok(homeHtml.includes('href="/llms-full.txt"'));
+    assert.ok(!visible.includes("/llms-full.txt"));
+    assert.ok(!visible.includes("/openapi.json"));
+    assert.ok(!visible.includes("1 Chronicles"));
+    const hub = pageHtml();
+    const hubVisible = hub.split("<body>")[1] || "";
+    assert.ok(hub.includes('href="/mcp.json"'));
+    assert.ok(!hubVisible.includes('href="/mcp.json"'));
+    assert.ok(!hubVisible.includes('href="/llms-full.txt"'));
+    assert.ok(!hubVisible.includes("1 Chronicles"));
+  });
 });
 
 describe("worker routing", () => {
@@ -2000,6 +2115,23 @@ describe("worker routing", () => {
     const runtimeApex = await handleRequest(new Request("https://azieleliab.com/runtime"));
     assert.equal(runtimeApex.status, 301);
     assert.equal(runtimeApex.headers.get("location"), CANON_ORIGIN + "/runtime");
+  });
+
+  it("301s plaintext http on this host to https www", async () => {
+    const res = await handleRequest(new Request("http://www.azieleliab.com/robots.txt"));
+    assert.equal(res.status, 301);
+    assert.equal(res.headers.get("location"), CANON_ORIGIN + "/robots.txt");
+    assert.equal(res.headers.get("Content-Signal"), "search=yes, ai-input=yes, ai-train=yes");
+    const hinted = await handleRequest(
+      new Request("https://www.azieleliab.com/ai.txt", {
+        headers: { "cf-visitor": '{"scheme":"http"}' },
+      }),
+    );
+    assert.equal(hinted.status, 301);
+    assert.equal(hinted.headers.get("location"), CANON_ORIGIN + "/ai.txt");
+    assert.equal(httpsRedirect(new URL("http://127.0.0.1/llms.txt"), new Request("http://127.0.0.1/llms.txt")), "");
+    const secure = await fetchPath("/robots.txt");
+    assert.equal(secure.status, 200);
   });
 
   it("answers HEAD and rejects POST", async () => {

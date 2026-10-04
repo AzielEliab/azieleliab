@@ -1,5 +1,5 @@
 /** azieleliab.com landing Worker. Author: Aziel Eliab. */
-import { aboutAliasPath, APEX_HOST, AUTHOR, CANON_ORIGIN, COMICS_PATH, DESCRIPTION, isMissionPath, tabPage } from "./copy.js";
+import { aboutAliasPath, APEX_HOST, AUTHOR, CANON_ORIGIN, COMICS_PATH, DESCRIPTION, isMissionPath, tabPage, WWW_HOST } from "./copy.js";
 import {
   DONATE_CACHE_BUST,
   CATALOG_HTTP_CACHE,
@@ -70,6 +70,7 @@ import {
   aiTxt,
   citeDoc,
   CONTENT_SIGNAL,
+  DISCOVERY_ALIASES,
   INDEXNOW_KEY,
   INDEXNOW_KEY_PATH,
   INDEXNOW_WELL_KNOWN_PATH,
@@ -266,12 +267,53 @@ async function meshWithPresence(meshDoc, env, request, touch, ctx) {
   return overlaySitePresence(meshDoc, site);
 }
 
+function inboundHttp(request, url) {
+  if (url.protocol === "http:") return true;
+  if (!request || !request.headers) return false;
+  const forwarded = String(request.headers.get("x-forwarded-proto") || "")
+    .split(",")[0]
+    .trim()
+    .toLowerCase();
+  if (forwarded === "http") return true;
+  const visitor = request.headers.get("cf-visitor");
+  if (!visitor) return false;
+  try {
+    const parsed = JSON.parse(visitor);
+    return Boolean(parsed && String(parsed.scheme || "").toLowerCase() === "http");
+  } catch {
+    return false;
+  }
+}
+
+/** HTTPS for this host when the client (or the edge) still used HTTP. */
+export function httpsRedirect(url, request) {
+  const host = String(url.hostname || "").toLowerCase();
+  if (host !== WWW_HOST && host !== APEX_HOST) return "";
+  if (!inboundHttp(request, url)) return "";
+  return CANON_ORIGIN + url.pathname + url.search;
+}
+
 export function apexRedirect(url) {
   const host = String(url.hostname || "").toLowerCase();
   if (host === APEX_HOST) {
     return CANON_ORIGIN + url.pathname + url.search;
   }
   return "";
+}
+
+async function discoveryAliasResponse(request, url, path, env, ctx) {
+  const destPath = DISCOVERY_ALIASES[path];
+  if (!destPath) return null;
+  const rewritten = new URL(url.href);
+  rewritten.pathname = destPath;
+  const runtime = await handleRuntimeRoot(request, rewritten, env, ctx);
+  if (!runtime) return null;
+  const headers = new Headers(runtime.headers);
+  headers.set("Content-Signal", CONTENT_SIGNAL);
+  if (request.method === "HEAD") {
+    return new Response(null, { status: runtime.status, statusText: runtime.statusText, headers });
+  }
+  return new Response(runtime.body, { status: runtime.status, statusText: runtime.statusText, headers });
 }
 
 export function routePath(pathname) {
@@ -283,6 +325,17 @@ export function routePath(pathname) {
 
 export async function handleRequest(request, env = {}, ctx) {
   const url = new URL(request.url);
+  const toHttps = httpsRedirect(url, request);
+  if (toHttps) {
+    return new Response(null, {
+      status: 301,
+      headers: {
+        Location: toHttps,
+        "Content-Signal": CONTENT_SIGNAL,
+        ...SECURITY,
+      },
+    });
+  }
   const toWww = apexRedirect(url);
   if (toWww) {
     return Response.redirect(toWww, 301);
@@ -333,6 +386,11 @@ export async function handleRequest(request, env = {}, ctx) {
       status: 405,
       headers: { allow: allowWrite ? "GET, HEAD, POST, OPTIONS" : "GET, HEAD", ...SECURITY },
     });
+  }
+
+  if (DISCOVERY_ALIASES[path]) {
+    const aliased = await discoveryAliasResponse(request, url, path, env, ctx);
+    if (aliased) return aliased;
   }
 
   const qrPng = donateQrResponse(url.pathname, SECURITY);

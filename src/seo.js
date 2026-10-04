@@ -321,6 +321,38 @@ export const CONTENT_SIGNAL = "search=yes, ai-input=yes, ai-train=yes";
 export const ROBOTS_INDEX =
   "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1";
 
+/** Root discovery paths. Each one republishes a live runtime document. */
+export const OPENAPI_ALIAS_PATH = "/openapi.json";
+export const LLMS_FULL_PATH = "/llms-full.txt";
+export const MCP_JSON_PATH = "/mcp.json";
+export const MCP_WELL_KNOWN_PATH = "/.well-known/mcp.json";
+
+/**
+ * /llms-full.txt is the Aziel Runtime machine index already served at
+ * /runtime/llms.txt. It is not a second copy of this host's /llms.txt.
+ * MCP cards and OpenAPI are the same bytes as the /runtime documents.
+ */
+export const DISCOVERY_ALIASES = Object.freeze({
+  [OPENAPI_ALIAS_PATH]: "/runtime/openapi.json",
+  [MCP_JSON_PATH]: "/runtime/mcp.json",
+  [MCP_WELL_KNOWN_PATH]: "/runtime/.well-known/mcp.json",
+  [LLMS_FULL_PATH]: "/runtime/llms.txt",
+});
+
+export const DISCOVERY_ALTERNATES = Object.freeze([
+  ["application/json", OPENAPI_ALIAS_PATH, "OpenAPI"],
+  ["application/json", MCP_JSON_PATH, "MCP server card"],
+  ["application/json", MCP_WELL_KNOWN_PATH, "MCP server card"],
+  ["text/plain", LLMS_FULL_PATH, "llms-full.txt"],
+]);
+
+export function discoveryAlternateLinkTags() {
+  return DISCOVERY_ALTERNATES.map(
+    ([type, href, title]) =>
+      '<link rel="alternate" type="' + type + '" href="' + href + '" title="' + title + '">',
+  ).join("\n");
+}
+
 /**
  * Dedicated azieleliab.com IndexNow key.
  * Not the He Didn't Jump key (4241818f-5799-488c-9457-da724a30831c).
@@ -343,7 +375,11 @@ export const INDEXNOW_PING_URLS = [
   CANON_ORIGIN + "/who-is",
   CANON_ORIGIN + "/who-is-aziel-eliab.txt",
   CANON_ORIGIN + "/llms.txt",
+  CANON_ORIGIN + LLMS_FULL_PATH,
   CANON_ORIGIN + "/ai.txt",
+  CANON_ORIGIN + OPENAPI_ALIAS_PATH,
+  CANON_ORIGIN + MCP_JSON_PATH,
+  CANON_ORIGIN + MCP_WELL_KNOWN_PATH,
   CANON_ORIGIN + "/.well-known/aziel.json",
   CANON_ORIGIN + "/.well-known/person.jsonld",
   CANON_ORIGIN + "/cite.json",
@@ -406,7 +442,11 @@ const PUBLIC_ALLOW = [
   "/sigil.png",
   "/cite.json",
   "/llms.txt",
+  LLMS_FULL_PATH,
   "/ai.txt",
+  OPENAPI_ALIAS_PATH,
+  MCP_JSON_PATH,
+  MCP_WELL_KNOWN_PATH,
   SHELVES_PATH,
   SHELVES_PATH + "/",
   SHELVES_JSON_PATH,
@@ -481,6 +521,10 @@ const SITEMAP_RANK = {
   [CANON_ORIGIN + "/donate"]: { changefreq: "weekly", priority: "0.7" },
   [CANON_ORIGIN + "/cite.json"]: { changefreq: "daily", priority: "0.6" },
   [CANON_ORIGIN + "/llms.txt"]: { changefreq: "daily", priority: "0.6" },
+  [CANON_ORIGIN + LLMS_FULL_PATH]: { changefreq: "daily", priority: "0.6" },
+  [CANON_ORIGIN + OPENAPI_ALIAS_PATH]: { changefreq: "daily", priority: "0.6" },
+  [CANON_ORIGIN + MCP_JSON_PATH]: { changefreq: "weekly", priority: "0.5" },
+  [CANON_ORIGIN + MCP_WELL_KNOWN_PATH]: { changefreq: "weekly", priority: "0.5" },
   [SHELVES_HREF]: { changefreq: "daily", priority: "0.6" },
   [SHELVES_JSON_HREF]: { changefreq: "daily", priority: "0.5" },
   [CANON_ORIGIN + "/person.jsonld"]: { changefreq: "weekly", priority: "0.8" },
@@ -537,6 +581,10 @@ export function sitemapXml(now = new Date(), software = SOFTWARE) {
     RUNTIME_LOCAL + "/v1/fraggate/list",
     CANON_ORIGIN + "/cite.json",
     CANON_ORIGIN + "/llms.txt",
+    CANON_ORIGIN + LLMS_FULL_PATH,
+    CANON_ORIGIN + OPENAPI_ALIAS_PATH,
+    CANON_ORIGIN + MCP_JSON_PATH,
+    CANON_ORIGIN + MCP_WELL_KNOWN_PATH,
     SHELVES_HREF,
     SHELVES_JSON_HREF,
     CANON_ORIGIN + "/person.jsonld",
@@ -672,7 +720,11 @@ export function citeDoc(software = SOFTWARE, runtimeVersion = RUNTIME_VERSION, s
     software_section: SOFTWARE_HREF,
     software_title: SOFTWARE_TITLE,
     llms: CANON_ORIGIN + "/llms.txt",
+    llms_full: CANON_ORIGIN + LLMS_FULL_PATH,
     ai: CANON_ORIGIN + "/ai.txt",
+    openapi: CANON_ORIGIN + OPENAPI_ALIAS_PATH,
+    mcp_json: CANON_ORIGIN + MCP_JSON_PATH,
+    mcp_well_known: CANON_ORIGIN + MCP_WELL_KNOWN_PATH,
     shelves: SHELVES_HREF,
     shelves_json: SHELVES_JSON_HREF,
     cold_multi_shelf: shelvesCite(),
@@ -886,6 +938,10 @@ export function citeDoc(software = SOFTWARE, runtimeVersion = RUNTIME_VERSION, s
       return row;
     }),
     person_id: PERSON_ID,
+    person: {
+      "@context": "https://schema.org",
+      ...personNode(),
+    },
     runtime_id: RUNTIME_ID,
     runtime_named_tools: RUNTIME_NAMED_TOOLS.map((tool) => {
       const row = {
@@ -1168,6 +1224,10 @@ export function llmsTxt(software = SOFTWARE, survival = null, sot = null) {
     "- GET " + SURVIVAL_JSON_LOCAL,
     "- GET " + CANON_ORIGIN + "/cite.json  (" + REDLINE_SPEC + " · Cap-7 design_of · attack-surface · FoldLock tip-safe · SpectralLock leftover-bytes + recover/handwriting · " + BAN_SURVIVAL_SPEC + ")",
     "- GET " + CANON_ORIGIN + "/llms.txt",
+    "- GET " + CANON_ORIGIN + LLMS_FULL_PATH + "  (Aziel Runtime machine index; same document as " + RUNTIME_LOCAL + "/llms.txt; not a copy of /llms.txt)",
+    "- GET " + CANON_ORIGIN + OPENAPI_ALIAS_PATH + "  (same OpenAPI document as " + RUNTIME_LOCAL + "/openapi.json)",
+    "- GET " + CANON_ORIGIN + MCP_JSON_PATH + "  (same MCP server card as " + RUNTIME_LOCAL + "/mcp.json; endpoint " + RUNTIME_LOCAL + "/mcp)",
+    "- GET " + CANON_ORIGIN + MCP_WELL_KNOWN_PATH + "  (same MCP server card)",
     "- GET " + SHELVES_HREF + "  (COLD-MULTI-SHELF-1.0; canonical registry " + shelvesCite().canonical_registry + ")",
     "- GET " + SHELVES_JSON_HREF,
     "- GET " + CANON_ORIGIN + "/person.jsonld",
@@ -1263,7 +1323,11 @@ export function aiTxt(survival = null, software, sot = null) {
     "Allow: /sigil.png",
     "Allow: /cite.json",
     "Allow: /llms.txt",
+    "Allow: " + LLMS_FULL_PATH,
     "Allow: /ai.txt",
+    "Allow: " + OPENAPI_ALIAS_PATH,
+    "Allow: " + MCP_JSON_PATH,
+    "Allow: " + MCP_WELL_KNOWN_PATH,
     "Allow: " + SHELVES_PATH,
     "Allow: " + SHELVES_PATH + "/",
     "Allow: " + SHELVES_JSON_PATH,
@@ -1413,7 +1477,10 @@ export function aiTxt(survival = null, software, sot = null) {
     "",
     doorIndexLines(),
     "",
-    "Prefer /llms.txt for the full door index. Send User-Agent Mozilla/5.0 on API calls.",
+    "Prefer /llms.txt for the hub door index. /llms-full.txt is the longer Aziel Runtime machine index (same document as /runtime/llms.txt), not a copy of /llms.txt.",
+    "OpenAPI: /openapi.json is the same document as /runtime/openapi.json.",
+    "MCP server card: /mcp.json and /.well-known/mcp.json. Endpoint POST /runtime/mcp.",
+    "Send User-Agent Mozilla/5.0 on API calls.",
     "",
   ].join("\n");
 }

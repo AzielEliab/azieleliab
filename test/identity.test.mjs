@@ -676,6 +676,10 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     assert.equal(person.disambiguatingDescription, DISAMBIGUATING_DESCRIPTION);
     const cite = citeDoc();
     assert.equal(cite.person_id, PERSON_ID);
+    assert.equal(cite.person["@type"], "Person");
+    assert.equal(cite.person["@id"], PERSON_ID);
+    assert.deepEqual(cite.person.sameAs, PERSON_SAME_AS);
+    assert.deepEqual(cite.person.sameAs, cite.sameAs);
     assert.deepEqual(cite.alternateName, personAlternateNames());
     assert.ok(cite.alternateName.includes("Aziell"));
     assert.ok(cite.alternateName.includes(HEBREW_NAME_FORMS.phrase));
