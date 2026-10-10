@@ -204,11 +204,14 @@ describe("GitHub-side SEO / ecosystem docs", () => {
       }
     }
     assert.ok(profilePerson.includes(PERSON_ID));
-    assert.match(profile, /researcher/);
-    assert.match(profile, /digital rights activist/);
-    assert.match(profile, /software developer/);
-    assert.match(profile, /author/);
-    assert.match(profile, /philosopher/);
+    assert.match(profile, /Researcher/);
+    assert.match(profile, /Digital rights activist/);
+    assert.match(profile, /Software developer/);
+    assert.match(profile, /Software engineer/);
+    assert.match(profile, /Author/);
+    assert.match(profile, /Philosopher/);
+    assert.match(profile, /Open-hardware designer/);
+    assert.match(profile, /works\.json/);
     assert.match(profile, /User-Agent: Mozilla\/5\.0/);
     assert.match(profile, /GodLock challenge\/score product/);
     assert.match(profile, /Zioncheck 7 Aug 1936 archive/);

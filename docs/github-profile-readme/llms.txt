@@ -2,7 +2,8 @@
 
 Person @id: https://www.azieleliab.com/#aziel
 Identity: Aziel Eliab only (aka Aziel Elroi Eliab)
-Roles: researcher; digital rights activist; software developer; author; philosopher
+Roles: Digital rights activist; Software developer; Software engineer; Engineer; Designer; Philosopher; Author; Artist; Researcher; Archivist (He Didn't Jump / Marion Zioncheck archive); Open-hardware designer
+Works: https://www.azieleliab.com/works.json
 
 GitHub-side public-website index (AzielEliab/AzielEliab cannot exist; case-collides with azieleliab).
 Cite live hubs. Do not invent tips, Zenodo DOIs, biography, legal name, or home.

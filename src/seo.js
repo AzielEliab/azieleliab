@@ -155,10 +155,12 @@ import {
   identityLockBlock,
   personAlternateNames,
   personNode,
+  personOccupations,
   faqPageNode,
   sectionPageNodes,
   siteCoverageLines,
 } from "./identity.js";
+import { machineWorks, WORKS_HREF, worksLlmsBlock } from "./works.js";
 import {
   CITE_DONT_MERGE,
   INGEST_BYTES_HREF,
@@ -336,6 +338,7 @@ export const INDEXNOW_PING_URLS = [
   CANON_ORIGIN + "/",
   CANON_ORIGIN + "/aziel",
   CANON_ORIGIN + "/about",
+  CANON_ORIGIN + "/works.json",
   CANON_ORIGIN + "/person.jsonld",
   CANON_ORIGIN + "/identity.jsonld",
   CANON_ORIGIN + "/graph.jsonld",
@@ -407,6 +410,7 @@ const PUBLIC_ALLOW = [
   "/cite.json",
   "/llms.txt",
   "/ai.txt",
+  "/works.json",
   SHELVES_PATH,
   SHELVES_PATH + "/",
   SHELVES_JSON_PATH,
@@ -483,6 +487,7 @@ const SITEMAP_RANK = {
   [CANON_ORIGIN + "/llms.txt"]: { changefreq: "daily", priority: "0.6" },
   [SHELVES_HREF]: { changefreq: "daily", priority: "0.6" },
   [SHELVES_JSON_HREF]: { changefreq: "daily", priority: "0.5" },
+  [CANON_ORIGIN + "/works.json"]: { changefreq: "weekly", priority: "0.6" },
   [CANON_ORIGIN + "/person.jsonld"]: { changefreq: "weekly", priority: "0.8" },
   [CANON_ORIGIN + "/identity.jsonld"]: { changefreq: "weekly", priority: "0.8" },
   [CANON_ORIGIN + "/graph.jsonld"]: { changefreq: "weekly", priority: "0.8" },
@@ -539,6 +544,7 @@ export function sitemapXml(now = new Date(), software = SOFTWARE) {
     CANON_ORIGIN + "/llms.txt",
     SHELVES_HREF,
     SHELVES_JSON_HREF,
+    CANON_ORIGIN + "/works.json",
     CANON_ORIGIN + "/person.jsonld",
     CANON_ORIGIN + "/identity.jsonld",
     CANON_ORIGIN + "/graph.jsonld",
@@ -740,6 +746,9 @@ export function citeDoc(software = SOFTWARE, runtimeVersion = RUNTIME_VERSION, s
     software_developer_answer: SOFTWARE_DEVELOPER_ANSWER,
     disambiguatingDescription: DISAMBIGUATING_DESCRIPTION,
     job_title: PERSON_JOB_TITLE.slice(),
+    hasOccupation: personOccupations(),
+    works_url: WORKS_HREF,
+    works: machineWorks(),
     site_coverage: SITE_COVERAGE.map((row) => {
       const out = { id: row.id, label: row.label, name: row.name, url: row.url, blurb: row.blurb };
       if (row.also) out.also = row.also.slice();
@@ -886,6 +895,10 @@ export function citeDoc(software = SOFTWARE, runtimeVersion = RUNTIME_VERSION, s
       return row;
     }),
     person_id: PERSON_ID,
+    person: {
+      "@context": "https://schema.org",
+      ...personNode(),
+    },
     runtime_id: RUNTIME_ID,
     runtime_named_tools: RUNTIME_NAMED_TOOLS.map((tool) => {
       const row = {
@@ -1040,6 +1053,8 @@ export function llmsTxt(software = SOFTWARE, survival = null, sot = null) {
     "- " + askJeevesCiteLine(),
     "- sameAs: " + PERSON_SAME_AS.join(" · "),
     "- jobTitle: " + PERSON_JOB_TITLE.join(" | "),
+    "- hasOccupation: " + PERSON_JOB_TITLE.join(" | "),
+    "- Works: " + WORKS_HREF,
     "",
     "## Site coverage",
     "",
@@ -1170,6 +1185,7 @@ export function llmsTxt(software = SOFTWARE, survival = null, sot = null) {
     "- GET " + CANON_ORIGIN + "/llms.txt",
     "- GET " + SHELVES_HREF + "  (COLD-MULTI-SHELF-1.0; canonical registry " + shelvesCite().canonical_registry + ")",
     "- GET " + SHELVES_JSON_HREF,
+    "- GET " + CANON_ORIGIN + "/works.json  (verified works; no Zenodo or doi.org URLs)",
     "- GET " + CANON_ORIGIN + "/person.jsonld",
     "- GET " + CANON_ORIGIN + "/identity.jsonld",
     "- GET " + CANON_ORIGIN + "/graph.jsonld",
@@ -1209,6 +1225,8 @@ export function llmsTxt(software = SOFTWARE, survival = null, sot = null) {
     "HTML GET / increments once for non-bot User-Agents when KV VIEWS is bound.",
     "",
     "Always send User-Agent Mozilla/5.0. Author Aziel Eliab only.",
+    "",
+    worksLlmsBlock().trimEnd(),
     "",
   ].join("\n");
 }
@@ -1267,6 +1285,7 @@ export function aiTxt(survival = null, software, sot = null) {
     "Allow: " + SHELVES_PATH,
     "Allow: " + SHELVES_PATH + "/",
     "Allow: " + SHELVES_JSON_PATH,
+    "Allow: /works.json",
     "Allow: /person.jsonld",
     "Allow: /identity.jsonld",
     "Allow: /graph.jsonld",
@@ -1402,6 +1421,8 @@ export function aiTxt(survival = null, software, sot = null) {
     "Primary author Aziel Eliab. Alternate name / aka: " + AUTHOR_AKA_LIST.join(" | ") + ". Public identity Aziel Eliab only.",
     "- sameAs: " + PERSON_SAME_AS.join(" · "),
     "- jobTitle: " + PERSON_JOB_TITLE.join(" | "),
+    "- hasOccupation: " + PERSON_JOB_TITLE.join(" | "),
+    "- Works: " + WORKS_HREF,
     "",
     "## Site coverage",
     "",
@@ -1470,7 +1491,7 @@ export function jsonLd(software = SOFTWARE, runtimeVersion = RUNTIME_VERSION, so
   return {
     "@context": "https://schema.org",
     "@graph": [
-      personNode(),
+      personNode({ works: false }),
       {
         "@type": "WebSite",
         "@id": siteId,

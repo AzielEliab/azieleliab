@@ -50,6 +50,7 @@ import { SURVIVAL_LOCAL } from "./survival.js";
 import {
   identityDiscoveryLinks,
   personJsonLd,
+  profilePageJsonLd,
   STATS_COUNTERS,
   STATS_NOTE,
   WHO_DESCRIPTION,
@@ -529,8 +530,11 @@ function discoveryLinks() {
   ].join("\n");
 }
 
-function documentHead({ title, description, canonical, software, extraMeta = "", runtimeVersion, sot = null, extraCss = "" }) {
+function documentHead({ title, description, canonical, software, extraMeta = "", runtimeVersion, sot = null, extraCss = "", profilePage = false }) {
   const ld = JSON.stringify(jsonLd(software, runtimeVersion, sot));
+  const profile = profilePage
+    ? '<script type="application/ld+json">' + JSON.stringify(profilePageJsonLd(canonical)) + "</script>\n"
+    : "";
   return `<meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${esc(title)}</title>
@@ -564,7 +568,7 @@ function documentHead({ title, description, canonical, software, extraMeta = "",
 ${discoveryLinks()}
 ${extraMeta}
 <script type="application/ld+json">${ld}</script>
-<style>${CSS}${extraCss}</style>`;
+${profile}<style>${CSS}${extraCss}</style>`;
 }
 
 function quietDiscoveryMeta() {
@@ -897,6 +901,7 @@ ${documentHead({
   extraMeta: quietDiscoveryMeta(),
   runtimeVersion,
   sot: opts && opts.sot,
+  profilePage: Boolean(opts && opts.profilePage),
 })}
 ${hashRedirectScript()}
 </head>
@@ -1226,7 +1231,7 @@ ${brandRow()}
 }
 
 export function whoHtml() {
-  const person = JSON.stringify(personJsonLd());
+  const person = JSON.stringify(personJsonLd({ works: false }));
   const faq = JSON.stringify(whoFaqPageNode());
   return `<!DOCTYPE html>
 <html lang="en">

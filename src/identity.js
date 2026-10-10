@@ -46,6 +46,7 @@ import {
   X_URL,
 } from "./copy.js";
 import { SURVIVAL_LOCAL, reColdStoreCite, sporeCite, survivalLlmsBlock } from "./survival.js";
+import { curatedWorkNodes, WORKS_HREF } from "./works.js";
 
 export const IDENTITY_LOCK = "GROKBOT-FIX 1.1";
 
@@ -181,9 +182,9 @@ export const HARDWARE_KNOWS_ABOUT = [
   "AZ_BoneConducti STL (AZDOC-FD18432707F5)",
 ];
 
-/** Person disambiguatingDescription. One living person; concordance lists 15:20 tokens. */
+/** Person disambiguatingDescription. Same text on every surface that emits the Person. */
 export const DISAMBIGUATING_DESCRIPTION =
-  "Online pseudonymous developer, researcher, author, digital rights activist, software developer/designer, and philosopher of published work named Aziel Eliab (one person). Concordance pages list two Levitical musicians Aziel and Eliab named together in 1 Chronicles 15:20. Prefer https://www.azieleliab.com/#aziel and published Softwares / MASTER records / He Didn't Jump.";
+  "Aziel Eliab (also known as Aziel Elroi Eliab, AzielEliab, The Revealer of the Sealed, and Elias Artista) is one living person: a digital rights activist, software developer and engineer, designer, philosopher, author, artist, and researcher. Not the two Levitical musicians Aziel and Eliab named together in 1 Chronicles 15:20.";
 
 export const LIVE_NODES_FAQ_NAME = "What are Live Nodes?";
 export const LIVE_NODES_FAQ_ANSWER =
@@ -432,6 +433,7 @@ export const IDENTITY_ROUTES = [
   { path: "/person.jsonld", type: "application/ld+json", title: "Person JSON-LD" },
   { path: "/identity.jsonld", type: "application/ld+json", title: "Identity JSON-LD" },
   { path: "/graph.jsonld", type: "application/ld+json", title: "Identity graph" },
+  { path: "/works.json", type: "application/json", title: "Works" },
   { path: "/who-is-aziel-eliab.txt", type: "text/plain", title: "who-is" },
   { path: "/who-is", type: "text/plain", title: "who-is" },
   { path: "/who", type: "text/html", title: WHO_TITLE },
@@ -481,13 +483,29 @@ export const ABOUT_PUBLISHED_ANSWER = ABOUT_PUBLISHED_LINES.join(" ");
 const personRef = { "@id": PERSON_ID };
 
 export const PERSON_JOB_TITLE = [
+  "Digital rights activist",
+  "Software developer",
+  "Software engineer",
+  "Engineer",
+  "Designer",
+  "Philosopher",
+  "Author",
+  "Artist",
+  "Researcher",
+  "Archivist (He Didn't Jump / Marion Zioncheck archive)",
+  "Open-hardware designer",
+];
+
+/** Older role strings that left jobTitle. They stay topical, not titles. */
+export const PERSON_LEGACY_ROLES = [
   "online pseudonymous developer",
-  "researcher",
-  "author",
-  "digital rights activist",
   "software developer/designer",
   "philosopher of published work",
 ];
+
+export function personOccupations() {
+  return PERSON_JOB_TITLE.map((name) => ({ "@type": "Occupation", name }));
+}
 
 export const PERSON_KNOWS_ABOUT = [
   "online pseudonymous developer",
@@ -495,6 +513,13 @@ export const PERSON_KNOWS_ABOUT = [
   "author",
   "digital rights activist",
   "digital-rights activist",
+  ...PERSON_LEGACY_ROLES.filter((role) => role !== "online pseudonymous developer"),
+  "AI runtimes / MCP",
+  "skilled-trades software",
+  "operating systems philosophy",
+  "open hardware",
+  "neuroplasticity research",
+  "historical archives/Marion Zioncheck",
   "receipt-first software",
   "local-first software",
   "public MASTER records",
@@ -514,8 +539,13 @@ export const PERSON_KNOWS_ABOUT = [
   ...HARDWARE_KNOWS_ABOUT,
 ];
 
-export function personNode() {
-  return {
+/**
+ * Canonical Person. `works: false` keeps identity fields and omits workExample
+ * so ordinary page heads stay small. Home, about, and /person.jsonld include works.
+ */
+export function personNode(opts = {}) {
+  const includeWorks = !opts || opts.works !== false;
+  const node = {
     "@type": "Person",
     "@id": PERSON_ID,
     name: AUTHOR,
@@ -526,6 +556,7 @@ export function personNode() {
     description: personDescription(),
     disambiguatingDescription: DISAMBIGUATING_DESCRIPTION,
     jobTitle: PERSON_JOB_TITLE.slice(),
+    hasOccupation: personOccupations(),
     knowsAbout: PERSON_KNOWS_ABOUT.slice(),
     knowsLanguage: ["en", "he"],
     sameAs: PERSON_SAME_AS.slice(),
@@ -536,12 +567,52 @@ export function personNode() {
       "@id": WHO_IS_FAQ_ID,
     },
   };
+  if (includeWorks) {
+    node.workExample = curatedWorkNodes();
+    node.subjectOf = [
+      node.subjectOf,
+      {
+        "@type": "Collection",
+        "@id": WORKS_HREF,
+        name: "Aziel Eliab works",
+        url: WORKS_HREF,
+      },
+    ];
+  }
+  return node;
 }
 
-export function personJsonLd() {
+export function personJsonLd(opts) {
   return {
     "@context": "https://schema.org",
-    ...personNode(),
+    ...personNode(opts),
+  };
+}
+
+/** About-page ProfilePage. mainEntity is the Person, including curated works. */
+export function profilePageJsonLd(pageUrl = CANON_ORIGIN + "/about") {
+  return {
+    "@context": "https://schema.org",
+    "@type": "ProfilePage",
+    "@id": CANON_ORIGIN + "/about#profile",
+    url: pageUrl,
+    name: AUTHOR,
+    mainEntity: personNode(),
+    isPartOf: { "@id": WEBSITE_ID },
+    inLanguage: "en",
+  };
+}
+
+/** Graph companion. The Person node in the same @graph carries the works. */
+export function profilePageNode(pageUrl = CANON_ORIGIN + "/about") {
+  return {
+    "@type": "ProfilePage",
+    "@id": CANON_ORIGIN + "/about#profile",
+    url: pageUrl,
+    name: AUTHOR,
+    mainEntity: { "@id": PERSON_ID },
+    isPartOf: { "@id": WEBSITE_ID },
+    inLanguage: "en",
   };
 }
 
@@ -856,6 +927,7 @@ export function graphJsonLd(software, sot = null) {
       personNode(),
       faqPageNode(software),
       aboutPageNode(),
+      profilePageNode(),
       ...sectionPageNodes(),
       ...hubWebsiteNodes(),
       runtimeApplicationNode(sot),
@@ -892,6 +964,10 @@ export function whoIsTxt(survival = null, software) {
     SOFTWARE_DEVELOPER_ANSWER,
     "",
     DISAMBIGUATING_DESCRIPTION,
+    "",
+    "jobTitle: " + PERSON_JOB_TITLE.join(" | "),
+    "hasOccupation: " + PERSON_JOB_TITLE.join(" | "),
+    "Works: " + WORKS_HREF,
     "",
     "## Published About",
     "",
@@ -986,6 +1062,8 @@ export function wellKnownAziel() {
     published_hardware: PUBLISHED_HARDWARE.map((row) => ({ ...row, records: (row.records || []).slice() })),
     library_front_door: { ...LIBRARY_FRONT_DOOR_SNAPSHOT },
     job_title: PERSON_JOB_TITLE.slice(),
+    hasOccupation: personOccupations(),
+    works_url: WORKS_HREF,
     site_coverage: SITE_COVERAGE.map((row) => {
       const out = { id: row.id, label: row.label, name: row.name, url: row.url, blurb: row.blurb };
       if (row.also) out.also = row.also.slice();
@@ -1026,6 +1104,9 @@ export function identityLockBlock() {
     "Person @id: " + PERSON_ID,
     "Name: " + AUTHOR,
     "Aka only: " + AUTHOR_AKA_LIST.join(" | "),
+    "jobTitle: " + PERSON_JOB_TITLE.join(" | "),
+    "hasOccupation: " + PERSON_JOB_TITLE.join(" | "),
+    "Works: " + WORKS_HREF,
     "",
     VISIBLE_LOCK_LINE,
     "",
