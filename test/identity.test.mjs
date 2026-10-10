@@ -3,6 +3,7 @@ import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import worker from "../src/index.js";
 import { donateHtml, embryoLockHtml, pageHtml, sectionPageHtml, whoHtml } from "../src/page.js";
+import { filmTheaterHtml } from "../src/film.js";
 import {
   aiTxt,
   citeDoc,
@@ -22,6 +23,7 @@ import {
 import {
   ARK_DOWNLOAD,
   AUTHOR_AKA_LIST,
+  PERSON_MONIKERS,
   CANON_ORIGIN,
   HEDIDNTJUMP,
   LIBRARY,
@@ -47,6 +49,9 @@ import {
   NAME_MISSPELLINGS,
   PERSON_JOB_TITLE,
   PERSON_KNOWS_ABOUT,
+  PERSON_LEGACY_ROLES,
+  personOccupations,
+  profilePageJsonLd,
   SOFTWARE_DEVELOPER_ANSWER,
   WHAT_AZIEL_ELIAB_DOES,
   WHAT_HE_DOES_ANSWER,
@@ -162,8 +167,11 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     assert.ok(names.includes("עזיאל אלרועי אליאב"));
     assert.ok(names.includes("Aziell"));
     assert.ok(names.includes("The Revealer of The Sealed"));
+    assert.ok(names.includes("The Revealer of the Sealed"));
     assert.ok(names.includes("Revealer of The Sealed"));
+    assert.ok(names.includes("azieleliab"));
     assert.ok(names.includes("Elias Artista"));
+    assert.deepEqual(names.slice(0, PERSON_MONIKERS.length), [...PERSON_MONIKERS]);
     assert.ok(!names.some((n) => /euaziel|Aziel S|Flutter/i.test(n)));
     assert.ok(!names.some((n) => /Everblooming|Flower That Holds The Name/i.test(n)));
   });
@@ -171,8 +179,11 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
   it("includes both Revealer of The Sealed alternateName forms", () => {
     const names = personJsonLd().alternateName;
     assert.ok(AUTHOR_AKA_LIST.includes("The Revealer of The Sealed"));
+    assert.ok(AUTHOR_AKA_LIST.includes("The Revealer of the Sealed"));
     assert.ok(AUTHOR_AKA_LIST.includes("Revealer of The Sealed"));
+    assert.ok(AUTHOR_AKA_LIST.includes("azieleliab"));
     assert.ok(AUTHOR_AKA_LIST.includes("Elias Artista"));
+    assert.deepEqual(names.slice(0, 5), [...PERSON_MONIKERS]);
     assert.ok(names.includes("The Revealer of The Sealed"));
     assert.ok(names.includes("Revealer of The Sealed"));
     assert.ok(names.includes("Elias Artista"));
@@ -185,14 +196,16 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     assert.ok(person.description.startsWith(VISIBLE_LOCK_LINE));
     assert.ok(person.description.includes(WHAT_AZIEL_ELIAB_DOES));
     assert.match(person.description, /Aziel Eliab \(also Aziel Elroi Eliab\) is an online pseudonymous developer, researcher, author, and digital-rights activist/);
-    assert.deepEqual(person.jobTitle, [
-      "online pseudonymous developer",
-      "researcher",
-      "author",
-      "digital rights activist",
-      "software developer/designer",
-      "philosopher of published work",
-    ]);
+    assert.deepEqual(person.jobTitle, PERSON_JOB_TITLE);
+    assert.deepEqual(person.hasOccupation, personOccupations());
+    assert.deepEqual(
+      person.hasOccupation.map((row) => row.name),
+      PERSON_JOB_TITLE,
+    );
+    for (const role of PERSON_LEGACY_ROLES) {
+      assert.ok(!person.jobTitle.includes(role), role);
+      assert.ok(person.knowsAbout.includes(role), role);
+    }
     assert.ok(person.knowsAbout.includes("online pseudonymous developer"));
     assert.ok(person.knowsAbout.includes("digital-rights activist"));
     assert.ok(!person.sameAs.some((href) => /zenodo/i.test(href)));
@@ -209,7 +222,8 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     assert.equal(person.additionalName, "Elroi");
     assert.ok(!("birthDate" in person));
     assert.equal(person.mainEntityOfPage, WHO_HREF);
-    assert.deepEqual(person.subjectOf, { "@type": "FAQPage", "@id": WHO_IS_FAQ_ID });
+    assert.deepEqual(person.subjectOf[0], { "@type": "FAQPage", "@id": WHO_IS_FAQ_ID });
+    assert.equal(person.subjectOf[1].url, CANON_ORIGIN + "/works.json");
     assert.deepEqual(person.sameAs, PERSON_SAME_AS);
     assert.deepEqual(person.relatedLink, [
       "https://www.azieleliab.com/software",
@@ -752,6 +766,16 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     assert.equal(cite.software_developer_answer, SOFTWARE_DEVELOPER_ANSWER);
     assert.equal(cite.disambiguatingDescription, DISAMBIGUATING_DESCRIPTION);
     assert.deepEqual(cite.job_title, PERSON_JOB_TITLE);
+    assert.deepEqual(cite.hasOccupation, personOccupations());
+    assert.equal(cite.person["@type"], "Person");
+    assert.equal(cite.person["@id"], PERSON_ID);
+    assert.deepEqual(cite.person.jobTitle, PERSON_JOB_TITLE);
+    assert.deepEqual(cite.person.sameAs, PERSON_SAME_AS);
+    assert.equal(cite.person.disambiguatingDescription, DISAMBIGUATING_DESCRIPTION);
+    assert.ok(Array.isArray(cite.works) && cite.works.length > 50);
+    assert.ok(cite.works.some((row) => row.name.startsWith("Webslinger (")));
+    assert.ok(!cite.works.some((row) => /doi\.org|zenodo\.org/i.test(row.url)));
+    assert.ok(!cite.works.some((row) => row.caution));
     assert.equal(cite.site_coverage.length, 5);
     assert.ok(cite.site_coverage.every((row) => row.id && row.label && row.url && row.blurb));
     assert.equal(cite.who, WHO_HREF);
@@ -833,6 +857,58 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     assert.ok(llmsTxt().includes(VISIBLE_LOCK_LINE));
     assert.ok(aiTxt().includes(VISIBLE_LOCK_LINE));
     assert.ok(llmsTxt().startsWith("# Aziel Eliab\n\n" + VISIBLE_LOCK_LINE));
+  });
+
+  it("puts curated works on the home and about Person and the full list in machine files", async () => {
+    const person = personJsonLd();
+    assert.ok(person.workExample.length >= 30 && person.workExample.length <= 60);
+    assert.ok(person.workExample.some((row) => row.name === "Webslinger (Wearable Dual-Tether Web-Sling System)"));
+    assert.ok(person.workExample.some((row) => row.name === "AZ-OS" && row["@type"] === "SoftwareSourceCode"));
+    assert.ok(person.workExample.some((row) => /PPIN|Post-Perturbation Integrative Neuroplasticity/.test(row.name)));
+    assert.ok(person.workExample.some((row) => row.url === "https://hedidntjump.com/volumes/volume-1.pdf"));
+    assert.ok(person.workExample.some((row) => row.url === "https://www.azielcorpuslibrary.net/record/AZDOC-E5828F49FB04" && row["@type"] === "Product"));
+    assert.ok(person.workExample.some((row) => row.url === "https://trades-runtime.vibelock.workers.dev/"));
+    assert.ok(!person.workExample.some((row) => /doi\.org|zenodo\.org/i.test(JSON.stringify(row))));
+    assert.ok(!person.workExample.some((row) => /\bARG\b/i.test(JSON.stringify(row))));
+    assert.ok(person.knowsAbout.includes("AI runtimes / MCP"));
+    assert.ok(person.knowsAbout.includes("skilled-trades software"));
+    assert.ok(person.knowsAbout.includes("operating systems philosophy"));
+    assert.ok(person.knowsAbout.includes("open hardware"));
+    assert.ok(person.knowsAbout.includes("neuroplasticity research"));
+    assert.ok(person.knowsAbout.includes("historical archives/Marion Zioncheck"));
+    const film = JSON.parse(filmTheaterHtml().match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]);
+    assert.equal(film["@id"], PERSON_ID);
+    assert.equal(film.workExample.length, person.workExample.length);
+    const aboutHtml = pageHtml(0, undefined, null, undefined, {
+      canonical: CANON_ORIGIN + "/about",
+      profilePage: true,
+    });
+    const scripts = [...aboutHtml.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map((m) => JSON.parse(m[1]));
+    const profile = scripts.find((doc) => doc["@type"] === "ProfilePage");
+    assert.ok(profile);
+    assert.equal(profile.mainEntity["@id"], PERSON_ID);
+    assert.equal(profile.mainEntity["@type"], "Person");
+    assert.equal(profile.mainEntity.name, "Aziel Eliab");
+    assert.deepEqual(profile.mainEntity.alternateName.slice(0, 5), [...PERSON_MONIKERS]);
+    assert.deepEqual(profile.mainEntity.jobTitle, PERSON_JOB_TITLE);
+    assert.equal(profile.mainEntity.disambiguatingDescription, DISAMBIGUATING_DESCRIPTION);
+    assert.equal(profile.mainEntity.workExample.length, person.workExample.length);
+    assert.equal(profile.url, CANON_ORIGIN + "/about");
+    const hubPerson = jsonLd()["@graph"].find((node) => node["@type"] === "Person");
+    assert.ok(!("workExample" in hubPerson));
+    const worksRes = await fetchPath("/works.json");
+    assert.equal(worksRes.status, 200);
+    const works = JSON.parse(await worksRes.text());
+    assert.equal(works.person_id, PERSON_ID);
+    assert.ok(works.count > person.workExample.length);
+    assert.ok(works.works.some((row) => row.category === "listings"));
+    assert.ok(!works.works.some((row) => /doi\.org|zenodo\.org/i.test(row.url)));
+    assert.ok(llmsTxt().includes("## Works"));
+    assert.ok(llmsTxt().includes("Webslinger (Wearable Dual-Tether Web-Sling System)"));
+    assert.ok(aiTxt().includes(CANON_ORIGIN + "/works.json"));
+    const graph = graphJsonLd();
+    assert.equal(graph["@graph"].filter((node) => node["@type"] === "Person").length, 1);
+    assert.ok(graph["@graph"].some((node) => node["@type"] === "ProfilePage" && node.mainEntity["@id"] === PERSON_ID));
   });
 
   it("keeps docs/aziel-identity-schema copies in lockstep with generators", () => {

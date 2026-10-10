@@ -104,7 +104,7 @@ Raw pointers in this repo: [person.jsonld](person.jsonld) · [llms.txt](llms.txt
 
 ## Roles
 
-Published work: researcher · digital rights activist · software developer · author · philosopher.
+Published work: Digital rights activist · Software developer · Software engineer · Engineer · Designer · Philosopher · Author · Artist · Researcher · Archivist (He Didn't Jump / Marion Zioncheck archive) · Open-hardware designer. Works: https://www.azieleliab.com/works.json
 
 ## Compatible AI clients
 

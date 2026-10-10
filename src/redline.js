@@ -87,6 +87,7 @@ export const PUBLIC_DOORS = Object.freeze([
   { method: "GET", path: "/mcp.json", role: "read", auth: "none" },
   { method: "GET", path: "/.well-known/mcp.json", role: "read", auth: "none" },
   { method: "GET", path: "/ai.txt", role: "read", auth: "none" },
+  { method: "GET", path: "/works.json", role: "read", auth: "none" },
   { method: "GET", path: "/shelves", role: "read", auth: "none" },
   { method: "GET", path: "/v1/software", role: "read", auth: "none" },
   { method: "GET", path: "/v1/mesh", role: "read", auth: "none", enables: false },

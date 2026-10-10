@@ -79,6 +79,7 @@ import {
   sitemapXml,
 } from "./seo.js";
 import { helpBody, isHelpPath } from "./help.js";
+import { worksDoc } from "./works.js";
 import { handleSotOutlet, isSotOutletPath, loadSurfacePin } from "./sotOutlet.js";
 import {
   azGeneratorCallRefuse,
@@ -505,6 +506,7 @@ export async function handleRequest(request, env = {}, ctx) {
       pageHtml(await readViews(env), doors, meshDocLive, live && live.version, {
         canonical: CANON_ORIGIN + aboutPath,
         sot: surfaceSot,
+        profilePage: true,
       }),
     );
   } else if (azielAlias) {
@@ -538,7 +540,9 @@ export async function handleRequest(request, env = {}, ctx) {
     res = text(INDEXNOW_KEY + "\n", "text/plain", { cache: SEO_CACHE });
   } else if (path === "/robots.txt") res = text(robotsTxt(), "text/plain", { cache: SEO_CACHE });
   else if (path === "/llms.txt") res = text(llmsTxt(doors, survival, surfaceSot), "text/plain", { cache: SEO_CACHE });
-  else if (path === "/person.jsonld" || path === "/identity.jsonld" || path === "/.well-known/person.jsonld") {
+  else if (path === "/works.json") {
+    res = text(prettyJson(worksDoc()), "application/json", { cache: SEO_CACHE, cors: true });
+  } else if (path === "/person.jsonld" || path === "/identity.jsonld" || path === "/.well-known/person.jsonld") {
     res = text(prettyJson(personJsonLd()), "application/ld+json", { cache: SEO_CACHE, cors: true });
   } else if (path === "/graph.jsonld") {
     res = text(prettyJson(graphJsonLd(doors, surfaceSot)), "application/ld+json", { cache: SEO_CACHE, cors: true });
