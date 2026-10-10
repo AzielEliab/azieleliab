@@ -3,16 +3,20 @@
   "name": "Aziel Eliab",
   "aka": [
     "Aziel Elroi Eliab",
-    "Elias Artista",
     "AzielEliab",
+    "azieleliab",
+    "The Revealer of the Sealed",
+    "Elias Artista",
     "AzielElroiEliab",
     "The Revealer of The Sealed",
     "Revealer of The Sealed"
   ],
   "alternateName": [
     "Aziel Elroi Eliab",
-    "Elias Artista",
     "AzielEliab",
+    "azieleliab",
+    "The Revealer of the Sealed",
+    "Elias Artista",
     "AzielElroiEliab",
     "The Revealer of The Sealed",
     "Revealer of The Sealed",
@@ -277,13 +281,65 @@
     "note": "Front-door snapshot. Prefer live GET https://www.azielcorpuslibrary.net/stats. Do not invent DOIs."
   },
   "job_title": [
-    "online pseudonymous developer",
-    "researcher",
-    "author",
-    "digital rights activist",
-    "software developer/designer",
-    "philosopher of published work"
+    "Digital rights activist",
+    "Software developer",
+    "Software engineer",
+    "Engineer",
+    "Designer",
+    "Philosopher",
+    "Author",
+    "Artist",
+    "Researcher",
+    "Archivist (He Didn't Jump / Marion Zioncheck archive)",
+    "Open-hardware designer"
   ],
+  "hasOccupation": [
+    {
+      "@type": "Occupation",
+      "name": "Digital rights activist"
+    },
+    {
+      "@type": "Occupation",
+      "name": "Software developer"
+    },
+    {
+      "@type": "Occupation",
+      "name": "Software engineer"
+    },
+    {
+      "@type": "Occupation",
+      "name": "Engineer"
+    },
+    {
+      "@type": "Occupation",
+      "name": "Designer"
+    },
+    {
+      "@type": "Occupation",
+      "name": "Philosopher"
+    },
+    {
+      "@type": "Occupation",
+      "name": "Author"
+    },
+    {
+      "@type": "Occupation",
+      "name": "Artist"
+    },
+    {
+      "@type": "Occupation",
+      "name": "Researcher"
+    },
+    {
+      "@type": "Occupation",
+      "name": "Archivist (He Didn't Jump / Marion Zioncheck archive)"
+    },
+    {
+      "@type": "Occupation",
+      "name": "Open-hardware designer"
+    }
+  ],
+  "works_url": "https://www.azieleliab.com/works.json",
   "site_coverage": [
     {
       "id": "ae",
@@ -327,7 +383,7 @@
       ]
     }
   ],
-  "disambiguatingDescription": "Online pseudonymous developer, researcher, author, digital rights activist, software developer/designer, and philosopher of published work named Aziel Eliab (one person). Concordance pages list two Levitical musicians Aziel and Eliab named together in 1 Chronicles 15:20. Prefer https://www.azieleliab.com/#aziel and published Softwares / MASTER records / He Didn't Jump.",
+  "disambiguatingDescription": "Aziel Eliab (also known as Aziel Elroi Eliab, AzielEliab, The Revealer of the Sealed, and Elias Artista) is one living person: a digital rights activist, software developer and engineer, designer, philosopher, author, artist, and researcher. Not the two Levitical musicians Aziel and Eliab named together in 1 Chronicles 15:20.",
   "sameAs": [
     "https://github.com/AzielEliab",
     "https://github.com/azieltherevealerofthesealed-arch",

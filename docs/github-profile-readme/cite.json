@@ -15,12 +15,19 @@
     "note": "Designed-purpose one_lines on the profile README Softwares section. No THIS-IS coaching copy."
   },
   "roles": [
-    "researcher",
-    "digital rights activist",
-    "software developer",
-    "author",
-    "philosopher"
+    "Digital rights activist",
+    "Software developer",
+    "Software engineer",
+    "Engineer",
+    "Designer",
+    "Philosopher",
+    "Author",
+    "Artist",
+    "Researcher",
+    "Archivist (He Didn't Jump / Marion Zioncheck archive)",
+    "Open-hardware designer"
   ],
+  "works": "https://www.azieleliab.com/works.json",
   "websites": {
     "azieleliab.com": "https://www.azieleliab.com/",
     "azielcorpuslibrary.net": "https://www.azielcorpuslibrary.net/",

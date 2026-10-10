@@ -6,11 +6,19 @@ export const APEX_HOST = "azieleliab.com";
 export const WWW_HOST = "www.azieleliab.com";
 export const AUTHOR = "Aziel Eliab";
 export const AUTHOR_AKA = "Aziel Elroi Eliab";
-/** Canonical aka only. Hebrew forms and misspellings are SEO tethers, not extra identities. */
-export const AUTHOR_AKA_LIST = [
+/**
+ * Monikers first, in owner order. Later strings are existing legitimate variants.
+ * Hebrew forms and misspellings stay SEO tethers, not extra identities.
+ */
+export const PERSON_MONIKERS = Object.freeze([
   "Aziel Elroi Eliab",
-  "Elias Artista",
   "AzielEliab",
+  "azieleliab",
+  "The Revealer of the Sealed",
+  "Elias Artista",
+]);
+export const AUTHOR_AKA_LIST = [
+  ...PERSON_MONIKERS,
   "AzielElroiEliab",
   "The Revealer of The Sealed",
   "Revealer of The Sealed",

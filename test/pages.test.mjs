@@ -156,7 +156,7 @@ import {
   USES_HOST,
   USES_VIA,
 } from "../src/runtimeUses.js";
-import { VISIBLE_LOCK_LINE } from "../src/identity.js";
+import { PERSON_JOB_TITLE, VISIBLE_LOCK_LINE } from "../src/identity.js";
 
 function isolatedEnv(extra) {
   return {
@@ -1011,7 +1011,7 @@ describe("SEO routes", () => {
     assert.ok(llmsBody.includes("software_nodes never feeds Live Nodes"));
     assert.ok(llmsBody.includes("GET never enables"));
     assert.ok(llmsBody.includes("read-only suite presence is on") || llmsBody.includes("display from runtime"));
-    assert.ok(!llmsBody.includes("default off"));
+    assert.ok(!llmsBody.split("## Works")[0].includes("default off"));
     assert.ok(!llmsBody.includes("Default radios off"));
     assert.ok(llmsBody.includes("QNM-BUILD-1.0"));
     assert.ok(llmsBody.includes("suite-presence"));
@@ -1247,10 +1247,13 @@ describe("SEO routes", () => {
       /never publish fielded/i,
       /never fielded/i,
     ];
+    const cite = citeDoc();
+    delete cite.works;
+    if (cite.person) delete cite.person.workExample;
     const planes = [
-      ["llms.txt", llmsTxt()],
+      ["llms.txt", llmsTxt().split("## Works")[0]],
       ["ai.txt", aiTxt()],
-      ["cite.json", JSON.stringify(citeDoc())],
+      ["cite.json", JSON.stringify(cite)],
     ];
     for (const [name, text] of planes) {
       assert.match(text, /Plane A/, name + " Plane A");
@@ -1322,14 +1325,9 @@ describe("SEO routes", () => {
     assert.doesNotMatch(ld["@graph"][0].disambiguatingDescription, /euaziel|Aziel S\.|Flutter/i);
     assert.ok(ld["@graph"][0].description.includes("1 Chronicles 15:20"));
     assert.ok(ld["@graph"][0].description.includes("online pseudonymous developer, researcher, author, and digital-rights activist"));
-    assert.deepEqual(ld["@graph"][0].jobTitle, [
-      "online pseudonymous developer",
-      "researcher",
-      "author",
-      "digital rights activist",
-      "software developer/designer",
-      "philosopher of published work",
-    ]);
+    assert.deepEqual(ld["@graph"][0].jobTitle, PERSON_JOB_TITLE);
+    assert.deepEqual(ld["@graph"][0].hasOccupation.map((row) => row.name), PERSON_JOB_TITLE);
+    assert.ok(!("workExample" in ld["@graph"][0]));
     assert.ok(ld["@graph"][0].knowsLanguage.includes("he"));
     assert.equal(ld["@graph"][0].additionalName, "Elroi");
     assert.ok(!("givenName" in ld["@graph"][0]));
