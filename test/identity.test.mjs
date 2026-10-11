@@ -4,6 +4,7 @@ import assert from "node:assert/strict";
 import worker from "../src/index.js";
 import { donateHtml, embryoLockHtml, pageHtml, sectionPageHtml, whoHtml } from "../src/page.js";
 import { filmTheaterHtml } from "../src/film.js";
+import { machineWorks, worksDoc } from "../src/works.js";
 import {
   aiTxt,
   citeDoc,
@@ -905,6 +906,62 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     const graph = graphJsonLd();
     assert.equal(graph["@graph"].filter((node) => node["@type"] === "Person").length, 1);
     assert.ok(graph["@graph"].some((node) => node["@type"] === "ProfilePage" && node.mainEntity["@id"] === PERSON_ID));
+  });
+
+  it("records the AZ triad as a design relationship on the Person and machine files", () => {
+    const triadId = CANON_ORIGIN + "/#az-triad";
+    const person = personJsonLd();
+    const triad = person.workExample.find((row) => row["@id"] === triadId);
+    assert.ok(triad);
+    assert.equal(triad["@type"], "CreativeWork");
+    assert.equal(triad.name, "AZ triad: AZ-OS, Aziel Runtime, The AZInterface");
+    assert.match(triad.description, /one system with three sides/);
+    assert.match(triad.description, /operating-system layer \(AZ-OS\)/);
+    assert.match(triad.description, /MCP runtime \(Aziel Runtime\)/);
+    assert.match(triad.description, /UI software \(The AZInterface\)/);
+    assert.equal(triad.author["@id"], PERSON_ID);
+    assert.equal(triad.creator["@id"], PERSON_ID);
+    assert.equal(triad.hasPart.length, 3);
+    assert.deepEqual(
+      triad.hasPart.map((part) => [part.name, part.url, part.applicationCategory]),
+      [
+        ["AZ-OS", "https://github.com/AzielEliab/azos", "operating-system side"],
+        ["Aziel Runtime", "https://github.com/AzielEliab/aziel-runtime", "MCP side"],
+        ["The AZInterface", "https://github.com/AzielEliab/azinterface", "UI-software side"],
+      ],
+    );
+    assert.match(triad.hasPart[0].description, /not a kernel/);
+    assert.match(triad.hasPart[1].description, /https:\/\/aziel-runtime\.vibelock\.workers\.dev\//);
+    assert.match(triad.hasPart[1].description, /https:\/\/glama\.ai\/mcp\/servers\/AzielEliab\/aziel-runtime/);
+    assert.match(triad.hasPart[2].description, /AZDOC-EB7454682E74/);
+    assert.doesNotMatch(JSON.stringify(triad), /one-click|mesh-node/i);
+    const azos = person.workExample.find((row) => row.url === "https://github.com/AzielEliab/azos");
+    const runtime = person.workExample.find((row) => row.url === "https://github.com/AzielEliab/aziel-runtime");
+    const runtimeWorker = person.workExample.find((row) => row.url === "https://aziel-runtime.vibelock.workers.dev/");
+    assert.equal(azos.isPartOf["@id"], triadId);
+    assert.match(azos.description, /Operating-system side of the AZ triad/);
+    assert.match(azos.description, /not a kernel/i);
+    assert.equal(runtime.isPartOf["@id"], triadId);
+    assert.match(runtime.description, /MCP side of the AZ triad/);
+    assert.equal(runtimeWorker.isPartOf["@id"], triadId);
+    const iface = machineWorks().find((row) => row.url === "https://github.com/AzielEliab/azinterface");
+    assert.match(iface.description, /UI-software side of the AZ triad/);
+    assert.equal(iface.isPartOf, triadId);
+    const cite = citeDoc();
+    assert.equal(cite.az_triad.id, triadId);
+    assert.equal(cite.az_triad.relationship, "design");
+    assert.equal(cite.person.workExample.find((row) => row["@id"] === triadId).name, triad.name);
+    const works = worksDoc();
+    assert.equal(works.az_triad.id, triadId);
+    assert.equal(works.az_triad.description, triad.description);
+    assert.match(llmsTxt(), /## AZ triad/);
+    assert.match(llmsTxt(), new RegExp(triad.description.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+    const profile = profilePageJsonLd();
+    assert.equal(profile["@type"], "ProfilePage");
+    assert.equal(profile.mainEntity.workExample.find((row) => row["@id"] === triadId).name, triad.name);
+    const film = JSON.parse(filmTheaterHtml().match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]);
+    assert.equal(film.workExample.find((row) => row["@id"] === triadId).name, triad.name);
+    assert.ok(!filmTheaterHtml().includes('"@type":"SoftwareApplication"'));
   });
 
   it("keeps docs/aziel-identity-schema copies in lockstep with generators", () => {

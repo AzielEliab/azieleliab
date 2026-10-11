@@ -7,6 +7,34 @@ export const WORKS_HREF = CANON_ORIGIN + WORKS_PATH;
 export const WEBSLING_URL = "https://www.azielcorpuslibrary.net/record/AZDOC-AA8761FE16D0";
 export const WEBSLING_NAME = "Webslinger (Wearable Dual-Tether Web-Sling System)";
 export const AZOS_URL = "https://github.com/AzielEliab/azos";
+export const RUNTIME_REPO_URL = "https://github.com/AzielEliab/aziel-runtime";
+export const RUNTIME_WORKER_URL = "https://aziel-runtime.vibelock.workers.dev/";
+export const RUNTIME_GLAMA_URL = "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime";
+export const AZINTERFACE_URL = "https://github.com/AzielEliab/azinterface";
+export const AZINTERFACE_PAPER_URL = "https://www.azielcorpuslibrary.net/record/AZDOC-EB7454682E74";
+export const TRIAD_ID = CANON_ORIGIN + "/#az-triad";
+export const TRIAD_NAME = "AZ triad: AZ-OS, Aziel Runtime, The AZInterface";
+export const TRIAD_DESCRIPTION =
+  "AZ-OS, Aziel Runtime, and The AZInterface are one system with three sides: the operating-system layer (AZ-OS), the MCP runtime (Aziel Runtime), and the UI software (The AZInterface). Design relationship.";
+
+const TRIAD_SIDES = Object.freeze({
+  [AZOS_URL]: Object.freeze({
+    side: "operating-system side",
+    note: "Operating-system side of the AZ triad. A local ethical overlay that is not a kernel.",
+  }),
+  [RUNTIME_REPO_URL]: Object.freeze({
+    side: "MCP side",
+    note: "MCP side of the AZ triad.",
+  }),
+  [RUNTIME_WORKER_URL]: Object.freeze({
+    side: "MCP side",
+    note: "MCP side of the AZ triad.",
+  }),
+  [AZINTERFACE_URL]: Object.freeze({
+    side: "UI-software side",
+    note: "UI-software side of the AZ triad. White paper: " + AZINTERFACE_PAPER_URL + ".",
+  }),
+});
 
 const DOI_URL = /https?:\/\/(?:dx\.)?doi\.org\/\S+|https?:\/\/(?:www\.)?zenodo\.org\/\S+/gi;
 
@@ -92,14 +120,21 @@ function publicWork(item, category) {
   if (type === "SoftwareApplication") type = "WebSite";
   let domain = cleanText(item.domain);
   if (/not an ARG or game/i.test(domain)) domain = "history (document archive)";
-  return {
+  const side = TRIAD_SIDES[url];
+  const description = cleanText(item.description);
+  const row = {
     category,
     name: workDisplayName(item),
     url,
     type,
-    description: cleanText(item.description),
+    description: side ? [description, side.note].filter(Boolean).join(" ") : description,
     domain,
   };
+  if (side) {
+    row.triad_side = side.side;
+    row.isPartOf = TRIAD_ID;
+  }
+  return row;
 }
 
 /** Verified works plus directory listings. Caution notes and Zenodo-only URLs stay out. */
@@ -137,11 +172,81 @@ export function workNode(row) {
     url: row.url,
   };
   if (row.description) node.description = row.description;
+  if (row.isPartOf) node.isPartOf = { "@id": row.isPartOf };
   return node;
 }
 
+/** Design relationship among AZ-OS, Aziel Runtime, and The AZInterface. */
+export function triadNode() {
+  return {
+    "@type": "CreativeWork",
+    "@id": TRIAD_ID,
+    name: TRIAD_NAME,
+    description: TRIAD_DESCRIPTION,
+    author: { "@id": PERSON_ID },
+    creator: { "@id": PERSON_ID },
+    hasPart: [
+      {
+        "@type": "SoftwareSourceCode",
+        name: "AZ-OS",
+        url: AZOS_URL,
+        applicationCategory: "operating-system side",
+        description: TRIAD_SIDES[AZOS_URL].note,
+      },
+      {
+        "@type": "SoftwareSourceCode",
+        name: "Aziel Runtime",
+        url: RUNTIME_REPO_URL,
+        applicationCategory: "MCP side",
+        description:
+          "MCP side of the AZ triad. " +
+          RUNTIME_REPO_URL +
+          " · " +
+          RUNTIME_WORKER_URL +
+          " · " +
+          RUNTIME_GLAMA_URL,
+      },
+      {
+        "@type": "SoftwareSourceCode",
+        name: "The AZInterface",
+        url: AZINTERFACE_URL,
+        applicationCategory: "UI-software side",
+        description: TRIAD_SIDES[AZINTERFACE_URL].note,
+      },
+    ],
+  };
+}
+
+export function triadCite() {
+  return {
+    id: TRIAD_ID,
+    name: TRIAD_NAME,
+    description: TRIAD_DESCRIPTION,
+    relationship: "design",
+    parts: triadNode().hasPart.map((part) => ({
+      name: part.name,
+      side: part.applicationCategory,
+      url: part.url,
+      description: part.description,
+    })),
+  };
+}
+
 export function curatedWorkNodes() {
-  return curatedWorks().map(workNode);
+  return [triadNode(), ...curatedWorks().map(workNode)];
+}
+
+export function triadLlmsBlock() {
+  const cite = triadCite();
+  return [
+    "## AZ triad",
+    "",
+    cite.description,
+    "",
+    ...cite.parts.map((part) => "- " + part.name + " (" + part.side + "): " + part.url + " — " + part.description),
+    "- @id: " + cite.id,
+    "",
+  ].join("\n");
 }
 
 export function worksLlmsBlock() {
@@ -174,6 +279,7 @@ export function worksDoc() {
     catalog_generated: catalog.generated || null,
     note:
       "Verified URLs only. Items with a caution note are omitted. doi.org and Zenodo URLs are omitted. He Didn't Jump is a document archive. Listings are directories, not sameAs profiles.",
+    az_triad: triadCite(),
     count: works.length,
     works,
   };
