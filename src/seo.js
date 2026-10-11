@@ -160,7 +160,7 @@ import {
   sectionPageNodes,
   siteCoverageLines,
 } from "./identity.js";
-import { machineWorks, WORKS_HREF, worksLlmsBlock } from "./works.js";
+import { machineWorks, triadCite, triadLlmsBlock, WORKS_HREF, worksLlmsBlock } from "./works.js";
 import {
   CITE_DONT_MERGE,
   INGEST_BYTES_HREF,
@@ -749,6 +749,7 @@ export function citeDoc(software = SOFTWARE, runtimeVersion = RUNTIME_VERSION, s
     hasOccupation: personOccupations(),
     works_url: WORKS_HREF,
     works: machineWorks(),
+    az_triad: triadCite(),
     site_coverage: SITE_COVERAGE.map((row) => {
       const out = { id: row.id, label: row.label, name: row.name, url: row.url, blurb: row.blurb };
       if (row.also) out.also = row.also.slice();
@@ -1225,6 +1226,8 @@ export function llmsTxt(software = SOFTWARE, survival = null, sot = null) {
     "HTML GET / increments once for non-bot User-Agents when KV VIEWS is bound.",
     "",
     "Always send User-Agent Mozilla/5.0. Author Aziel Eliab only.",
+    "",
+    triadLlmsBlock().trimEnd(),
     "",
     worksLlmsBlock().trimEnd(),
     "",
