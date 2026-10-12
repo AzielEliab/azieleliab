@@ -6,7 +6,7 @@
  */
 import { AUTHOR, AZIEL_PATH, CANON_ORIGIN, COMICS, DESCRIPTION, HASH_REDIRECTS, LIBRARY, LIBRARY_RUNTIME, RUNTIME_VERSION } from "./copy.js";
 import { personJsonLdScript } from "./identity.js";
-import { ROBOTS_INDEX } from "./seo.js";
+import { discoveryAlternateLinkTags, ROBOTS_INDEX } from "./seo.js";
 
 export const FILM_MP4_PATH = "/film/aziel-runtime.mp4";
 export const FILM_POSTER_PATH = "/film/poster.jpg";
@@ -256,6 +256,7 @@ ${theaterHashScript()}
 <meta name="author" content="${esc(AUTHOR)}">
 <meta name="robots" content="${esc(ROBOTS_INDEX)}">
 <link rel="canonical" href="${esc(canonical)}">
+${discoveryAlternateLinkTags()}
 <link rel="icon" href="${esc(CANON_ORIGIN)}/sigil.png" type="image/png">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="${esc(AUTHOR)}">

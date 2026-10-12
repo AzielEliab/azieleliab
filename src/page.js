@@ -57,7 +57,7 @@ import {
   WHO_IS_ANSWER,
   whoFaqPageNode,
 } from "./identity.js";
-import { jsonLd, ROBOTS_INDEX } from "./seo.js";
+import { discoveryAlternateLinkTags, jsonLd, ROBOTS_INDEX } from "./seo.js";
 import {
   CITE_DONT_MERGE,
   ENOUGH,
@@ -527,6 +527,7 @@ function discoveryLinks() {
       ([type, href, title]) =>
         '<link rel="alternate" type="' + type + '" href="' + href + '" title="' + title + '">',
     ),
+    discoveryAlternateLinkTags(),
   ].join("\n");
 }
 
@@ -1243,6 +1244,7 @@ export function whoHtml() {
 <link rel="alternate" type="application/ld+json" href="/person.jsonld" title="person.jsonld">
 <link rel="alternate" type="text/plain" href="/who-is-aziel-eliab.txt" title="who-is">
 <link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt">
+${discoveryAlternateLinkTags()}
 <script type="application/ld+json">
 ${person}
 </script>
