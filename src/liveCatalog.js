@@ -319,7 +319,15 @@ async function cancelBody(res) {
   }
 }
 
-export async function fetchRuntimeJson(path, env, opts) {
+function isPeekTimeout(err) {
+  const name = err && err.name ? String(err.name) : "";
+  if (name === "TimeoutError" || name === "AbortError") return true;
+  const msg = String((err && err.message) || "");
+  return /timeout|aborted due to timeout|The operation was aborted/i.test(msg);
+}
+
+/** Mesh peeks need timeout vs miss. Other callers still get the document or null. */
+export async function fetchRuntimeJsonResult(path, env, opts) {
   const dest = new URL(path, RUNTIME + "/");
   const signal =
     typeof AbortSignal !== "undefined" && typeof AbortSignal.timeout === "function"
@@ -340,24 +348,29 @@ export async function fetchRuntimeJson(path, env, opts) {
     } else {
       res = await fetch(dest.toString(), init);
     }
-  } catch {
-    return null;
+  } catch (err) {
+    return { doc: null, timeout: isPeekTimeout(err), failed: true };
   }
   if (!res || !res.ok) {
     await cancelBody(res);
-    return null;
+    return { doc: null, timeout: false, failed: true, status: res && res.status };
   }
   try {
     const doc = await res.json();
-    if (!doc || typeof doc !== "object") return null;
-    if (opts && opts.loose) return doc;
+    if (!doc || typeof doc !== "object") return { doc: null, timeout: false, failed: true };
+    if (opts && opts.loose) return { doc, timeout: false, failed: false };
     if (doc.error && !firstArray(doc.products) && !firstArray(doc.entries) && !firstArray(doc.software)) {
-      return null;
+      return { doc: null, timeout: false, failed: true };
     }
-    return doc;
+    return { doc, timeout: false, failed: false };
   } catch {
-    return null;
+    return { doc: null, timeout: false, failed: true };
   }
+}
+
+export async function fetchRuntimeJson(path, env, opts) {
+  const result = await fetchRuntimeJsonResult(path, env, opts);
+  return result && result.doc ? result.doc : null;
 }
 
 function catalogTtlSec(live) {

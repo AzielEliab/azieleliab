@@ -1,14 +1,16 @@
 /**
  * Suite decentralized node mesh doors for www.azieleliab.com.
  * Mesh SSoT is Worker GET /v1/mesh. Chrome dual counter:
- * Nodes = human_mesh_users + human_uses (j.nodes preferred; fallback
- * sum or legacy j.live_nodes if nodes absent). Live Nodes = runtime
- * field live_nodes (plane human-mesh-users-site-viewers): human mesh
- * users plus site viewers on godlock.uk + azieleliab.com +
- * azielcorpuslibrary.net. Operator lock 2026-09-21. The public pill
- * does not add local site_live_nodes, software_nodes, or a second
- * formula. Local updates best-effort POST site-presence so runtime
- * can count this host. Never invent bots. Exclude HDJ.
+ * Nodes = human_mesh_users + human_uses (numeric j.nodes, else the
+ * sum, else legacy j.live_nodes, on the Nodes side only). Live Nodes
+ * = human_mesh_users + this host's concurrent website viewers, or
+ * runtime live_nodes when that payload already includes site viewers
+ * and is not the human_uses interaction counter. Operator lock
+ * 2026-09-21. software_nodes stay off the pill.
+ * A nodes/live_nodes figure equal to human_uses is interactions, not
+ * Live Nodes people. A mesh peek timeout uses the last good peek or
+ * paints — (unknown), never 0/0. Local updates best-effort POST
+ * site-presence. Never invent bots. Exclude HDJ.
  * Also fetches /v1/mesh/status and /v1/mesh/nodes
  * via AZIEL_RUNTIME (else HTTPS origin). Read-only suite presence is
  * on — display from runtime. GET never enables.
@@ -28,8 +30,18 @@ import {
   RUNTIME_LOCAL,
 } from "./copy.js";
 import { allowOriginRefresh } from "./costGuard.js";
-import { MESH_CACHE_URL, MESH_NODES_CACHE_URL, MESH_STATUS_CACHE_URL, MESH_TTL_SEC, readJsonSnapshot, writeJsonSnapshot } from "./edgeCache.js";
-import { fetchRuntimeJson } from "./liveCatalog.js";
+import {
+  MESH_CACHE_URL,
+  MESH_LAST_GOOD_CACHE_URL,
+  MESH_LAST_GOOD_KV,
+  MESH_LAST_GOOD_TTL_SEC,
+  MESH_NODES_CACHE_URL,
+  MESH_STATUS_CACHE_URL,
+  MESH_TTL_SEC,
+  readJsonSnapshot,
+  writeJsonSnapshot,
+} from "./edgeCache.js";
+import { fetchRuntimeJsonResult } from "./liveCatalog.js";
 import { HDJ_EXCLUDED, runtimeAggregatesFleetViewers } from "./presence.js";
 import { reColdStoreCite, sporeCite } from "./survival.js";
 
@@ -146,7 +158,7 @@ export const MESH_DEFAULT = "on";
 /** Public Live Nodes = runtime live_nodes. Fleet viewers. Never Softwares. */
 export const LIVE_NODES_PLANE = "human-mesh-users-site-viewers";
 export const LIVE_NODES_NOTE =
-  "Public Live Nodes (live_nodes) equal runtime GET /v1/mesh live_nodes: human mesh users (join/heartbeat/presence with human bearers) plus concurrent website viewers (site_live_viewers) on godlock.uk, azieleliab.com, and azielcorpuslibrary.net. Isolated humans stay on isolated_nodes. HDJ is excluded. Not Softwares catalog length. Not downloaded Softwares instances. Not software_nodes. software_nodes is the {slug}-worker roster and never feeds this pill. The public pill does not add a local-only site_live_nodes count. Live Nodes does not invent users. Zero is honest when runtime live_nodes is 0.";
+  "Public Live Nodes equal human mesh users plus concurrent human page viewers. When runtime GET /v1/mesh live_nodes already includes site viewers and that figure is not the human_uses interaction counter, the pill shows that fleet total and does not add site_live_nodes again. Otherwise Live Nodes is human mesh users plus this host's site_live_nodes. A nodes or live_nodes value equal to human_uses is interactions (including /mcp traffic), not distinct people, and does not fill Live Nodes. software_nodes is the {slug}-worker roster and never feeds this pill. A mesh peek timeout reuses the last good peek or paints — (unknown), never 0/0. HDJ is excluded. Live Nodes does not invent users. A measured zero stays zero.";
 export const SOFTWARE_NODES_NOTE =
   "software_nodes / rollup.software count Softwares product Workers ({slug}-worker) from suite-presence fan-out. They may appear in the mesh roster. They must never feed public Live Nodes.";
 export const LIVE_NODES_LLMS =
@@ -420,17 +432,184 @@ export function meshIsOn(mesh) {
   return meshEnabled(mesh);
 }
 
+export const DOWNLOADS_REASON =
+  "azieleliab.com has no download counter. The film file is an uncounted static asset. Suite-pack downloads stay on aziel-runtime GET /download and are not copied here.";
+
+export const NODES_DEFINITION = "human_mesh_users + human_uses";
+export const LIVE_NODES_DEFINITION =
+  "human_mesh_users + this host's concurrent human page viewers, or runtime live_nodes when that payload already includes site viewers and is not the human_uses interaction counter";
+
+/** Runtime measurement. A hub wrapper with enabled false is not a measurement. */
+export function measurementDoc(mesh) {
+  if (!mesh || typeof mesh !== "object" || Array.isArray(mesh)) return null;
+  if (mesh.mesh_peek === "timeout" && mesh.mesh_stale !== true) return null;
+  if (mesh.origin && typeof mesh.origin === "object" && !Array.isArray(mesh.origin)) {
+    return mesh.origin.enabled === false ? null : mesh.origin;
+  }
+  const wrapper = typeof mesh.mesh_origin === "string" || mesh.product === "azieleliab";
+  if (wrapper && mesh.enabled !== true) return null;
+  if (mesh.enabled === false) return null;
+  return mesh;
+}
+
+/** Nodes = human mesh users + human uses. Legacy live_nodes fills Nodes only. */
+export function displayNodesCount(mesh) {
+  const doc = measurementDoc(mesh);
+  if (!doc) return null;
+  const users = finiteCount(doc.human_mesh_users);
+  const uses = finiteCount(doc.human_uses);
+  if (users != null || uses != null) return (users || 0) + (uses || 0);
+  const named = numericNodesField(doc);
+  if (named != null) return named;
+  const legacy = finiteCount(doc.live_nodes);
+  if (legacy != null) return legacy;
+  return null;
+}
+
+/**
+ * Live Nodes people. human_uses, software_nodes, and a live_nodes figure
+ * equal to human_uses never count as people.
+ */
+export function displayLiveCount(mesh) {
+  const doc = measurementDoc(mesh);
+  const site = siteLiveFrom(mesh);
+  if (!doc) return site;
+  const uses = finiteCount(doc.human_uses);
+  const fleet = finiteCount(doc.live_nodes);
+  const users = finiteCount(doc.human_mesh_users);
+  const fleetIsUses = fleet != null && uses != null && fleet === uses;
+  if (runtimeAggregatesFleetViewers(doc) && fleet != null && !fleetIsUses) return fleet;
+  if (users != null) return users + site;
+  if (site > 0) return site;
+  return null;
+}
+
+export function dualParts(mesh) {
+  const src = mesh && typeof mesh === "object" ? mesh : null;
+  const timeout = !!(src && src.mesh_peek === "timeout" && src.mesh_stale !== true);
+  const site = siteLiveFrom(src);
+  if (timeout) {
+    return {
+      nodes: null,
+      live: site > 0 ? site : null,
+      site,
+      timeout: true,
+      stale: false,
+      nodes_unknown: true,
+      live_unknown: !(site > 0),
+      peek: "timeout",
+    };
+  }
+  const doc = measurementDoc(src);
+  if (!doc) {
+    const viewers = site > 0;
+    return {
+      nodes: viewers ? null : 0,
+      live: site,
+      site,
+      timeout: false,
+      stale: false,
+      nodes_unknown: viewers,
+      live_unknown: false,
+      peek: (src && src.mesh_peek) || "miss",
+    };
+  }
+  const nodes = displayNodesCount(src);
+  const live = displayLiveCount(src);
+  return {
+    nodes,
+    live,
+    site,
+    timeout: false,
+    stale: !!(src && src.mesh_stale),
+    nodes_unknown: nodes == null,
+    live_unknown: live == null,
+    peek: (src && src.mesh_peek) || "ok",
+  };
+}
+
+export function formatDual(parts) {
+  const row = parts || { nodes: 0, live: 0, timeout: false };
+  if (row.timeout && row.nodes == null && row.live == null) return "—/—";
+  const n = row.nodes == null ? "—" : String(row.nodes);
+  const l = row.live == null ? "—" : String(row.live);
+  if (row.timeout && n === "—" && l === "0") return "—/—";
+  return n + "/" + l;
+}
+
 export function liveNodesLabel(mesh) {
-  return meshNodesCount(mesh) + "/" + meshLiveNodesCount(mesh);
+  return formatDual(dualParts(mesh));
+}
+
+export function landingStatsBody(mesh, views) {
+  const parts = dualParts(mesh);
+  const doc = parts.timeout ? null : measurementDoc(mesh);
+  const users = doc ? finiteCount(doc.human_mesh_users) : null;
+  const uses = doc ? finiteCount(doc.human_uses) : null;
+  const software = doc ? finiteCount(doc.software_nodes) : null;
+  const included = !!(doc && runtimeAggregatesFleetViewers(doc));
+  const body = {
+    ok: true,
+    views: Number.isFinite(Number(views)) ? Number(views) : 0,
+    product: "azieleliab",
+    site: "azieleliab.com",
+    author: AUTHOR,
+    nodes: parts.nodes,
+    live_nodes: parts.live,
+    site_live_nodes: parts.site,
+    human_mesh_users: users,
+    human_uses: uses,
+    software_nodes: software,
+    downloads: null,
+    downloads_reason: DOWNLOADS_REASON,
+    hdj_excluded: HDJ_EXCLUDED,
+    invent_users: false,
+    uses_are_not_people: true,
+    nodes_unknown: parts.nodes_unknown,
+    live_nodes_unknown: parts.live_unknown,
+    live_nodes_partial: !included,
+    mesh_peek: parts.peek,
+    mesh_stale: parts.stale,
+    nodes_definition: NODES_DEFINITION,
+    live_nodes_definition: LIVE_NODES_DEFINITION,
+    software_nodes_reason:
+      "software_nodes is the runtime {slug}-worker roster. It never feeds Nodes or Live Nodes.",
+  };
+  if (parts.nodes == null) {
+    body.nodes_reason = parts.timeout
+      ? "Mesh peek timed out and no last-good Nodes reading was stored. Nodes were not painted as 0."
+      : "runtime GET /v1/mesh did not return human_mesh_users or human_uses. Site viewers and interaction counters are not copied into Nodes.";
+  }
+  if (parts.live == null) {
+    body.live_nodes_reason = parts.timeout
+      ? "Mesh peek timed out and no concurrent viewers were present. Live Nodes were not painted as 0."
+      : "human_mesh_users was absent and this host had no concurrent viewers. A uses-sized live_nodes figure was not used as people.";
+  } else if (parts.timeout) {
+    body.live_nodes_reason =
+      "Mesh peek timed out. Live Nodes is this host's concurrent human page viewers only. Nodes were not painted as 0.";
+  } else if (!included) {
+    body.live_nodes_reason =
+      users == null
+        ? "human_mesh_users was not in the mesh payload. live_nodes is this host's concurrent human page viewers only."
+        : "Live Nodes is human_mesh_users plus this host's site_live_nodes. human_uses is not added. software_nodes is not added.";
+  } else {
+    body.live_nodes_reason =
+      "runtime live_nodes already includes site viewers and is not the human_uses interaction counter. This host's site_live_nodes is not added again.";
+  }
+  if (parts.stale) {
+    body.mesh_stale_reason = "Mesh peek timed out. Counts are the last good peek, with this host's current site_live_nodes where the fleet total does not already include viewers.";
+  }
+  return body;
 }
 
 export function publicClockFields(mesh) {
   const src = mesh && typeof mesh === "object" ? mesh : {};
+  const parts = dualParts(src);
   const includes = src.live_nodes_includes_viewers === true || runtimeAggregatesFleetViewers(meshSource(src));
   return {
-    nodes: meshNodesCount(src),
-    live_nodes: meshLiveNodesCount(src),
-    site_live_nodes: siteLiveFrom(src),
+    nodes: parts.nodes,
+    live_nodes: parts.live,
+    site_live_nodes: parts.site,
     mesh_live_nodes: rawMeshPresence(src),
     mesh_enabled: meshIsOn(src),
     mesh_locked: finiteCount(src.locked_nodes) ?? 0,
@@ -439,6 +618,10 @@ export function publicClockFields(mesh) {
     uses: humanUses(src),
     live_nodes_includes_viewers: includes,
     includes_site_viewers: includes,
+    mesh_peek: parts.peek,
+    mesh_stale: parts.stale,
+    nodes_unknown: parts.nodes_unknown,
+    live_nodes_unknown: parts.live_unknown,
   };
 }
 
@@ -470,7 +653,7 @@ export const MESH_OPENAPI_PATHS = {
   [MESH_NODES_PATH]: MESH_OPENAPI_GET(
     "getMeshNodes",
     "mesh nodes",
-    "QNM-BUILD-1.0 node roster. Chrome Nodes/Live Nodes clock from GET /v1/mesh (nodes = users+uses; Live Nodes = runtime live_nodes). Roster length is not the pill. Display from runtime (0/0 when unavailable). GET never enables. Cross-map QNS-CD-1.0. No public qnsd proxy. Author Aziel Eliab.",
+    "QNM-BUILD-1.0 node roster. Chrome Nodes/Live Nodes clock from GET /v1/mesh (nodes = users+uses; Live Nodes = human mesh users + concurrent site viewers, or runtime live_nodes when that fleet already includes viewers and is not the human_uses interaction counter). Roster length is not the pill. A completed miss with no viewers is 0/0. A peek timeout is unknown, not 0/0. GET never enables. Cross-map QNS-CD-1.0. No public qnsd proxy. Author Aziel Eliab.",
   ),
 };
 
@@ -577,21 +760,63 @@ function meshCacheRelease(doc) {
   return doc;
 }
 
+function usablePeek(doc) {
+  return !!(doc && doc.ok === true && doc.mesh_peek !== "timeout");
+}
+
+async function readLastGood(env) {
+  return readJsonSnapshot(env, { kvKey: MESH_LAST_GOOD_KV, cacheUrl: MESH_LAST_GOOD_CACHE_URL });
+}
+
+function writeLastGood(env, ctx, doc) {
+  return writeJsonSnapshot(env, ctx, {
+    cacheUrl: MESH_LAST_GOOD_CACHE_URL,
+    kvKey: MESH_LAST_GOOD_KV,
+    ttlSec: MESH_LAST_GOOD_TTL_SEC,
+  }, doc);
+}
+
 async function loadMeshDoc(env, ctx, opts, path, cacheUrl, wrap) {
+  const remember = path === MESH_PATH;
   const packed = await readJsonSnapshot(env, { cacheUrl });
-  if (meshCacheFresh(packed)) return meshCacheRelease(packed);
+  if (meshCacheFresh(packed) && packed.mesh_peek !== "timeout") return meshCacheRelease(packed);
   const request = opts && opts.request;
   const allowFetch = !request || allowOriginRefresh(request, env, "mesh");
-  const fetched = allowFetch ? await fetchRuntimeJson(path, env, { loose: true }) : null;
-  if (!fetched) {
-    if (packed && packed.ok === true) return meshCacheRelease(packed);
-    return wrap(null);
+  if (!allowFetch) {
+    if (usablePeek(packed)) return meshCacheRelease(packed);
+    const blocked = wrap(null);
+    blocked.mesh_peek = "miss";
+    return blocked;
   }
-  const body = wrap(fetched);
-  const cached = { ...body, mesh_cache_at: Date.now() };
-  const write = writeJsonSnapshot(env, ctx, { cacheUrl, ttlSec: MESH_TTL_SEC }, cached);
-  if (write && typeof write.then === "function") await write;
-  return body;
+  const result = await fetchRuntimeJsonResult(path, env, { loose: true });
+  if (result && result.doc) {
+    const body = wrap(result.doc);
+    body.mesh_peek = "ok";
+    const cached = { ...body, mesh_cache_at: Date.now(), mesh_peek: "ok" };
+    const write = writeJsonSnapshot(env, ctx, { cacheUrl, ttlSec: MESH_TTL_SEC }, cached);
+    const last = remember ? writeLastGood(env, ctx, cached) : null;
+    if (write && typeof write.then === "function") await write;
+    if (last && typeof last.then === "function") await last;
+    return body;
+  }
+  if (result && result.timeout) {
+    const stale = usablePeek(packed) ? packed : remember ? await readLastGood(env) : null;
+    if (usablePeek(stale)) {
+      const body = meshCacheRelease({ ...stale });
+      body.mesh_peek = "last-good";
+      body.mesh_stale = true;
+      return body;
+    }
+    const empty = wrap(null);
+    empty.mesh_peek = "timeout";
+    empty.nodes_unknown = true;
+    empty.live_nodes_unknown = true;
+    return empty;
+  }
+  if (usablePeek(packed)) return meshCacheRelease(packed);
+  const miss = wrap(null);
+  miss.mesh_peek = "miss";
+  return miss;
 }
 
 export async function loadMesh(env, ctx, opts) {

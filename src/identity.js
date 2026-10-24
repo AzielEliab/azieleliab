@@ -188,7 +188,7 @@ export const DISAMBIGUATING_DESCRIPTION =
 
 export const LIVE_NODES_FAQ_NAME = "What are Live Nodes?";
 export const LIVE_NODES_FAQ_ANSWER =
-  "Live Nodes on the clock equal runtime GET /v1/mesh live_nodes: human mesh users plus concurrent site viewers on godlock.uk, azieleliab.com, and azielcorpuslibrary.net. Nodes stay human mesh users plus cited human uses. This hub best-effort POSTs concurrent human page viewers to runtime POST /v1/mesh/site-presence as host azieleliab.com, viewers, kind human-page after a local presence update. The public pill does not add a local-only site_live_nodes figure. HDJ viewers are excluded. software_nodes is the Softwares {slug}-worker roster and stays off the Live Nodes pill. Downloaded Softwares instances stay instance_nodes. Uses are interaction counters, not unique people. Zero is honest when runtime live_nodes is 0.";
+  "Live Nodes on the public clock are human mesh users plus this host's concurrent website viewers. When runtime GET /v1/mesh live_nodes already includes site viewers and that figure is not the human_uses interaction counter, the clock shows that fleet total and does not add site_live_nodes again. Nodes stay human mesh users plus cited human uses. A mesh nodes figure equal to human_uses counts interactions, not distinct people, and is not Live Nodes. This hub best-effort POSTs concurrent human page viewers to runtime POST /v1/mesh/site-presence as host azieleliab.com, viewers, kind human-page after a local presence update. A mesh peek timeout reuses the last good peek or shows unknown rather than 0/0. HDJ viewers are excluded. software_nodes is the Softwares {slug}-worker roster and stays off the Live Nodes pill. Downloaded Softwares instances stay instance_nodes. Uses are interaction counters, not unique people. A measured zero stays zero. GET /v1/mesh live_nodes remains the raw runtime field and can differ from the public clock. This host has no download counter.";
 
 export const SPECTRALLOCK_FAQ_NAME = "What is SpectralLock?";
 
@@ -299,7 +299,7 @@ export const STATS_COUNTERS = [
     host: "azieleliab.com",
     label: "azieleliab.com/v1/stats",
     url: CANON_ORIGIN + "/v1/stats",
-    kind: "views",
+    kind: "views, nodes, live_nodes; downloads null",
   },
   {
     host: "azielcorpuslibrary.net",

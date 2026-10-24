@@ -134,6 +134,9 @@ import {
   MESH_NOTE,
   MESH_PATH,
   MESH_STATUS_PATH,
+  DOWNLOADS_REASON,
+  LIVE_NODES_DEFINITION,
+  NODES_DEFINITION,
   liveNodesCount,
   liveNodesLabel,
   meshLiveNodesCount,
@@ -173,6 +176,43 @@ function isolatedEnv(extra) {
 
 function envWithViews(seed = 0) {
   return isolatedEnv({ VIEWS: memoryKv(seed) });
+}
+
+function missStats(views, site) {
+  const viewers = site > 0;
+  const body = {
+    ok: true,
+    views,
+    product: "azieleliab",
+    site: "azieleliab.com",
+    author: "Aziel Eliab",
+    nodes: viewers ? null : 0,
+    live_nodes: site,
+    site_live_nodes: site,
+    human_mesh_users: null,
+    human_uses: null,
+    software_nodes: null,
+    downloads: null,
+    downloads_reason: DOWNLOADS_REASON,
+    hdj_excluded: true,
+    invent_users: false,
+    uses_are_not_people: true,
+    nodes_unknown: viewers,
+    live_nodes_unknown: false,
+    live_nodes_partial: true,
+    mesh_peek: "miss",
+    mesh_stale: false,
+    nodes_definition: NODES_DEFINITION,
+    live_nodes_definition: LIVE_NODES_DEFINITION,
+    software_nodes_reason: "software_nodes is the runtime {slug}-worker roster. It never feeds Nodes or Live Nodes.",
+    live_nodes_reason:
+      "human_mesh_users was not in the mesh payload. live_nodes is this host's concurrent human page viewers only.",
+  };
+  if (viewers) {
+    body.nodes_reason =
+      "runtime GET /v1/mesh did not return human_mesh_users or human_uses. Site viewers and interaction counters are not copied into Nodes.";
+  }
+  return body;
 }
 
 function softwareHtml(softwareItems) {
@@ -2528,33 +2568,85 @@ describe("pageviews", () => {
     const stats = await fetchPath("/v1/stats", {}, env);
     assert.equal(stats.status, 200);
     assert.equal(stats.headers.get("access-control-allow-origin"), "*");
-    assert.deepEqual(await stats.json(), {
-      ok: true,
-      views: 5,
-      product: "azieleliab",
-      author: "Aziel Eliab",
-    });
+    assert.deepEqual(await stats.json(), missStats(5, 1));
   });
 
   it("POST /v1/view increments; GET /v1/view does not", async () => {
     const env = envWithViews(10);
     const read = await fetchPath("/v1/view", { headers: { "user-agent": "Mozilla/5.0" } }, env);
-    assert.deepEqual(await read.json(), {
-      ok: true,
-      views: 10,
-      product: "azieleliab",
-      author: "Aziel Eliab",
-    });
+    assert.deepEqual(await read.json(), missStats(10, 0));
     const inc = await fetchPath("/v1/view", { method: "POST", headers: { "user-agent": "Mozilla/5.0" } }, env);
-    assert.deepEqual(await inc.json(), {
-      ok: true,
-      views: 11,
-      product: "azieleliab",
-      author: "Aziel Eliab",
-    });
+    assert.deepEqual(await inc.json(), missStats(11, 0));
     const opt = await fetchPath("/v1/view", { method: "OPTIONS" }, env);
     assert.equal(opt.status, 204);
     assert.equal(opt.headers.get("access-control-allow-origin"), "*");
+  });
+
+  it("does not paint 0/0 when a mesh peek times out", async () => {
+    const env = {
+      VIEWS: memoryKv(3),
+      AZIEL_RUNTIME: {
+        async fetch() {
+          const err = new Error("The operation was aborted due to timeout");
+          err.name = "TimeoutError";
+          throw err;
+        },
+      },
+    };
+    const stats = await fetchPath("/v1/stats", {}, env);
+    const body = await stats.json();
+    assert.equal(body.mesh_peek, "timeout");
+    assert.equal(body.mesh_stale, false);
+    assert.equal(body.nodes, null);
+    assert.equal(body.live_nodes, null);
+    assert.equal(body.views, 3);
+    assert.equal(body.downloads, null);
+    const human = await fetchPath("/", { headers: { "user-agent": "Mozilla/5.0" } }, env);
+    const html = await human.text();
+    assert.ok(!html.includes(">0/0<"));
+    assert.ok(html.includes('id="Nodes">—<'));
+    assert.ok(html.includes('id="LiveNodes">1<'));
+  });
+
+  it("reuses the last good mesh peek after a timeout", async () => {
+    let mode = "ok";
+    const env = {
+      VIEWS: memoryKv(0),
+      AZIEL_RUNTIME: {
+        async fetch() {
+          if (mode === "timeout") {
+            const err = new Error("The operation was aborted due to timeout");
+            err.name = "TimeoutError";
+            throw err;
+          }
+          return new Response(JSON.stringify({
+            ok: true,
+            enabled: true,
+            nodes: 8,
+            live_nodes: 5,
+            human_mesh_users: 2,
+            human_uses: 6,
+            software_nodes: 41,
+          }), { status: 200, headers: { "content-type": "application/json" } });
+        },
+      },
+    };
+    const first = await fetchPath("/v1/stats", {}, env);
+    const firstBody = await first.json();
+    assert.equal(firstBody.nodes, 8);
+    assert.equal(firstBody.live_nodes, 2);
+    assert.equal(firstBody.mesh_peek, "ok");
+    assert.equal(firstBody.mesh_stale, false);
+    assert.equal(firstBody.software_nodes, 41);
+    mode = "timeout";
+    const second = await fetchPath("/v1/stats", {}, env);
+    const body = await second.json();
+    assert.equal(body.mesh_peek, "last-good");
+    assert.equal(body.mesh_stale, true);
+    assert.equal(body.nodes, 8);
+    assert.equal(body.live_nodes, 2);
+    assert.notEqual(body.live_nodes, body.human_uses);
+    assert.equal(body.downloads, null);
   });
 
   it("counts concurrent human page viewers on Live Nodes and ignores bots and HDJ", async () => {
@@ -2565,7 +2657,12 @@ describe("pageviews", () => {
     assert.ok(html.includes('class="theater"'));
     assert.ok(!html.includes(">0/0<"));
     assert.ok(!html.includes('id="aziel-live-nodes"'));
-    assert.ok(!html.includes("/heartbeat"));
+    assert.ok(!html.includes('id="views"'));
+    assert.ok(html.includes('id="Nodes">—<'));
+    assert.ok(html.includes('id="LiveNodes">1<'));
+    assert.ok(html.includes('id="stat-views"'));
+    assert.ok(html.includes('id="stat-downloads"'));
+    assert.ok(html.includes("/heartbeat"));
     assert.doesNotMatch(html, /\(mesh\|\|0\)\+site|mesh_live_nodes/);
     assert.doesNotMatch(html, /hedidntjump\.com\/count|hedidntjump\.com\/heartbeat/i);
 
@@ -2579,7 +2676,10 @@ describe("pageviews", () => {
     const clock = await count.json();
     assert.equal(clock.ok, true);
     assert.equal(clock.site_live_nodes, 1);
-    assert.equal(clock.live_nodes, 0);
+    assert.equal(clock.nodes, null);
+    assert.equal(clock.live_nodes, 1);
+    assert.equal(clock.mesh_peek, "miss");
+    assert.equal(clock.nodes_unknown, true);
     assert.equal(clock.hdj_excluded, true);
     assert.equal(clock.hdj, false);
     assert.equal(clock.invent_users, false);
@@ -2600,6 +2700,7 @@ describe("pageviews", () => {
     const mesh = await fetchPath("/v1/mesh", { headers: { "user-agent": "Mozilla/5.0" } }, env);
     const meshDoc = await mesh.json();
     assert.equal(meshDoc.site_live_nodes, 1);
+    assert.equal(meshDoc.live_nodes, 0);
     assert.equal(meshDoc.hdj_excluded, true);
     assert.equal(meshDoc.site_presence_local, true);
   });
@@ -2638,6 +2739,8 @@ describe("pageviews", () => {
     assert.ok(!html.includes(">4/12<"));
     assert.ok(!html.includes(">4/13<"));
     assert.ok(!html.includes('id="aziel-live-nodes"'));
+    assert.ok(html.includes('id="Nodes">4<'));
+    assert.ok(html.includes('id="LiveNodes">12<'));
     assert.equal(posts.length, 1);
     assert.deepEqual(posts[0], { host: "azieleliab.com", viewers: 1, kind: "human-page" });
 
@@ -3369,7 +3472,7 @@ describe("suite node mesh", () => {
     assert.equal(meshQuietLabel(null), "");
     assert.equal(meshQuietLabel({ origin: { enabled: true } }), "mesh on");
     assert.equal(liveNodesLabel(null), "0/0");
-    assert.equal(liveNodesLabel({ origin: { enabled: true, live_nodes: 40 } }), "40/40");
+    assert.equal(liveNodesLabel({ origin: { enabled: true, live_nodes: 40 } }), "40/—");
     assert.equal(meshNodesCount({ origin: { enabled: true, live_nodes: 40 } }), 40);
     assert.equal(meshLiveNodesCount({ origin: { enabled: true, live_nodes: 40 } }), 40);
     assert.equal(liveNodesCount({ enabled: true, rollup: { live: 40 } }), 0);
@@ -3441,7 +3544,22 @@ describe("suite node mesh", () => {
       liveNodesLabel(overlaySitePresence({
         origin: { enabled: true, nodes: 28033, live_nodes: 4, human_mesh_users: 4, human_uses: 28029 },
       }, 3)),
-      "28033/4",
+      "28033/7",
+    );
+    assert.equal(
+      liveNodesLabel({
+        origin: {
+          enabled: true,
+          nodes: 500,
+          live_nodes: 500,
+          human_mesh_users: 0,
+          human_uses: 500,
+          includes_site_viewers: true,
+          live_nodes_plane: "human-mesh-users-site-viewers",
+        },
+        site_live_nodes: 2,
+      }),
+      "500/2",
     );
     assert.equal(
       meshLiveNodesCount(overlaySitePresence({
@@ -3706,7 +3824,10 @@ describe("suite node mesh", () => {
     const hub = await fetchPath("/aziel", { headers: { "user-agent": "Mozilla/5.0" } }, env);
     const hubHtml = await hub.text();
     assert.ok(hubHtml.includes(">mesh on<"));
-    assert.ok(hubHtml.includes(">3/3<"));
+    assert.ok(hubHtml.includes(">3/2<"));
+    assert.ok(hubHtml.includes('id="Nodes">3<'));
+    assert.ok(hubHtml.includes('id="LiveNodes">2<'));
+    assert.ok(!hubHtml.includes(">3/3<"));
     assert.ok(!hubHtml.includes(">4/13<"));
     assert.ok(!hubHtml.includes(">Live Nodes · 3<"));
     assert.ok(!hubHtml.includes(">Live Nodes · 41<"));
@@ -3716,7 +3837,8 @@ describe("suite node mesh", () => {
     assert.ok(hubHtml.includes('name="aziel-mesh-status"'));
     const softwarePage = await fetchPath("/software", {}, env);
     const softwareHtml = await softwarePage.text();
-    assert.ok(softwareHtml.includes(">3/3<"));
+    assert.ok(softwareHtml.includes(">3/2<"));
+    assert.ok(softwareHtml.includes('id="LiveNodes">2<'));
     assert.ok(!softwareHtml.includes(">Live Nodes · 3<"));
     assert.ok(!softwareHtml.includes(">Live Nodes · 41<"));
     assert.ok(softwareHtml.includes('href="/v1/mesh"'));
@@ -3921,12 +4043,7 @@ describe("edge cache and cost", () => {
     assert.ok(!bBody.includes('id="views"'));
 
     const stats = await fetchPath("/v1/stats", {}, env);
-    assert.deepEqual(await stats.json(), {
-      ok: true,
-      views: 6,
-      product: "azieleliab",
-      author: "Aziel Eliab",
-    });
+    assert.deepEqual(await stats.json(), missStats(6, 1));
     assert.ok(gets <= getsAfterFirst);
 
     const kv = memoryKv(10);

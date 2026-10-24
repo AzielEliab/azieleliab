@@ -27,6 +27,7 @@ import {
   MESH_PATH,
   MESH_STATUS_PATH,
   meshSnapshot,
+  landingStatsBody,
   overlaySitePresence,
   publicClockFields,
 } from "./mesh.js";
@@ -98,7 +99,7 @@ import {
 } from "./redline.js";
 import { SHELVES_JSON_PATH, SHELVES_PATH, shelvesDoc } from "./shelves.js";
 import { SURVIVAL_JSON_PATH, SURVIVAL_PATH, loadSurvival } from "./survival.js";
-import { incrementViews, isBot, readViews, viewsBody } from "./views.js";
+import { incrementViews, isBot, readViews } from "./views.js";
 
 const SECURITY = {
   "X-Content-Type-Options": "nosniff",
@@ -473,7 +474,10 @@ export async function handleRequest(request, env = {}, ctx) {
     path === MESH_STATUS_PATH ||
     path === MESH_NODES_PATH ||
     isCountPath(path) ||
-    isHeartbeatPath(path);
+    isHeartbeatPath(path) ||
+    path === "/" ||
+    path === "/v1/stats" ||
+    path === "/v1/view";
   const needsSurvival =
     path === "/llms.txt" ||
     path === "/ai.txt" ||
@@ -500,7 +504,7 @@ export async function handleRequest(request, env = {}, ctx) {
   let res;
   if (path === "/") {
     await noteViews(request, env, ctx);
-    res = html(filmTheaterHtml());
+    res = html(filmTheaterHtml(landingStatsBody(meshDocLive, await readViews(env))));
   } else if (aboutPath) {
     res = html(
       pageHtml(await readViews(env), doors, meshDocLive, live && live.version, {
@@ -593,9 +597,9 @@ export async function handleRequest(request, env = {}, ctx) {
   } else if (path === UPDATE_PATH || path === UPDATE_CHECK_PATH) {
     res = json(await loadUpdateCheck(env, ctx, { request }), JSON_SHORT_CACHE);
   } else if (path === "/v1/stats" || (path === "/v1/view" && request.method !== "POST")) {
-    res = json(viewsBody(await readViews(env)));
+    res = json(landingStatsBody(meshDocLive, await readViews(env)));
   } else if (path === "/v1/view" && request.method === "POST") {
-    res = json(viewsBody(await incrementViews(env)));
+    res = json(landingStatsBody(meshDocLive, await incrementViews(env)));
   } else {
     res = html(notFoundHtml(), 404);
   }

@@ -45,7 +45,7 @@ import {
   resolveRuntimeVersion,
 } from "./copy.js";
 import { qrImg } from "./qr.js";
-import { MESH_LOCAL, MESH_STATUS_LOCAL, QNM_SPEC, QNS_CD_SPEC, dualNodesTitle, liveNodesLabel, meshQuietLabel } from "./mesh.js";
+import { DOWNLOADS_REASON, MESH_LOCAL, MESH_STATUS_LOCAL, QNM_SPEC, QNS_CD_SPEC, dualNodesTitle, liveNodesLabel, meshQuietLabel } from "./mesh.js";
 import { SURVIVAL_LOCAL } from "./survival.js";
 import {
   identityDiscoveryLinks,
@@ -613,12 +613,26 @@ export function viewsPill(views) {
 }
 
 export function liveNodesPill(mesh) {
+  const label = liveNodesLabel(mesh);
+  const split = label.indexOf("/");
+  const nodes = split < 0 ? label : label.slice(0, split);
+  const live = split < 0 ? "" : label.slice(split + 1);
   return (
     '<a class="pill" id="aziel-live-nodes" href="/v1/mesh" title="' +
-    attr(dualNodesTitle(mesh)) +
-    '">' +
-    esc(liveNodesLabel(mesh)) +
-    "</a>"
+    attr(dualNodesTitle()) +
+    '"><b id="Nodes">' +
+    esc(nodes) +
+    '</b>/<b id="LiveNodes">' +
+    esc(live) +
+    "</b></a>"
+  );
+}
+
+export function downloadsPill() {
+  return (
+    '<span class="pill" id="stat-downloads" title="' +
+    attr(DOWNLOADS_REASON) +
+    '">—<span>Downloads</span></span>'
   );
 }
 
@@ -640,28 +654,30 @@ function meshQuietHtml(mesh) {
 const LIVE_NODES_SCRIPT = `<script>
 (function(){
   var el=document.getElementById("aziel-live-nodes");
-  if(!el||!el.textContent)return;
-  function finite(n){n=Number(n);return Number.isFinite(n)&&n>=0?n:null}
-  function clockField(doc,key){
-    if(!doc||typeof doc!=="object")return null;
-    if(key==="nodes"&&(Array.isArray(doc.nodes)||typeof doc.nodes==="string"))return null;
-    if(key==="software_nodes"||key==="active_nodes"||key==="site_live_nodes")return null;
-    return finite(doc[key]);
+  if(!el)return;
+  function paint(v){
+    if(v==null||v==="") return "—";
+    var n=Number(v);
+    if(!Number.isFinite(n)||n<0) return "—";
+    return String(n);
   }
   function apply(d){
-    if(!d)return;
-    var src=d.origin&&typeof d.origin==="object"&&!Array.isArray(d.origin)?d.origin:null;
-    var nodes=clockField(d,"nodes");
-    if(nodes==null&&src) nodes=clockField(src,"nodes");
-    var live=clockField(d,"live_nodes");
-    if(live==null&&src) live=clockField(src,"live_nodes");
-    el.textContent=(nodes==null?0:nodes)+"/"+(live==null?0:live);
-    el.title=${JSON.stringify(dualNodesTitle())};
+    if(!d||typeof d!=="object")return;
+    var nodesEl=document.getElementById("Nodes");
+    var liveEl=document.getElementById("LiveNodes");
+    var n=("nodes" in d)?d.nodes:null;
+    var l=("live_nodes" in d)?d.live_nodes:null;
+    var unknown=d.mesh_peek==="timeout"&&n==null&&(l==null||Number(l)===0);
+    if(nodesEl&&liveEl){
+      nodesEl.textContent=unknown?"—":paint(n);
+      liveEl.textContent=unknown?"—":paint(l);
+      return;
+    }
+    if(unknown){el.textContent="—/—";return;}
+    el.textContent=paint(n)+"/"+paint(l);
   }
   function beat(){
-    fetch("/heartbeat",{method:"POST",headers:{"Accept":"application/json","Content-Type":"application/json","User-Agent":"Mozilla/5.0"},body:"{}"}).then(function(r){return r.json();}).then(apply).catch(function(){
-      fetch("/v1/mesh",{headers:{"Accept":"application/json","User-Agent":"Mozilla/5.0"}}).then(function(r){return r.json();}).then(apply).catch(function(){});
-    });
+    fetch("/heartbeat",{method:"POST",headers:{"Accept":"application/json","Content-Type":"application/json"},body:"{}"}).then(function(r){return r.json();}).then(apply).catch(function(){});
   }
   beat();
   setInterval(beat,25000);
@@ -908,7 +924,7 @@ ${hashRedirectScript()}
 </head>
 <body>
 <main class="wrap">
-${brandRow("\n      " + viewsPill(views) + "\n      " + liveNodesPill(mesh))}
+${brandRow("\n      " + liveNodesPill(mesh) + "\n      " + viewsPill(views) + "\n      " + downloadsPill())}
   <h1 id="aziel">${esc(PROSE.title)}</h1>
   ${spineNav("home")}
   <article class="card lead">${paragraphs(PROSE.open)}</article>
@@ -955,7 +971,7 @@ ${hashRedirectScript()}
 </head>
 <body>
 <main class="wrap">
-${brandRow("\n      " + viewsPill(views) + "\n      " + liveNodesPill(mesh))}
+${brandRow("\n      " + liveNodesPill(mesh) + "\n      " + viewsPill(views) + "\n      " + downloadsPill())}
   ${spineNav(current)}
   <h1>${esc(heading)}</h1>
   <section class="card lead" id="${attr(section.hash || section.id)}">

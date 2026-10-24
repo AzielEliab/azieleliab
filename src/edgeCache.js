@@ -10,6 +10,10 @@ export const CATALOG_CACHE_URL = "https://www.azieleliab.com/__cache/software-ca
 export const MESH_CACHE_URL = "https://www.azieleliab.com/__cache/mesh-v3";
 export const MESH_STATUS_CACHE_URL = "https://www.azieleliab.com/__cache/mesh-status-v3";
 export const MESH_NODES_CACHE_URL = "https://www.azieleliab.com/__cache/mesh-nodes-v3";
+/** Survives the short pill TTL so a peek timeout can reuse a real reading. */
+export const MESH_LAST_GOOD_CACHE_URL = "https://www.azieleliab.com/__cache/mesh-last-good-v1";
+export const MESH_LAST_GOOD_KV = "mesh:last-good:v1";
+export const MESH_LAST_GOOD_TTL_SEC = 24 * 60 * 60;
 export const UPDATE_CHECK_CACHE_URL = "https://www.azieleliab.com/__cache/update-check-v1";
 export const SURVIVAL_CACHE_URL = "https://www.azieleliab.com/__cache/survival-v1";
 
