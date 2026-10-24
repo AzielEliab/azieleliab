@@ -6,6 +6,7 @@
  */
 import { AUTHOR, AZIEL_PATH, CANON_ORIGIN, COMICS, DESCRIPTION, HASH_REDIRECTS, LIBRARY, LIBRARY_RUNTIME, RUNTIME_VERSION } from "./copy.js";
 import { personJsonLdScript } from "./identity.js";
+import { DOWNLOADS_REASON, DUAL_NODES_TITLE } from "./mesh.js";
 import { discoveryAlternateLinkTags, ROBOTS_INDEX } from "./seo.js";
 
 export const FILM_MP4_PATH = "/film/aziel-runtime.mp4";
@@ -130,10 +131,66 @@ export async function filmAssetResponse(pathname, request, env, extraHeaders) {
   return ranged(buf, request, headers);
 }
 
-export function filmGateHtml() {
+function filmCount(value, present) {
+  if (!present || value == null || value === "") return "—";
+  const n = Number(value);
+  if (!Number.isFinite(n) || n < 0) return "—";
+  return String(n);
+}
+
+function filmCountsHtml(stats) {
+  const present = !!(stats && typeof stats === "object");
+  const nodes = filmCount(present ? stats.nodes : null, present);
+  const live = filmCount(present ? stats.live_nodes : null, present);
+  const views = filmCount(present ? stats.views : null, present);
+  return (
+    '<p class="counts"><a href="/v1/stats" title="' +
+    esc(DUAL_NODES_TITLE) +
+    '"><b id="stat-nodes-live"><span id="Nodes">' +
+    esc(nodes) +
+    '</span>/<span id="LiveNodes">' +
+    esc(live) +
+    '</span></b> <span>Nodes / Live Nodes</span></a><a href="/v1/stats"><b id="stat-views">' +
+    esc(views) +
+    '</b> <span>Views</span></a><span id="stat-downloads" title="' +
+    esc(DOWNLOADS_REASON) +
+    '">— <span>Downloads</span></span></p>'
+  );
+}
+
+const FILM_COUNTS_SCRIPT = `<script>
+(function(){
+  function paint(v){
+    if(v==null||v==="") return "—";
+    var n=Number(v);
+    if(!Number.isFinite(n)||n<0) return "—";
+    return String(n);
+  }
+  function apply(d){
+    if(!d||typeof d!=="object") return;
+    var nodes=document.getElementById("Nodes");
+    var live=document.getElementById("LiveNodes");
+    var views=document.getElementById("stat-views");
+    var n=("nodes" in d)?d.nodes:null;
+    var l=("live_nodes" in d)?d.live_nodes:null;
+    var unknown=d.mesh_peek==="timeout"&&n==null&&(l==null||Number(l)===0);
+    if(nodes) nodes.textContent=unknown?"—":paint(n);
+    if(live) live.textContent=unknown?"—":paint(l);
+    if(views&&d.views!=null&&Number.isFinite(Number(d.views))&&Number(d.views)>=0) views.textContent=String(d.views);
+  }
+  function beat(){
+    fetch("/heartbeat",{method:"POST",headers:{"Accept":"application/json","Content-Type":"application/json"},body:"{}"}).then(function(r){return r.json();}).then(apply).catch(function(){});
+  }
+  beat();
+  setInterval(beat,25000);
+  document.addEventListener("visibilitychange",function(){if(!document.hidden)beat();});
+})();
+</script>`;
+
+export function filmGateHtml(stats) {
   return `<section class="theater" aria-label="Film">
   <div class="grain" aria-hidden="true"></div>
-  <header class="mast"><span>Aziel Runtime</span><span class="mast-dim">${RUNTIME_VERSION}</span><span class="mast-door">one door</span></header>
+  <header class="mast"><span>Aziel Runtime</span><span class="mast-dim">${RUNTIME_VERSION}</span>${filmCountsHtml(stats)}<span class="mast-door">one door</span></header>
   <div class="stage-wrap"><div class="stage">
     <i class="tick tl"></i><i class="tick tr"></i><i class="tick bl"></i><i class="tick br"></i>
     <video class="film" poster="${FILM_POSTER_PATH}" controls playsinline preload="metadata" aria-label="Aziel Runtime film. The face is withheld. You don’t get to know me. You get to understand the work. No caption track was published with this file.">
@@ -168,7 +225,8 @@ export function filmGateHtml() {
     <p class="download"><a href="${FILM_SRC}" download="aziel-runtime.mp4">Download the film</a></p>
   </div>
 </section>
-<script>(function(){var v=document.querySelector(".theater video.film");if(!v)return;v.addEventListener("play",function(){var s=v.closest(".stage");if(s)s.classList.add("is-playing");});})();</script>`;
+<script>(function(){var v=document.querySelector(".theater video.film");if(!v)return;v.addEventListener("play",function(){var s=v.closest(".stage");if(s)s.classList.add("is-playing");});})();</script>
+${FILM_COUNTS_SCRIPT}`;
 }
 
 export const THEATER_CSS = `
@@ -176,7 +234,10 @@ export const THEATER_CSS = `
 .theater .grain{pointer-events:none;z-index:1;opacity:.09;mix-blend-mode:overlay;background-image:url(${FILM_GRAIN_PATH});background-size:160px 160px;position:absolute;inset:0}
 .theater .mast{letter-spacing:.22em;text-transform:uppercase;color:#e6d4b5;align-items:baseline;gap:1.25rem;padding:1.1rem 1.4rem .2rem;font-size:.72rem;font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;display:flex;position:relative;z-index:2}
 .theater .mast-dim{color:#e6d4b58c}
-.theater .mast-door{color:#b0f0c4;letter-spacing:.28em;margin-left:auto}
+.theater .counts{display:flex;gap:.85rem;align-items:baseline;margin-left:auto;letter-spacing:.04em;text-transform:none}
+.theater .counts a,.theater .counts span{color:#e6d4b5;text-decoration:none}
+.theater .counts b{color:#b0f0c4;font-weight:500}
+.theater .mast-door{color:#b0f0c4;letter-spacing:.28em}
 .theater .stage-wrap{padding:.85rem 1.1rem .2rem;position:relative;z-index:2}
 .theater .stage{aspect-ratio:16/9;background:#000;width:min(1100px,100%);margin:0 auto;position:relative;box-shadow:0 30px 80px #0000008c}
 .theater .film{object-fit:cover;background:#000;width:100%;height:100%;display:block}
@@ -242,7 +303,7 @@ function theaterHashScript() {
 }
 
 /** Sole document for GET /. No hub markup, Softwares grid, or site chrome. */
-export function filmTheaterHtml() {
+export function filmTheaterHtml(stats) {
   const canonical = CANON_ORIGIN + "/";
   const image = CANON_ORIGIN + FILM_OG_PATH;
   return `<!doctype html>
@@ -273,7 +334,7 @@ ${personJsonLdScript()}
 <style>${THEATER_CSS}</style>
 </head>
 <body>
-${filmGateHtml()}
+${filmGateHtml(stats)}
 </body>
 </html>`;
 }

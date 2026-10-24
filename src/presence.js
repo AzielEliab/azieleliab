@@ -3,8 +3,10 @@
  * Operator lock 2026-09-21: Live Nodes includes current website viewers.
  * Pattern from godlock.uk /count site_live_nodes (5-minute heartbeat window).
  * After a local human update, best-effort POST /v1/mesh/site-presence
- * (AZIEL_RUNTIME, else the runtime HTTPS origin). Runtime is the Live Nodes
- * SSoT is runtime live_nodes. The public pill does not add the local count.
+ * (AZIEL_RUNTIME, else the runtime HTTPS origin). Public Live Nodes add
+ * this host's site_live_nodes unless the runtime fleet already includes
+ * viewers and is not the human_uses counter. A peek timeout reuses the
+ * last good peek or stays unknown.
  * Never invent viewers. Bots are not counted. Exclude HDJ.
  * Author: Aziel Eliab.
  */
@@ -235,11 +237,20 @@ export async function publishSiteLiveNodes(env, viewers) {
   }
 }
 
+function clockNum(value, keepNull) {
+  if (value === null && keepNull) return null;
+  if (value == null) return 0;
+  const n = Number(value);
+  return Number.isFinite(n) && n >= 0 ? n : 0;
+}
+
 export function countBody(fields = {}) {
-  const nodes = Number(fields.nodes) || 0;
-  const live = Number(fields.live_nodes) || 0;
-  const site = Number(fields.site_live_nodes) || 0;
-  const meshLive = Number(fields.mesh_live_nodes) || 0;
+  const nodes = clockNum(fields.nodes, true);
+  const live = clockNum(fields.live_nodes, true);
+  const site = clockNum(fields.site_live_nodes, false);
+  const meshLive = clockNum(fields.mesh_live_nodes, false);
+  const meshNodesRaw = Number(fields.mesh_nodes);
+  const meshNodes = Number.isFinite(meshNodesRaw) && meshNodesRaw > 0 ? meshNodesRaw : nodes;
   return {
     ok: true,
     product: PRODUCT,
@@ -249,20 +260,24 @@ export function countBody(fields = {}) {
     live_nodes: live,
     site_live_nodes: site,
     mesh_enabled: fields.mesh_enabled === true,
-    mesh_nodes: Number(fields.mesh_nodes) || nodes,
+    mesh_nodes: meshNodes,
     mesh_live_nodes: meshLive,
-    mesh_locked: Number(fields.mesh_locked) || 0,
-    mesh_isolated: Number(fields.mesh_isolated) || 0,
-    software_nodes: Number(fields.software_nodes) || 0,
-    uses: Number(fields.uses) || 0,
-    views: Number(fields.views) || 0,
+    mesh_locked: clockNum(fields.mesh_locked, false),
+    mesh_isolated: clockNum(fields.mesh_isolated, false),
+    software_nodes: clockNum(fields.software_nodes, false),
+    uses: clockNum(fields.uses, false),
+    views: clockNum(fields.views, false),
     hdj_excluded: HDJ_EXCLUDED,
     hdj: false,
     invent_users: false,
     live_nodes_includes_viewers: fields.live_nodes_includes_viewers === true || fields.includes_site_viewers === true,
     includes_site_viewers: fields.includes_site_viewers === true || fields.live_nodes_includes_viewers === true,
+    mesh_peek: fields.mesh_peek == null ? "miss" : String(fields.mesh_peek),
+    mesh_stale: fields.mesh_stale === true,
+    nodes_unknown: nodes == null || fields.nodes_unknown === true,
+    live_nodes_unknown: live == null || fields.live_nodes_unknown === true,
     note:
-      "Live Nodes is runtime GET /v1/mesh live_nodes (human mesh users plus site viewers on godlock.uk, azieleliab.com, and azielcorpuslibrary.net). /count and /heartbeat publish that same number. site_live_nodes is this host's presence report and is not added again. A local human update best-effort POSTs /v1/mesh/site-presence. HDJ is excluded. Bots are not counted.",
+      "Nodes are human mesh users plus human uses. Live Nodes are human mesh users plus this host's concurrent website viewers, unless runtime GET /v1/mesh live_nodes already includes site viewers and is not the human_uses interaction counter. /count and /heartbeat publish that public clock. GET /v1/mesh live_nodes stays the raw runtime field and can differ. A peek timeout reuses the last good peek or leaves the count unknown rather than 0. site_live_nodes is this host's presence report. software_nodes never feeds the pill. A local human update best-effort POSTs /v1/mesh/site-presence. HDJ is excluded. Bots are not counted.",
     ...fields.extra,
   };
 }
