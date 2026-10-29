@@ -100,7 +100,7 @@ const read = (rel) => readFileSync(new URL("../" + rel, import.meta.url), "utf8"
 const HONEST_PURPOSE = {
   AZAI: "Run a Lamb Lens check (Service → Clarity → Peace) or the adaptive AZAI Guide.",
   AZChat:
-    "Join a room from the all-rooms list, where a hosted room appears, and a private room requires a passphrase. The product mesh hop starts off.",
+    "Join a room from the all-rooms list, where a hosted room appears, and a private room requires a passphrase. Suite mesh membership is on.",
   "Aziel Digital Library":
     "Search the public library with Ask Jeeves suite help and download azcorpus + azlibrary designs.",
   AZNet:
