@@ -6,6 +6,7 @@ import { donateHtml, embryoLockHtml, pageHtml, sectionPageHtml, whoHtml } from "
 import { filmTheaterHtml } from "../src/film.js";
 import { machineWorks, worksDoc } from "../src/works.js";
 import {
+  AI_WELL_KNOWN_PATH,
   aiTxt,
   citeDoc,
   INDEXNOW_ENDPOINT,
@@ -32,8 +33,12 @@ import {
   PERSON_SAME_AS,
   RUNTIME_ID,
   SOFTWARE,
+  APEX_REDIRECT_NOTE,
+  HUMAN_PAGES,
+  HUMAN_TABS,
   TAB_PAGES,
   WHO_HREF,
+  humanTabUrl,
 } from "../src/copy.js";
 import { loadLiveSoftware } from "../src/liveCatalog.js";
 import {
@@ -966,6 +971,70 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     const film = JSON.parse(filmTheaterHtml().match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]);
     assert.equal(film.workExample.find((row) => row["@id"] === triadId).name, triad.name);
     assert.ok(!filmTheaterHtml().includes('"@type":"SoftwareApplication"'));
+  });
+
+  it("lists every human tab as its own www path and serves /.well-known/ai.txt", async () => {
+    const llms = llmsTxt();
+    const ai = aiTxt();
+    const cite = citeDoc();
+    const map = sitemapXml();
+    const robots = robotsTxt();
+    const who = whoIsTxt();
+    assert.ok(llms.startsWith("# Aziel Eliab\n\n" + VISIBLE_LOCK_LINE));
+    assert.equal(cite.person_id, PERSON_ID);
+    assert.equal(cite.person["@id"], PERSON_ID);
+    assert.equal(cite.apex_redirect.status, 301);
+    assert.equal(cite.apex_redirect.follow, true);
+    assert.equal(cite.apex_redirect.note, APEX_REDIRECT_NOTE);
+    assert.equal(cite.cap7.public_icann, false);
+    assert.equal(cite.cap7.resolves_to_hub, false);
+    assert.equal(cite.cap7.design_of_only, true);
+    assert.match(llms, /Cap-7 public_icann: false/);
+    assert.match(ai, /Cap-7 public_icann: false/);
+    assert.match(who, /Cap-7 public_icann: false/);
+    assert.ok(llms.includes("Softwares MCP stays on"));
+    assert.ok(llms.includes("Agent MCP stays on"));
+    assert.ok(ai.includes("Softwares MCP stays on"));
+    assert.ok(who.includes("Softwares MCP stays on"));
+    assert.deepEqual(
+      cite.human_tabs.map((row) => row.id),
+      HUMAN_TABS.map((row) => row.id),
+    );
+    assert.deepEqual(
+      cite.human_pages.map((row) => row.id),
+      HUMAN_PAGES.map((row) => row.id),
+    );
+    const paths = new Set();
+    for (const row of [...cite.human_tabs, ...cite.human_pages]) {
+      assert.equal(paths.has(row.path), false, "duplicate path " + row.path);
+      paths.add(row.path);
+      assert.equal(row.url, humanTabUrl(row));
+      assert.ok(row.url.startsWith("https://www.azieleliab.com"));
+      assert.ok(llms.includes(row.url), row.url);
+      assert.ok(ai.includes(row.url), row.url);
+      assert.ok(who.includes(row.url), row.url);
+      const loc = row.path === "/" ? CANON_ORIGIN + "/" : row.url.split("?")[0] === CANON_ORIGIN + row.path ? row.url : CANON_ORIGIN + row.path;
+      assert.ok(map.includes("<loc>" + (row.id === "donate" ? row.url : loc) + "</loc>"), row.id);
+      if (row.path !== "/") assert.ok(robots.includes("Allow: " + row.path), row.path);
+    }
+    assert.ok(map.includes("<loc>" + CANON_ORIGIN + AI_WELL_KNOWN_PATH + "</loc>"));
+    assert.ok(robots.includes("Allow: " + AI_WELL_KNOWN_PATH));
+    assert.ok(INDEXNOW_PING_URLS.includes(CANON_ORIGIN + AI_WELL_KNOWN_PATH));
+    assert.ok(INDEXNOW_PING_URLS.includes(CANON_ORIGIN + "/why"));
+    assert.ok(INDEXNOW_PING_URLS.includes(CANON_ORIGIN + "/comics"));
+    const aiRes = await fetchPath("/ai.txt");
+    const well = await fetchPath(AI_WELL_KNOWN_PATH);
+    assert.equal(aiRes.status, 200);
+    assert.equal(well.status, 200);
+    assert.equal(await well.text(), await aiRes.text());
+    const apex = await worker.fetch(new Request("https://azieleliab.com/llms.txt"));
+    assert.equal(apex.status, 301);
+    assert.equal(apex.headers.get("location"), CANON_ORIGIN + "/llms.txt");
+    const hub = await fetchPath("/aziel");
+    const hubHtml = await hub.text();
+    assert.equal(hub.status, 200);
+    assert.ok(!hubHtml.includes("## Human tabs"));
+    assert.ok(!hubHtml.includes("public_icann"));
   });
 
   it("keeps docs/aziel-identity-schema copies in lockstep with generators", () => {

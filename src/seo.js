@@ -105,6 +105,13 @@ import {
   SOFTWARE_HREF,
   SOFTWARE_TITLE,
   AUTHOR_AKA_LIST,
+  APEX_HOST,
+  APEX_REDIRECT_NOTE,
+  HUMAN_PAGES,
+  HUMAN_TABS,
+  humanTabLines,
+  humanTabRecord,
+  humanTabUrl,
   HASH_REDIRECTS,
   COMICS_HREF,
   INDEXABLE_SECTIONS,
@@ -152,6 +159,7 @@ import {
   LIBRARY_FRONT_DOOR_SNAPSHOT,
   WHO_IS_ANSWER,
   aboutPageNode,
+  humanHtmlPageNodes,
   identityLockBlock,
   personAlternateNames,
   personNode,
@@ -328,6 +336,8 @@ export const OPENAPI_ALIAS_PATH = "/openapi.json";
 export const LLMS_FULL_PATH = "/llms-full.txt";
 export const MCP_JSON_PATH = "/mcp.json";
 export const MCP_WELL_KNOWN_PATH = "/.well-known/mcp.json";
+/** Same bytes as /ai.txt. Crawlers that look under .well-known find the policy here. */
+export const AI_WELL_KNOWN_PATH = "/.well-known/ai.txt";
 
 /**
  * /llms-full.txt is the Aziel Runtime machine index already served at
@@ -380,6 +390,17 @@ export const INDEXNOW_PING_URLS = [
   CANON_ORIGIN + "/llms.txt",
   CANON_ORIGIN + LLMS_FULL_PATH,
   CANON_ORIGIN + "/ai.txt",
+  CANON_ORIGIN + AI_WELL_KNOWN_PATH,
+  CANON_ORIGIN + "/why",
+  CANON_ORIGIN + "/software",
+  CANON_ORIGIN + "/research",
+  CANON_ORIGIN + "/doors",
+  CANON_ORIGIN + "/receipts",
+  CANON_ORIGIN + "/comics",
+  DONATE_HREF,
+  CANON_ORIGIN + "/ingest",
+  CANON_ORIGIN + "/verify",
+  EMBRYOLOCK_HREF,
   CANON_ORIGIN + OPENAPI_ALIAS_PATH,
   CANON_ORIGIN + MCP_JSON_PATH,
   CANON_ORIGIN + MCP_WELL_KNOWN_PATH,
@@ -463,6 +484,7 @@ const PUBLIC_ALLOW = [
   "/who/",
   "/.well-known/aziel.json",
   "/.well-known/person.jsonld",
+  "/.well-known/ai.txt",
   "/.well-known/indexnow-key.txt",
   INDEXNOW_KEY_PATH,
   "/sitemap.xml",
@@ -540,6 +562,7 @@ const SITEMAP_RANK = {
   [WHO_HREF]: { changefreq: "weekly", priority: "0.8" },
   [CANON_ORIGIN + "/.well-known/aziel.json"]: { changefreq: "weekly", priority: "0.8" },
   [CANON_ORIGIN + "/.well-known/person.jsonld"]: { changefreq: "weekly", priority: "0.7" },
+  [CANON_ORIGIN + AI_WELL_KNOWN_PATH]: { changefreq: "weekly", priority: "0.5" },
   [CANON_ORIGIN + "/ai.txt"]: { changefreq: "weekly", priority: "0.5" },
   [CANON_ORIGIN + "/help.txt"]: { changefreq: "weekly", priority: "0.6" },
   [CANON_ORIGIN + "/addendum.txt"]: { changefreq: "weekly", priority: "0.5" },
@@ -601,6 +624,7 @@ export function sitemapXml(now = new Date(), software = SOFTWARE) {
     WHO_HREF,
     CANON_ORIGIN + "/.well-known/aziel.json",
     CANON_ORIGIN + "/.well-known/person.jsonld",
+    CANON_ORIGIN + AI_WELL_KNOWN_PATH,
     CANON_ORIGIN + "/ai.txt",
     ...HELP_SITEMAP_HREFS,
     CANON_ORIGIN + "/robots.txt",
@@ -719,6 +743,16 @@ export function citeDoc(software = SOFTWARE, runtimeVersion = RUNTIME_VERSION, s
     hash_redirects: Object.fromEntries(
       Object.entries(HASH_REDIRECTS).map(([hash, dest]) => ["#" + hash, CANON_ORIGIN + dest]),
     ),
+    human_tabs: HUMAN_TABS.map(humanTabRecord),
+    human_pages: HUMAN_PAGES.map(humanTabRecord),
+    apex_redirect: {
+      from: "https://" + APEX_HOST,
+      to: CANON_ORIGIN,
+      status: 301,
+      follow: true,
+      note: APEX_REDIRECT_NOTE,
+    },
+    ai_well_known: CANON_ORIGIN + AI_WELL_KNOWN_PATH,
     about_published: ABOUT_PUBLISHED_LINES.slice(),
     about_machine: ABOUT_MACHINE_HREFS.slice(),
     software_page: SOFTWARE_HREF,
@@ -1002,6 +1036,24 @@ function doorIndexLines() {
   }).join("\n");
 }
 
+function humanTabsLlmsBlock() {
+  return [
+    "## Human tabs",
+    "",
+    "Each human tab is its own path on " +
+      CANON_ORIGIN +
+      ". The film at / links Enter to /aziel and leaves the other tabs off that nav. This list and the sitemap are the index.",
+    APEX_REDIRECT_NOTE,
+    "Cap-7 public_icann: false. design_of only. resolves_to_hub: false.",
+    "Softwares MCP stays on. Agent MCP stays on. Door: POST " + RUNTIME_LOCAL + "/mcp (fraggate_call).",
+    "",
+    ...humanTabLines(),
+    "- About aliases (same hub HTML as /aziel): " + ABOUT_PATHS.map((p) => CANON_ORIGIN + p).join(" · "),
+    ...humanTabLines(HUMAN_PAGES),
+    "",
+  ].join("\n");
+}
+
 function officialEcosystemLlmsBlock() {
   return [
     "## Official Aziel ecosystem",
@@ -1090,6 +1142,7 @@ export function llmsTxt(software = SOFTWARE, survival = null, sot = null) {
     "Front page / is the film theater only. Hub HTML is /aziel after Enter. Softwares stay on /software.",
     "Identity is Aziel Eliab only.",
     "",
+    humanTabsLlmsBlock(),
     "## Identity",
     "",
     "- Primary author: " + AUTHOR,
@@ -1252,6 +1305,7 @@ export function llmsTxt(software = SOFTWARE, survival = null, sot = null) {
     "- GET " + CANON_ORIGIN + "/.well-known/aziel.json",
     "- GET " + CANON_ORIGIN + "/.well-known/person.jsonld",
     "- GET " + CANON_ORIGIN + "/ai.txt",
+    "- GET " + CANON_ORIGIN + AI_WELL_KNOWN_PATH + "  (same bytes as /ai.txt)",
     "- GET " + CANON_ORIGIN + "/robots.txt",
     "- GET " + CANON_ORIGIN + "/sitemap.xml",
     "- GET " + RUNTIME_LOCAL,
@@ -1358,6 +1412,7 @@ export function aiTxt(survival = null, software, sot = null) {
     "Allow: /who/",
     "Allow: /.well-known/aziel.json",
     "Allow: /.well-known/person.jsonld",
+    "Allow: /.well-known/ai.txt",
     "Allow: /.well-known/indexnow-key.txt",
     "Allow: " + INDEXNOW_KEY_PATH,
     "Allow: /robots.txt",
@@ -1399,6 +1454,7 @@ export function aiTxt(survival = null, software, sot = null) {
     "",
     "Sitemap: " + CANON_ORIGIN + "/sitemap.xml",
     "",
+    humanTabsLlmsBlock(),
     "## Research surfaces",
     "",
     "- Landing: " + CANON_ORIGIN + "/  (film theater only; hub is /aziel after Enter)",
@@ -1437,6 +1493,8 @@ export function aiTxt(survival = null, software, sot = null) {
       REDLINE_SPEC +
       " · Cap-7 design_of · attack-surface · FoldLock tip-safe)",
     "- llms.txt: " + CANON_ORIGIN + "/llms.txt",
+    "- ai.txt: " + CANON_ORIGIN + "/ai.txt",
+    "- ai well-known: " + CANON_ORIGIN + AI_WELL_KNOWN_PATH + " (same bytes as /ai.txt)",
     shelvesLlmsBlock(),
     redlineLlmsBlock(),
     "- shelves: " + SHELVES_HREF,
@@ -1571,7 +1629,13 @@ export function jsonLd(software = SOFTWARE, runtimeVersion = RUNTIME_VERSION, so
         creator: person,
         publisher: person,
         image: SIGIL,
-        hasPart: [{ "@id": softwareId }, { "@id": DONATE_HREF }, { "@id": softwareId + "-list" }],
+        hasPart: [
+          { "@id": softwareId },
+          { "@id": DONATE_HREF },
+          { "@id": softwareId + "-list" },
+          ...INDEXABLE_SECTIONS.map((s) => ({ "@id": CANON_ORIGIN + s.path + "#webpage" })),
+          ...humanHtmlPageNodes().map((node) => ({ "@id": node["@id"] })),
+        ],
         relatedLink: OFFICIAL_ECOSYSTEM.map((row) => row.url),
       },
       {
@@ -1666,6 +1730,7 @@ export function jsonLd(software = SOFTWARE, runtimeVersion = RUNTIME_VERSION, so
       },
       aboutPageNode(),
       ...sectionPageNodes(),
+      ...humanHtmlPageNodes(),
       {
         "@type": "CollectionPage",
         "@id": softwareId + "-list",

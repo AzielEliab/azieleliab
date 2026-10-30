@@ -68,6 +68,7 @@ import {
   whoIsTxt,
 } from "./identity.js";
 import {
+  AI_WELL_KNOWN_PATH,
   aiTxt,
   citeDoc,
   CONTENT_SIGNAL,
@@ -452,6 +453,7 @@ export async function handleRequest(request, env = {}, ctx) {
     hubLike ||
     path === "/llms.txt" ||
     path === "/ai.txt" ||
+    path === AI_WELL_KNOWN_PATH ||
     path === "/cite.json" ||
     path === "/sitemap.xml" ||
     path === "/v1/software" ||
@@ -481,6 +483,7 @@ export async function handleRequest(request, env = {}, ctx) {
   const needsSurvival =
     path === "/llms.txt" ||
     path === "/ai.txt" ||
+    path === AI_WELL_KNOWN_PATH ||
     path === "/cite.json" ||
     path === "/who-is" ||
     path === "/who-is-aziel-eliab.txt" ||
@@ -556,7 +559,9 @@ export async function handleRequest(request, env = {}, ctx) {
     res = text(whoIsTxt(survival, doors), "text/plain", { cache: SEO_CACHE });
   } else if (path === "/.well-known/aziel.json") {
     res = text(prettyJson(wellKnownAziel()), "application/json", { cache: SEO_CACHE, cors: true });
-  } else if (path === "/ai.txt") res = text(aiTxt(survival, doors, surfaceSot), "text/plain", { cache: SEO_CACHE });
+  } else if (path === "/ai.txt" || path === AI_WELL_KNOWN_PATH) {
+    res = text(aiTxt(survival, doors, surfaceSot), "text/plain", { cache: SEO_CACHE });
+  }
   else if (isHelpPath(path)) res = text(helpBody(path), "text/plain", { cache: SEO_CACHE });
   else if (path === SURVIVAL_PATH || path === SURVIVAL_JSON_PATH) {
     res = json(survival || (await loadSurvival(env, ctx, { request })), JSON_SHORT_CACHE);

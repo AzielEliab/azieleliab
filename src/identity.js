@@ -20,6 +20,13 @@ import {
   GODLOCK,
   HEDIDNTJUMP,
   INDEXABLE_SECTIONS,
+  APEX_HOST,
+  APEX_REDIRECT_NOTE,
+  HUMAN_PAGES,
+  HUMAN_TABS,
+  humanTabLines,
+  humanTabRecord,
+  humanTabUrl,
   LIBRARY,
   officialEcosystemCite,
   officialEcosystemLines,
@@ -867,6 +874,33 @@ export function sectionPageNodes() {
   return INDEXABLE_SECTIONS.map(sectionPageNode);
 }
 
+const HUMAN_TAB_ALREADY_SECTION = new Set(["film", "why", "software", "research", "doors", "aziel"]);
+
+/** WebPage nodes for human HTML that section pages and the film AboutPage do not already cover. */
+export function humanHtmlPageNodes(opts) {
+  const includeDonate = Boolean(opts && opts.donate);
+  const tabs = HUMAN_TABS.filter((tab) => {
+    if (HUMAN_TAB_ALREADY_SECTION.has(tab.id)) return false;
+    if (tab.id === "donate" && !includeDonate) return false;
+    return true;
+  });
+  return [...tabs, ...HUMAN_PAGES].map((tab) => {
+    const url = humanTabUrl(tab);
+    return {
+      "@type": "WebPage",
+      "@id": url + "#webpage",
+      url,
+      name: tab.title,
+      description: tab.description || tab.title,
+      isPartOf: { "@id": WEBSITE_ID },
+      mainEntity: personRef,
+      about: personRef,
+      author: personRef,
+      inLanguage: "en",
+    };
+  });
+}
+
 export function runtimeApplicationNode(sot) {
   const pin = sot && sot.git_sha ? sot : null;
   const tip = runtimeTip(pin);
@@ -932,6 +966,7 @@ export function graphJsonLd(software, sot = null) {
       ...hubWebsiteNodes(),
       runtimeApplicationNode(sot),
       statsDatasetNode(),
+      ...humanHtmlPageNodes({ donate: true }),
     ],
   };
 }
@@ -975,6 +1010,19 @@ export function whoIsTxt(survival = null, software) {
     "",
     "About aliases: " + ABOUT_ALIAS_HREFS.join(" · ") + " ( / is the film theater only; /about and /AzielEliab 200 the same hub HTML; Enter opens /aziel )",
     "Machine: " + ABOUT_MACHINE_HREFS.join(" · "),
+    "",
+    "## Human tabs",
+    "",
+    "Each human tab is its own path on " +
+      CANON_ORIGIN +
+      ". The film at / links Enter to /aziel and leaves the other tabs off that nav. This list and the sitemap are the index.",
+    APEX_REDIRECT_NOTE,
+    "Cap-7 public_icann: false. design_of only. resolves_to_hub: false.",
+    "Softwares MCP stays on. Agent MCP stays on.",
+    "",
+    ...humanTabLines(),
+    "- About aliases (same hub HTML as /aziel): " + ABOUT_PATHS.map((p) => CANON_ORIGIN + p).join(" · "),
+    ...humanTabLines(HUMAN_PAGES),
     "",
     "## Model rules",
     "",
@@ -1094,6 +1142,16 @@ export function wellKnownAziel() {
     live_nodes_faq: LIVE_NODES_FAQ_NAME,
     live_nodes_faq_answer: LIVE_NODES_FAQ_ANSWER,
     visible_1520: false,
+    human_tabs: HUMAN_TABS.map(humanTabRecord),
+    human_pages: HUMAN_PAGES.map(humanTabRecord),
+    apex_redirect: {
+      from: "https://" + APEX_HOST,
+      to: CANON_ORIGIN,
+      status: 301,
+      follow: true,
+      note: APEX_REDIRECT_NOTE,
+    },
+    ai_well_known: CANON_ORIGIN + "/.well-known/ai.txt",
   };
 }
 

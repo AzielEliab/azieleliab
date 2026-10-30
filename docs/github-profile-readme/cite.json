@@ -28,6 +28,26 @@
     "Open-hardware designer"
   ],
   "works": "https://www.azieleliab.com/works.json",
+  "human_tabs": [
+    { "id": "film", "path": "/", "url": "https://www.azieleliab.com/" },
+    { "id": "aziel", "path": "/aziel", "url": "https://www.azieleliab.com/aziel" },
+    { "id": "why", "path": "/why", "url": "https://www.azieleliab.com/why" },
+    { "id": "software", "path": "/software", "url": "https://www.azieleliab.com/software" },
+    { "id": "research", "path": "/research", "url": "https://www.azieleliab.com/research" },
+    { "id": "doors", "path": "/doors", "url": "https://www.azieleliab.com/doors" },
+    { "id": "receipts", "path": "/receipts", "url": "https://www.azieleliab.com/receipts" },
+    { "id": "comics", "path": "/comics", "url": "https://www.azieleliab.com/comics" },
+    { "id": "donate", "path": "/donate", "url": "https://www.azieleliab.com/donate?v=png" },
+    { "id": "who", "path": "/who", "url": "https://www.azieleliab.com/who" }
+  ],
+  "apex_redirect": {
+    "from": "https://azieleliab.com",
+    "to": "https://www.azieleliab.com",
+    "status": 301,
+    "follow": true
+  },
+  "cap7_public_icann": false,
+  "ai_well_known": "https://www.azieleliab.com/.well-known/ai.txt",
   "websites": {
     "azieleliab.com": "https://www.azieleliab.com/",
     "azielcorpuslibrary.net": "https://www.azielcorpuslibrary.net/",
