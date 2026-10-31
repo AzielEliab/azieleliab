@@ -1323,6 +1323,133 @@ export const SPINE = [
   { id: "donate", label: "Donate", href: DONATE_HREF },
 ];
 
+/** Apex answers 301 to the same path on www. Crawlers follow. Canonical host is www. */
+export const APEX_ORIGIN = "https://" + APEX_HOST;
+export const APEX_REDIRECT_NOTE =
+  "Apex " +
+  APEX_ORIGIN +
+  "/<path> answers 301 to " +
+  CANON_ORIGIN +
+  "/<path>. Crawlers follow that redirect. Canonical host is www. Machine files use the same hop.";
+
+/**
+ * Human tabs. Each one is already its own www path.
+ * Film nav at / links Enter to /aziel and does not list the others.
+ */
+export const HUMAN_TABS = Object.freeze([
+  {
+    id: "film",
+    path: "/",
+    title: "Film theater",
+    description: "Film theater for Aziel Eliab. Enter opens /aziel.",
+    note: "GET / is the film only. Enter opens /aziel.",
+  },
+  {
+    id: "aziel",
+    path: AZIEL_PATH,
+    title: AUTHOR,
+    description: DESCRIPTION,
+    note: "Hub. Person #aziel.",
+  },
+  {
+    id: "why",
+    path: WHY_PATH,
+    title: "Why",
+    description: "Why Aziel Eliab keeps looking.",
+  },
+  {
+    id: "software",
+    path: SOFTWARE_PATH,
+    title: "Software",
+    description: SOFTWARE_DESCRIPTION,
+  },
+  {
+    id: "research",
+    path: RESEARCH_PATH,
+    title: "Research",
+    description: "Research by Aziel Eliab. The corpus lives at the Aziel Digital Library.",
+  },
+  {
+    id: "doors",
+    path: DOORS_PATH,
+    title: "Doors",
+    description: "Public doors for Aziel Eliab.",
+  },
+  {
+    id: "receipts",
+    path: RECEIPTS_PATH,
+    title: RECEIPTS_TITLE,
+    description: RECEIPTS_DESCRIPTION,
+  },
+  {
+    id: "comics",
+    path: COMICS_PATH,
+    title: COMICS_TITLE,
+    description: COMICS_DESCRIPTION,
+  },
+  {
+    id: "donate",
+    path: DONATE_PATH,
+    url: DONATE_HREF,
+    title: DONATE_TITLE,
+    description: DONATE_DESCRIPTION,
+    note: "Bare /donate 302s to /donate?v=png.",
+  },
+  {
+    id: "who",
+    path: WHO_PATH,
+    title: WHO_TITLE,
+    description: "Visible who-is page. Machine twin is /who-is-aziel-eliab.txt.",
+  },
+]);
+
+/** Human HTML that is not a spine tab. Each path is already unique. */
+export const HUMAN_PAGES = Object.freeze([
+  {
+    id: "ingest",
+    path: "/ingest",
+    title: "Ingest",
+    description: "INGEST-AS-RECEIPT-1.0 first-screen law. Cite, don't merge. Crawlers do not re-expand.",
+  },
+  {
+    id: "verify",
+    path: "/verify",
+    title: "Verify",
+    description: "Paste a hash and read yes or no against the published ingest tip.",
+  },
+  {
+    id: "embryolock",
+    path: EMBRYOLOCK_PATH,
+    title: "EmbryoLock",
+    description: "Secondary local EmbryoLock page. The Softwares door stays the catalog worker_home.",
+  },
+]);
+
+export function humanTabUrl(tab) {
+  if (tab && tab.url) return tab.url;
+  const path = tab && tab.path ? tab.path : "/";
+  if (path === "/") return CANON_ORIGIN + "/";
+  return CANON_ORIGIN + path;
+}
+
+export function humanTabLines(tabs = HUMAN_TABS) {
+  return tabs.map((tab) => {
+    const note = tab.note ? " (" + tab.note + ")" : "";
+    return "- " + tab.title + ": " + humanTabUrl(tab) + note;
+  });
+}
+
+export function humanTabRecord(tab) {
+  const row = {
+    id: tab.id,
+    path: tab.path,
+    url: humanTabUrl(tab),
+    title: tab.title,
+  };
+  if (tab.note) row.note = tab.note;
+  return row;
+}
+
 export const DOORS = [
   { label: "GitHub", href: GITHUB },
   { label: "Secondary source", href: GITHUB_SECONDARY },

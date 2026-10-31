@@ -665,5 +665,98 @@
   "mesh_live_nodes_are_api": false,
   "live_nodes_faq": "What are Live Nodes?",
   "live_nodes_faq_answer": "Live Nodes on the public clock are human mesh users plus this host's concurrent website viewers. When runtime GET /v1/mesh live_nodes already includes site viewers and that figure is not the human_uses interaction counter, the clock shows that fleet total and does not add site_live_nodes again. Nodes stay human mesh users plus cited human uses. A mesh nodes figure equal to human_uses counts interactions, not distinct people, and is not Live Nodes. This hub best-effort POSTs concurrent human page viewers to runtime POST /v1/mesh/site-presence as host azieleliab.com, viewers, kind human-page after a local presence update. A mesh peek timeout reuses the last good peek or shows unknown rather than 0/0. HDJ viewers are excluded. software_nodes is the Softwares {slug}-worker roster and stays off the Live Nodes pill. Downloaded Softwares instances stay instance_nodes. Uses are interaction counters, not unique people. A measured zero stays zero. GET /v1/mesh live_nodes remains the raw runtime field and can differ from the public clock. This host has no download counter.",
-  "visible_1520": false
+  "visible_1520": false,
+  "human_tabs": [
+    {
+      "id": "film",
+      "path": "/",
+      "url": "https://www.azieleliab.com/",
+      "title": "Film theater",
+      "note": "GET / is the film only. Enter opens /aziel."
+    },
+    {
+      "id": "aziel",
+      "path": "/aziel",
+      "url": "https://www.azieleliab.com/aziel",
+      "title": "Aziel Eliab",
+      "note": "Hub. Person #aziel."
+    },
+    {
+      "id": "why",
+      "path": "/why",
+      "url": "https://www.azieleliab.com/why",
+      "title": "Why"
+    },
+    {
+      "id": "software",
+      "path": "/software",
+      "url": "https://www.azieleliab.com/software",
+      "title": "Software"
+    },
+    {
+      "id": "research",
+      "path": "/research",
+      "url": "https://www.azieleliab.com/research",
+      "title": "Research"
+    },
+    {
+      "id": "doors",
+      "path": "/doors",
+      "url": "https://www.azieleliab.com/doors",
+      "title": "Doors"
+    },
+    {
+      "id": "receipts",
+      "path": "/receipts",
+      "url": "https://www.azieleliab.com/receipts",
+      "title": "Receipts"
+    },
+    {
+      "id": "comics",
+      "path": "/comics",
+      "url": "https://www.azieleliab.com/comics",
+      "title": "Comics"
+    },
+    {
+      "id": "donate",
+      "path": "/donate",
+      "url": "https://www.azieleliab.com/donate?v=png",
+      "title": "Donate",
+      "note": "Bare /donate 302s to /donate?v=png."
+    },
+    {
+      "id": "who",
+      "path": "/who",
+      "url": "https://www.azieleliab.com/who",
+      "title": "Who is Aziel Eliab"
+    }
+  ],
+  "human_pages": [
+    {
+      "id": "ingest",
+      "path": "/ingest",
+      "url": "https://www.azieleliab.com/ingest",
+      "title": "Ingest"
+    },
+    {
+      "id": "verify",
+      "path": "/verify",
+      "url": "https://www.azieleliab.com/verify",
+      "title": "Verify"
+    },
+    {
+      "id": "embryolock",
+      "path": "/embryolock",
+      "url": "https://www.azieleliab.com/embryolock",
+      "title": "EmbryoLock"
+    }
+  ],
+  "apex_redirect": {
+    "from": "https://azieleliab.com",
+    "to": "https://www.azieleliab.com",
+    "status": 301,
+    "follow": true,
+    "note": "Apex https://azieleliab.com/<path> answers 301 to https://www.azieleliab.com/<path>. Crawlers follow that redirect. Canonical host is www. Machine files use the same hop."
+  },
+  "ai_well_known": "https://www.azieleliab.com/.well-known/ai.txt"
 }

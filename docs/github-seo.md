@@ -27,6 +27,27 @@ Every public website on the Aziel Eliab profile. One-line what/why. Hub About bo
 | https://github.com/AzielEliab | GitHub user / public source |
 | https://x.com/AzielEliab | X @AzielEliab |
 
+## Human tabs (www.azieleliab.com)
+
+Each human tab is already its own path. The film at `/` links Enter to `/aziel` and does not list the others. Apex `https://azieleliab.com/<path>` answers 301 to `https://www.azieleliab.com/<path>`. Crawlers follow that redirect. Canonical host is www.
+
+| Path | What |
+|------|------|
+| `/` | Film theater. Enter opens `/aziel`. |
+| `/aziel` | Hub. Person `#aziel`. |
+| `/why` | Why |
+| `/software` | Software (name + designed-purpose one_line) |
+| `/research` | Research |
+| `/doors` | Doors |
+| `/receipts` | Receipts |
+| `/comics` | Comics |
+| `/donate?v=png` | Donate. Bare `/donate` 302s here. |
+| `/who` | Visible who-is |
+| `/about` · `/AzielEliab` · `/aziel-eliab` | Same hub HTML as `/aziel` |
+| `/ingest` · `/verify` · `/embryolock` | Human pages that are not spine tabs |
+
+Cap-7 `public_icann: false`. design_of only. `resolves_to_hub: false`. Softwares MCP and agent MCP stay on (`POST /runtime/mcp`, `fraggate_call`). `/.well-known/ai.txt` serves the same bytes as `/ai.txt`.
+
 Machine who-is: https://www.azieleliab.com/who-is
 
 Hub crawl routes (`/person.jsonld` · `/cite.json` · `/llms.txt` · `/ai.txt` · `/sitemap.xml` · `/who-is` · `/survival`) plus Runtime `/openapi.json` and `POST /mcp`. Pack copy: [github-profile-readme/](github-profile-readme/).

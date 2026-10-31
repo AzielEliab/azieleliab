@@ -970,6 +970,146 @@
           "encodingFormat": "application/json"
         }
       ]
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://www.azieleliab.com/receipts#webpage",
+      "url": "https://www.azieleliab.com/receipts",
+      "name": "Receipts",
+      "description": "This host’s action-receipt chain. Hash, request sentence, output sentence, event metadata. Newest first.",
+      "isPartOf": {
+        "@id": "https://www.azieleliab.com/#website"
+      },
+      "mainEntity": {
+        "@id": "https://www.azieleliab.com/#aziel"
+      },
+      "about": {
+        "@id": "https://www.azieleliab.com/#aziel"
+      },
+      "author": {
+        "@id": "https://www.azieleliab.com/#aziel"
+      },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://www.azieleliab.com/comics#webpage",
+      "url": "https://www.azieleliab.com/comics",
+      "name": "Comics",
+      "description": "Six short films, oldest first.",
+      "isPartOf": {
+        "@id": "https://www.azieleliab.com/#website"
+      },
+      "mainEntity": {
+        "@id": "https://www.azieleliab.com/#aziel"
+      },
+      "about": {
+        "@id": "https://www.azieleliab.com/#aziel"
+      },
+      "author": {
+        "@id": "https://www.azieleliab.com/#aziel"
+      },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://www.azieleliab.com/donate?v=png#webpage",
+      "url": "https://www.azieleliab.com/donate?v=png",
+      "name": "Donate",
+      "description": "Donate to Aziel Eliab. Nothing is free. Donations buy no privilege. Public identity Aziel Eliab only.",
+      "isPartOf": {
+        "@id": "https://www.azieleliab.com/#website"
+      },
+      "mainEntity": {
+        "@id": "https://www.azieleliab.com/#aziel"
+      },
+      "about": {
+        "@id": "https://www.azieleliab.com/#aziel"
+      },
+      "author": {
+        "@id": "https://www.azieleliab.com/#aziel"
+      },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://www.azieleliab.com/who#webpage",
+      "url": "https://www.azieleliab.com/who",
+      "name": "Who is Aziel Eliab",
+      "description": "Visible who-is page. Machine twin is /who-is-aziel-eliab.txt.",
+      "isPartOf": {
+        "@id": "https://www.azieleliab.com/#website"
+      },
+      "mainEntity": {
+        "@id": "https://www.azieleliab.com/#aziel"
+      },
+      "about": {
+        "@id": "https://www.azieleliab.com/#aziel"
+      },
+      "author": {
+        "@id": "https://www.azieleliab.com/#aziel"
+      },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://www.azieleliab.com/ingest#webpage",
+      "url": "https://www.azieleliab.com/ingest",
+      "name": "Ingest",
+      "description": "INGEST-AS-RECEIPT-1.0 first-screen law. Cite, don't merge. Crawlers do not re-expand.",
+      "isPartOf": {
+        "@id": "https://www.azieleliab.com/#website"
+      },
+      "mainEntity": {
+        "@id": "https://www.azieleliab.com/#aziel"
+      },
+      "about": {
+        "@id": "https://www.azieleliab.com/#aziel"
+      },
+      "author": {
+        "@id": "https://www.azieleliab.com/#aziel"
+      },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://www.azieleliab.com/verify#webpage",
+      "url": "https://www.azieleliab.com/verify",
+      "name": "Verify",
+      "description": "Paste a hash and read yes or no against the published ingest tip.",
+      "isPartOf": {
+        "@id": "https://www.azieleliab.com/#website"
+      },
+      "mainEntity": {
+        "@id": "https://www.azieleliab.com/#aziel"
+      },
+      "about": {
+        "@id": "https://www.azieleliab.com/#aziel"
+      },
+      "author": {
+        "@id": "https://www.azieleliab.com/#aziel"
+      },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://www.azieleliab.com/embryolock#webpage",
+      "url": "https://www.azieleliab.com/embryolock",
+      "name": "EmbryoLock",
+      "description": "Secondary local EmbryoLock page. The Softwares door stays the catalog worker_home.",
+      "isPartOf": {
+        "@id": "https://www.azieleliab.com/#website"
+      },
+      "mainEntity": {
+        "@id": "https://www.azieleliab.com/#aziel"
+      },
+      "about": {
+        "@id": "https://www.azieleliab.com/#aziel"
+      },
+      "author": {
+        "@id": "https://www.azieleliab.com/#aziel"
+      },
+      "inLanguage": "en"
     }
   ]
 }
