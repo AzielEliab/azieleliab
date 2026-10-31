@@ -54,6 +54,7 @@ Part of the Aziel Eliab ecosystem. Cross-links for humans, Google, and AI crawle
 | Try on Glama | [https://glama.ai/mcp/servers/AzielEliab/aziel-runtime](https://glama.ai/mcp/servers/AzielEliab/aziel-runtime) (primary Runtime CTA; verified listing) |
 | GitHub AzielEliab | [https://github.com/AzielEliab](https://github.com/AzielEliab) |
 | X @AzielEliab | [https://x.com/AzielEliab](https://x.com/AzielEliab) |
+| TimeToUnsealTheBook | [https://timetounsealthebook.net/aziel](https://timetounsealthebook.net/aziel) · Cos tip `5b3c878e` · handle, not a Live Node · not LIVE on this hub until Dual CLEAR + Aziel merge OK + Cos · paid satellite HELD · Cap-7 is not ICANN |
 | Donate AZL-DONATE-1.0 | [https://www.azieleliab.com/donate](https://www.azieleliab.com/donate) |
 
 ## Compatible AI clients
@@ -72,7 +73,7 @@ Cloudflare Worker `azieleliab-com` serves the literary landing, crawl files, and
 | `/software` · `/software/` | Distinct Software page (name + designed-purpose one_line). `/#software` maps here. |
 | `/why` · `/research` · `/doors` | Distinct tab pages. Old hashes `/#why` `/#research` `/#doors` map here. |
 | `/mission` · `/mission/` | 301 to `/` (Mission/Status strip removed) |
-| `/aziel` | Hub (Person `#aziel`). Same literary HTML as the About aliases. Loaded when the visitor chooses Enter, not under the theater. |
+| `/aziel` | Hub (Person `#aziel`) and the Aziel tab. Lists every public handle, including TimeToUnsealTheBook (not LIVE). Same literary HTML as the About aliases. Loaded when the visitor chooses Enter, not under the theater. |
 | `/who` · `/who/` | Visible who-is HTML. H1 `Who is Aziel Eliab` plus the who-answer paragraph. |
 | `/about` · `/AzielEliab` · `/aziel-eliab` | 200 same hub HTML as `/aziel` (indexable About / identity aliases) |
 | `/donate` · `/donate/` | AZL-DONATE-1.0 primary Donate door (static; homepage has no Donate section). Bare `/donate` 302s to `/donate?v=png` so CF edge cannot keep the old stroke-SVG HTML. Door HTML is `no-store`. Rails use solid PNG QRs at `/donate/qr/{btc,eth,ltc,xrp,doge}.png` (payment URI, not a website). |

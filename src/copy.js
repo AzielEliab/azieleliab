@@ -217,6 +217,28 @@ export const WEBSITE_ID = CANON_ORIGIN + "/#website";
 export const X_URL = "https://x.com/AzielEliab";
 export const X_HANDLE = "@AzielEliab";
 export const X_LABEL = "X @AzielEliab";
+
+/** Unseal Cos site. Handle only. Not LIVE on this hub until Dual CLEAR + Aziel merge OK + Cos. */
+export const UNSEAL_NAME = "TimeToUnsealTheBook";
+export const UNSEAL_ORIGIN = "https://timetounsealthebook.net";
+export const UNSEAL_AZIEL = UNSEAL_ORIGIN + "/aziel";
+export const UNSEAL_COS_TIP = "5b3c878e";
+export const UNSEAL_HELD_UNTIL = "Dual CLEAR + Aziel merge OK + Cos";
+export const PAID_SATELLITE = "HELD";
+export const CAP7_NOT_ICANN =
+  "Cap-7 is not an ICANN registration and is not a public egress address. Paid satellite stays HELD.";
+export const GROWTH_ON_ALLOW = "Growth-ON Allow.";
+export const UNSEAL_NOTE =
+  "TimeToUnsealTheBook is a handle, not a Live Node, and is not LIVE on this hub until Dual CLEAR, Aziel merge OK, and Cos. Cos tip " +
+  UNSEAL_COS_TIP +
+  " at " +
+  UNSEAL_ORIGIN +
+  "/.";
+export const AZIEL_HANDLES_LEDE =
+  "Public identity on this page is Aziel Eliab only. The handles below are the public doors. Each site keeps its own receipt tip. He Didn't Jump is a handle, not a Live Node. " +
+  UNSEAL_NOTE;
+export const FOOTER_HONESTY =
+  "Nodes and Live Nodes stay in the header. software_nodes is not shown. " + CAP7_NOT_ICANN + " " + UNSEAL_NOTE;
 /** AZindex sameAs lattice: hub, corpus, GodLock, He Didn't Jump, GitHub AzielEliab, Glama runtime, X. */
 export const PERSON_SAME_AS = [
   GITHUB,
@@ -240,6 +262,48 @@ export const ECOSYSTEM_LINKS = [
   { label: GLAMA_LABEL, href: GLAMA_RUNTIME },
   { label: X_LABEL, href: X_URL },
 ];
+
+/**
+ * Flat public handles. Same doors the Aziel tab and /llms.txt list.
+ * TimeToUnsealTheBook stays a handle. live stays false.
+ */
+export const AZIEL_HANDLES = Object.freeze([
+  { label: "azieleliab.com", href: CANON_ORIGIN + "/" },
+  { label: "GitHub", href: GITHUB },
+  { label: "Secondary source", href: GITHUB_SECONDARY },
+  { label: "Corpus", href: LIBRARY + "/" },
+  { label: "Corpus · AzielEliab", href: LIBRARY_AZIEL },
+  { label: "GodLock", href: GODLOCK + "/" },
+  { label: "He Didn't Jump", href: HEDIDNTJUMP + "/" },
+  { label: "Runtime", href: RUNTIME_LOCAL },
+  { label: "Official Runtime", href: RUNTIME + "/" },
+  { label: GLAMA_LABEL, href: GLAMA_RUNTIME },
+  { label: TRADES_RUNTIME_NAME, href: TRADES_RUNTIME + "/" },
+  { label: "Trades-Runtime MCP", href: TRADES_RUNTIME_MCP },
+  { label: X_LABEL, href: X_URL },
+  { label: UNSEAL_NAME, href: UNSEAL_AZIEL },
+]);
+
+export function azielHandleLines() {
+  return AZIEL_HANDLES.map((row) => "- " + row.label + ": " + row.href);
+}
+
+export function unsealCite() {
+  return {
+    name: UNSEAL_NAME,
+    origin: UNSEAL_ORIGIN + "/",
+    aziel: UNSEAL_AZIEL,
+    cos_tip: UNSEAL_COS_TIP,
+    live: false,
+    live_node: false,
+    paid_satellite: PAID_SATELLITE,
+    cap7_public_icann: false,
+    resolves_to_hub: false,
+    held_until: UNSEAL_HELD_UNTIL,
+    growth_on: GROWTH_ON_ALLOW,
+    note: UNSEAL_NOTE,
+  };
+}
 
 /** Frozen Runtime parent. Hub /runtime surface — not a Worker identity page. */
 export const RUNTIME_ID = RUNTIME_LOCAL + "#runtime";
@@ -648,7 +712,9 @@ export const TAB_PAGES = [
     description:
       "Public doors for Aziel Eliab: GitHub AzielEliab, Corpus, GodLock, He Didn't Jump, Runtime, " +
       TRADES_RUNTIME_NAME +
-      ", X @AzielEliab.",
+      ", X @AzielEliab, " +
+      UNSEAL_NAME +
+      ".",
   },
 ];
 
@@ -1321,6 +1387,7 @@ export const SPINE = [
   { id: "receipts", label: "Receipts", href: RECEIPTS_HREF },
   { id: "comics", label: "Comics", href: COMICS_HREF },
   { id: "donate", label: "Donate", href: DONATE_HREF },
+  { id: "aziel", label: "Aziel", href: AZIEL_HREF },
 ];
 
 /** Apex answers 301 to the same path on www. Crawlers follow. Canonical host is www. */
@@ -1465,6 +1532,16 @@ export const DOORS = [
     also: { label: "MCP", href: TRADES_RUNTIME_MCP, labelOnly: true },
   },
   { label: X_LABEL, href: X_URL },
+  {
+    label: UNSEAL_NAME,
+    href: UNSEAL_AZIEL,
+    purpose:
+      "Public test lattice. Cos tip " +
+      UNSEAL_COS_TIP +
+      ". Not a Live Node. Not LIVE on this hub until Dual CLEAR, Aziel merge OK, and Cos. Paid satellite stays HELD. Cap-7 is not ICANN.",
+    live: false,
+    live_node: false,
+  },
 ];
 
 export const PROSE = {

@@ -1581,6 +1581,72 @@ describe("public entity graph phases B–D + E audit", () => {
     assert.ok(!embryo.includes(">Aziel Runtime on GitHub<"));
   });
 
+  it("mirrors Unseal Cos pretty paths, footer, and Aziel handles without marking the door LIVE", async () => {
+    const hub = pageHtml();
+    const hubBody = hub.split("<body>")[1] || "";
+    assert.ok(hub.includes('id="handles"'));
+    assert.ok(hub.includes(">TimeToUnsealTheBook<"));
+    assert.ok(hub.includes('href="https://timetounsealthebook.net/aziel"'));
+    assert.ok(hub.includes("not LIVE on this hub"));
+    assert.ok(hub.includes("Paid satellite stays HELD"));
+    assert.ok(hub.includes("not an ICANN registration"));
+    assert.doesNotMatch(hubBody, /1 Chronicles 15:20/);
+    const footer = hub.match(/<footer[\s\S]*?<\/footer>/)[0];
+    assert.ok(footer.includes(ECOSYSTEM_TITLE));
+    assert.ok(footer.includes('href="/aziel"'));
+    assert.ok(footer.includes(">/aziel<"));
+    assert.ok(footer.includes('href="/why"'));
+    assert.ok(footer.includes('href="/software"'));
+    assert.ok(footer.includes('href="' + CANON_ORIGIN + '/llms.txt"'));
+    assert.ok(footer.includes('href="' + CANON_ORIGIN + '/ai.txt"'));
+    assert.ok(footer.includes('href="' + CANON_ORIGIN + '/sitemap.xml"'));
+    assert.ok(footer.includes("software_nodes is not shown"));
+    for (const html of [donateHtml(), embryoLockHtml(), notFoundHtml(), await receiptsHtml()]) {
+      assert.ok(html.includes('class="site-footer"'));
+      assert.ok(html.includes(ECOSYSTEM_TITLE));
+      assert.doesNotMatch((html.split("<body>")[1] || "").replace(/<script[\s\S]*?<\/script>/g, ""), /1 Chronicles 15:20/);
+    }
+    const who = whoHtml();
+    assert.ok(who.includes('class="site-footer"'));
+    assert.ok(who.includes(ECOSYSTEM_TITLE));
+    assert.doesNotMatch(who.split('class="site-footer"')[1] || "", /1 Chronicles 15:20/);
+    const film = await fetchPath("/");
+    const filmBody = await film.text();
+    assert.ok(filmBody.includes('class="site-footer"'));
+    assert.ok(filmBody.includes(ECOSYSTEM_TITLE));
+    assert.ok(filmBody.includes('href="/aziel"'));
+    assert.ok(filmBody.includes(">/aziel<"));
+    assert.ok(!filmBody.includes("<main"));
+    assert.ok(!filmBody.includes('aria-label="Spine"'));
+    assert.ok(!filmBody.includes('class="brandrow"'));
+    assert.doesNotMatch(filmBody.split("<body>")[1] || "", /1 Chronicles 15:20/);
+    const cite = citeDoc();
+    assert.equal(cite.unseal.live, false);
+    assert.equal(cite.unseal.live_node, false);
+    assert.equal(cite.unseal.cos_tip, "5b3c878e");
+    assert.equal(cite.unseal.aziel, "https://timetounsealthebook.net/aziel");
+    assert.equal(cite.unseal.paid_satellite, "HELD");
+    assert.equal(cite.unseal.cap7_public_icann, false);
+    assert.equal(cite.unseal.resolves_to_hub, false);
+    assert.equal(cite.unseal.growth_on, "Growth-ON Allow.");
+    assert.equal(cite.unseal.paid_satellite, "HELD");
+    assert.equal(cite.growth_on, undefined);
+    assert.ok(cite.aziel_handles.some((row) => row.label === "TimeToUnsealTheBook" && row.url === "https://timetounsealthebook.net/aziel"));
+    const door = cite.doors.find((row) => row.label === "TimeToUnsealTheBook");
+    assert.equal(door.live, false);
+    assert.equal(door.live_node, false);
+    const llms = llmsTxt();
+    const ai = aiTxt();
+    assert.match(llms, /## Aziel handles[\s\S]*TimeToUnsealTheBook: https:\/\/timetounsealthebook\.net\/aziel/);
+    assert.match(ai, /## Aziel handles[\s\S]*TimeToUnsealTheBook: https:\/\/timetounsealthebook\.net\/aziel/);
+    assert.match(llms, /Growth-ON Allow/);
+    assert.match(ai, /Paid satellite stays HELD/);
+    assert.match(robotsTxt(), /User-agent: GPTBot\nAllow: \//);
+    assert.doesNotMatch(robotsTxt(), /Disallow:/);
+    assert.ok(sitemapXml().includes("<loc>https://timetounsealthebook.net/aziel</loc>"));
+    assert.ok(sitemapXml().includes("<loc>https://timetounsealthebook.net/</loc>"));
+  });
+
   it("keeps self-referencing www canonicals and never canonicalizes to another domain", () => {
     const pages = [
       [pageHtml(), CANON_ORIGIN + "/"],
@@ -2486,11 +2552,11 @@ describe("AZL-DONATE-1.0", () => {
     assert.equal(DONATE_HREF, CANON_ORIGIN + DONATE_PATH + "?v=png");
     assert.deepEqual(
       SPINE.map((s) => s.label),
-      ["Why", "Software", "Research", "Doors", "Receipts", "Comics", "Donate"],
+      ["Why", "Software", "Research", "Doors", "Receipts", "Comics", "Donate", "Aziel"],
     );
     assert.deepEqual(
       SPINE.map((s) => s.href),
-      [CANON_ORIGIN + "/why", SOFTWARE_HREF, CANON_ORIGIN + "/research", CANON_ORIGIN + "/doors", RECEIPTS_HREF, COMICS_HREF, DONATE_HREF],
+      [CANON_ORIGIN + "/why", SOFTWARE_HREF, CANON_ORIGIN + "/research", CANON_ORIGIN + "/doors", RECEIPTS_HREF, COMICS_HREF, DONATE_HREF, CANON_ORIGIN + "/aziel"],
     );
     const homeNav = spineNav("home");
     assert.ok(homeNav.includes(">" + DONATE_TITLE + "<"));
