@@ -7,6 +7,7 @@
 import { AUTHOR, AZIEL_PATH, CANON_ORIGIN, COMICS, DESCRIPTION, HASH_REDIRECTS, LIBRARY, LIBRARY_RUNTIME, RUNTIME_VERSION } from "./copy.js";
 import { personJsonLdScript } from "./identity.js";
 import { DOWNLOADS_REASON, DUAL_NODES_TITLE } from "./mesh.js";
+import { siteFooterHtml } from "./page.js";
 import { discoveryAlternateLinkTags, ROBOTS_INDEX } from "./seo.js";
 
 export const FILM_MP4_PATH = "/film/aziel-runtime.mp4";
@@ -272,6 +273,13 @@ export const THEATER_CSS = `
 .theater .download{margin:1.4rem 0 0}
 .theater .download a{color:#b0f0c4;letter-spacing:.18em;text-transform:uppercase;border-bottom:1px solid #b0f0c473;padding-bottom:.12rem;font-size:.72rem;text-decoration:none}
 .theater .download a:hover{color:#e6d4b5;border-color:#e6d4b5}
+.site-footer{width:min(820px,calc(100% - 2.2rem));margin:0 auto 2.8rem;position:relative;z-index:2;color:#e6d4b5c7;font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.75rem;line-height:1.5}
+.site-footer a{color:#e6d4b5}
+.site-footer .ecosystem{margin:0 0 12px;padding:0 0 12px;border-bottom:1px solid #e6d4b538}
+.site-footer .ecosystem-title{letter-spacing:.16em;text-transform:uppercase;color:#b0f0c4;font-size:.64rem;margin:0 0 8px}
+.site-footer .ecosystem ul{list-style:none;display:flex;flex-wrap:wrap;gap:.35rem 1rem;margin:0;padding:0}
+.site-footer .ecosystem li{margin:0}
+.site-footer p{margin:.55rem 0 0}
 html,body{margin:0;background:#07090f}
 @media (width>=740px){.theater .facts{grid-template-columns:1fr 1fr 1fr;gap:1.25rem}}
 @media (width<=720px){
@@ -302,7 +310,7 @@ function theaterHashScript() {
   );
 }
 
-/** Sole document for GET /. No hub markup, Softwares grid, or site chrome. */
+/** Sole document for GET /. Film theater plus the shared ecosystem footer. No hub spine or Softwares grid. */
 export function filmTheaterHtml(stats) {
   const canonical = CANON_ORIGIN + "/";
   const image = CANON_ORIGIN + FILM_OG_PATH;
@@ -335,6 +343,7 @@ ${personJsonLdScript()}
 </head>
 <body>
 ${filmGateHtml(stats)}
+${siteFooterHtml()}
 </body>
 </html>`;
 }

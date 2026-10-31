@@ -10,8 +10,17 @@ import {
   DONATE_DISCLAIMER,
   DONATE_HREF,
   DONATE_TITLE,
+  AZIEL_HANDLES,
+  azielHandleLines,
+  CAP7_NOT_ICANN,
   DOORS,
   EMBRYOLOCK_HREF,
+  GROWTH_ON_ALLOW,
+  UNSEAL_AZIEL,
+  UNSEAL_COS_TIP,
+  UNSEAL_NOTE,
+  UNSEAL_ORIGIN,
+  unsealCite,
   FRAGGATE,
   FRAGGATE_GITHUB,
   GITHUB,
@@ -677,6 +686,8 @@ export function sitemapXml(now = new Date(), software = SOFTWARE) {
     TRADES_RUNTIME_STATS,
     TRADES_RUNTIME_GITHUB,
     X_URL,
+    UNSEAL_ORIGIN + "/",
+    UNSEAL_AZIEL,
     ...doors.map((s) => s.href),
   ];
   const seen = new Set();
@@ -979,8 +990,12 @@ export function citeDoc(software = SOFTWARE, runtimeVersion = RUNTIME_VERSION, s
         row.cites = d.cites.map((cite) => ({ label: cite.label, url: cite.href }));
       }
       if (d.version) row.version = d.version;
+      if (d.live === false) row.live = false;
+      if (d.live_node === false) row.live_node = false;
       return row;
     }),
+    aziel_handles: AZIEL_HANDLES.map((row) => ({ label: row.label, url: row.href })),
+    unseal: unsealCite(),
     person_id: PERSON_ID,
     person: {
       "@context": "https://schema.org",
@@ -1019,6 +1034,22 @@ function doorPointText(link) {
   return link.href;
 }
 
+function azielHandlesLlmsBlock() {
+  return [
+    "## Aziel handles",
+    "",
+    "Unique paths, not hash-only. The Aziel tab is " + CANON_ORIGIN + "/aziel.",
+    "He Didn't Jump is a handle. It is not a Live Node.",
+    UNSEAL_NOTE,
+    "Cos tip: " + UNSEAL_COS_TIP + " at " + UNSEAL_ORIGIN + "/",
+    CAP7_NOT_ICANN,
+    GROWTH_ON_ALLOW,
+    "",
+    ...azielHandleLines(),
+    "",
+  ].join("\n");
+}
+
 function doorIndexLines() {
   return DOORS.map((d) => {
     const parts = [d.href];
@@ -1045,6 +1076,9 @@ function humanTabsLlmsBlock() {
       ". The film at / links Enter to /aziel and leaves the other tabs off that nav. This list and the sitemap are the index.",
     APEX_REDIRECT_NOTE,
     "Cap-7 public_icann: false. design_of only. resolves_to_hub: false.",
+    CAP7_NOT_ICANN,
+    UNSEAL_NOTE,
+    GROWTH_ON_ALLOW,
     "Softwares MCP stays on. Agent MCP stays on. Door: POST " + RUNTIME_LOCAL + "/mcp (fraggate_call).",
     "",
     ...humanTabLines(),
@@ -1245,6 +1279,7 @@ export function llmsTxt(software = SOFTWARE, survival = null, sot = null) {
     "",
     doorLines,
     "",
+    azielHandlesLlmsBlock(),
     ingestLlmsBlock(),
     shelvesLlmsBlock(),
     banSurvivalLlmsBlock(survival),
@@ -1555,6 +1590,7 @@ export function aiTxt(survival = null, software, sot = null) {
     "",
     doorIndexLines(),
     "",
+    azielHandlesLlmsBlock(),
     "Prefer /llms.txt for the hub door index. /llms-full.txt is the longer Aziel Runtime machine index (same document as /runtime/llms.txt), not a copy of /llms.txt.",
     "OpenAPI: /openapi.json is the same document as /runtime/openapi.json.",
     "MCP server card: /mcp.json and /.well-known/mcp.json. Endpoint POST /runtime/mcp.",
