@@ -15,11 +15,16 @@ import {
   DONATE_RAILS,
   DONATE_SIGN,
   DONATE_TITLE,
+  AZIEL_HANDLES,
+  AZIEL_HANDLES_LEDE,
+  CAP7_NOT_ICANN,
   DOORS,
   ECOSYSTEM_LINKS,
   ECOSYSTEM_TITLE,
   SISTER_MESH,
   SISTER_MESH_NOTE,
+  FOOTER_HONESTY,
+  HUMAN_TABS,
   EMBRYOLOCK_COPY,
   EMBRYOLOCK_HREF,
   EMBRYOLOCK_WORKER,
@@ -337,6 +342,9 @@ footer a:hover{color:var(--gold)}
 .ecosystem ul{list-style:none;margin:0;padding:0}
 .ecosystem li{margin:0 0 6px}
 .ecosystem-secondary{opacity:.82}
+.handles{list-style:none;margin:0;padding:0}
+.handles li{margin:0 0 8px}
+.paths{margin:0 0 8px;line-height:1.55}
 .mesh-quiet{margin:0;font-size:12px;letter-spacing:.04em}
 .awareness{margin:14px 0 0;color:var(--muted);font-size:14px;line-height:1.55}
 .awareness-note{margin:0 0 8px}
@@ -774,13 +782,14 @@ export function runtimeCiteHtml(version, sot) {
 }
 
 export function sisterHandlesHtml() {
-  const rows = SISTER_MESH.map((row) =>
+  const sister = SISTER_MESH.map((row) =>
     doorRow({
       label: row.label,
       href: row.url,
       also: row.aziel ? { label: "Aziel", href: row.aziel } : null,
     }),
   ).join("");
+  const flat = AZIEL_HANDLES.map((row) => "<li>" + a(row.href, row.label) + "</li>").join("");
   return (
     '<section class="card" id="handles">' +
     "<h2>Handles</h2>" +
@@ -788,8 +797,17 @@ export function sisterHandlesHtml() {
     esc(SISTER_MESH_NOTE) +
     "</p>" +
     '<ul class="doors">' +
-    rows +
-    "</ul></section>"
+    sister +
+    "</ul>" +
+    "<p>" +
+    esc(AZIEL_HANDLES_LEDE) +
+    "</p>" +
+    '<ul class="handles">' +
+    flat +
+    "</ul>" +
+    "<p>" +
+    esc(CAP7_NOT_ICANN) +
+    "</p></section>"
   );
 }
 
@@ -807,6 +825,41 @@ export function ecosystemHtml() {
       return "<li>" + a(link.href, link.label, cls) + "</li>";
     }).join("") +
     "</ul></nav>"
+  );
+}
+
+function pathLineHtml() {
+  const links = HUMAN_TABS.map((tab) => {
+    const path = tab.path || "/";
+    return a(path, path);
+  });
+  return '<p class="paths">Paths: ' + links.join(" · ") + ".</p>";
+}
+
+/** Shared colophon. Ecosystem mark, crawl files, pretty paths. No 15:20 chrome. */
+export function siteFooterHtml(meshQuiet = "") {
+  return (
+    '<footer>\n    <div class="site-footer">' +
+    ecosystemHtml() +
+    "\n    <p>" +
+    esc(AUTHOR) +
+    " · " +
+    a(CANON_ORIGIN + "/cite.json", "cite.json") +
+    " · " +
+    a(CANON_ORIGIN + "/llms.txt", "llms.txt") +
+    " · " +
+    a(CANON_ORIGIN + "/ai.txt", "ai.txt") +
+    " · " +
+    a(CANON_ORIGIN + "/sitemap.xml", "sitemap") +
+    " · " +
+    a(DONATE_HREF, DONATE_TITLE) +
+    " · Apache-2.0</p>\n    " +
+    pathLineHtml() +
+    "\n    <p>" +
+    esc(FOOTER_HONESTY) +
+    "</p>\n    " +
+    (meshQuiet || "") +
+    "</div>\n  </footer>"
   );
 }
 
@@ -905,21 +958,7 @@ function tabArticle(section, softwareItems) {
 }
 
 function literaryFooter(meshQuiet) {
-  return (
-    "  <footer>\n    " +
-    ecosystemHtml() +
-    "\n    <p>" +
-    esc(AUTHOR) +
-    " · " +
-    a(CANON_ORIGIN + "/cite.json", "cite.json") +
-    " · " +
-    a(CANON_ORIGIN + "/llms.txt", "llms.txt") +
-    " · " +
-    a(DONATE_HREF, DONATE_TITLE) +
-    " · Apache-2.0</p>\n    " +
-    meshQuiet +
-    "\n  </footer>"
-  );
+  return "  " + siteFooterHtml(meshQuiet);
 }
 
 export function pageHtml(views = 0, softwareItems = SOFTWARE, mesh = null, runtimeVersion = RUNTIME_VERSION, opts = {}) {
@@ -948,7 +987,7 @@ ${hashRedirectScript()}
 <main class="wrap">
 ${brandRow("\n      " + liveNodesPill(mesh) + "\n      " + viewsPill(views) + "\n      " + downloadsPill())}
   <h1 id="aziel">${esc(PROSE.title)}</h1>
-  ${spineNav("home")}
+  ${spineNav("aziel")}
   <article class="card lead">${paragraphs(PROSE.open)}</article>
   <section class="card" id="runtime">
     <h2>${esc(RUNTIME_TITLE)}</h2>
@@ -1091,10 +1130,7 @@ ${brandRow()}
     <p>${esc(COMICS_DESCRIPTION)}</p>
   </article>
   <ol class="reels">${reels}</ol>
-  <footer>
-    ${ecosystemHtml()}
-    <p>${esc(AUTHOR)} · ${a(CANON_ORIGIN + "/", AUTHOR)} · ${a(CANON_ORIGIN + "/cite.json", "cite.json")} · Apache-2.0</p>
-  </footer>
+  ${siteFooterHtml()}
 </main>
 ${COPY_SCRIPT}
 </body>
@@ -1138,10 +1174,7 @@ ${brandRow()}
     <h2>${esc(RECEIPTS_TITLE)}</h2>
     <ol class="receipts">${shown.map(receiptItem).join("")}</ol>
   </section>
-  <footer>
-    ${ecosystemHtml()}
-    <p>${esc(AUTHOR)} · ${a(CANON_ORIGIN + "/", AUTHOR)} · ${a(CANON_ORIGIN + "/cite.json", "cite.json")} · Apache-2.0</p>
-  </footer>
+  ${siteFooterHtml()}
 </main>
 ${COPY_SCRIPT}
 </body>
@@ -1166,10 +1199,7 @@ ${brandRow()}
   ${spineNav()}
   <h1>${esc(INGEST_TITLE)}</h1>
   ${firstScreenHtml()}
-  <footer>
-    ${ecosystemHtml()}
-    <p>${esc(AUTHOR)} · ${a(CANON_ORIGIN + "/", AUTHOR)} · ${a(CANON_ORIGIN + "/cite.json", "cite.json")} · Apache-2.0</p>
-  </footer>
+  ${siteFooterHtml()}
 </main>
 ${COPY_SCRIPT}
 </body>
@@ -1205,10 +1235,7 @@ ${brandRow()}
     </form>
     <p>${a(INGEST_HREF, INGEST_SPEC)} · ${a(RECEIPTS_HREF, RECEIPTS_TITLE)} · ${a(REEXPAND_HREF, REEXPAND_SPEC)}</p>
   </article>
-  <footer>
-    ${ecosystemHtml()}
-    <p>${esc(AUTHOR)} · ${a(CANON_ORIGIN + "/", AUTHOR)} · ${a(CANON_ORIGIN + "/cite.json", "cite.json")} · Apache-2.0</p>
-  </footer>
+  ${siteFooterHtml()}
 </main>
 ${COPY_SCRIPT}
 </body>
@@ -1234,10 +1261,7 @@ ${brandRow()}
   ${spineNav("donate")}
   <h1>${esc(DONATE_TITLE)}</h1>
   <article class="card lead">${donateArticle()}</article>
-  <footer>
-    ${ecosystemHtml()}
-    <p>${esc(AUTHOR)} · ${a(CANON_ORIGIN + "/", AUTHOR)} · ${a(CANON_ORIGIN + "/cite.json", "cite.json")} · Apache-2.0</p>
-  </footer>
+  ${siteFooterHtml()}
 </main>
 ${COPY_SCRIPT}
 </body>
@@ -1262,9 +1286,7 @@ ${brandRow()}
   <h1>${esc(EMBRYOLOCK_COPY.title)}</h1>
   <article class="card lead">${paragraphs(EMBRYOLOCK_COPY.open)}</article>
   <p>${a(EMBRYOLOCK_WORKER, "worker_home")} · ${a(SOFTWARE_SECTION, "Software")} · ${a(CANON_ORIGIN + "/", AUTHOR)}</p>
-  <footer>
-    ${ecosystemHtml()}
-  </footer>
+  ${siteFooterHtml()}
 </main>
 </body>
 </html>`;
@@ -1297,6 +1319,7 @@ ${faq}
 <p>${esc(WHO_IS_ANSWER)}</p>
 ${sisterHandlesHtml()}
 </main>
+${siteFooterHtml()}
 </body>
 </html>
 `;
@@ -1321,6 +1344,7 @@ ${brandRow()}
     <p>This path is not a door.</p>
     <p>${a(CANON_ORIGIN + "/", AUTHOR)}</p>
   </article>
+  ${siteFooterHtml()}
 </main>
 </body>
 </html>`;
