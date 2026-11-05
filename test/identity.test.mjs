@@ -244,7 +244,9 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     assert.ok(person.sameAs.includes("https://glama.ai/mcp/servers/AzielEliab/aziel-runtime"));
     assert.ok(person.sameAs.includes("https://github.com/azieltherevealerofthesealed-arch"));
     assert.ok(person.sameAs.includes("https://x.com/AzielEliab"));
-    assert.equal(person.sameAs.length, 8);
+    assert.equal(person.sameAs.length, 10);
+    assert.ok(person.sameAs.includes("https://www.furnaceisntfree.com/"));
+    assert.ok(person.sameAs.includes("https://www.timetounsealthebook.net"));
     assert.ok(!person.sameAs.includes("https://www.azieleliab.com/runtime"));
     assert.ok(!person.sameAs.some((href) => /euaziel|flutter|react/i.test(href)));
     assert.ok(!("birthDate" in person));
@@ -277,7 +279,11 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     assert.ok(types.includes("FAQPage"));
     assert.ok(types.includes("SoftwareApplication"));
     assert.ok(types.includes("Dataset"));
-    assert.equal(doc["@graph"].filter((n) => n["@type"] === "WebSite").length, 4);
+    assert.equal(doc["@graph"].filter((n) => n["@type"] === "WebSite").length, 6);
+    const sites = doc["@graph"].filter((n) => n["@type"] === "WebSite");
+    assert.ok(sites.some((n) => n.url === "https://www.furnaceisntfree.com/"));
+    assert.ok(sites.some((n) => n.sameAs && n.sameAs.includes("https://furnaceisntfree.com/aziel/")));
+    assert.ok(sites.some((n) => n.url === "https://www.timetounsealthebook.net"));
     const person = doc["@graph"].find((n) => n["@type"] === "Person");
     assert.equal(person["@id"], PERSON_ID);
     const runtime = doc["@graph"].find((n) => n["@id"] === RUNTIME_ID);
@@ -473,8 +479,8 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     assert.ok(body.includes(HEDIDNTJUMP + "/api/stats"));
     assert.ok(body.includes("## Published About"));
     assert.ok(body.includes("## Site coverage"));
-    assert.equal(SITE_COVERAGE.length, 5);
-    assert.deepEqual(SITE_COVERAGE.map((row) => row.id), ["ae", "corpus", "godlock", "hedidntjump", "runtime"]);
+    assert.equal(SITE_COVERAGE.length, 7);
+    assert.deepEqual(SITE_COVERAGE.map((row) => row.id), ["ae", "corpus", "godlock", "hedidntjump", "furnace", "unseal", "runtime"]);
     for (const row of SITE_COVERAGE) {
       assert.ok(body.includes(row.label), row.label);
       assert.ok(body.includes(row.url), row.url);
@@ -556,7 +562,7 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     assert.equal(doc.hardware_addendum, HARDWARE_ADDENDUM);
     assert.equal(doc.library_front_door.records_packed, 326);
     assert.deepEqual(doc.job_title, PERSON_JOB_TITLE);
-    assert.equal(doc.site_coverage.length, 5);
+    assert.equal(doc.site_coverage.length, 7);
     assert.deepEqual(doc.aka, AUTHOR_AKA_LIST);
     assert.ok(doc.aka.includes("Elias Artista"));
     assert.equal(doc.hebrew_name_definition, HEBREW_NAME_DEFINITION);
@@ -782,7 +788,7 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     assert.ok(cite.works.some((row) => row.name.startsWith("Webslinger (")));
     assert.ok(!cite.works.some((row) => /doi\.org|zenodo\.org/i.test(row.url)));
     assert.ok(!cite.works.some((row) => row.caution));
-    assert.equal(cite.site_coverage.length, 5);
+    assert.equal(cite.site_coverage.length, 7);
     assert.ok(cite.site_coverage.every((row) => row.id && row.label && row.url && row.blurb));
     assert.equal(cite.who, WHO_HREF);
     assert.equal(cite.visible_lock, VISIBLE_LOCK_LINE);

@@ -43,6 +43,15 @@ identifiers:
     value: "https://www.hedidntjump.com/"
     description: He Didn't Jump archive
   - type: url
+    value: "https://www.furnaceisntfree.com/"
+    description: The Furnace Isn't Free
+  - type: url
+    value: "https://furnaceisntfree.com/aziel/"
+    description: The Furnace Isn't Free Aziel handle
+  - type: url
+    value: "https://www.timetounsealthebook.net"
+    description: Time to Unseal the Book
+  - type: url
     value: "https://aziel-runtime.vibelock.workers.dev/"
     description: Aziel Runtime / FragGate MCP door
   - type: url

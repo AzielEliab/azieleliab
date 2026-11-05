@@ -16,6 +16,9 @@ Always send User-Agent: Mozilla/5.0
 - https://www.azielcorpuslibrary.net/ — Digital Library MASTER
 - https://godlock.uk/ — GodLock challenge/score product
 - https://www.hedidntjump.com/ — Zioncheck 7 Aug 1936 archive
+- https://www.furnaceisntfree.com/ — The Furnace Isn't Free. HVAC quote transparency
+- https://furnaceisntfree.com/aziel/ — The Furnace Isn't Free Aziel handle
+- https://www.timetounsealthebook.net — Time to Unseal the Book. Not a Live Node. Paid satellite HELD
 - https://aziel-runtime.vibelock.workers.dev/ — Aziel Runtime / FragGate MCP Softwares door
 - https://trades-runtime.vibelock.workers.dev/ — Trades-Runtime sister product (local-first BYO field trades)
 - https://glama.ai/mcp/servers/AzielEliab/aziel-runtime — Try on Glama
@@ -39,7 +42,7 @@ The film at / links Enter to /aziel and leaves the other tabs off that nav. Each
 - https://www.azieleliab.com/about · https://www.azieleliab.com/AzielEliab · https://www.azieleliab.com/aziel-eliab — same hub HTML as /aziel
 - https://www.azieleliab.com/ingest · https://www.azieleliab.com/verify · https://www.azieleliab.com/embryolock — human pages, not spine tabs
 
-Cap-7 public_icann: false. design_of only. resolves_to_hub: false. Softwares MCP stays on. Agent MCP stays on.
+Cap-7 public_icann: false. design_of only. resolves_to_hub: false. Paid satellite stays HELD. Softwares MCP stays on. Agent MCP stays on.
 /.well-known/ai.txt serves the same bytes as /ai.txt.
 
 Landing Worker (separate): https://github.com/AzielEliab/azieleliab

@@ -47,6 +47,18 @@ export const GODLOCK = "https://godlock.uk";
 export const GODLOCK_AZIEL = GODLOCK + "/AzielEliab";
 /** Sister research archive. www host as published on this hub. */
 export const HEDIDNTJUMP = "https://www.hedidntjump.com";
+/**
+ * Official sister doors confirmed by FurnaceBot.
+ * Exact https links. Not Live Nodes. Cap-7 is not ICANN. Paid satellite stays HELD.
+ */
+export const FURNACE_NAME = "The Furnace Isn't Free";
+export const FURNACE_HOME = "https://www.furnaceisntfree.com/";
+export const FURNACE_AZIEL = "https://furnaceisntfree.com/aziel/";
+export const UNSEAL_NAME = "Time to Unseal the Book";
+export const UNSEAL = "https://www.timetounsealthebook.net";
+export const PAID_SATELLITE = "HELD";
+export const SISTER_MESH_NOTE =
+  "Official sister https doors. Not Live Nodes. Cap-7 is not ICANN. Paid satellite stays HELD. Mesh live stays off until Dual + Aziel merge + Cos.";
 export const RUNTIME = "https://aziel-runtime.vibelock.workers.dev";
 export const RUNTIME_PATH = "/runtime";
 export const RUNTIME_LOCAL = CANON_ORIGIN + RUNTIME_PATH;
@@ -217,7 +229,7 @@ export const WEBSITE_ID = CANON_ORIGIN + "/#website";
 export const X_URL = "https://x.com/AzielEliab";
 export const X_HANDLE = "@AzielEliab";
 export const X_LABEL = "X @AzielEliab";
-/** AZindex sameAs lattice: hub, corpus, GodLock, He Didn't Jump, GitHub AzielEliab, Glama runtime, X. */
+/** AZindex sameAs lattice: hub, corpus, GodLock, He Didn't Jump, furnace, unseal, GitHub AzielEliab, Glama runtime, X. */
 export const PERSON_SAME_AS = [
   GITHUB,
   GITHUB_SECONDARY,
@@ -226,8 +238,42 @@ export const PERSON_SAME_AS = [
   LIBRARY + "/",
   GODLOCK + "/",
   HEDIDNTJUMP + "/",
+  FURNACE_HOME,
+  UNSEAL,
   X_URL,
 ];
+
+/** Full sister mesh. Softwares is the aziel-runtime Worker. Furnace Aziel is the second exact furnace link. */
+export const SISTER_MESH = Object.freeze([
+  { id: "hub", label: "azieleliab.com", url: CANON_ORIGIN + "/" },
+  { id: "corpus", label: "azielcorpuslibrary.net", url: LIBRARY + "/" },
+  { id: "godlock", label: "godlock.uk", url: GODLOCK + "/" },
+  { id: "hedidntjump", label: "hedidntjump.com", url: HEDIDNTJUMP + "/" },
+  { id: "softwares", label: "Softwares", url: RUNTIME + "/" },
+  { id: "furnace", label: FURNACE_NAME, url: FURNACE_HOME, aziel: FURNACE_AZIEL },
+  { id: "unseal", label: UNSEAL_NAME, url: UNSEAL },
+]);
+
+export function sisterMeshCite() {
+  return {
+    note: SISTER_MESH_NOTE,
+    cap7_public_icann: false,
+    paid_satellite: PAID_SATELLITE,
+    live_nodes: false,
+    mesh_live: false,
+    sites: SISTER_MESH.map((row) => {
+      const out = {
+        id: row.id,
+        label: row.label,
+        url: row.url,
+        official: true,
+        live_node: false,
+      };
+      if (row.aziel) out.aziel = row.aziel;
+      return out;
+    }),
+  };
+}
 
 export const ECOSYSTEM_TITLE = "Part of the Aziel Eliab ecosystem";
 export const ECOSYSTEM_LINKS = [
@@ -235,6 +281,9 @@ export const ECOSYSTEM_LINKS = [
   { label: "Aziel Corpus Library", href: LIBRARY + "/" },
   { label: "GodLock", href: GODLOCK + "/" },
   { label: "He Didn't Jump", href: HEDIDNTJUMP + "/" },
+  { label: "Softwares", href: CANON_ORIGIN + "/software" },
+  { label: FURNACE_NAME, href: FURNACE_HOME },
+  { label: UNSEAL_NAME, href: UNSEAL },
   { label: "GitHub AzielEliab", href: GITHUB },
   { label: RUNTIME_TITLE, href: RUNTIME + "/" },
   { label: GLAMA_LABEL, href: GLAMA_RUNTIME },
@@ -384,6 +433,9 @@ export const OFFICIAL_ECOSYSTEM = [
   { id: "corpus", label: "Aziel Digital Library", url: LIBRARY + "/" },
   { id: "godlock", label: "GodLock", url: GODLOCK + "/" },
   { id: "hedidntjump", label: "He Didn't Jump", url: HEDIDNTJUMP + "/" },
+  { id: "furnace", label: FURNACE_NAME, url: FURNACE_HOME },
+  { id: "furnace-aziel", label: "The Furnace Isn't Free · Aziel", url: FURNACE_AZIEL },
+  { id: "unseal", label: UNSEAL_NAME, url: UNSEAL },
   { id: "runtime", label: "Aziel Runtime", url: RUNTIME + "/" },
   { id: "github", label: "GitHub AzielEliab", url: GITHUB },
   { id: "glama", label: GLAMA_LABEL, url: GLAMA_RUNTIME },
@@ -646,7 +698,11 @@ export const TAB_PAGES = [
     heading: "Doors",
     title: "Doors — Aziel Eliab",
     description:
-      "Public doors for Aziel Eliab: GitHub AzielEliab, Corpus, GodLock, He Didn't Jump, Runtime, " +
+      "Public doors for Aziel Eliab: GitHub AzielEliab, Corpus, GodLock, He Didn't Jump, " +
+      FURNACE_NAME +
+      ", " +
+      UNSEAL_NAME +
+      ", Runtime, " +
       TRADES_RUNTIME_NAME +
       ", X @AzielEliab.",
   },
@@ -1457,6 +1513,8 @@ export const DOORS = [
   { label: "Research", href: LIBRARY + "/", also: { label: LIBRARY_AZIEL, href: LIBRARY_AZIEL } },
   { label: "GodLock", href: GODLOCK + "/" },
   { label: "He Didn't Jump", href: HEDIDNTJUMP + "/" },
+  { label: FURNACE_NAME, href: FURNACE_HOME, also: { label: "Aziel", href: FURNACE_AZIEL } },
+  { label: UNSEAL_NAME, href: UNSEAL },
   { label: "Runtime", href: RUNTIME_LOCAL, also: { label: GLAMA_LABEL, href: GLAMA_RUNTIME } },
   {
     label: TRADES_RUNTIME_NAME,

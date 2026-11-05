@@ -47,12 +47,16 @@
     "follow": true
   },
   "cap7_public_icann": false,
+  "paid_satellite": "HELD",
   "ai_well_known": "https://www.azieleliab.com/.well-known/ai.txt",
   "websites": {
     "azieleliab.com": "https://www.azieleliab.com/",
     "azielcorpuslibrary.net": "https://www.azielcorpuslibrary.net/",
     "godlock.uk": "https://godlock.uk/",
     "hedidntjump.com": "https://www.hedidntjump.com/",
+    "furnaceisntfree.com": "https://www.furnaceisntfree.com/",
+    "furnaceisntfree.com/aziel": "https://furnaceisntfree.com/aziel/",
+    "timetounsealthebook.net": "https://www.timetounsealthebook.net",
     "aziel-runtime": "https://aziel-runtime.vibelock.workers.dev/",
     "trades-runtime": "https://trades-runtime.vibelock.workers.dev/",
     "glama": "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime",

@@ -848,11 +848,79 @@ describe("doors", () => {
     assert.ok(aiTxt().includes("sameAs: " + PERSON_SAME_AS.join(" · ")));
     assert.ok(llmsTxt().includes("## Site coverage"));
     assert.ok(aiTxt().includes("## Site coverage"));
-    assert.ok(cite.site_coverage.length === 5);
+    assert.ok(cite.site_coverage.length === 7);
     assert.match(llmsTxt(), /## Doors[\s\S]*He Didn't Jump: https:\/\/www\.hedidntjump\.com\//);
     assert.match(aiTxt(), /## Doors[\s\S]*He Didn't Jump: https:\/\/www\.hedidntjump\.com\//);
     assert.ok(sitemapXml().includes("<loc>" + HEDIDNTJUMP + "/</loc>"));
     assert.ok(sitemapXml().includes("<loc>https://github.com/AzielEliab/peacelock</loc>"));
+  });
+
+  it("lists Furnace and Time to Unseal as official doors, Aziel handles, and SEO links", () => {
+    const furnace = "https://www.furnaceisntfree.com/";
+    const furnaceAziel = "https://furnaceisntfree.com/aziel/";
+    const unseal = "https://www.timetounsealthebook.net";
+    const furnaceDoor = DOORS.find((d) => d.label === "The Furnace Isn't Free");
+    const unsealDoor = DOORS.find((d) => d.label === "Time to Unseal the Book");
+    assert.ok(furnaceDoor);
+    assert.equal(furnaceDoor.href, furnace);
+    assert.equal(furnaceDoor.also.href, furnaceAziel);
+    assert.ok(unsealDoor);
+    assert.equal(unsealDoor.href, unseal);
+    const html = doorsHtml();
+    const card = html.match(/<section class="card lead" id="doors">[\s\S]*?<\/section>/)[0];
+    assert.ok(card.includes('href="' + furnace + '"'));
+    assert.ok(card.includes('href="' + furnaceAziel + '"'));
+    assert.ok(card.includes('href="' + unseal + '"'));
+    assert.ok(card.includes(">The Furnace Isn't Free<"));
+    assert.ok(card.includes(">Time to Unseal the Book<"));
+    const footer = html.match(/<footer>[\s\S]*?<\/footer>/)[0];
+    for (const url of [
+      "https://www.azieleliab.com/",
+      "https://www.azielcorpuslibrary.net/",
+      "https://godlock.uk/",
+      "https://www.hedidntjump.com/",
+      "https://www.azieleliab.com/software",
+      "https://aziel-runtime.vibelock.workers.dev/",
+      furnace,
+      unseal,
+    ]) {
+      assert.ok(footer.includes('href="' + url + '"'), url);
+    }
+    const hub = pageHtml();
+    const handles = hub.match(/<section class="card" id="handles">[\s\S]*?<\/section>/)[0];
+    assert.ok(handles.includes('href="' + furnace + '"'));
+    assert.ok(handles.includes('href="' + furnaceAziel + '"'));
+    assert.ok(handles.includes('href="' + unseal + '"'));
+    assert.ok(handles.includes(">Softwares<"));
+    assert.ok(handles.includes("Paid satellite stays HELD"));
+    assert.ok(handles.includes("Cap-7 is not ICANN"));
+    const cite = citeDoc();
+    assert.equal(cite.furnace, furnace);
+    assert.equal(cite.furnace_aziel, furnaceAziel);
+    assert.equal(cite.timetounsealthebook, unseal);
+    assert.equal(cite.paid_satellite, "HELD");
+    assert.equal(cite.cap7.public_icann, false);
+    assert.equal(cite.sister_mesh.paid_satellite, "HELD");
+    assert.equal(cite.sister_mesh.cap7_public_icann, false);
+    assert.equal(cite.sister_mesh.live_nodes, false);
+    assert.equal(cite.sister_mesh.mesh_live, false);
+    assert.equal(cite.sister_mesh.sites.length, 7);
+    assert.ok(cite.sister_mesh.sites.every((row) => row.official === true && row.live_node === false));
+    assert.ok(llmsTxt().includes(furnace));
+    assert.ok(llmsTxt().includes(furnaceAziel));
+    assert.ok(llmsTxt().includes(unseal));
+    assert.ok(aiTxt().includes(furnace));
+    assert.ok(aiTxt().includes(furnaceAziel));
+    assert.ok(aiTxt().includes(unseal));
+    assert.ok(llmsTxt().includes("Paid satellite: HELD"));
+    assert.ok(aiTxt().includes("Paid satellite: HELD"));
+    assert.match(llmsTxt(), /Cap-7 public_icann: false/);
+    const map = sitemapXml();
+    assert.ok(map.includes("<loc>" + furnace + "</loc>"));
+    assert.ok(map.includes("<loc>" + furnaceAziel + "</loc>"));
+    assert.ok(map.includes("<loc>" + unseal + "</loc>"));
+    assert.ok(PERSON_SAME_AS.includes(furnace));
+    assert.ok(PERSON_SAME_AS.includes(unseal));
   });
 
   it("lists Trades-Runtime on /doors beside Runtime, linking the giveaway Worker", () => {
@@ -1447,6 +1515,8 @@ describe("public entity graph phases B–D + E audit", () => {
       "https://www.azielcorpuslibrary.net/",
       "https://godlock.uk/",
       "https://www.hedidntjump.com/",
+      "https://www.furnaceisntfree.com/",
+      "https://www.timetounsealthebook.net",
       "https://x.com/AzielEliab",
     ]);
     assert.equal(GLAMA_RUNTIME, "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime");
@@ -1535,6 +1605,9 @@ describe("public entity graph phases B–D + E audit", () => {
         ["Aziel Corpus Library", "https://www.azielcorpuslibrary.net/", false],
         ["GodLock", "https://godlock.uk/", false],
         ["He Didn't Jump", "https://www.hedidntjump.com/", false],
+        ["Softwares", "https://www.azieleliab.com/software", false],
+        ["The Furnace Isn't Free", "https://www.furnaceisntfree.com/", false],
+        ["Time to Unseal the Book", "https://www.timetounsealthebook.net", false],
         ["GitHub AzielEliab", "https://github.com/AzielEliab", false],
         ["Aziel Runtime", "https://aziel-runtime.vibelock.workers.dev/", false],
         ["Try on Glama", "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime", false],
