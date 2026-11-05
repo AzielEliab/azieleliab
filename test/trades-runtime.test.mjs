@@ -267,7 +267,7 @@ describe("Trades-Runtime sister-product machine cite", () => {
     assert.ok(card.includes('class="door-purpose"'));
     assert.ok(card.includes(TRADES_RUNTIME_ONE_LINE));
     assert.ok(card.includes('href="' + TRADES_RUNTIME + '/"'));
-    assert.equal((card.match(/class="also"/g) || []).length, 3);
+    assert.equal((card.match(/class="also"/g) || []).length, 4);
     assert.ok(card.includes('href="' + TRADES_RUNTIME_MCP + '"'));
     assert.ok(card.includes(">MCP<"));
     assert.equal(card.includes(">" + TRADES_RUNTIME_MCP + "<"), false);

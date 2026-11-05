@@ -20,6 +20,9 @@ Every public website on the Aziel Eliab profile. One-line what/why. Hub About bo
 | https://www.azielcorpuslibrary.net/ | Digital Library MASTER |
 | https://godlock.uk/ | GodLock challenge/score product |
 | https://www.hedidntjump.com/ | Zioncheck 7 Aug 1936 archive |
+| https://www.furnaceisntfree.com/ | The Furnace Isn't Free. HVAC quote transparency. Official sister door. |
+| https://furnaceisntfree.com/aziel/ | The Furnace Isn't Free Aziel handle. |
+| https://www.timetounsealthebook.net | Time to Unseal the Book. Public test lattice. Not a Live Node. |
 | https://aziel-runtime.vibelock.workers.dev/ | Aziel Runtime / FragGate MCP Softwares door |
 | https://trades-runtime.vibelock.workers.dev/ | Trades-Runtime sister product (local-first BYO field trades; live_backends false; public Softwares/cite) |
 | https://github.com/AzielEliab/trades-runtime | Trades-Runtime source |
@@ -46,7 +49,7 @@ Each human tab is already its own path. The film at `/` links Enter to `/aziel` 
 | `/about` · `/AzielEliab` · `/aziel-eliab` | Same hub HTML as `/aziel` |
 | `/ingest` · `/verify` · `/embryolock` | Human pages that are not spine tabs |
 
-Cap-7 `public_icann: false`. design_of only. `resolves_to_hub: false`. Softwares MCP and agent MCP stay on (`POST /runtime/mcp`, `fraggate_call`). `/.well-known/ai.txt` serves the same bytes as `/ai.txt`.
+Cap-7 `public_icann: false`. design_of only. `resolves_to_hub: false`. Paid satellite stays HELD. The new sister doors are official https links and are not Live Nodes. Mesh live stays off until Dual + Aziel merge + Cos. Softwares MCP and agent MCP stay on (`POST /runtime/mcp`, `fraggate_call`). `/.well-known/ai.txt` serves the same bytes as `/ai.txt`.
 
 Machine who-is: https://www.azieleliab.com/who-is
 
@@ -108,6 +111,8 @@ Person `sameAs` lattice (AZindex):
 - https://www.azielcorpuslibrary.net/
 - https://godlock.uk/
 - https://www.hedidntjump.com/
+- https://www.furnaceisntfree.com/
+- https://www.timetounsealthebook.net
 - https://x.com/AzielEliab
 
 Do not invent Glama UUIDs, Zenodo DOIs, or extra identities. Aka first: Aziel Elroi Eliab, AzielEliab, azieleliab, The Revealer of the Sealed, Elias Artista. Then AzielElroiEliab, The Revealer of The Sealed, Revealer of The Sealed.
@@ -163,6 +168,10 @@ Ask Jeeves is suite help on Aziel Corpus, not a `hasPart` peer and not a Softwar
 | GodLock · Aziel Eliab | https://godlock.uk/AzielEliab |
 | GodLock repo | https://github.com/AzielEliab/godlock |
 | He Didn't Jump | https://www.hedidntjump.com/ |
+| The Furnace Isn't Free | https://www.furnaceisntfree.com/ |
+| The Furnace Isn't Free · Aziel | https://furnaceisntfree.com/aziel/ |
+| Time to Unseal the Book | https://www.timetounsealthebook.net |
+| Softwares | https://www.azieleliab.com/software |
 | aziel-runtime (2.0.0-rc1) | https://github.com/AzielEliab/aziel-runtime |
 | Official Runtime | https://aziel-runtime.vibelock.workers.dev/ |
 | Runtime docs | https://github.com/AzielEliab/aziel-runtime/tree/main/docs/2.0 |

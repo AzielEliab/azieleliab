@@ -16,6 +16,9 @@ Machine who-is: [https://www.azieleliab.com/who-is](https://www.azieleliab.com/w
 | [https://www.azielcorpuslibrary.net/](https://www.azielcorpuslibrary.net/) | Digital Library MASTER |
 | [https://godlock.uk/](https://godlock.uk/) | GodLock challenge/score product |
 | [https://www.hedidntjump.com/](https://www.hedidntjump.com/) | Zioncheck 7 Aug 1936 archive |
+| [https://www.furnaceisntfree.com/](https://www.furnaceisntfree.com/) | The Furnace Isn't Free. HVAC quote transparency |
+| [https://furnaceisntfree.com/aziel/](https://furnaceisntfree.com/aziel/) | The Furnace Isn't Free Aziel handle |
+| [https://www.timetounsealthebook.net](https://www.timetounsealthebook.net) | Time to Unseal the Book. Not a Live Node. Paid satellite HELD |
 | [https://aziel-runtime.vibelock.workers.dev/](https://aziel-runtime.vibelock.workers.dev/) | Aziel Runtime / FragGate MCP Softwares door |
 | [https://trades-runtime.vibelock.workers.dev/](https://trades-runtime.vibelock.workers.dev/) | Trades-Runtime sister product (local-first BYO field trades; live_backends false) |
 | [https://github.com/AzielEliab/trades-runtime](https://github.com/AzielEliab/trades-runtime) | Trades-Runtime source |

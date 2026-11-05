@@ -18,6 +18,8 @@ import {
   DOORS,
   ECOSYSTEM_LINKS,
   ECOSYSTEM_TITLE,
+  SISTER_MESH,
+  SISTER_MESH_NOTE,
   EMBRYOLOCK_COPY,
   EMBRYOLOCK_HREF,
   EMBRYOLOCK_WORKER,
@@ -771,6 +773,26 @@ export function runtimeCiteHtml(version, sot) {
   );
 }
 
+export function sisterHandlesHtml() {
+  const rows = SISTER_MESH.map((row) =>
+    doorRow({
+      label: row.label,
+      href: row.url,
+      also: row.aziel ? { label: "Aziel", href: row.aziel } : null,
+    }),
+  ).join("");
+  return (
+    '<section class="card" id="handles">' +
+    "<h2>Handles</h2>" +
+    '<p class="door-purpose">' +
+    esc(SISTER_MESH_NOTE) +
+    "</p>" +
+    '<ul class="doors">' +
+    rows +
+    "</ul></section>"
+  );
+}
+
 export function ecosystemHtml() {
   return (
     '<nav class="ecosystem" aria-label="' +
@@ -938,6 +960,7 @@ ${brandRow("\n      " + liveNodesPill(mesh) + "\n      " + viewsPill(views) + "\
     <p>${esc(PROSE.close)}</p>
     <p class="sign">${esc(PROSE.sign)}</p>
   </section>
+  ${sisterHandlesHtml()}
 ${literaryFooter(meshQuiet)}
 </main>
 ${COPY_SCRIPT}
@@ -1272,6 +1295,7 @@ ${faq}
 <main>
 <h1>${esc(WHO_TITLE)}</h1>
 <p>${esc(WHO_IS_ANSWER)}</p>
+${sisterHandlesHtml()}
 </main>
 </body>
 </html>

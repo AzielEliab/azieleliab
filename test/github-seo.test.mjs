@@ -10,6 +10,9 @@ const CANON = "https://www.azieleliab.com/";
 const CORPUS = "https://www.azielcorpuslibrary.net/";
 const GODLOCK = "https://godlock.uk/";
 const HEDIDNTJUMP = "https://www.hedidntjump.com/";
+const FURNACE = "https://www.furnaceisntfree.com/";
+const FURNACE_AZIEL = "https://furnaceisntfree.com/aziel/";
+const UNSEAL = "https://www.timetounsealthebook.net";
 const RUNTIME_REPO = "https://github.com/AzielEliab/aziel-runtime";
 const GLAMA = "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime";
 const DONATE = "https://www.azieleliab.com/donate";
@@ -23,6 +26,9 @@ const PUBLIC_WEBSITES = [
   CORPUS,
   GODLOCK,
   HEDIDNTJUMP,
+  FURNACE,
+  FURNACE_AZIEL,
+  UNSEAL,
   RUNTIME_WORKER,
   GLAMA,
   GITHUB_USER,

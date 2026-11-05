@@ -4,7 +4,7 @@
  * Enter navigates to the hub at /aziel. The hub is not mounted under this page.
  * Author: Aziel Eliab.
  */
-import { AUTHOR, AZIEL_PATH, CANON_ORIGIN, COMICS, DESCRIPTION, HASH_REDIRECTS, LIBRARY, LIBRARY_RUNTIME, RUNTIME_VERSION } from "./copy.js";
+import { AUTHOR, AZIEL_PATH, CANON_ORIGIN, COMICS, DESCRIPTION, FURNACE_AZIEL, FURNACE_HOME, GODLOCK, HASH_REDIRECTS, HEDIDNTJUMP, LIBRARY, LIBRARY_RUNTIME, RUNTIME, RUNTIME_VERSION, UNSEAL } from "./copy.js";
 import { personJsonLdScript } from "./identity.js";
 import { DOWNLOADS_REASON, DUAL_NODES_TITLE } from "./mesh.js";
 import { discoveryAlternateLinkTags, ROBOTS_INDEX } from "./seo.js";
@@ -219,7 +219,13 @@ export function filmGateHtml(stats) {
     <nav class="doors" aria-label="Film doors">
       <a href="${AZIEL_PATH}">www.azieleliab.com</a>
       <a href="${LIBRARY}/" target="_blank" rel="noreferrer">azielcorpuslibrary.net</a>
+      <a href="${GODLOCK}/" target="_blank" rel="noreferrer">godlock.uk</a>
+      <a href="${HEDIDNTJUMP}/" target="_blank" rel="noreferrer">hedidntjump.com</a>
       <a href="${LIBRARY_RUNTIME}" target="_blank" rel="noreferrer">runtime</a>
+      <a href="${RUNTIME}/" target="_blank" rel="noreferrer">Softwares</a>
+      <a href="${FURNACE_HOME}" target="_blank" rel="noreferrer">furnaceisntfree.com</a>
+      <a href="${FURNACE_AZIEL}" target="_blank" rel="noreferrer">furnace aziel</a>
+      <a href="${UNSEAL}" target="_blank" rel="noreferrer">timetounsealthebook.net</a>
     </nav>
     <p class="close-line">If the work holds, the name was only a handle on the door.</p>
     <p class="download"><a href="${FILM_SRC}" download="aziel-runtime.mp4">Download the film</a></p>
