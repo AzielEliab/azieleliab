@@ -108,6 +108,7 @@ Person `sameAs` lattice (AZindex):
 - https://github.com/AzielEliab
 - https://github.com/azieltherevealerofthesealed-arch
 - https://glama.ai/mcp/servers/AzielEliab/aziel-runtime
+- https://www.azieleliab.com/runtime/
 - https://www.azieleliab.com/
 - https://www.azielcorpuslibrary.net/
 - https://godlock.uk/
@@ -129,7 +130,7 @@ Machine identity (identical bytes under [docs/aziel-identity-schema/](aziel-iden
 
 ### Runtime `hasPart` (named tools only)
 
-Not MCP ops (`fraggate_call`, `runtime_run`, …). Not Ask Jeeves. Child `@id` is `https://www.azieleliab.com/runtime#<slug>`. SoT LIVE: main `70cc0b0` / version_id `be1d6dca-01a9-4d7e-95da-3fffb617a989` / 2.0.0-rc1. Live GET `/v1/software` exposes `version_id` (`CF_VERSION_METADATA.id`, serve-time; last-known pin).
+Not MCP ops (`fraggate_call`, `runtime_run`, …). Not Ask Jeeves. Child `@id` is `https://www.azieleliab.com/runtime#<slug>`. SoT LIVE: main `16b543b` / version_id `21b64dc5-6f0f-4f60-9009-5d4da59a1683` / 2.0.0-rc1. Live GET `/v1/software` exposes `version_id` (`CF_VERSION_METADATA.id`, serve-time; last-known pin).
 
 | slug | name |
 |------|------|

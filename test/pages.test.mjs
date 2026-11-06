@@ -407,14 +407,14 @@ describe("software doors", () => {
     assert.equal(cite.runtime_doors[1].label, "Official Runtime");
     assert.equal(cite.runtime_doors[1].primary, false);
     assert.equal(cite.runtime_doors[2].label, "Suite pack");
-    assert.equal(cite.runtime_sot.git_short, "70cc0b0");
-    assert.equal(cite.runtime_sot.git_sha, "70cc0b06786ad925be49da16d7f8893095df330b");
-    assert.equal(cite.runtime_sot.version_id, "be1d6dca-01a9-4d7e-95da-3fffb617a989");
-    assert.match(cite.runtime_sot.version_id_note, /be1d6dca-01a9-4d7e-95da-3fffb617a989/);
+    assert.equal(cite.runtime_sot.git_short, "16b543b");
+    assert.equal(cite.runtime_sot.git_sha, "16b543b5961f03813076e38ff19d883d46845c48");
+    assert.equal(cite.runtime_sot.version_id, "21b64dc5-6f0f-4f60-9009-5d4da59a1683");
+    assert.match(cite.runtime_sot.version_id_note, /21b64dc5-6f0f-4f60-9009-5d4da59a1683/);
     assert.match(cite.runtime_sot.version_id_note, /last-known pin/);
     assert.equal(
       cite.runtime_sot.note,
-      "Runtime SoT LIVE: main 70cc0b0 / version_id be1d6dca-01a9-4d7e-95da-3fffb617a989 / 2.0.0-rc1 at https://aziel-runtime.vibelock.workers.dev",
+      "Runtime SoT LIVE: main 16b543b / version_id 21b64dc5-6f0f-4f60-9009-5d4da59a1683 / 2.0.0-rc1 at https://aziel-runtime.vibelock.workers.dev",
     );
     assert.doesNotMatch(cite.runtime_sot.note, /105fa1ee|231b02f/);
     assert.equal("" in cite, false);
@@ -1252,11 +1252,11 @@ describe("SEO routes", () => {
     assert.equal(citeBody.worker_hardware, false);
     assert.equal("" in citeBody, false);
     assert.equal(citeBody.master_33, false);
-    assert.equal(citeBody.runtime_version_id, "be1d6dca-01a9-4d7e-95da-3fffb617a989");
-    assert.equal(citeBody.runtime_git_short, "70cc0b0");
-    assert.equal(citeBody.runtime_git_sha, "70cc0b06786ad925be49da16d7f8893095df330b");
-    assert.match(llmsBody, /SoT LIVE: main 70cc0b0 \/ version_id be1d6dca-01a9-4d7e-95da-3fffb617a989 \/ 2\.0\.0-rc1 at https:\/\/aziel-runtime\.vibelock\.workers\.dev/);
-    assert.match(aiBody, /SoT LIVE: main 70cc0b0 \/ version_id be1d6dca-01a9-4d7e-95da-3fffb617a989 \/ 2\.0\.0-rc1 at https:\/\/aziel-runtime\.vibelock\.workers\.dev/);
+    assert.equal(citeBody.runtime_version_id, "21b64dc5-6f0f-4f60-9009-5d4da59a1683");
+    assert.equal(citeBody.runtime_git_short, "16b543b");
+    assert.equal(citeBody.runtime_git_sha, "16b543b5961f03813076e38ff19d883d46845c48");
+    assert.match(llmsBody, /SoT LIVE: main 16b543b \/ version_id 21b64dc5-6f0f-4f60-9009-5d4da59a1683 \/ 2\.0\.0-rc1 at https:\/\/aziel-runtime\.vibelock\.workers\.dev/);
+    assert.match(aiBody, /SoT LIVE: main 16b543b \/ version_id 21b64dc5-6f0f-4f60-9009-5d4da59a1683 \/ 2\.0\.0-rc1 at https:\/\/aziel-runtime\.vibelock\.workers\.dev/);
     assert.doesNotMatch(llmsBody + aiBody, /6a3798a|105fa1ee/);
     assert.equal(citeBody.runtime_download, "https://aziel-runtime.vibelock.workers.dev/download");
     assert.equal(citeBody.mcp.door, "fraggate");
@@ -1511,6 +1511,7 @@ describe("public entity graph phases B–D + E audit", () => {
       "https://github.com/AzielEliab",
       "https://github.com/azieltherevealerofthesealed-arch",
       "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime",
+      "https://www.azieleliab.com/runtime/",
       "https://www.azieleliab.com/",
       "https://www.azielcorpuslibrary.net/",
       "https://godlock.uk/",
@@ -1540,7 +1541,7 @@ describe("public entity graph phases B–D + E audit", () => {
     assert.ok(!person.alternateName.some((n) => /Everblooming|Flower That Holds The Name/i.test(n)));
     assert.deepEqual(person.sameAs, PERSON_SAME_AS);
     assert.ok(!person.sameAs.includes(GITHUB_RUNTIME));
-    assert.ok(!person.sameAs.includes(RUNTIME_LOCAL));
+    assert.ok(person.sameAs.includes(CANON_ORIGIN + "/runtime/"));
     assert.ok(!person.sameAs.includes(RUNTIME + "/"));
     assert.ok(!person.sameAs.includes(LIBRARY_AZIEL));
     assert.ok(!person.sameAs.includes(GODLOCK_AZIEL));
@@ -3357,9 +3358,9 @@ describe("live software catalog", () => {
     assert.equal(doc.software.length, SOFTWARE.length);
     assert.equal(doc.products.length, SOFTWARE.length);
     assert.equal(doc.count, 42);
-    assert.equal(doc.git_sha, "70cc0b06786ad925be49da16d7f8893095df330b");
-    assert.equal(doc.git_short, "70cc0b0");
-    assert.equal(doc.version_id, "be1d6dca-01a9-4d7e-95da-3fffb617a989");
+    assert.equal(doc.git_sha, "16b543b5961f03813076e38ff19d883d46845c48");
+    assert.equal(doc.git_short, "16b543b");
+    assert.equal(doc.version_id, "21b64dc5-6f0f-4f60-9009-5d4da59a1683");
     assert.equal(doc.sister_products.products.length, 1);
     assert.equal(doc.sister_products.products[0].slug, "trades-runtime");
     assert.equal(doc.sister_products.products[0].version, "0.4.9");

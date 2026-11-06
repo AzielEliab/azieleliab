@@ -150,7 +150,7 @@ describe("SoT outlet hub-azieleliab", () => {
     assert.match(llms, new RegExp("SoT LIVE: main " + LIVE_SHORT));
     assert.match(ai, new RegExp("SoT LIVE: main " + LIVE_SHORT));
     assert.match(llms, /\/v1\/mesh\/outlet\/sync/);
-    assert.doesNotMatch(llms + ai, /105fa1ee|be1d6dca/);
+    assert.doesNotMatch(llms + ai, /105fa1ee|21b64dc5/);
 
     const theater = await (await get(env, "/")).text();
     assert.ok(theater.includes('class="theater"'));
