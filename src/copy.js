@@ -69,17 +69,26 @@ export const RUNTIME_TITLE = "Aziel Runtime";
 /** Certification-freeze cite. Prefer live GET /v1/health.version when it answers. */
 export const RUNTIME_VERSION = "2.0.0-rc1";
 /**
- * Operator SoT LIVE git from GET /v1/software.git_sha at this edit.
+ * Operator SoT LIVE git from GET /v1/software.git_sha on 2026-11-06.
  * Short form is the first 7 hex digits. Suite version stays 2.0.0-rc1.
+ * Replaces the stale 70cc0b0 / be1d6dca pin. Do not invent a sha that live did not return.
  */
-export const RUNTIME_GIT_SHA = "70cc0b06786ad925be49da16d7f8893095df330b";
-export const RUNTIME_GIT_SHORT = "70cc0b0";
+export const RUNTIME_GIT_SHA = "16b543b5961f03813076e38ff19d883d46845c48";
+export const RUNTIME_GIT_SHORT = "16b543b";
 /**
  * Last-known version_id from live GET /v1/software.
- * Live note: env.CF_VERSION_METADATA.id, read at serve time. Not a baked suite identity.
+ * Observed 2026-11-06. Live note: env.CF_VERSION_METADATA.id, read at serve time. Not a baked suite identity.
  * A later pin that omits version_id stays omitted. This constant is the cold pin only.
  */
-export const RUNTIME_VERSION_ID = "be1d6dca-01a9-4d7e-95da-3fffb617a989";
+export const RUNTIME_VERSION_ID = "21b64dc5-6f0f-4f60-9009-5d4da59a1683";
+/**
+ * Cos LIVE ae tip observed on main c87781c0. Not a claim about a later undeployed commit.
+ * version_id is the observed prefix only. The hub does not self-declare a full
+ * CF_VERSION_METADATA.id, so the rest is not invented.
+ */
+export const HUB_GIT_SHA = "c87781c08adcef98285d560434078a4a63b11e00";
+export const HUB_GIT_TIP = "c87781c0";
+export const HUB_VERSION_ID = "cfdf3da6";
 export const RUNTIME_VERSION_ID_NOTE =
   "version_id " +
   RUNTIME_VERSION_ID +
@@ -253,11 +262,15 @@ export const AZIEL_HANDLES_LEDE =
   UNSEAL_NOTE;
 export const FOOTER_HONESTY =
   "Nodes and Live Nodes stay in the header. software_nodes is not shown. " + CAP7_NOT_ICANN + " " + UNSEAL_NOTE;
-/** AZindex sameAs lattice: hub, corpus, GodLock, He Didn't Jump, furnace, unseal, GitHub AzielEliab, Glama runtime, X. */
+/**
+ * AZindex sameAs lattice. Glama is not the Softwares URL.
+ * Softwares on this host is https://www.azieleliab.com/runtime/.
+ */
 export const PERSON_SAME_AS = [
   GITHUB,
   GITHUB_SECONDARY,
   GLAMA_RUNTIME,
+  CANON_ORIGIN + "/runtime/",
   CANON_ORIGIN + "/",
   LIBRARY + "/",
   GODLOCK + "/",
@@ -297,6 +310,37 @@ export function sisterMeshCite() {
       return out;
     }),
   };
+}
+
+/**
+ * Search-engine association order. Hub, then sisters.
+ * Softwares is the aziel-runtime Worker. The hub /software catalog is a second URL on that row.
+ * Furnace Aziel stays an also-link. Not Live Nodes. Cap-7 is not ICANN. Paid satellite stays HELD.
+ */
+export const SEARCH_ASSOCIATION_ORDER = Object.freeze([
+  "hub",
+  "softwares",
+  "corpus",
+  "godlock",
+  "furnace",
+  "unseal",
+  "hedidntjump",
+]);
+
+export function searchAssociationSites() {
+  return SEARCH_ASSOCIATION_ORDER.map((id) => {
+    const row = SISTER_MESH.find((site) => site.id === id);
+    const out = {
+      id: row.id,
+      label: row.label,
+      url: row.url,
+      official: true,
+      live_node: false,
+    };
+    if (row.id === "softwares") out.catalog = CANON_ORIGIN + "/software";
+    if (row.aziel) out.also = [row.aziel];
+    return out;
+  });
 }
 
 export const ECOSYSTEM_TITLE = "Part of the Aziel Eliab ecosystem";
@@ -453,6 +497,45 @@ export function runtimeSotLiveLine(version = RUNTIME_VERSION, sot) {
     return "SoT LIVE: main " + short + " / version_id " + tip.version_id + " / " + ver + " at " + RUNTIME;
   }
   return "SoT LIVE: main " + short + " / " + ver + " at " + RUNTIME;
+}
+
+export function hubTipCite() {
+  return {
+    host: WWW_HOST,
+    product: "azieleliab",
+    cos: "LIVE",
+    git_sha: HUB_GIT_SHA,
+    git_tip: HUB_GIT_TIP,
+    git_short: HUB_GIT_SHA.slice(0, 7),
+    version_id: HUB_VERSION_ID,
+    version_id_complete: false,
+    decryption_complete: false,
+    remain_off: true,
+    paid_satellite: PAID_SATELLITE,
+    cap7_public_icann: false,
+    note:
+      "Cos LIVE ae. git_sha " +
+      HUB_GIT_SHA +
+      " (tip " +
+      HUB_GIT_TIP +
+      ") is main at this pin. It does not move forward with an undeployed commit. version_id " +
+      HUB_VERSION_ID +
+      " is the observed prefix. Full CF_VERSION_METADATA.id is not self-declared on this hub and is not invented. decryption_complete stays false. Remain-OFF. Paid satellite stays HELD. Cap-7 is not ICANN.",
+  };
+}
+
+export function hubTipLlmsBlock() {
+  const tip = hubTipCite();
+  return [
+    "## Hub tip",
+    "",
+    tip.note,
+    "- git_sha: " + tip.git_sha,
+    "- git_tip: " + tip.git_tip,
+    "- git_short: " + tip.git_short,
+    "- version_id: " + tip.version_id + " (prefix only; version_id_complete false)",
+    "",
+  ].join("\n");
 }
 
 export function runtimeVersionIdNote(sot) {

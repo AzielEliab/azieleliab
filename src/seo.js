@@ -1,7 +1,6 @@
 /** Crawl surfaces for azieleliab.com. Author: Aziel Eliab. */
 import {
   AUTHOR,
-  AUTHOR_AKA,
   CANON_ORIGIN,
   DESCRIPTION,
   ABOUT_HREF,
@@ -113,6 +112,7 @@ import {
   SPECTRALLOCK_WORKER,
   tradesRuntimeCite,
   WEBSITE_ID,
+  hubTipCite,
   BRANDMARK_NAME,
   SIGIL,
   SITE,
@@ -178,6 +178,8 @@ import {
   humanHtmlPageNodes,
   identityLockBlock,
   personAlternateNames,
+  searchAssociationCite,
+  hubWebsiteNodes,
   personNode,
   personOccupations,
   faqPageNode,
@@ -535,12 +537,57 @@ const PUBLIC_ALLOW = [
   "/runtime/v1/survival",
 ];
 
+function searchAssociationRobotLines() {
+  const cite = searchAssociationCite();
+  const sites = cite.sites
+    .map((row) => {
+      const extra = [];
+      if (row.catalog) extra.push(row.catalog);
+      if (row.also) extra.push(...row.also);
+      return row.label + " " + row.url + (extra.length ? " " + extra.join(" ") : "");
+    })
+    .join(" · ");
+  return [
+    "# Aziel Eliab",
+    "# Person @id: " + cite.person_id,
+    "# Aka: " + cite.aka.join(" | "),
+    "# Official sites: " + sites,
+    "# " + cite.note,
+    "# Full alternateName: " + CANON_ORIGIN + "/person.jsonld",
+    "# Hub tip: " + hubTipCite().git_tip + " / vid " + hubTipCite().version_id + " (prefix only)",
+    "# " + hubTipCite().note,
+    "",
+  ];
+}
+
 export function robotsTxt() {
   const star = ["User-agent: *", "Content-Signal: " + CONTENT_SIGNAL].concat(
     PUBLIC_ALLOW.map((p) => "Allow: " + p),
   );
   const bots = AI_CRAWLER_AGENTS.flatMap((agent) => ["", "User-agent: " + agent, "Allow: /"]);
-  return star.concat(bots).concat(["", "Sitemap: " + CANON_ORIGIN + "/sitemap.xml", ""]).join("\n");
+  return searchAssociationRobotLines()
+    .concat(star)
+    .concat(bots)
+    .concat(["", "Sitemap: " + CANON_ORIGIN + "/sitemap.xml", ""])
+    .join("\n");
+}
+
+function searchAssociationSitemapComment() {
+  const cite = searchAssociationCite();
+  const sites = cite.sites.map((row) => row.label + " " + row.url).join(" ");
+  return (
+    "<!-- Aziel Eliab Person @id " +
+    cite.person_id +
+    ". Aka " +
+    cite.aka.join(" | ") +
+    ". Official sites: " +
+    sites +
+    ". Cap-7 public_icann false. Paid satellite HELD. decryption_complete false. Remain-OFF. Hub tip " +
+    hubTipCite().git_sha +
+    " vid " +
+    hubTipCite().version_id +
+    " prefix only. -->\n"
+  );
 }
 
 const SITEMAP_RANK = {
@@ -713,7 +760,9 @@ export function sitemapXml(now = new Date(), software = SOFTWARE) {
     unique.push(loc);
   }
   return (
-    '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
+    '<?xml version="1.0" encoding="UTF-8"?>\n' +
+    searchAssociationSitemapComment() +
+    '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
     unique
       .map((u) => {
         const rank = SITEMAP_RANK[u];
@@ -838,6 +887,8 @@ export function citeDoc(software = SOFTWARE, runtimeVersion = RUNTIME_VERSION, s
     official_ecosystem: officialEcosystemCite(),
     official_ecosystem_answer: OFFICIAL_ECOSYSTEM_ANSWER,
     official_ecosystem_faq: OFFICIAL_ECOSYSTEM_FAQ_NAME,
+    search_association: searchAssociationCite(),
+    hub_tip: hubTipCite(),
     peacelock: peacelockCite(),
     peacelock_note: PEACELOCK_NOTE,
     softwares_ssot: softwaresSsotCite(),
@@ -1687,13 +1738,15 @@ export function jsonLd(software = SOFTWARE, runtimeVersion = RUNTIME_VERSION, so
         "@id": siteId,
         url: CANON_ORIGIN + "/",
         name: SITE,
-        alternateName: AUTHOR_AKA,
         description: DESCRIPTION,
         inLanguage: "en",
         license: "https://www.apache.org/licenses/LICENSE-2.0",
         author: person,
         creator: person,
         publisher: person,
+        about: person,
+        keywords: AUTHOR + " | " + AUTHOR_AKA_LIST.join(" | "),
+        alternateName: AUTHOR_AKA_LIST.slice(),
         image: SIGIL,
         hasPart: [
           { "@id": softwareId },
@@ -1866,6 +1919,7 @@ export function jsonLd(software = SOFTWARE, runtimeVersion = RUNTIME_VERSION, so
         sameAs: TRADES_RUNTIME_SAME_AS.slice(),
         relatedLink: [TRADES_RUNTIME_OPENAPI, TRADES_RUNTIME_MCP, TRADES_RUNTIME_CITE, TRADES_RUNTIME_LLMS],
       },
+      ...hubWebsiteNodes().filter((node) => node["@id"] !== WEBSITE_ID),
     ],
   };
 }

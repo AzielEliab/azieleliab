@@ -224,6 +224,29 @@ Official site (https://www.azieleliab.com/). Aziel Digital Library (https://www.
 - X @AzielEliab — https://x.com/AzielEliab
 - Softwares — https://www.azieleliab.com/software
 
+## Search association
+
+Aziel Eliab and aliases name the same Person https://www.azieleliab.com/#aziel on these official https sites. Not Live Nodes. Cap-7 is not an ICANN registration and is not a public egress address. Paid satellite stays HELD. 
+Name: Aziel Eliab
+Aka: Aziel Elroi Eliab | AzielEliab | azieleliab | The Revealer of the Sealed | Elias Artista | AzielElroiEliab | The Revealer of The Sealed | Revealer of The Sealed
+Aliases: Aziel Elroi Eliab | AzielEliab | azieleliab | The Revealer of the Sealed | Elias Artista | AzielElroiEliab | The Revealer of The Sealed | Revealer of The Sealed | עזיאל | עֲזִיאֵל | אל ראי | אֵל רֳאִי | אלרועי | אליאב | אֱלִיאָב | עזיאל אל ראי אליאב | עזיאל אלרועי אליאב | Aziell | Azeil | Azial | Azeel | Asiel | Asziel | Az'iel | Azi-el | Aziél | Azíel | El Roi | El-Roi | ElRoi | Elro'i | Elroei | Elroey | El-Ro'i | Eli'ab | Eliáb | Elyab | Eliav | Eliabb | Aziel Eliab | aziel eliab | Aziel_Eliab | Aziel-Elroi-Eliab
+
+- azieleliab.com: https://www.azieleliab.com/
+- Softwares: https://aziel-runtime.vibelock.workers.dev/ · catalog https://www.azieleliab.com/software
+- azielcorpuslibrary.net: https://www.azielcorpuslibrary.net/
+- godlock.uk: https://godlock.uk/
+- The Furnace Isn't Free: https://www.furnaceisntfree.com/ · https://furnaceisntfree.com/aziel/
+- Time to Unseal the Book: https://www.timetounsealthebook.net
+- hedidntjump.com: https://www.hedidntjump.com/
+
+## Hub tip
+
+Cos LIVE ae. git_sha c87781c08adcef98285d560434078a4a63b11e00 (tip c87781c0) is main at this pin. It does not move forward with an undeployed commit. version_id cfdf3da6 is the observed prefix. Full CF_VERSION_METADATA.id is not self-declared on this hub and is not invented. decryption_complete stays false. Remain-OFF. Paid satellite stays HELD. Cap-7 is not ICANN.
+- git_sha: c87781c08adcef98285d560434078a4a63b11e00
+- git_tip: c87781c0
+- git_short: c87781c
+- version_id: cfdf3da6 (prefix only; version_id_complete false)
+
 ## Awareness stats (live counters — do not invent numbers)
 
 - azieleliab.com/v1/stats: https://www.azieleliab.com/v1/stats
@@ -250,4 +273,4 @@ BAN-SURVIVAL-1.0 hub pull of runtime GET /survival (short TTL). Mutual backup: c
 - Lamb Lens: Service → Clarity → Peace. NO-LIE. visible_1520: false.
 
 Canonical person: https://www.azieleliab.com/#aziel
-sameAs: https://github.com/AzielEliab · https://github.com/azieltherevealerofthesealed-arch · https://glama.ai/mcp/servers/AzielEliab/aziel-runtime · https://www.azieleliab.com/ · https://www.azielcorpuslibrary.net/ · https://godlock.uk/ · https://www.hedidntjump.com/ · https://www.furnaceisntfree.com/ · https://www.timetounsealthebook.net · https://x.com/AzielEliab
+sameAs: https://github.com/AzielEliab · https://github.com/azieltherevealerofthesealed-arch · https://glama.ai/mcp/servers/AzielEliab/aziel-runtime · https://www.azieleliab.com/runtime/ · https://www.azieleliab.com/ · https://www.azielcorpuslibrary.net/ · https://godlock.uk/ · https://www.hedidntjump.com/ · https://www.furnaceisntfree.com/ · https://www.timetounsealthebook.net · https://x.com/AzielEliab

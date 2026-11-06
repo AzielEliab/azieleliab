@@ -169,6 +169,7 @@
         "https://github.com/AzielEliab",
         "https://github.com/azieltherevealerofthesealed-arch",
         "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime",
+        "https://www.azieleliab.com/runtime/",
         "https://www.azieleliab.com/",
         "https://www.azielcorpuslibrary.net/",
         "https://godlock.uk/",
@@ -193,6 +194,86 @@
           "@id": "https://www.azieleliab.com/works.json",
           "name": "Aziel Eliab works",
           "url": "https://www.azieleliab.com/works.json"
+        },
+        {
+          "@type": "ItemList",
+          "@id": "https://www.azieleliab.com/#official-sites",
+          "name": "Official sites of Aziel Eliab",
+          "description": "Aziel Eliab (aka Aziel Elroi Eliab | AzielEliab | azieleliab | The Revealer of the Sealed | Elias Artista | AzielElroiEliab | The Revealer of The Sealed | Revealer of The Sealed) is the same Person https://www.azieleliab.com/#aziel. Official sites: azieleliab.com (https://www.azieleliab.com/); Softwares (https://aziel-runtime.vibelock.workers.dev/; https://www.azieleliab.com/software); azielcorpuslibrary.net (https://www.azielcorpuslibrary.net/); godlock.uk (https://godlock.uk/); The Furnace Isn't Free (https://www.furnaceisntfree.com/; https://furnaceisntfree.com/aziel/); Time to Unseal the Book (https://www.timetounsealthebook.net); hedidntjump.com (https://www.hedidntjump.com/). Aziel Eliab and aliases name the same Person https://www.azieleliab.com/#aziel on these official https sites. Not Live Nodes. Cap-7 is not an ICANN registration and is not a public egress address. Paid satellite stays HELD. ",
+          "numberOfItems": 7,
+          "about": {
+            "@id": "https://www.azieleliab.com/#aziel"
+          },
+          "author": {
+            "@id": "https://www.azieleliab.com/#aziel"
+          },
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Aziel Eliab — azieleliab.com",
+              "url": "https://www.azieleliab.com/",
+              "item": {
+                "@id": "https://www.azieleliab.com/#website"
+              }
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Aziel Eliab — Softwares",
+              "url": "https://aziel-runtime.vibelock.workers.dev/",
+              "item": {
+                "@id": "https://aziel-runtime.vibelock.workers.dev/#softwares"
+              },
+              "description": "https://www.azieleliab.com/software"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "Aziel Eliab — azielcorpuslibrary.net",
+              "url": "https://www.azielcorpuslibrary.net/",
+              "item": {
+                "@id": "https://www.azielcorpuslibrary.net/#website"
+              }
+            },
+            {
+              "@type": "ListItem",
+              "position": 4,
+              "name": "Aziel Eliab — godlock.uk",
+              "url": "https://godlock.uk/",
+              "item": {
+                "@id": "https://godlock.uk/#website"
+              }
+            },
+            {
+              "@type": "ListItem",
+              "position": 5,
+              "name": "Aziel Eliab — The Furnace Isn't Free",
+              "url": "https://www.furnaceisntfree.com/",
+              "item": {
+                "@id": "https://www.furnaceisntfree.com/#website"
+              },
+              "description": "https://furnaceisntfree.com/aziel/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 6,
+              "name": "Aziel Eliab — Time to Unseal the Book",
+              "url": "https://www.timetounsealthebook.net",
+              "item": {
+                "@id": "https://www.timetounsealthebook.net#website"
+              }
+            },
+            {
+              "@type": "ListItem",
+              "position": 7,
+              "name": "Aziel Eliab — hedidntjump.com",
+              "url": "https://www.hedidntjump.com/",
+              "item": {
+                "@id": "https://www.hedidntjump.com/#website"
+              }
+            }
+          ]
         }
       ],
       "workExample": [
@@ -674,6 +755,14 @@
             "@type": "Answer",
             "text": "Official site (https://www.azieleliab.com/). Aziel Digital Library (https://www.azielcorpuslibrary.net/). GodLock (https://godlock.uk/). He Didn't Jump (https://www.hedidntjump.com/). The Furnace Isn't Free (https://www.furnaceisntfree.com/). The Furnace Isn't Free · Aziel (https://furnaceisntfree.com/aziel/). Time to Unseal the Book (https://www.timetounsealthebook.net). Aziel Runtime (https://aziel-runtime.vibelock.workers.dev/). GitHub AzielEliab (https://github.com/AzielEliab). Try on Glama (https://glama.ai/mcp/servers/AzielEliab/aziel-runtime). X @AzielEliab (https://x.com/AzielEliab). Softwares (https://www.azieleliab.com/software)."
           }
+        },
+        {
+          "@type": "Question",
+          "name": "Which official sites are Aziel Eliab?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Aziel Eliab (aka Aziel Elroi Eliab | AzielEliab | azieleliab | The Revealer of the Sealed | Elias Artista | AzielElroiEliab | The Revealer of The Sealed | Revealer of The Sealed) is the same Person https://www.azieleliab.com/#aziel. Official sites: azieleliab.com (https://www.azieleliab.com/); Softwares (https://aziel-runtime.vibelock.workers.dev/; https://www.azieleliab.com/software); azielcorpuslibrary.net (https://www.azielcorpuslibrary.net/); godlock.uk (https://godlock.uk/); The Furnace Isn't Free (https://www.furnaceisntfree.com/; https://furnaceisntfree.com/aziel/); Time to Unseal the Book (https://www.timetounsealthebook.net); hedidntjump.com (https://www.hedidntjump.com/). Aziel Eliab and aliases name the same Person https://www.azieleliab.com/#aziel on these official https sites. Not Live Nodes. Cap-7 is not an ICANN registration and is not a public egress address. Paid satellite stays HELD. "
+          }
         }
       ],
       "about": {
@@ -854,8 +943,32 @@
       "@id": "https://www.azieleliab.com/#website",
       "url": "https://www.azieleliab.com/",
       "name": "Aziel Eliab",
-      "alternateName": "Aziel Elroi Eliab",
+      "alternateName": [
+        "Aziel Elroi Eliab",
+        "AzielEliab",
+        "azieleliab",
+        "The Revealer of the Sealed",
+        "Elias Artista",
+        "AzielElroiEliab",
+        "The Revealer of The Sealed",
+        "Revealer of The Sealed"
+      ],
       "description": "Public landing and hub cite for Aziel Eliab. Canonical Person @id https://www.azieleliab.com/#aziel. Same-origin /runtime door, Softwares catalog, receipts, ingest, and donate. Published About is the work.",
+      "hub_tip": {
+        "host": "www.azieleliab.com",
+        "product": "azieleliab",
+        "cos": "LIVE",
+        "git_sha": "c87781c08adcef98285d560434078a4a63b11e00",
+        "git_tip": "c87781c0",
+        "git_short": "c87781c",
+        "version_id": "cfdf3da6",
+        "version_id_complete": false,
+        "decryption_complete": false,
+        "remain_off": true,
+        "paid_satellite": "HELD",
+        "cap7_public_icann": false,
+        "note": "Cos LIVE ae. git_sha c87781c08adcef98285d560434078a4a63b11e00 (tip c87781c0) is main at this pin. It does not move forward with an undeployed commit. version_id cfdf3da6 is the observed prefix. Full CF_VERSION_METADATA.id is not self-declared on this hub and is not invented. decryption_complete stays false. Remain-OFF. Paid satellite stays HELD. Cap-7 is not ICANN."
+      },
       "inLanguage": "en",
       "author": {
         "@id": "https://www.azieleliab.com/#aziel"
@@ -865,7 +978,11 @@
       },
       "publisher": {
         "@id": "https://www.azieleliab.com/#aziel"
-      }
+      },
+      "about": {
+        "@id": "https://www.azieleliab.com/#aziel"
+      },
+      "keywords": "Aziel Eliab | Aziel Elroi Eliab | AzielEliab | azieleliab | The Revealer of the Sealed | Elias Artista | AzielElroiEliab | The Revealer of The Sealed | Revealer of The Sealed"
     },
     {
       "@type": "WebSite",
@@ -878,9 +995,16 @@
       "author": {
         "@id": "https://www.azieleliab.com/#aziel"
       },
+      "creator": {
+        "@id": "https://www.azieleliab.com/#aziel"
+      },
       "publisher": {
         "@id": "https://www.azieleliab.com/#aziel"
-      }
+      },
+      "about": {
+        "@id": "https://www.azieleliab.com/#aziel"
+      },
+      "keywords": "Aziel Eliab | Aziel Elroi Eliab | AzielEliab | azieleliab | The Revealer of the Sealed | Elias Artista | AzielElroiEliab | The Revealer of The Sealed | Revealer of The Sealed"
     },
     {
       "@type": "WebSite",
@@ -892,9 +1016,16 @@
       "author": {
         "@id": "https://www.azieleliab.com/#aziel"
       },
+      "creator": {
+        "@id": "https://www.azieleliab.com/#aziel"
+      },
       "publisher": {
         "@id": "https://www.azieleliab.com/#aziel"
-      }
+      },
+      "about": {
+        "@id": "https://www.azieleliab.com/#aziel"
+      },
+      "keywords": "Aziel Eliab | Aziel Elroi Eliab | AzielEliab | azieleliab | The Revealer of the Sealed | Elias Artista | AzielElroiEliab | The Revealer of The Sealed | Revealer of The Sealed"
     },
     {
       "@type": "WebSite",
@@ -906,9 +1037,16 @@
       "author": {
         "@id": "https://www.azieleliab.com/#aziel"
       },
+      "creator": {
+        "@id": "https://www.azieleliab.com/#aziel"
+      },
       "publisher": {
         "@id": "https://www.azieleliab.com/#aziel"
-      }
+      },
+      "about": {
+        "@id": "https://www.azieleliab.com/#aziel"
+      },
+      "keywords": "Aziel Eliab | Aziel Elroi Eliab | AzielEliab | azieleliab | The Revealer of the Sealed | Elias Artista | AzielElroiEliab | The Revealer of The Sealed | Revealer of The Sealed"
     },
     {
       "@type": "WebSite",
@@ -924,9 +1062,16 @@
       "author": {
         "@id": "https://www.azieleliab.com/#aziel"
       },
+      "creator": {
+        "@id": "https://www.azieleliab.com/#aziel"
+      },
       "publisher": {
         "@id": "https://www.azieleliab.com/#aziel"
-      }
+      },
+      "about": {
+        "@id": "https://www.azieleliab.com/#aziel"
+      },
+      "keywords": "Aziel Eliab | Aziel Elroi Eliab | AzielEliab | azieleliab | The Revealer of the Sealed | Elias Artista | AzielElroiEliab | The Revealer of The Sealed | Revealer of The Sealed"
     },
     {
       "@type": "WebSite",
@@ -939,9 +1084,38 @@
       "author": {
         "@id": "https://www.azieleliab.com/#aziel"
       },
+      "creator": {
+        "@id": "https://www.azieleliab.com/#aziel"
+      },
       "publisher": {
         "@id": "https://www.azieleliab.com/#aziel"
-      }
+      },
+      "about": {
+        "@id": "https://www.azieleliab.com/#aziel"
+      },
+      "keywords": "Aziel Eliab | Aziel Elroi Eliab | AzielEliab | azieleliab | The Revealer of the Sealed | Elias Artista | AzielElroiEliab | The Revealer of The Sealed | Revealer of The Sealed"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://aziel-runtime.vibelock.workers.dev/#softwares",
+      "url": "https://aziel-runtime.vibelock.workers.dev/",
+      "name": "Softwares",
+      "alternateName": "aziel-runtime",
+      "description": "Softwares by Aziel Eliab. Live catalog https://aziel-runtime.vibelock.workers.dev/v1/software. Hub catalog https://www.azieleliab.com/software. Same Person https://www.azieleliab.com/#aziel. Not a Live Node. Cap-7 is not ICANN. Paid satellite stays HELD.",
+      "inLanguage": "en",
+      "author": {
+        "@id": "https://www.azieleliab.com/#aziel"
+      },
+      "creator": {
+        "@id": "https://www.azieleliab.com/#aziel"
+      },
+      "publisher": {
+        "@id": "https://www.azieleliab.com/#aziel"
+      },
+      "about": {
+        "@id": "https://www.azieleliab.com/#aziel"
+      },
+      "keywords": "Aziel Eliab | Aziel Elroi Eliab | AzielEliab | azieleliab | The Revealer of the Sealed | Elias Artista | AzielElroiEliab | The Revealer of The Sealed | Revealer of The Sealed"
     },
     {
       "@type": "SoftwareApplication",
@@ -964,9 +1138,9 @@
         "https://github.com/AzielEliab/aziel-runtime",
         "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime"
       ],
-      "git_sha": "70cc0b06786ad925be49da16d7f8893095df330b",
-      "git_short": "70cc0b0",
-      "version_id": "be1d6dca-01a9-4d7e-95da-3fffb617a989"
+      "git_sha": "16b543b5961f03813076e38ff19d883d46845c48",
+      "git_short": "16b543b",
+      "version_id": "21b64dc5-6f0f-4f60-9009-5d4da59a1683"
     },
     {
       "@type": "Dataset",

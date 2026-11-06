@@ -40,6 +40,10 @@ import {
   officialEcosystemCite,
   officialEcosystemLines,
   OFFICIAL_ECOSYSTEM_ANSWER,
+  PAID_SATELLITE,
+  searchAssociationSites,
+  hubTipCite,
+  hubTipLlmsBlock,
   PEACELOCK_NOTE,
   peacelockCite,
   softwarePurposeLines,
@@ -523,6 +527,143 @@ export const ABOUT_PUBLISHED_ANSWER = ABOUT_PUBLISHED_LINES.join(" ");
 
 const personRef = { "@id": PERSON_ID };
 
+/** Machine association only. Does not add visible identity-lock chrome. */
+export const SEARCH_ASSOCIATION_NOTE =
+  "Aziel Eliab and aliases name the same Person " +
+  PERSON_ID +
+  " on these official https sites. Not Live Nodes. " +
+  CAP7_NOT_ICANN + " "
+  " Paid satellite: HELD. decryption_complete: false. Remain-OFF. Agent OK is not Aziel merge OK. Mesh live stays off until Dual CLEAR + Aziel merge OK + Cos.";
+
+export const OFFICIAL_SITES_ID = CANON_ORIGIN + "/#official-sites";
+
+const ASSOCIATION_WEBSITE_ID = Object.freeze({
+  hub: WEBSITE_ID,
+  corpus: LIBRARY + "/#website",
+  godlock: GODLOCK + "/#website",
+  hedidntjump: HEDIDNTJUMP + "/#website",
+  furnace: FURNACE_HOME + "#website",
+  unseal: UNSEAL + "#website",
+  softwares: RUNTIME + "/#softwares",
+});
+
+export function associationWebsiteId(id) {
+  return ASSOCIATION_WEBSITE_ID[id];
+}
+
+export function searchAssociationCite() {
+  return {
+    person_id: PERSON_ID,
+    name: AUTHOR,
+    aka: AUTHOR_AKA_LIST.slice(),
+    aliases: personAlternateNames(),
+    sites: searchAssociationSites().map((row) => {
+      const out = {
+        id: row.id,
+        label: row.label,
+        url: row.url,
+        website_id: associationWebsiteId(row.id),
+        official: true,
+        live_node: false,
+      };
+      if (row.catalog) out.catalog = row.catalog;
+      if (row.also) out.also = row.also.slice();
+      return out;
+    }),
+    cap7_public_icann: false,
+    paid_satellite: PAID_SATELLITE,
+    decryption_complete: false,
+    remain_off: true,
+    mesh_live: false,
+    live_nodes: false,
+    agent_ok_is_aziel_merge_ok: false,
+    note: SEARCH_ASSOCIATION_NOTE,
+  };
+}
+
+export function searchAssociationAnswer() {
+  const cite = searchAssociationCite();
+  const sites = cite.sites
+    .map((row) => {
+      const extra = [];
+      if (row.catalog) extra.push(row.catalog);
+      if (row.also) extra.push(...row.also);
+      return row.label + " (" + row.url + (extra.length ? "; " + extra.join(" ") : "") + ")";
+    })
+    .join("; ");
+  return (
+    AUTHOR +
+    " (aka " +
+    AUTHOR_AKA_LIST.join(" | ") +
+    ") is the same Person " +
+    PERSON_ID +
+    ". Official sites: " +
+    sites +
+    ". " +
+    SEARCH_ASSOCIATION_NOTE
+  );
+}
+
+export function searchAssociationLlmsBlock() {
+  const cite = searchAssociationCite();
+  return [
+    "## Search association",
+    "",
+    cite.note,
+    "Name: " + cite.name,
+    "Aka: " + cite.aka.join(" | "),
+    "Aliases: " + cite.aliases.join(" | "),
+    "",
+    ...cite.sites.map((row) => {
+      const extra = [];
+      if (row.catalog) extra.push("catalog " + row.catalog);
+      if (row.also) extra.push(row.also.join(" "));
+      const tail = extra.length ? " · " + extra.join(" · ") : "";
+      return "- " + row.label + ": " + row.url + tail;
+    }),
+    "",
+  ].join("\n");
+}
+
+function officialSitesSubject() {
+  const cite = searchAssociationCite();
+  return {
+    "@type": "ItemList",
+    "@id": OFFICIAL_SITES_ID,
+    name: "Official sites of Aziel Eliab",
+    description: searchAssociationAnswer(),
+    numberOfItems: cite.sites.length,
+    about: personRef,
+    author: personRef,
+    itemListElement: cite.sites.map((row, i) => {
+      const item = {
+        "@type": "ListItem",
+        position: i + 1,
+        name: AUTHOR + " — " + row.label,
+        url: row.url,
+        item: { "@id": row.website_id },
+      };
+      const extra = [];
+      if (row.catalog) extra.push(row.catalog);
+      if (row.also) extra.push(...row.also);
+      if (extra.length) item.description = extra.join(" ");
+      return item;
+    }),
+  };
+}
+
+function linkOfficialWebsite(node) {
+  return {
+    ...node,
+    inLanguage: node.inLanguage || "en",
+    author: personRef,
+    creator: personRef,
+    publisher: personRef,
+    about: personRef,
+    keywords: AUTHOR + " | " + AUTHOR_AKA_LIST.join(" | "),
+  };
+}
+
 export const PERSON_JOB_TITLE = [
   "Digital rights activist",
   "Software developer",
@@ -603,23 +744,23 @@ export function personNode(opts = {}) {
     sameAs: PERSON_SAME_AS.slice(),
     relatedLink: [SOFTWARE_HREF, RUNTIME + "/", RUNTIME_LOCAL],
     mainEntityOfPage: WHO_HREF,
-    subjectOf: {
-      "@type": "FAQPage",
-      "@id": WHO_IS_FAQ_ID,
-    },
+    subjectOf: [
+      {
+        "@type": "FAQPage",
+        "@id": WHO_IS_FAQ_ID,
+      },
+    ],
   };
   if (includeWorks) {
     node.workExample = curatedWorkNodes();
-    node.subjectOf = [
-      node.subjectOf,
-      {
-        "@type": "Collection",
-        "@id": WORKS_HREF,
-        name: "Aziel Eliab works",
-        url: WORKS_HREF,
-      },
-    ];
+    node.subjectOf.push({
+      "@type": "Collection",
+      "@id": WORKS_HREF,
+      name: "Aziel Eliab works",
+      url: WORKS_HREF,
+    });
   }
+  node.subjectOf.push(officialSitesSubject());
   return node;
 }
 
@@ -813,6 +954,14 @@ export function faqPageNode(software) {
           text: OFFICIAL_ECOSYSTEM_ANSWER,
         },
       },
+      {
+        "@type": "Question",
+        name: "Which official sites are Aziel Eliab?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: searchAssociationAnswer(),
+        },
+      },
     ],
     about: personRef,
     author: personRef,
@@ -821,50 +970,38 @@ export function faqPageNode(software) {
 
 export function hubWebsiteNodes() {
   return [
-    {
+    linkOfficialWebsite({
       "@type": "WebSite",
       "@id": WEBSITE_ID,
       url: CANON_ORIGIN + "/",
       name: AUTHOR,
-      alternateName: AUTHOR_AKA,
+      alternateName: AUTHOR_AKA_LIST.slice(),
       description: SITE_COVERAGE[0].blurb,
-      inLanguage: "en",
-      author: personRef,
-      creator: personRef,
-      publisher: personRef,
-    },
-    {
+      hub_tip: hubTipCite(),
+    }),
+    linkOfficialWebsite({
       "@type": "WebSite",
       "@id": LIBRARY_WEBSITE_ID,
       url: LIBRARY + "/",
       name: "Aziel Digital Library",
       alternateName: "azielcorpuslibrary.net",
       description: SITE_COVERAGE[1].blurb,
-      inLanguage: "en",
-      author: personRef,
-      publisher: personRef,
-    },
-    {
+    }),
+    linkOfficialWebsite({
       "@type": "WebSite",
       "@id": GODLOCK_WEBSITE_ID,
       url: GODLOCK + "/",
       name: "GodLock",
       description: SITE_COVERAGE[2].blurb,
-      inLanguage: "en",
-      author: personRef,
-      publisher: personRef,
-    },
-    {
+    }),
+    linkOfficialWebsite({
       "@type": "WebSite",
       "@id": HEDIDNTJUMP_WEBSITE_ID,
       url: HEDIDNTJUMP + "/",
       name: "He Didn't Jump",
       description: SITE_COVERAGE[3].blurb,
-      inLanguage: "en",
-      author: personRef,
-      publisher: personRef,
-    },
-    {
+    }),
+    linkOfficialWebsite({
       "@type": "WebSite",
       "@id": FURNACE_HOME + "#website",
       url: FURNACE_HOME,
@@ -872,21 +1009,30 @@ export function hubWebsiteNodes() {
       alternateName: "furnaceisntfree.com",
       description: SITE_COVERAGE.find((row) => row.id === "furnace").blurb,
       sameAs: [FURNACE_AZIEL],
-      inLanguage: "en",
-      author: personRef,
-      publisher: personRef,
-    },
-    {
+    }),
+    linkOfficialWebsite({
       "@type": "WebSite",
       "@id": UNSEAL + "#website",
       url: UNSEAL,
       name: UNSEAL_NAME,
       alternateName: "timetounsealthebook.net",
       description: SITE_COVERAGE.find((row) => row.id === "unseal").blurb,
-      inLanguage: "en",
-      author: personRef,
-      publisher: personRef,
-    },
+    }),
+    linkOfficialWebsite({
+      "@type": "WebSite",
+      "@id": RUNTIME + "/#softwares",
+      url: RUNTIME + "/",
+      name: "Softwares",
+      alternateName: "aziel-runtime",
+      description:
+        "Softwares by Aziel Eliab. Live catalog " +
+        RUNTIME +
+        "/v1/software. Hub catalog " +
+        SOFTWARE_HREF +
+        ". Same Person " +
+        PERSON_ID +
+        ". Not a Live Node. Cap-7 is not ICANN. Paid satellite stays HELD.",
+    }),
   ];
 }
 
@@ -1134,6 +1280,8 @@ export function whoIsTxt(survival = null, software) {
     OFFICIAL_ECOSYSTEM_ANSWER,
     ...officialEcosystemLines(),
     "",
+    searchAssociationLlmsBlock(),
+    hubTipLlmsBlock(),
     "## Awareness stats (live counters — do not invent numbers)",
     "",
     ...STATS_COUNTERS.map((row) => {
@@ -1167,6 +1315,8 @@ export function wellKnownAziel() {
     why_faq: WHY_FAQ_NAMES.slice(),
     official_ecosystem: officialEcosystemCite(),
     official_ecosystem_answer: OFFICIAL_ECOSYSTEM_ANSWER,
+    search_association: searchAssociationCite(),
+    hub_tip: hubTipCite(),
     what_he_does_softwares: WHAT_HE_DOES_SOFTWARES,
     softwares_addendum: SOFTWARES_ADDENDUM,
     research_addendum: RESEARCH_ADDENDUM,
@@ -1227,6 +1377,9 @@ export function identityLockBlock() {
     "Person @id: " + PERSON_ID,
     "Name: " + AUTHOR,
     "Aka only: " + AUTHOR_AKA_LIST.join(" | "),
+    "",
+    searchAssociationLlmsBlock(),
+    hubTipLlmsBlock(),
     "jobTitle: " + PERSON_JOB_TITLE.join(" | "),
     "hasOccupation: " + PERSON_JOB_TITLE.join(" | "),
     "Works: " + WORKS_HREF,
