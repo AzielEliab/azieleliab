@@ -56,6 +56,7 @@ Part of the Aziel Eliab ecosystem. Cross-links for humans, Google, and AI crawle
 | Try on Glama | [https://glama.ai/mcp/servers/AzielEliab/aziel-runtime](https://glama.ai/mcp/servers/AzielEliab/aziel-runtime) (primary Runtime CTA; verified listing) |
 | GitHub AzielEliab | [https://github.com/AzielEliab](https://github.com/AzielEliab) |
 | X @AzielEliab | [https://x.com/AzielEliab](https://x.com/AzielEliab) |
+| TimeToUnsealTheBook | [https://timetounsealthebook.net/aziel](https://timetounsealthebook.net/aziel) · Cos tip `5b3c878e` · handle, not a Live Node · not LIVE on this hub until Dual CLEAR + Aziel merge OK + Cos · paid satellite HELD · Cap-7 is not ICANN |
 | Donate AZL-DONATE-1.0 | [https://www.azieleliab.com/donate](https://www.azieleliab.com/donate) |
 
 ## Compatible AI clients
@@ -74,7 +75,7 @@ Cloudflare Worker `azieleliab-com` serves the literary landing, crawl files, and
 | `/software` · `/software/` | Distinct Software page (name + designed-purpose one_line). `/#software` maps here. |
 | `/why` · `/research` · `/doors` | Distinct tab pages. Old hashes `/#why` `/#research` `/#doors` map here. |
 | `/mission` · `/mission/` | 301 to `/` (Mission/Status strip removed) |
-| `/aziel` | Hub (Person `#aziel`). Same literary HTML as the About aliases. Loaded when the visitor chooses Enter, not under the theater. |
+| `/aziel` | Hub (Person `#aziel`) and the Aziel tab. Lists every public handle, including TimeToUnsealTheBook (not LIVE). Same literary HTML as the About aliases. Loaded when the visitor chooses Enter, not under the theater. |
 | `/who` · `/who/` | Visible who-is HTML. H1 `Who is Aziel Eliab` plus the who-answer paragraph. |
 | `/about` · `/AzielEliab` · `/aziel-eliab` | 200 same hub HTML as `/aziel` (indexable About / identity aliases) |
 | `/donate` · `/donate/` | AZL-DONATE-1.0 primary Donate door (static; homepage has no Donate section). Bare `/donate` 302s to `/donate?v=png` so CF edge cannot keep the old stroke-SVG HTML. Door HTML is `no-store`. Rails use solid PNG QRs at `/donate/qr/{btc,eth,ltc,xrp,doge}.png` (payment URI, not a website). |
@@ -268,7 +269,7 @@ This host is the **hub cite** surface for **QNS-CD-1.0** (photon QNS1 packet tra
 
 ## Donate
 
-Primary canonical door: [https://www.azieleliab.com/donate](https://www.azieleliab.com/donate) (AZL-DONATE-1.0). Homepage spine: Why / Software / Research / Doors / Receipts / Donate — each a real path (`/why`, `/software`, `/research`, `/doors`, `/receipts`, `/donate`). Receipts tab is kept. Label is **Donate**. No Donate section on the homepage. No Mission tab.
+Primary canonical door: [https://www.azieleliab.com/donate](https://www.azieleliab.com/donate) (AZL-DONATE-1.0). Homepage spine: Why / Software / Research / Doors / Receipts / Comics / Donate / Aziel — each a real path (`/why`, `/software`, `/research`, `/doors`, `/receipts`, `/comics`, `/donate`, `/aziel`). Receipts tab is kept. Label is **Donate**. No Donate section on the homepage. No Mission tab.
 
 ## Ingest as receipt / re-expand
 
@@ -295,6 +296,7 @@ Every label and URL is hyperlinked.
 - He Didn't Jump → https://www.hedidntjump.com/
 - The Furnace Isn't Free → https://www.furnaceisntfree.com/ · also Aziel https://furnaceisntfree.com/aziel/ (official sister door; not a Live Node; Cap-7 is not ICANN; paid satellite HELD)
 - Time to Unseal the Book → https://www.timetounsealthebook.net (official sister door; decryption_complete stays false; not a Live Node; not LIVE until Dual + Aziel merge + Cos; paid satellite HELD)
+- TimeToUnsealTheBook → https://timetounsealthebook.net/aziel (Cos handle, tip `5b3c878e`; not a Live Node; not LIVE on this hub until Dual CLEAR + Aziel merge OK + Cos; Agent OK is not Aziel merge OK; decryption_complete stays false; paid satellite HELD; Cap-7 is not ICANN)
 - Runtime → https://www.azieleliab.com/runtime · also Try on Glama https://glama.ai/mcp/servers/AzielEliab/aziel-runtime (one Runtime door; same-origin primary; Glama label is exactly "Try on Glama"; Worker origin is not a second Runtime door on `/doors`)
 - Trades-Runtime → https://trades-runtime.vibelock.workers.dev/ — Shadow-first local BYO runtime for HVAC/plumbing/electrical/sewer/cross-trades. BYO ServiceTitan+ProBooks. Human authority. live_backends false. · also MCP (visible label only; target https://trades-runtime.vibelock.workers.dev/mcp; sister product extra; not a Softwares-tab card; not fraggate_call; live_backends false; public Softwares/cite)
 - Homepage Runtime panel (not the Doors tab): Try on Glama https://glama.ai/mcp/servers/AzielEliab/aziel-runtime (primary CTA) · Official Runtime https://aziel-runtime.vibelock.workers.dev/ · Suite pack https://aziel-runtime.vibelock.workers.dev/download · Source on GitHub https://github.com/AzielEliab/aziel-runtime · Documentation / Architecture https://github.com/AzielEliab/aziel-runtime/tree/main/docs/2.0 (**2.0.0-rc1**, SoT main `70cc0b0` / version_id `be1d6dca-01a9-4d7e-95da-3fffb617a989` / 2.0.0-rc1)

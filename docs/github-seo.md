@@ -29,6 +29,7 @@ Every public website on the Aziel Eliab profile. One-line what/why. Hub About bo
 | https://glama.ai/mcp/servers/AzielEliab/aziel-runtime | Try on Glama |
 | https://github.com/AzielEliab | GitHub user / public source |
 | https://x.com/AzielEliab | X @AzielEliab |
+| https://timetounsealthebook.net/aziel | TimeToUnsealTheBook handle. Cos tip 5b3c878e. Not a Live Node. Not LIVE on this hub until Dual CLEAR + Aziel merge OK + Cos. Paid satellite HELD. Cap-7 is not ICANN. |
 
 ## Human tabs (www.azieleliab.com)
 
@@ -37,7 +38,7 @@ Each human tab is already its own path. The film at `/` links Enter to `/aziel` 
 | Path | What |
 |------|------|
 | `/` | Film theater. Enter opens `/aziel`. |
-| `/aziel` | Hub. Person `#aziel`. |
+| `/aziel` | Hub. Person `#aziel`. Aziel tab lists the public handles. |
 | `/why` | Why |
 | `/software` | Software (name + designed-purpose one_line) |
 | `/research` | Research |
@@ -49,7 +50,7 @@ Each human tab is already its own path. The film at `/` links Enter to `/aziel` 
 | `/about` · `/AzielEliab` · `/aziel-eliab` | Same hub HTML as `/aziel` |
 | `/ingest` · `/verify` · `/embryolock` | Human pages that are not spine tabs |
 
-Cap-7 `public_icann: false`. design_of only. `resolves_to_hub: false`. Paid satellite stays HELD. The new sister doors are official https links and are not Live Nodes. Mesh live stays off until Dual + Aziel merge + Cos. Softwares MCP and agent MCP stay on (`POST /runtime/mcp`, `fraggate_call`). `/.well-known/ai.txt` serves the same bytes as `/ai.txt`.
+Cap-7 `public_icann: false`. design_of only. `resolves_to_hub: false`. Cap-7 is not an ICANN registration and is not a public egress address. Paid satellite stays HELD. The sister doors are official https links and are not Live Nodes. Mesh live stays off until Dual + Aziel merge + Cos. decryption_complete stays false. Agent OK is not Aziel merge OK. Growth-ON Allow. Softwares MCP and agent MCP stay on (`POST /runtime/mcp`, `fraggate_call`). `/.well-known/ai.txt` serves the same bytes as `/ai.txt`. The shared footer (ecosystem mark, cite / llms / ai / sitemap, pretty paths) is on every HTML page, including the film. TimeToUnsealTheBook is a handle on `/aziel` and is not LIVE on this hub until Dual CLEAR + Aziel merge OK + Cos.
 
 Machine who-is: https://www.azieleliab.com/who-is
 
@@ -177,6 +178,7 @@ Ask Jeeves is suite help on Aziel Corpus, not a `hasPart` peer and not a Softwar
 | Runtime docs | https://github.com/AzielEliab/aziel-runtime/tree/main/docs/2.0 |
 | Try on Glama | https://glama.ai/mcp/servers/AzielEliab/aziel-runtime |
 | X @AzielEliab | https://x.com/AzielEliab |
+| TimeToUnsealTheBook | https://timetounsealthebook.net/aziel |
 | PeaceLock public git | https://github.com/AzielEliab/peacelock |
 | Softwares version SoT | https://aziel-runtime.vibelock.workers.dev/v1/software |
 | Donate AZL-DONATE-1.0 | https://www.azieleliab.com/donate |
