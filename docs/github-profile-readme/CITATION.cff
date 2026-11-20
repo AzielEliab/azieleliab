@@ -40,20 +40,32 @@ identifiers:
     value: "https://godlock.uk/"
     description: GodLock (product)
   - type: url
-    value: "https://www.hedidntjump.com/"
+    value: "https://hedidntjump.com/"
     description: He Didn't Jump archive
   - type: url
-    value: "https://www.furnaceisntfree.com/"
+    value: "https://furnaceisntfree.com/"
     description: The Furnace Isn't Free
   - type: url
     value: "https://furnaceisntfree.com/aziel/"
     description: The Furnace Isn't Free Aziel handle
   - type: url
-    value: "https://www.timetounsealthebook.net"
+    value: "https://timetounsealthebook.net/"
     description: Time to Unseal the Book
   - type: url
     value: "https://aziel-runtime.vibelock.workers.dev/"
     description: Aziel Runtime / FragGate MCP door
+  - type: url
+    value: "https://whitestone.vibelock.workers.dev/"
+    description: Whitestone live pro se web app
+  - type: url
+    value: "https://trades-runtime.vibelock.workers.dev/"
+    description: Trades Runtime. live_backends false
+  - type: url
+    value: "https://glama.ai/mcp/servers/AzielEliab/trades-runtime"
+    description: Trades Runtime on Glama. live_backends false
+  - type: url
+    value: "https://miragegrid.vibelock.workers.dev/"
+    description: MirageGrid mesh-only Cap-7 DNS factory. public_icann false. Not an ICANN registrar
   - type: url
     value: "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime"
     description: Try on Glama

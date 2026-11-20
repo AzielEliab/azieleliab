@@ -31,7 +31,7 @@ Machine lock line (home and `/aziel` meta, llms, who-is txt, aziel.json — not 
 
 Published About (exact homepage / `/about` / `/AzielEliab` lines, not biography) is factored into who-is, FAQPage, AboutPage, llms Mission, and cite.json. Person `mainEntityOfPage` is `/who`. AboutPage `significantLink` also points at `/person.jsonld`, `/who`, `/who-is`, `/graph.jsonld`, and indexable section paths. `/` is the film theater only. `/about` and `/AzielEliab` 200 the same hub HTML as `/aziel`. Enter on `/` opens `/aziel`.
 
-Live stats (do not invent numbers): `https://www.azieleliab.com/v1/stats`, Digital Library `https://www.azielcorpuslibrary.net/stats` (not `/v1/stats`; version is `GET /v1/health`; tracker fallback `https://aziel-corpus-download-tracker.vibelock.workers.dev/stats`), `https://www.hedidntjump.com/api/stats`.
+Live stats (do not invent numbers): `https://www.azieleliab.com/v1/stats`, Digital Library `https://www.azielcorpuslibrary.net/stats` (not `/v1/stats`; version is `GET /v1/health`; tracker fallback `https://aziel-corpus-download-tracker.vibelock.workers.dev/stats`), `https://hedidntjump.com/api/stats`.
 
 `zenodo_dois` is `[]`. `openalex` is `null`. Do not invent DOIs. Do not add biography fields (legal name, home, county, employer, family, health, court matter). No prophetic claims. No “Aziel Systems” / paper counts.
 

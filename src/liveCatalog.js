@@ -110,6 +110,7 @@ export function liveProductHref(product) {
   if (!product || typeof product !== "object") return "";
   const fromLive = firstHttpUrl(product, ["worker_home", "href", "home", "url"]);
   const slug = String(product.slug || "").trim();
+  if (slug === "whitestone" || slug === "miragegrid") return catalogWorkerHome(slug, product);
   if (slug === TRADES_RUNTIME_SLUG) return TRADES_RUNTIME + "/";
   if (isInRuntimePlacement(product, slug)) return runtimeTaskHome(slug) || fromLive;
   if (fromLive) return fromLive;
@@ -183,7 +184,12 @@ function mapLiveItem(row) {
     url: href || undefined,
   };
   const workerHome = firstHttpUrl(row, ["worker_home"]) || href;
-  if (workerHome) item.worker_home = workerHome;
+  if (slug === "whitestone" || slug === "miragegrid") {
+    const home = catalogWorkerHome(slug, row);
+    item.href = home;
+    item.url = home;
+    item.worker_home = home;
+  } else if (workerHome) item.worker_home = workerHome;
   if (row.status) item.status = row.status;
   if (row.version) item.version = row.version;
   if (row.one_line) item.one_line = row.one_line;
