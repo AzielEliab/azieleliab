@@ -6,17 +6,17 @@ import {
   AUTHOR,
   SPECTRALLOCK_DESCRIPTION,
   SPECTRALLOCK_ONE_LINE,
-  SPECTRALLOCK_WORKER,
+  SPECTRALLOCK_GITHUB,
   spectrallockCite,
   AUTHOR_AKA,
   AUTHOR_AKA_LIST,
   CANON_ORIGIN,
-  FRAGGATE,
   FRAGGATE_GITHUB,
   GITHUB,
   GITHUB_RUNTIME,
   GLAMA_LABEL,
   GLAMA_RUNTIME,
+  GLAMA_TRADES,
   GODLOCK,
   HEDIDNTJUMP,
   FURNACE_AZIEL,
@@ -24,6 +24,13 @@ import {
   FURNACE_NAME,
   UNSEAL,
   UNSEAL_NAME,
+  LIVE_PUBLIC_SITES,
+  WHITESTONE_LIVE,
+  MIRAGEGRID_LIVE,
+  MIRAGEGRID_PUBLIC_NOTE,
+  TRADES_RUNTIME,
+  TRADES_RUNTIME_NAME,
+  TRADES_RUNTIME_ONE_LINE,
   INDEXABLE_SECTIONS,
   APEX_HOST,
   APEX_REDIRECT_NOTE,
@@ -213,7 +220,7 @@ export const LIVE_NODES_FAQ_ANSWER =
 export const SPECTRALLOCK_FAQ_NAME = "What is SpectralLock?";
 
 export const SPECTRALLOCK_FAQ_ANSWER =
-  SPECTRALLOCK_ONE_LINE + " " + SPECTRALLOCK_DESCRIPTION + " Worker: " + SPECTRALLOCK_WORKER;
+  SPECTRALLOCK_ONE_LINE + " " + SPECTRALLOCK_DESCRIPTION + " Source: " + SPECTRALLOCK_GITHUB;
 
 export const SPECTRALLOCK_SOFTWARES_LINE = "- SpectralLock — " + SPECTRALLOCK_ONE_LINE;
 
@@ -454,7 +461,7 @@ export const SITE_COVERAGE = [
     label: "aziel-runtime FragGate/MCP",
     name: "aziel-runtime",
     url: RUNTIME_LOCAL,
-    also: [RUNTIME + "/", GLAMA_RUNTIME, FRAGGATE, FRAGGATE_GITHUB],
+    also: [RUNTIME + "/", GLAMA_RUNTIME, FRAGGATE_GITHUB],
     blurb:
       "Aziel Runtime " +
       RUNTIME_VERSION +
@@ -463,6 +470,31 @@ export const SITE_COVERAGE = [
       "/. " +
       GLAMA_LABEL +
       ". Named tools only.",
+  },
+  {
+    id: "whitestone",
+    label: "whitestone",
+    name: "Whitestone",
+    url: WHITESTONE_LIVE,
+    blurb:
+      "Whitestone live pro se web app. Session-only advisor for short Criminal, Civil, and Divorce questions. Public door " +
+      WHITESTONE_LIVE +
+      ".",
+  },
+  {
+    id: "trades",
+    label: "trades-runtime",
+    name: TRADES_RUNTIME_NAME,
+    url: TRADES_RUNTIME + "/",
+    also: [GLAMA_TRADES],
+    blurb: TRADES_RUNTIME_ONE_LINE + " Glama " + GLAMA_TRADES + ".",
+  },
+  {
+    id: "miragegrid",
+    label: "miragegrid",
+    name: "MirageGrid",
+    url: MIRAGEGRID_LIVE,
+    blurb: MIRAGEGRID_PUBLIC_NOTE,
   },
 ];
 
@@ -545,6 +577,9 @@ const ASSOCIATION_WEBSITE_ID = Object.freeze({
   furnace: FURNACE_HOME + "#website",
   unseal: UNSEAL + "#website",
   softwares: RUNTIME + "/#softwares",
+  whitestone: WHITESTONE_LIVE + "#website",
+  trades: TRADES_RUNTIME + "/#website",
+  miragegrid: MIRAGEGRID_LIVE + "#website",
 });
 
 export function associationWebsiteId(id) {
@@ -1033,6 +1068,30 @@ export function hubWebsiteNodes() {
         PERSON_ID +
         ". Not a Live Node. Cap-7 is not ICANN. Paid satellite stays HELD.",
     }),
+    linkOfficialWebsite({
+      "@type": "WebSite",
+      "@id": WHITESTONE_LIVE + "#website",
+      url: WHITESTONE_LIVE,
+      name: "Whitestone",
+      description: "Whitestone live pro se web app. Session-only. https://whitestone.vibelock.workers.dev/",
+    }),
+    linkOfficialWebsite({
+      "@type": "WebSite",
+      "@id": TRADES_RUNTIME + "/#website",
+      url: TRADES_RUNTIME + "/",
+      name: TRADES_RUNTIME_NAME,
+      description: TRADES_RUNTIME_ONE_LINE + " live_backends false. Glama " + GLAMA_TRADES + ".",
+      sameAs: [GLAMA_TRADES],
+    }),
+    linkOfficialWebsite({
+      "@type": "WebSite",
+      "@id": MIRAGEGRID_LIVE + "#website",
+      url: MIRAGEGRID_LIVE,
+      name: "MirageGrid",
+      description: MIRAGEGRID_PUBLIC_NOTE,
+      public_icann: false,
+      mesh_only: true,
+    }),
   ];
 }
 
@@ -1069,7 +1128,10 @@ export function sectionPageNode(section) {
     about: personRef,
     author: personRef,
     inLanguage: "en",
-    relatedLink: [CANON_ORIGIN + "/", CANON_ORIGIN + "/who-is"],
+    relatedLink:
+      section.id === "doors"
+        ? LIVE_PUBLIC_SITES.map((row) => row.href)
+        : [CANON_ORIGIN + "/", CANON_ORIGIN + "/who-is"],
   };
 }
 

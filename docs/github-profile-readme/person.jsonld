@@ -167,13 +167,18 @@
     "https://github.com/AzielEliab",
     "https://github.com/azieltherevealerofthesealed-arch",
     "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime",
+    "https://glama.ai/mcp/servers/AzielEliab/trades-runtime",
     "https://www.azieleliab.com/runtime/",
     "https://www.azieleliab.com/",
     "https://www.azielcorpuslibrary.net/",
     "https://godlock.uk/",
-    "https://www.hedidntjump.com/",
-    "https://www.furnaceisntfree.com/",
-    "https://www.timetounsealthebook.net",
+    "https://hedidntjump.com/",
+    "https://furnaceisntfree.com/",
+    "https://timetounsealthebook.net/",
+    "https://whitestone.vibelock.workers.dev/",
+    "https://aziel-runtime.vibelock.workers.dev/",
+    "https://trades-runtime.vibelock.workers.dev/",
+    "https://miragegrid.vibelock.workers.dev/",
     "https://x.com/AzielEliab"
   ],
   "relatedLink": [
@@ -207,7 +212,7 @@
     },
     {
       "@type": "WebPage",
-      "url": "https://www.hedidntjump.com/person.jsonld"
+      "url": "https://hedidntjump.com/person.jsonld"
     },
     {
       "@type": "WebPage",
@@ -339,7 +344,7 @@
       "@type": "SoftwareSourceCode",
       "name": "hedidntjump.com",
       "url": "https://github.com/AzielEliab/hedidntjump.com",
-      "description": "He Didn't Jump — Marion Zioncheck 7 Aug 1936 newspaper/volume archive by Aziel Eliab. https://www.hedidntjump.com/ · not a verdict · sister of azieleliab.com."
+      "description": "He Didn't Jump — Marion Zioncheck 7 Aug 1936 newspaper/volume archive by Aziel Eliab. https://hedidntjump.com/ · not a verdict · sister of azieleliab.com."
     },
     {
       "@type": "SoftwareSourceCode",

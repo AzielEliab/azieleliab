@@ -142,8 +142,10 @@ describe("Trades-Runtime sister-product machine cite", () => {
       TRADES_RUNTIME_SKILL,
       TRADES_RUNTIME_GITHUB,
     ]) {
-      assert.ok(map.includes("<loc>" + loc + "</loc>"), loc);
+      assert.ok(!map.includes("<loc>" + loc + "</loc>"), loc);
     }
+    assert.ok(!map.includes("download-tracker"));
+    assert.ok(map.includes("<loc>" + "https://www.azieleliab.com/runtime" + "</loc>"));
     const robots = robotsTxt();
     const ai = aiTxt();
     assert.ok(robots.includes("User-agent: GPTBot"));
@@ -250,7 +252,7 @@ describe("Trades-Runtime sister-product machine cite", () => {
     const runtime = labels.indexOf("Runtime");
     const trades = labels.indexOf(TRADES_RUNTIME_NAME);
     assert.equal(trades, runtime + 1);
-    assert.equal(labels[trades + 1], "X @AzielEliab");
+    assert.equal(labels[trades + 1], "MirageGrid");
     const door = DOORS[trades];
     assert.equal(door.href, TRADES_RUNTIME + "/");
     assert.equal(door.purpose, TRADES_RUNTIME_ONE_LINE);
@@ -258,16 +260,17 @@ describe("Trades-Runtime sister-product machine cite", () => {
     assert.equal(door.also.href, TRADES_RUNTIME_MCP);
     assert.equal(door.also.labelOnly, true);
     assert.equal(door.version, undefined);
-    assert.equal(door.cites, undefined);
+    assert.equal(door.cites[0].label, "Glama");
+    assert.equal(door.cites[0].href, "https://glama.ai/mcp/servers/AzielEliab/trades-runtime");
     const section = indexableSection("/doors");
-    assert.match(section.description, /Runtime, Trades-Runtime, X @AzielEliab/);
+    assert.match(section.description, /Aziel Runtime, Trades-Runtime, MirageGrid/);
     const html = sectionPageHtml(section, 0, SOFTWARE);
     const card = html.match(/<section class="card lead" id="doors">[\s\S]*?<\/section>/)[0];
     assert.ok(card.includes(">Trades-Runtime<"));
     assert.ok(card.includes('class="door-purpose"'));
     assert.ok(card.includes(TRADES_RUNTIME_ONE_LINE));
     assert.ok(card.includes('href="' + TRADES_RUNTIME + '/"'));
-    assert.equal((card.match(/class="also"/g) || []).length, 4);
+    assert.equal((card.match(/class="also"/g) || []).length, 6);
     assert.ok(card.includes('href="' + TRADES_RUNTIME_MCP + '"'));
     assert.ok(card.includes(">MCP<"));
     assert.equal(card.includes(">" + TRADES_RUNTIME_MCP + "<"), false);
@@ -284,7 +287,7 @@ describe("Trades-Runtime sister-product machine cite", () => {
     assert.equal(cited.also.label, "MCP");
     assert.equal(cited.also.url, TRADES_RUNTIME_MCP);
     assert.equal(cited.version, undefined);
-    assert.equal(cited.cites, undefined);
+    assert.deepEqual(cited.cites, [{ label: "Glama", url: "https://glama.ai/mcp/servers/AzielEliab/trades-runtime" }]);
     assert.ok(llmsTxt().includes("MCP " + TRADES_RUNTIME_MCP));
     assert.equal(tradesRuntimeCite().version, "0.4.9");
     assert.equal(tradesRuntimeCite().live_backends, false);

@@ -239,16 +239,20 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     assert.ok(person.sameAs.includes("https://www.azieleliab.com/"));
     assert.ok(person.sameAs.includes("https://www.azielcorpuslibrary.net/"));
     assert.ok(person.sameAs.includes("https://godlock.uk/"));
-    assert.ok(person.sameAs.includes("https://www.hedidntjump.com/"));
+    assert.ok(person.sameAs.includes("https://hedidntjump.com/"));
     assert.ok(person.sameAs.includes("https://github.com/AzielEliab"));
     assert.ok(person.sameAs.includes("https://glama.ai/mcp/servers/AzielEliab/aziel-runtime"));
     assert.ok(person.sameAs.includes("https://github.com/azieltherevealerofthesealed-arch"));
     assert.ok(person.sameAs.includes("https://x.com/AzielEliab"));
-    assert.equal(person.sameAs.length, 11);
+    assert.equal(person.sameAs.length, 16);
     assert.ok(person.sameAs.includes("https://www.azieleliab.com/runtime/"));
-    assert.ok(person.sameAs.includes("https://www.furnaceisntfree.com/"));
-    assert.ok(person.sameAs.includes("https://www.timetounsealthebook.net"));
-    assert.ok(!person.sameAs.includes("https://aziel-runtime.vibelock.workers.dev/"));
+    assert.ok(person.sameAs.includes("https://furnaceisntfree.com/"));
+    assert.ok(person.sameAs.includes("https://timetounsealthebook.net/"));
+    assert.ok(person.sameAs.includes("https://aziel-runtime.vibelock.workers.dev/"));
+    assert.ok(person.sameAs.includes("https://whitestone.vibelock.workers.dev/"));
+    assert.ok(person.sameAs.includes("https://trades-runtime.vibelock.workers.dev/"));
+    assert.ok(person.sameAs.includes("https://miragegrid.vibelock.workers.dev/"));
+    assert.ok(person.sameAs.includes("https://glama.ai/mcp/servers/AzielEliab/trades-runtime"));
     assert.ok(!person.sameAs.some((href) => /euaziel|flutter|react/i.test(href)));
     assert.ok(!("birthDate" in person));
     assert.ok(!("homeLocation" in person));
@@ -280,11 +284,11 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     assert.ok(types.includes("FAQPage"));
     assert.ok(types.includes("SoftwareApplication"));
     assert.ok(types.includes("Dataset"));
-    assert.equal(doc["@graph"].filter((n) => n["@type"] === "WebSite").length, 7);
+    assert.equal(doc["@graph"].filter((n) => n["@type"] === "WebSite").length, 10);
     const sites = doc["@graph"].filter((n) => n["@type"] === "WebSite");
-    assert.ok(sites.some((n) => n.url === "https://www.furnaceisntfree.com/"));
+    assert.ok(sites.some((n) => n.url === "https://furnaceisntfree.com/"));
     assert.ok(sites.some((n) => n.sameAs && n.sameAs.includes("https://furnaceisntfree.com/aziel/")));
-    assert.ok(sites.some((n) => n.url === "https://www.timetounsealthebook.net"));
+    assert.ok(sites.some((n) => n.url === "https://timetounsealthebook.net/"));
     assert.ok(sites.some((n) => n.url === "https://aziel-runtime.vibelock.workers.dev/" && n.name === "Softwares"));
     assert.ok(sites.every((n) => n.author && n.author["@id"] === PERSON_ID && n.about["@id"] === PERSON_ID));
     const hubSite = sites.find((n) => n["@id"] === "https://www.azieleliab.com/#website");
@@ -487,8 +491,19 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     assert.ok(body.includes(HEDIDNTJUMP + "/api/stats"));
     assert.ok(body.includes("## Published About"));
     assert.ok(body.includes("## Site coverage"));
-    assert.equal(SITE_COVERAGE.length, 7);
-    assert.deepEqual(SITE_COVERAGE.map((row) => row.id), ["ae", "corpus", "godlock", "hedidntjump", "furnace", "unseal", "runtime"]);
+    assert.equal(SITE_COVERAGE.length, 10);
+    assert.deepEqual(SITE_COVERAGE.map((row) => row.id), [
+      "ae",
+      "corpus",
+      "godlock",
+      "hedidntjump",
+      "furnace",
+      "unseal",
+      "runtime",
+      "whitestone",
+      "trades",
+      "miragegrid",
+    ]);
     for (const row of SITE_COVERAGE) {
       assert.ok(body.includes(row.label), row.label);
       assert.ok(body.includes(row.url), row.url);
@@ -570,7 +585,7 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     assert.equal(doc.hardware_addendum, HARDWARE_ADDENDUM);
     assert.equal(doc.library_front_door.records_packed, 326);
     assert.deepEqual(doc.job_title, PERSON_JOB_TITLE);
-    assert.equal(doc.site_coverage.length, 7);
+    assert.equal(doc.site_coverage.length, 10);
     assert.deepEqual(doc.aka, AUTHOR_AKA_LIST);
     assert.ok(doc.aka.includes("Elias Artista"));
     assert.equal(doc.hebrew_name_definition, HEBREW_NAME_DEFINITION);
@@ -687,7 +702,9 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     assert.ok(!visibleBody.includes(SOFTWARES_ADDENDUM));
     assert.ok(!visibleBody.includes("deniable vault"));
     assert.ok(!visibleBody.includes(ARK_DOWNLOAD));
-    assert.ok(!visibleBody.includes("Whitestone"));
+    const prose = visibleBody.split('id="handles"')[0];
+    assert.ok(!prose.includes("Whitestone"));
+    assert.ok(visibleBody.includes(">Whitestone<"));
     assert.ok(visibleBody.includes("You don’t get to know me."));
     assert.ok(html.includes('href="/.well-known/aziel.json"'));
     assert.ok(!html.includes('id="mission"'));
@@ -796,7 +813,7 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     assert.ok(cite.works.some((row) => row.name.startsWith("Webslinger (")));
     assert.ok(!cite.works.some((row) => /doi\.org|zenodo\.org/i.test(row.url)));
     assert.ok(!cite.works.some((row) => row.caution));
-    assert.equal(cite.site_coverage.length, 7);
+    assert.equal(cite.site_coverage.length, 10);
     assert.ok(cite.site_coverage.every((row) => row.id && row.label && row.url && row.blurb));
     assert.equal(cite.who, WHO_HREF);
     assert.equal(cite.visible_lock, VISIBLE_LOCK_LINE);
@@ -1048,7 +1065,8 @@ describe("GROKBOT-FIX 1.1 identity lock", () => {
     const hubHtml = await hub.text();
     assert.equal(hub.status, 200);
     assert.ok(!hubHtml.includes("## Human tabs"));
-    assert.ok(!hubHtml.includes("public_icann"));
+    const hubVisible = (hubHtml.split("<body>")[1] || "").split("<footer>")[0];
+    assert.ok(!hubVisible.includes("public_icann"));
   });
 
   it("keeps docs/aziel-identity-schema copies in lockstep with generators", () => {

@@ -9,15 +9,18 @@ const RUNTIME_ID = "https://www.azieleliab.com/runtime#runtime";
 const CANON = "https://www.azieleliab.com/";
 const CORPUS = "https://www.azielcorpuslibrary.net/";
 const GODLOCK = "https://godlock.uk/";
-const HEDIDNTJUMP = "https://www.hedidntjump.com/";
-const FURNACE = "https://www.furnaceisntfree.com/";
+const HEDIDNTJUMP = "https://hedidntjump.com/";
+const FURNACE = "https://furnaceisntfree.com/";
 const FURNACE_AZIEL = "https://furnaceisntfree.com/aziel/";
-const UNSEAL = "https://www.timetounsealthebook.net";
+const UNSEAL = "https://timetounsealthebook.net/";
 const RUNTIME_REPO = "https://github.com/AzielEliab/aziel-runtime";
 const GLAMA = "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime";
 const DONATE = "https://www.azieleliab.com/donate";
 const RUNTIME_WORKER = "https://aziel-runtime.vibelock.workers.dev/";
 const TRADES_WORKER = "https://trades-runtime.vibelock.workers.dev/";
+const TRADES_GLAMA = "https://glama.ai/mcp/servers/AzielEliab/trades-runtime";
+const WHITESTONE = "https://whitestone.vibelock.workers.dev/";
+const MIRAGEGRID = "https://miragegrid.vibelock.workers.dev/";
 const TRADES_REPO = "https://github.com/AzielEliab/trades-runtime";
 const GITHUB_USER = "https://github.com/AzielEliab";
 const X_URL = "https://x.com/AzielEliab";
@@ -30,6 +33,10 @@ const PUBLIC_WEBSITES = [
   FURNACE_AZIEL,
   UNSEAL,
   RUNTIME_WORKER,
+  TRADES_WORKER,
+  TRADES_GLAMA,
+  WHITESTONE,
+  MIRAGEGRID,
   GLAMA,
   GITHUB_USER,
   X_URL,

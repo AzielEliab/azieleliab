@@ -33,7 +33,7 @@ import {
 } from "../src/redline.js";
 
 const TIP =
-  "INGEST-AS-RECEIPT-1.0 sha256:c71e8c07d838b148fc8ec5f18c7e261d53566ea8a090ca81445e3483586082a5 https://www.azieleliab.com/";
+  "INGEST-AS-RECEIPT-1.0 sha256:507cdf4d7723467091cc05599247cc3de93e544b504ea9a84564274cdc434089 https://www.azieleliab.com/";
 const SECRET = "redline-operator-secret-value";
 const FAKE_DOI = "10.5281/zenodo.99999999";
 
@@ -155,7 +155,7 @@ describe("REDLINE-2026-09-14 AZindex cite", () => {
     assert.match(robots, /User-agent: GPTBot\nAllow: \//);
     assert.doesNotMatch(robots, /User-agent: GPTBot\nDisallow:/);
     assert.doesNotMatch(robots, /Disallow:\s*\/?$/m);
-    assert.equal(pageBytesSha256(), "c71e8c07d838b148fc8ec5f18c7e261d53566ea8a090ca81445e3483586082a5");
+    assert.equal(pageBytesSha256(), "507cdf4d7723467091cc05599247cc3de93e544b504ea9a84564274cdc434089");
     assert.equal(canonicalPageBytes().includes(REDLINE_SPEC), false);
     assert.equal(canonicalPageBytes().includes(FOLDLOCK_SHELF), false);
     assert.ok(pageHtml().includes(TIP));

@@ -15,12 +15,15 @@ Always send User-Agent: Mozilla/5.0
 - https://www.azieleliab.com/ — official Person hub / Softwares / research landing
 - https://www.azielcorpuslibrary.net/ — Digital Library MASTER
 - https://godlock.uk/ — GodLock challenge/score product
-- https://www.hedidntjump.com/ — Zioncheck 7 Aug 1936 archive
-- https://www.furnaceisntfree.com/ — The Furnace Isn't Free. HVAC quote transparency
+- https://hedidntjump.com/ — Zioncheck 7 Aug 1936 archive
+- https://furnaceisntfree.com/ — The Furnace Isn't Free. HVAC quote transparency
 - https://furnaceisntfree.com/aziel/ — The Furnace Isn't Free Aziel handle
-- https://www.timetounsealthebook.net — Time to Unseal the Book. Not a Live Node. Paid satellite HELD
+- https://timetounsealthebook.net/ — Time to Unseal the Book. Not a Live Node. Paid satellite HELD
 - https://aziel-runtime.vibelock.workers.dev/ — Aziel Runtime / FragGate MCP Softwares door
-- https://trades-runtime.vibelock.workers.dev/ — Trades-Runtime sister product (local-first BYO field trades)
+- https://trades-runtime.vibelock.workers.dev/ — Trades-Runtime sister product (local-first BYO field trades; live_backends false)
+- https://glama.ai/mcp/servers/AzielEliab/trades-runtime — Trades Runtime on Glama (live_backends false)
+- https://whitestone.vibelock.workers.dev/ — Whitestone live pro se web app
+- https://miragegrid.vibelock.workers.dev/ — MirageGrid Cap-7 mesh DNS factory. Mesh-only. public_icann: false. Not an ICANN registrar
 - https://glama.ai/mcp/servers/AzielEliab/aziel-runtime — Try on Glama
 - https://github.com/AzielEliab — GitHub user / public source
 - https://x.com/AzielEliab — X @AzielEliab
@@ -100,7 +103,7 @@ Designed-purpose one_lines (Plain A–Z → Gate A–Z → Lock A–Z; Clock ≠
 
 ## Hub machine routes
 
-For https://www.azieleliab.com/ https://www.azielcorpuslibrary.net/ https://godlock.uk/ https://www.hedidntjump.com/
+For https://www.azieleliab.com/ https://www.azielcorpuslibrary.net/ https://godlock.uk/ https://hedidntjump.com/
 
 - /person.jsonld
 - /cite.json

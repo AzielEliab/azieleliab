@@ -129,7 +129,7 @@ export const CATALOG_PURPOSE = Object.freeze({
   "whitestone": Object.freeze({
     name: "Whitestone",
     one_line: "Advise on short Criminal, Civil, and Divorce questions with historical as-of and Case Mode (suppression axes, TrajectoryLock-lite, export, confidence labeled up to 75%). Session-only web app plus optional zip. https://whitestone.vibelock.workers.dev/",
-    description: "Use Whitestone for short Criminal, Civil, or Divorce questions in a web app, including historical as-of evaluation and Case Mode axes (truth_upheld, narrative / systemic / personal-professional suppression, honesty). It exists as an ephemeral pro se advisor: TrajectoryLock-lite is labeled heuristic, Case Mode may export a hash-chain card, and confidence is labeled up to 75%. Session-only memory wipes when you close. Optional counted zip is on the download tracker; the web app stays on the Whitestone Worker. https://whitestone.vibelock.workers.dev/ \u00b7 https://whitestone-download-tracker.vibelock.workers.dev/download",
+    description: "Use Whitestone for short Criminal, Civil, or Divorce questions in a web app, including historical as-of evaluation and Case Mode axes (truth_upheld, narrative / systemic / personal-professional suppression, honesty). It exists as an ephemeral pro se advisor: TrajectoryLock-lite is labeled heuristic, Case Mode may export a hash-chain card, and confidence is labeled up to 75%. Session-only memory wipes when you close. The live pro se web app is https://whitestone.vibelock.workers.dev/. An optional counted zip is separate and is not the public door.",
   }),
   "zsolver": Object.freeze({
     name: "ZionPattern Solver",

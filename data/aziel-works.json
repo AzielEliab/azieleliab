@@ -634,7 +634,7 @@
     "name": "hedidntjump.com",
     "url": "https://github.com/AzielEliab/hedidntjump.com",
     "type": "SoftwareSourceCode",
-    "description": "He Didn't Jump — Marion Zioncheck 7 Aug 1936 newspaper/volume archive by Aziel Eliab. https://www.hedidntjump.com/ · not a verdict · sister of azieleliab.com.",
+    "description": "He Didn't Jump — Marion Zioncheck 7 Aug 1936 newspaper/volume archive by Aziel Eliab. https://hedidntjump.com/ · not a verdict · sister of azieleliab.com.",
     "domain": "history (website source)",
     "http_status": 200,
     "verified_at": "2026-10-06T10:49:51-04:00",
@@ -644,7 +644,7 @@
     "is_fork": false,
     "own_software": true,
     "homepage": {
-     "url": "https://www.hedidntjump.com/",
+     "url": "https://hedidntjump.com/",
      "http_status": 200,
      "verified_at": "2026-10-06T10:51:38-04:00",
      "title": "Marion A. Zioncheck — Seattle Congressman (1933–1936) Archive | He Didn't Jump"
@@ -1216,7 +1216,7 @@
      }
     ],
     "alternate_url": {
-     "url": "https://www.hedidntjump.com/",
+     "url": "https://hedidntjump.com/",
      "http_status": 200,
      "verified_at": "2026-10-06T10:51:38-04:00"
     }
