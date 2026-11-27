@@ -51,7 +51,6 @@ import {
   X_URL,
   resolveRuntimeVersion,
 } from "./copy.js";
-import { RSS_HREF } from "./rss.js";
 import { qrImg } from "./qr.js";
 import { DOWNLOADS_REASON, MESH_LOCAL, MESH_STATUS_LOCAL, QNM_SPEC, QNS_CD_SPEC, dualNodesTitle, liveNodesLabel, meshQuietLabel } from "./mesh.js";
 import { SURVIVAL_LOCAL } from "./survival.js";
@@ -852,8 +851,6 @@ export function siteFooterHtml(meshQuiet = "") {
     a(CANON_ORIGIN + "/ai.txt", "ai.txt") +
     " · " +
     a(CANON_ORIGIN + "/sitemap.xml", "sitemap") +
-    " · " +
-    a(RSS_HREF, "rss") +
     " · " +
     a(DONATE_HREF, DONATE_TITLE) +
     " · Apache-2.0</p>\n    " +

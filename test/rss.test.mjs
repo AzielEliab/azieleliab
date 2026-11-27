@@ -102,11 +102,17 @@ describe("RSS feed", () => {
     assert.ok(llmsTxt().includes("GET " + RSS_HREF));
     assert.equal(citeDoc().rss, RSS_HREF);
     const link = 'rel="alternate" type="application/rss+xml" href="' + RSS_HREF + '"';
-    assert.ok(filmTheaterHtml().includes(link));
-    assert.ok(pageHtml().includes(link));
-    assert.ok(comicsHtml().includes(link));
+    for (const html of [filmTheaterHtml(), pageHtml(), comicsHtml(), whoHtml()]) {
+      assert.ok(html.includes(link), "head alternate");
+      const body = html.split(/<body[^>]*>/i)[1] || "";
+      assert.equal(body.includes(RSS_HREF), false);
+      assert.equal(body.includes("application/rss+xml"), false);
+      assert.doesNotMatch(body, />rss</i);
+    }
+    const footer = siteFooterHtml();
+    assert.equal(footer.includes(RSS_HREF), false);
+    assert.equal(footer.includes('href="' + RSS_HREF + '"'), false);
+    assert.doesNotMatch(footer, />rss</i);
     assert.ok(comicsHtml().includes('id="aziel-boards-the-plane"'));
-    assert.ok(whoHtml().includes(link));
-    assert.ok(siteFooterHtml().includes('href="' + RSS_HREF + '"'));
   });
 });
