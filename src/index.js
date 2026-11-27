@@ -81,6 +81,7 @@ import {
   sitemapXml,
 } from "./seo.js";
 import { helpBody, isHelpPath } from "./help.js";
+import { isRssAliasPath, RSS_HREF, RSS_PATH, rssXml } from "./rss.js";
 import { worksDoc } from "./works.js";
 import { handleSotOutlet, isSotOutletPath, loadSurfacePin } from "./sotOutlet.js";
 import {
@@ -135,6 +136,7 @@ function html(body, status = 200, cache) {
       "content-type": "text/html; charset=utf-8",
       "cache-control": status === 200 ? cache || HTML_CACHE : "public, max-age=60",
       "Content-Signal": CONTENT_SIGNAL,
+      link: "<" + RSS_HREF + '>; rel="alternate"; type="application/rss+xml"',
       ...SECURITY,
     },
   });
@@ -391,6 +393,17 @@ export async function handleRequest(request, env = {}, ctx) {
     });
   }
 
+  if (isRssAliasPath(path)) {
+    return new Response(null, {
+      status: 301,
+      headers: {
+        Location: RSS_HREF,
+        "Content-Signal": CONTENT_SIGNAL,
+        ...SECURITY,
+      },
+    });
+  }
+
   if (DISCOVERY_ALIASES[path]) {
     const aliased = await discoveryAliasResponse(request, url, path, env, ctx);
     if (aliased) return aliased;
@@ -575,6 +588,8 @@ export async function handleRequest(request, env = {}, ctx) {
     res = text(JSON.stringify(citeDoc(doors, live && live.version, survival, surfaceSot), null, 1) + "\n", "application/json", { cache: SEO_CACHE });
   } else if (path === "/sitemap.xml") {
     res = text(sitemapXml(new Date(), doors), "application/xml", { cache: SEO_CACHE });
+  } else if (path === RSS_PATH) {
+    res = text(rssXml(new Date()), "application/rss+xml", { cache: SEO_CACHE });
   } else if (path === "/v1/software") {
     res = json(softwareIndexBody(live, mesh), CATALOG_HTTP_CACHE);
   } else if (path === MESH_PATH) {

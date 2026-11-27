@@ -81,6 +81,7 @@ export const PUBLIC_DOORS = Object.freeze([
   { method: "GET", path: "/", role: "read", auth: "none" },
   { method: "GET", path: "/cite.json", role: "read", auth: "none" },
   { method: "GET", path: "/robots.txt", role: "read", auth: "none", growth_on: true },
+  { method: "GET", path: "/rss.xml", role: "read", auth: "none", note: "RSS 2.0; /feed.xml 301s here" },
   { method: "GET", path: "/llms.txt", role: "read", auth: "none" },
   { method: "GET", path: "/llms-full.txt", role: "read", auth: "none", note: "Aziel Runtime llms.txt; not a copy of /llms.txt" },
   { method: "GET", path: "/openapi.json", role: "read", auth: "none", note: "same document as /runtime/openapi.json" },

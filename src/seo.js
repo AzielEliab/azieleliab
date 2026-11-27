@@ -257,6 +257,7 @@ import {
   survivalLlmsBlock as banSurvivalLlmsBlock,
 } from "./survival.js";
 import { HELP_SITEMAP_HREFS } from "./help.js";
+import { RSS_HREF, RSS_PATH, rssAlternateLink } from "./rss.js";
 
 export const AI_CRAWLER_AGENTS = [
   "GPTBot",
@@ -390,7 +391,9 @@ export function discoveryAlternateLinkTags() {
   return DISCOVERY_ALTERNATES.map(
     ([type, href, title]) =>
       '<link rel="alternate" type="' + type + '" href="' + href + '" title="' + title + '">',
-  ).join("\n");
+  )
+    .concat([rssAlternateLink()])
+    .join("\n");
 }
 
 /**
@@ -425,6 +428,7 @@ export const INDEXNOW_PING_URLS = [
   CANON_ORIGIN + "/doors",
   CANON_ORIGIN + "/receipts",
   CANON_ORIGIN + "/comics",
+  RSS_HREF,
   DONATE_HREF,
   CANON_ORIGIN + "/ingest",
   CANON_ORIGIN + "/verify",
@@ -516,6 +520,8 @@ const PUBLIC_ALLOW = [
   "/.well-known/indexnow-key.txt",
   INDEXNOW_KEY_PATH,
   "/sitemap.xml",
+  RSS_PATH,
+  "/feed.xml",
   "/robots.txt",
   "/v1/stats",
   "/v1/view",
@@ -608,6 +614,7 @@ const SITEMAP_RANK = {
   [CANON_ORIGIN + "/doors"]: { changefreq: "weekly", priority: "0.6" },
   [RECEIPTS_HREF]: { changefreq: "weekly", priority: "0.7" },
   [COMICS_HREF]: { changefreq: "weekly", priority: "0.7" },
+  [RSS_HREF]: { changefreq: "daily", priority: "0.5" },
   [INGEST_HREF]: { changefreq: "weekly", priority: "0.7" },
   [INGEST_BYTES_HREF]: { changefreq: "weekly", priority: "0.6" },
   [VERIFY_HREF]: { changefreq: "weekly", priority: "0.6" },
@@ -716,6 +723,7 @@ export function sitemapXml(now = new Date(), software = SOFTWARE) {
     ...HELP_SITEMAP_HREFS,
     CANON_ORIGIN + "/robots.txt",
     CANON_ORIGIN + "/sitemap.xml",
+    RSS_HREF,
     CANON_ORIGIN + "/v1/stats",
     CANON_ORIGIN + "/v1/view",
     CANON_ORIGIN + "/v1/software",
@@ -949,6 +957,7 @@ export function citeDoc(software = SOFTWARE, runtimeVersion = RUNTIME_VERSION, s
     library_stats_fallback: LIBRARY_STATS_FALLBACK,
     hedidntjump_stats: HEDIDNTJUMP + "/api/stats",
     sitemap: CANON_ORIGIN + "/sitemap.xml",
+    rss: RSS_HREF,
     robots: CANON_ORIGIN + "/robots.txt",
     twitter: X_URL,
     twitter_handle: X_HANDLE,
@@ -1441,6 +1450,7 @@ export function llmsTxt(software = SOFTWARE, survival = null, sot = null) {
     "- GET " + CANON_ORIGIN + AI_WELL_KNOWN_PATH + "  (same bytes as /ai.txt)",
     "- GET " + CANON_ORIGIN + "/robots.txt",
     "- GET " + CANON_ORIGIN + "/sitemap.xml",
+    "- GET " + RSS_HREF + "  (RSS 2.0; human pages and the six Comics films; /feed.xml 301s here)",
     "- GET " + RUNTIME_LOCAL,
     "- GET " + RUNTIME_LOCAL + "/openapi.json",
     "- GET " + RUNTIME_LOCAL + "/v1/skill",
@@ -1550,6 +1560,8 @@ export function aiTxt(survival = null, software, sot = null) {
     "Allow: " + INDEXNOW_KEY_PATH,
     "Allow: /robots.txt",
     "Allow: /sitemap.xml",
+    "Allow: /rss.xml",
+    "Allow: /feed.xml",
     "Allow: /v1/stats",
     "Allow: /v1/view",
     "Allow: /v1/software",

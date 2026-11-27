@@ -51,6 +51,7 @@ import {
   X_URL,
   resolveRuntimeVersion,
 } from "./copy.js";
+import { RSS_HREF } from "./rss.js";
 import { qrImg } from "./qr.js";
 import { DOWNLOADS_REASON, MESH_LOCAL, MESH_STATUS_LOCAL, QNM_SPEC, QNS_CD_SPEC, dualNodesTitle, liveNodesLabel, meshQuietLabel } from "./mesh.js";
 import { SURVIVAL_LOCAL } from "./survival.js";
@@ -852,6 +853,8 @@ export function siteFooterHtml(meshQuiet = "") {
     " · " +
     a(CANON_ORIGIN + "/sitemap.xml", "sitemap") +
     " · " +
+    a(RSS_HREF, "rss") +
+    " · " +
     a(DONATE_HREF, DONATE_TITLE) +
     " · Apache-2.0</p>\n    " +
     pathLineHtml() +
@@ -1091,7 +1094,9 @@ export function comicsHtml() {
     const line = film.line ? '<p class="reel-line">' + esc(film.line) + "</p>" : "";
     const x = film.x ? '<p class="reel-x">' + a(film.x, "X") + "</p>" : "";
     return (
-      '<li class="card">' +
+      '<li class="card" id="' +
+      attr(film.id) +
+      '">' +
       "<h2>" +
       esc(film.title) +
       "</h2>" +
