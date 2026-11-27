@@ -9,7 +9,7 @@ Identity is **Aziel Eliab** only. Aka first: Aziel Elroi Eliab, AzielEliab, azie
 Canonical: [https://www.azieleliab.com/](https://www.azieleliab.com/)  
 Apex `https://azieleliab.com/` 301s to www.
 
-INGEST-AS-RECEIPT-1.0 sha256:c71e8c07d838b148fc8ec5f18c7e261d53566ea8a090ca81445e3483586082a5 https://www.azieleliab.com/
+INGEST-AS-RECEIPT-1.0 sha256:507cdf4d7723467091cc05599247cc3de93e544b504ea9a84564274cdc434089 https://www.azieleliab.com/
 
 GitHub About (Google + AI crawlers): homepage **https://www.azieleliab.com/** — apply description and topics from [docs/github-seo.md](docs/github-seo.md).
 
@@ -25,7 +25,7 @@ Locked `@id`s on the www host (never apex; never `#aziel-eliab`):
 | WebSite | [https://www.azieleliab.com/#website](https://www.azieleliab.com/#website) |
 | Runtime parent | [https://www.azieleliab.com/runtime#runtime](https://www.azieleliab.com/runtime#runtime) |
 
-Person `sameAs` lattice (AZindex): [GitHub AzielEliab](https://github.com/AzielEliab), [secondary source](https://github.com/azieltherevealerofthesealed-arch), [Glama runtime](https://glama.ai/mcp/servers/AzielEliab/aziel-runtime) (owner/repo path — no invented UUIDs), [this hub](https://www.azieleliab.com/), [Corpus](https://www.azielcorpuslibrary.net/), [GodLock](https://godlock.uk/), [He Didn't Jump](https://www.hedidntjump.com/), [The Furnace Isn't Free](https://www.furnaceisntfree.com/), [Time to Unseal the Book](https://www.timetounsealthebook.net), [X AzielEliab](https://x.com/AzielEliab). One Person `@id` only. Runtime repo URLs stay on `author` / `creator` / `sourceCode` / `isPartOf`.
+Person `sameAs` lattice (AZindex): [GitHub AzielEliab](https://github.com/AzielEliab), [secondary source](https://github.com/azieltherevealerofthesealed-arch), [Glama runtime](https://glama.ai/mcp/servers/AzielEliab/aziel-runtime) (owner/repo path — no invented UUIDs), [Glama trades](https://glama.ai/mcp/servers/AzielEliab/trades-runtime), [this hub](https://www.azieleliab.com/), [Corpus](https://www.azielcorpuslibrary.net/), [GodLock](https://godlock.uk/), [He Didn't Jump](https://hedidntjump.com/), [The Furnace Isn't Free](https://furnaceisntfree.com/), [Time to Unseal the Book](https://timetounsealthebook.net/), [Whitestone](https://whitestone.vibelock.workers.dev/), [Aziel Runtime](https://aziel-runtime.vibelock.workers.dev/), [Trades Runtime](https://trades-runtime.vibelock.workers.dev/), [MirageGrid](https://miragegrid.vibelock.workers.dev/) (mesh-only, public_icann false, not an ICANN registrar), [X AzielEliab](https://x.com/AzielEliab). One Person `@id` only. Runtime repo URLs stay on `author` / `creator` / `sourceCode` / `isPartOf`.
 
 Machine identity (mirror copies in [docs/aziel-identity-schema/](docs/aziel-identity-schema/)): [`/person.jsonld`](https://www.azieleliab.com/person.jsonld) · [`/identity.jsonld`](https://www.azieleliab.com/identity.jsonld) · [`/graph.jsonld`](https://www.azieleliab.com/graph.jsonld) · [`/who`](https://www.azieleliab.com/who) · [`/who-is-aziel-eliab.txt`](https://www.azieleliab.com/who-is-aziel-eliab.txt) · [`/.well-known/aziel.json`](https://www.azieleliab.com/.well-known/aziel.json).
 
@@ -48,12 +48,14 @@ Part of the Aziel Eliab ecosystem. Cross-links for humans, Google, and AI crawle
 | Official site | [https://www.azieleliab.com/](https://www.azieleliab.com/) |
 | Corpus | [https://www.azielcorpuslibrary.net/](https://www.azielcorpuslibrary.net/) · [Aziel Eliab](https://www.azielcorpuslibrary.net/AzielEliab) · [Software](https://www.azielcorpuslibrary.net/software) · [Runtime front door](https://www.azielcorpuslibrary.net/runtime) |
 | GodLock | [https://godlock.uk/](https://godlock.uk/) · [Aziel Eliab](https://godlock.uk/AzielEliab) · [repo](https://github.com/AzielEliab/godlock) |
-| He Didn't Jump | [https://www.hedidntjump.com/](https://www.hedidntjump.com/) |
-| The Furnace Isn't Free | [https://www.furnaceisntfree.com/](https://www.furnaceisntfree.com/) · [Aziel](https://furnaceisntfree.com/aziel/) |
-| Time to Unseal the Book | [https://www.timetounsealthebook.net](https://www.timetounsealthebook.net) |
+| He Didn't Jump | [https://hedidntjump.com/](https://hedidntjump.com/) |
+| The Furnace Isn't Free | [https://furnaceisntfree.com/](https://furnaceisntfree.com/) · [Aziel](https://furnaceisntfree.com/aziel/) |
+| Time to Unseal the Book | [https://timetounsealthebook.net/](https://timetounsealthebook.net/) |
+| Whitestone | [https://whitestone.vibelock.workers.dev/](https://whitestone.vibelock.workers.dev/) live pro se web app |
+| MirageGrid | [https://miragegrid.vibelock.workers.dev/](https://miragegrid.vibelock.workers.dev/) Cap-7 mesh DNS factory. Mesh-only. public_icann: false. Not an ICANN registrar |
 | aziel-runtime **2.0.0-rc1** | [GitHub](https://github.com/AzielEliab/aziel-runtime) · [Official Runtime](https://aziel-runtime.vibelock.workers.dev/) · [Suite pack](https://aziel-runtime.vibelock.workers.dev/download) · [docs/2.0](https://github.com/AzielEliab/aziel-runtime/tree/main/docs/2.0) · SoT main `16b543b` / version_id `21b64dc5-6f0f-4f60-9009-5d4da59a1683` / 2.0.0-rc1 |
 | Trades-Runtime 0.4.9 | Sister product extra (local-first BYO HVAC/plumbing/electrical/sewer/cross-trades; live_backends false; public Softwares/cite) · [Worker](https://trades-runtime.vibelock.workers.dev/) · [GitHub](https://github.com/AzielEliab/trades-runtime) · [download](https://trades-runtime.vibelock.workers.dev/download) · [OpenAPI](https://trades-runtime.vibelock.workers.dev/openapi.json) · [MCP](https://trades-runtime.vibelock.workers.dev/mcp) · [cite](https://trades-runtime.vibelock.workers.dev/cite.json) · [llms](https://trades-runtime.vibelock.workers.dev/llms.txt) |
-| Try on Glama | [https://glama.ai/mcp/servers/AzielEliab/aziel-runtime](https://glama.ai/mcp/servers/AzielEliab/aziel-runtime) (primary Runtime CTA; verified listing) |
+| Try on Glama | [https://glama.ai/mcp/servers/AzielEliab/aziel-runtime](https://glama.ai/mcp/servers/AzielEliab/aziel-runtime) (primary Runtime CTA; verified listing) · [Trades Runtime](https://glama.ai/mcp/servers/AzielEliab/trades-runtime) (live_backends false) |
 | GitHub AzielEliab | [https://github.com/AzielEliab](https://github.com/AzielEliab) |
 | X @AzielEliab | [https://x.com/AzielEliab](https://x.com/AzielEliab) |
 | TimeToUnsealTheBook | [https://timetounsealthebook.net/aziel](https://timetounsealthebook.net/aziel) · Cos tip `5b3c878e` · handle, not a Live Node · not LIVE on this hub until Dual CLEAR + Aziel merge OK + Cos · paid satellite HELD · Cap-7 is not ICANN |
@@ -275,7 +277,7 @@ Primary canonical door: [https://www.azieleliab.com/donate](https://www.azieleli
 
 Same tip string in Receipts-tab first-screen HTML (`/receipts`), `/ingest`, `/cite.json`, `/llms.txt`, and GitHub. Not a visible homepage card:
 
-`INGEST-AS-RECEIPT-1.0 sha256:c71e8c07d838b148fc8ec5f18c7e261d53566ea8a090ca81445e3483586082a5 https://www.azieleliab.com/`
+`INGEST-AS-RECEIPT-1.0 sha256:507cdf4d7723467091cc05599247cc3de93e544b504ea9a84564274cdc434089 https://www.azieleliab.com/`
 
 - Receipt, not only story: stable IDs, canonical URL, SHA-256 of canonical first-screen page bytes (`GET /ingest.txt`).
 - Public verify: paste a hash at `/verify` — yes/no vs the published tip.
@@ -293,9 +295,9 @@ Every label and URL is hyperlinked.
 - Corpus → https://www.azielcorpuslibrary.net/
 - Research → https://www.azielcorpuslibrary.net/ · also https://www.azielcorpuslibrary.net/AzielEliab
 - GodLock → https://godlock.uk/
-- He Didn't Jump → https://www.hedidntjump.com/
-- The Furnace Isn't Free → https://www.furnaceisntfree.com/ · also Aziel https://furnaceisntfree.com/aziel/ (official sister door; not a Live Node; Cap-7 is not ICANN; paid satellite HELD)
-- Time to Unseal the Book → https://www.timetounsealthebook.net (official sister door; decryption_complete stays false; not a Live Node; not LIVE until Dual + Aziel merge + Cos; paid satellite HELD)
+- He Didn't Jump → https://hedidntjump.com/
+- The Furnace Isn't Free → https://furnaceisntfree.com/ · also Aziel https://furnaceisntfree.com/aziel/ (official sister door; not a Live Node; Cap-7 is not ICANN; paid satellite HELD)
+- Time to Unseal the Book → https://timetounsealthebook.net/ (official sister door; decryption_complete stays false; not a Live Node; not LIVE until Dual + Aziel merge + Cos; paid satellite HELD)
 - TimeToUnsealTheBook → https://timetounsealthebook.net/aziel (Cos handle, tip `5b3c878e`; not a Live Node; not LIVE on this hub until Dual CLEAR + Aziel merge OK + Cos; Agent OK is not Aziel merge OK; decryption_complete stays false; paid satellite HELD; Cap-7 is not ICANN)
 - Runtime → https://www.azieleliab.com/runtime · also Try on Glama https://glama.ai/mcp/servers/AzielEliab/aziel-runtime (one Runtime door; same-origin primary; Glama label is exactly "Try on Glama"; Worker origin is not a second Runtime door on `/doors`)
 - Trades-Runtime → https://trades-runtime.vibelock.workers.dev/ — Shadow-first local BYO runtime for HVAC/plumbing/electrical/sewer/cross-trades. BYO ServiceTitan+ProBooks. Human authority. live_backends false. · also MCP (visible label only; target https://trades-runtime.vibelock.workers.dev/mcp; sister product extra; not a Softwares-tab card; not fraggate_call; live_backends false; public Softwares/cite)

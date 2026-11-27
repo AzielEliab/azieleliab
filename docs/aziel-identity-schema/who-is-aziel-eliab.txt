@@ -66,16 +66,16 @@ Unique paths, not hash-only. The Aziel tab is https://www.azieleliab.com/aziel.
 - Corpus: https://www.azielcorpuslibrary.net/
 - Corpus · AzielEliab: https://www.azielcorpuslibrary.net/AzielEliab
 - GodLock: https://godlock.uk/
-- He Didn't Jump: https://www.hedidntjump.com/
+- He Didn't Jump: https://hedidntjump.com/
 - Runtime: https://www.azieleliab.com/runtime
 - Official Runtime: https://aziel-runtime.vibelock.workers.dev/
 - Try on Glama: https://glama.ai/mcp/servers/AzielEliab/aziel-runtime
 - Trades-Runtime: https://trades-runtime.vibelock.workers.dev/
 - Trades-Runtime MCP: https://trades-runtime.vibelock.workers.dev/mcp
 - X @AzielEliab: https://x.com/AzielEliab
-- The Furnace Isn't Free: https://www.furnaceisntfree.com/
+- The Furnace Isn't Free: https://furnaceisntfree.com/
 - The Furnace Isn't Free · Aziel: https://furnaceisntfree.com/aziel/
-- Time to Unseal the Book: https://www.timetounsealthebook.net
+- Time to Unseal the Book: https://timetounsealthebook.net/
 - TimeToUnsealTheBook: https://timetounsealthebook.net/aziel
 
 - Film theater: https://www.azieleliab.com/ (GET / is the film only. Enter opens /aziel.)
@@ -118,9 +118,9 @@ These spellings tether to the same Person @id https://www.azieleliab.com/#aziel:
 - Aziel Runtime 2.0.0-rc1 (FragGate / MCP) — https://www.azieleliab.com/runtime · Try on Glama https://glama.ai/mcp/servers/AzielEliab/aziel-runtime
 - Aziel Digital Library — https://www.azielcorpuslibrary.net/
 - GodLock (product) — https://godlock.uk/
-- He Didn't Jump archive — https://www.hedidntjump.com/
-- The Furnace Isn't Free — https://www.furnaceisntfree.com/ · Aziel https://furnaceisntfree.com/aziel/
-- Time to Unseal the Book — https://www.timetounsealthebook.net
+- He Didn't Jump archive — https://hedidntjump.com/
+- The Furnace Isn't Free — https://furnaceisntfree.com/ · Aziel https://furnaceisntfree.com/aziel/
+- Time to Unseal the Book — https://timetounsealthebook.net/
 - GitHub AzielEliab — https://github.com/AzielEliab
 - X @AzielEliab — https://x.com/AzielEliab
 - This hub — https://www.azieleliab.com/
@@ -182,7 +182,7 @@ Outside Softwares, publishes via Aziel Digital Library MASTER (~326 records) —
 - PPIN — Post-Perturbation Integrative Neuroplasticity
 - Lenses as Viewpoint Constraints for Artificial Systems — AZDOC-8F14A40DC9A6
 - ABAD Framework Application: Layered Decryption of the Copper Scroll (3Q15)
-- Marion A. Zioncheck Visual Archive Vols 1–5 — https://www.hedidntjump.com/
+- Marion A. Zioncheck Visual Archive Vols 1–5 — https://hedidntjump.com/
 - An Operating Manual for a Closing World — AZDOC-B5094327857E / AZDOC-149CA2191E99
 - Blemmyes investigation frameworks (research-grade hypotheses)
 
@@ -203,22 +203,29 @@ Also publishes hardware/prototype designs in the library — Adaptive AI Dog Lea
 - ae (this hub) — https://www.azieleliab.com/ — Public landing and hub cite for Aziel Eliab. Canonical Person @id https://www.azieleliab.com/#aziel. Same-origin /runtime door, Softwares catalog, receipts, ingest, and donate. Published About is the work.
 - corpus library — https://www.azielcorpuslibrary.net/ — Aziel Digital Library (azielcorpuslibrary.net). Public MASTER records and research corpus. Canonical COLD-MULTI-SHELF shelves registry. The research corpus lives here.
 - godlock.uk — https://godlock.uk/ — GodLock product site. Residual-uncertainty scoring software. GodLock is a product.
-- hedidntjump.com — https://www.hedidntjump.com/ — He Didn't Jump archive. Published volumes challenging the 90-year official Marion Zioncheck suicide narrative. Do not invent holdings.
-- furnaceisntfree.com — https://www.furnaceisntfree.com/ — The Furnace Isn't Free. HVAC quote transparency. Official https doors https://www.furnaceisntfree.com/ and https://furnaceisntfree.com/aziel/. Does not name companies. Not a Live Node. Cap-7 is not ICANN. Paid satellite stays HELD.
-- timetounsealthebook.net — https://www.timetounsealthebook.net — Time to Unseal the Book. Public hash-chained test surface at https://www.timetounsealthebook.net. decryption_complete stays false. Not a Live Node. Cap-7 is not ICANN. Paid satellite stays HELD. Not LIVE until Dual + Aziel merge + Cos.
+- hedidntjump.com — https://hedidntjump.com/ — He Didn't Jump archive. Published volumes challenging the 90-year official Marion Zioncheck suicide narrative. Do not invent holdings.
+- furnaceisntfree.com — https://furnaceisntfree.com/ — The Furnace Isn't Free. HVAC quote transparency. Official https doors https://furnaceisntfree.com/ and https://furnaceisntfree.com/aziel/. Does not name companies. Not a Live Node. Cap-7 is not ICANN. Paid satellite stays HELD.
+- timetounsealthebook.net — https://timetounsealthebook.net/ — Time to Unseal the Book. Public hash-chained test surface at https://timetounsealthebook.net/. decryption_complete stays false. Not a Live Node. Cap-7 is not ICANN. Paid satellite stays HELD. Not LIVE until Dual + Aziel merge + Cos.
 - aziel-runtime FragGate/MCP — https://www.azieleliab.com/runtime — Aziel Runtime 2.0.0-rc1. FragGate is the single door. MCP POST /runtime/mcp, OpenAPI, and /v1/skill. Same-origin https://www.azieleliab.com/runtime. Origin https://aziel-runtime.vibelock.workers.dev/. Try on Glama. Named tools only.
+- whitestone — https://whitestone.vibelock.workers.dev/ — Whitestone live pro se web app. Session-only advisor for short Criminal, Civil, and Divorce questions. Public door https://whitestone.vibelock.workers.dev/.
+- trades-runtime — https://trades-runtime.vibelock.workers.dev/ — Shadow-first local BYO runtime for HVAC/plumbing/electrical/sewer/cross-trades. BYO ServiceTitan+ProBooks. Human authority. live_backends false. Glama https://glama.ai/mcp/servers/AzielEliab/trades-runtime.
+- miragegrid — https://miragegrid.vibelock.workers.dev/ — Cap-7 mesh DNS factory Worker. Mesh-only. public_icann: false. Not an ICANN registrar. Not a public egress address.
 
 ## Official Aziel ecosystem
 
-Official site (https://www.azieleliab.com/). Aziel Digital Library (https://www.azielcorpuslibrary.net/). GodLock (https://godlock.uk/). He Didn't Jump (https://www.hedidntjump.com/). The Furnace Isn't Free (https://www.furnaceisntfree.com/). The Furnace Isn't Free · Aziel (https://furnaceisntfree.com/aziel/). Time to Unseal the Book (https://www.timetounsealthebook.net). Aziel Runtime (https://aziel-runtime.vibelock.workers.dev/). GitHub AzielEliab (https://github.com/AzielEliab). Try on Glama (https://glama.ai/mcp/servers/AzielEliab/aziel-runtime). X @AzielEliab (https://x.com/AzielEliab). Softwares (https://www.azieleliab.com/software).
+Official site (https://www.azieleliab.com/). Aziel Digital Library (https://www.azielcorpuslibrary.net/). GodLock (https://godlock.uk/). He Didn't Jump (https://hedidntjump.com/). The Furnace Isn't Free (https://furnaceisntfree.com/). The Furnace Isn't Free · Aziel (https://furnaceisntfree.com/aziel/). Time to Unseal the Book (https://timetounsealthebook.net/). Aziel Runtime (https://aziel-runtime.vibelock.workers.dev/). Whitestone (https://whitestone.vibelock.workers.dev/). Trades-Runtime (https://trades-runtime.vibelock.workers.dev/). Trades Runtime on Glama (https://glama.ai/mcp/servers/AzielEliab/trades-runtime). MirageGrid (https://miragegrid.vibelock.workers.dev/). GitHub AzielEliab (https://github.com/AzielEliab). Try on Glama (https://glama.ai/mcp/servers/AzielEliab/aziel-runtime). X @AzielEliab (https://x.com/AzielEliab). Softwares (https://www.azieleliab.com/software).
 - Official site — https://www.azieleliab.com/
 - Aziel Digital Library — https://www.azielcorpuslibrary.net/
 - GodLock — https://godlock.uk/
-- He Didn't Jump — https://www.hedidntjump.com/
-- The Furnace Isn't Free — https://www.furnaceisntfree.com/
+- He Didn't Jump — https://hedidntjump.com/
+- The Furnace Isn't Free — https://furnaceisntfree.com/
 - The Furnace Isn't Free · Aziel — https://furnaceisntfree.com/aziel/
-- Time to Unseal the Book — https://www.timetounsealthebook.net
+- Time to Unseal the Book — https://timetounsealthebook.net/
 - Aziel Runtime — https://aziel-runtime.vibelock.workers.dev/
+- Whitestone — https://whitestone.vibelock.workers.dev/
+- Trades-Runtime — https://trades-runtime.vibelock.workers.dev/
+- Trades Runtime on Glama — https://glama.ai/mcp/servers/AzielEliab/trades-runtime
+- MirageGrid — https://miragegrid.vibelock.workers.dev/
 - GitHub AzielEliab — https://github.com/AzielEliab
 - Try on Glama — https://glama.ai/mcp/servers/AzielEliab/aziel-runtime
 - X @AzielEliab — https://x.com/AzielEliab
@@ -235,9 +242,12 @@ Aliases: Aziel Elroi Eliab | AzielEliab | azieleliab | The Revealer of the Seale
 - Softwares: https://aziel-runtime.vibelock.workers.dev/ · catalog https://www.azieleliab.com/software
 - azielcorpuslibrary.net: https://www.azielcorpuslibrary.net/
 - godlock.uk: https://godlock.uk/
-- The Furnace Isn't Free: https://www.furnaceisntfree.com/ · https://furnaceisntfree.com/aziel/
-- Time to Unseal the Book: https://www.timetounsealthebook.net
-- hedidntjump.com: https://www.hedidntjump.com/
+- The Furnace Isn't Free: https://furnaceisntfree.com/ · https://furnaceisntfree.com/aziel/
+- Time to Unseal the Book: https://timetounsealthebook.net/
+- hedidntjump.com: https://hedidntjump.com/
+- Whitestone: https://whitestone.vibelock.workers.dev/
+- Trades-Runtime: https://trades-runtime.vibelock.workers.dev/
+- MirageGrid: https://miragegrid.vibelock.workers.dev/
 
 ## Hub tip
 
@@ -251,7 +261,7 @@ Cos LIVE ae. git_sha c87781c08adcef98285d560434078a4a63b11e00 (tip c87781c0) is 
 
 - azieleliab.com/v1/stats: https://www.azieleliab.com/v1/stats
 - azielcorpuslibrary.net/stats: https://www.azielcorpuslibrary.net/stats (fallback https://aziel-corpus-download-tracker.vibelock.workers.dev/stats)
-- hedidntjump.com/api/stats: https://www.hedidntjump.com/api/stats
+- hedidntjump.com/api/stats: https://hedidntjump.com/api/stats
 
 ## BAN-SURVIVAL-1.0
 
@@ -273,4 +283,4 @@ BAN-SURVIVAL-1.0 hub pull of runtime GET /survival (short TTL). Mutual backup: c
 - Lamb Lens: Service → Clarity → Peace. NO-LIE. visible_1520: false.
 
 Canonical person: https://www.azieleliab.com/#aziel
-sameAs: https://github.com/AzielEliab · https://github.com/azieltherevealerofthesealed-arch · https://glama.ai/mcp/servers/AzielEliab/aziel-runtime · https://www.azieleliab.com/runtime/ · https://www.azieleliab.com/ · https://www.azielcorpuslibrary.net/ · https://godlock.uk/ · https://www.hedidntjump.com/ · https://www.furnaceisntfree.com/ · https://www.timetounsealthebook.net · https://x.com/AzielEliab
+sameAs: https://github.com/AzielEliab · https://github.com/azieltherevealerofthesealed-arch · https://glama.ai/mcp/servers/AzielEliab/aziel-runtime · https://glama.ai/mcp/servers/AzielEliab/trades-runtime · https://www.azieleliab.com/runtime/ · https://www.azieleliab.com/ · https://www.azielcorpuslibrary.net/ · https://godlock.uk/ · https://hedidntjump.com/ · https://furnaceisntfree.com/ · https://timetounsealthebook.net/ · https://whitestone.vibelock.workers.dev/ · https://aziel-runtime.vibelock.workers.dev/ · https://trades-runtime.vibelock.workers.dev/ · https://miragegrid.vibelock.workers.dev/ · https://x.com/AzielEliab

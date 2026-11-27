@@ -15,13 +15,16 @@ Machine who-is: [https://www.azieleliab.com/who-is](https://www.azieleliab.com/w
 | [https://www.azieleliab.com/](https://www.azieleliab.com/) | Official Person hub / Softwares / research landing |
 | [https://www.azielcorpuslibrary.net/](https://www.azielcorpuslibrary.net/) | Digital Library MASTER |
 | [https://godlock.uk/](https://godlock.uk/) | GodLock challenge/score product |
-| [https://www.hedidntjump.com/](https://www.hedidntjump.com/) | Zioncheck 7 Aug 1936 archive |
-| [https://www.furnaceisntfree.com/](https://www.furnaceisntfree.com/) | The Furnace Isn't Free. HVAC quote transparency |
+| [https://hedidntjump.com/](https://hedidntjump.com/) | Zioncheck 7 Aug 1936 archive |
+| [https://furnaceisntfree.com/](https://furnaceisntfree.com/) | The Furnace Isn't Free. HVAC quote transparency |
 | [https://furnaceisntfree.com/aziel/](https://furnaceisntfree.com/aziel/) | The Furnace Isn't Free Aziel handle |
-| [https://www.timetounsealthebook.net](https://www.timetounsealthebook.net) | Time to Unseal the Book. Not a Live Node. Paid satellite HELD |
+| [https://timetounsealthebook.net/](https://timetounsealthebook.net/) | Time to Unseal the Book. Not a Live Node. Paid satellite HELD |
 | [https://aziel-runtime.vibelock.workers.dev/](https://aziel-runtime.vibelock.workers.dev/) | Aziel Runtime / FragGate MCP Softwares door |
 | [https://trades-runtime.vibelock.workers.dev/](https://trades-runtime.vibelock.workers.dev/) | Trades-Runtime sister product (local-first BYO field trades; live_backends false) |
 | [https://github.com/AzielEliab/trades-runtime](https://github.com/AzielEliab/trades-runtime) | Trades-Runtime source |
+| [https://glama.ai/mcp/servers/AzielEliab/trades-runtime](https://glama.ai/mcp/servers/AzielEliab/trades-runtime) | Trades Runtime on Glama (live_backends false) |
+| [https://whitestone.vibelock.workers.dev/](https://whitestone.vibelock.workers.dev/) | Whitestone live pro se web app |
+| [https://miragegrid.vibelock.workers.dev/](https://miragegrid.vibelock.workers.dev/) | MirageGrid Cap-7 mesh DNS factory. Mesh-only. public_icann: false. Not an ICANN registrar |
 | [https://glama.ai/mcp/servers/AzielEliab/aziel-runtime](https://glama.ai/mcp/servers/AzielEliab/aziel-runtime) | Try on Glama |
 | [https://github.com/AzielEliab](https://github.com/AzielEliab) | GitHub user / public source |
 | [https://x.com/AzielEliab](https://x.com/AzielEliab) | X @AzielEliab |
@@ -55,13 +58,13 @@ Website designs `azcorpus` + `azlibrary` live on the library hub. They are not e
 15. **AZVPN** — Open an HTTPS or WebSocket VPN session on the public concentrator. [GitHub](https://github.com/AzielEliab/aziel-runtime)
 16. **ForgeReceipts** — Mint and hash-check client-held receipts so retries of one request stay linked. [Worker](https://forgereceipts-download-tracker.vibelock.workers.dev/) · [GitHub](https://github.com/AzielEliab/forgereceipts)
 17. **Glossa Filter** — Render one intent across the bundled peer phrasings. [Worker](https://glossafilter-download-tracker.vibelock.workers.dev/) · [GitHub](https://github.com/AzielEliab/glossafilter)
-18. **MirageGrid** — Assign a short-lived session node and cite mesh-name metadata. [Worker](https://miragegrid-download-tracker.vibelock.workers.dev/) · [GitHub](https://github.com/AzielEliab/miragegrid)
+18. **MirageGrid** — Assign a short-lived session node and cite mesh-name metadata. Mesh-only. public_icann: false. Not an ICANN registrar. [Worker](https://miragegrid.vibelock.workers.dev/) · [GitHub](https://github.com/AzielEliab/miragegrid)
 19. **MMConsensus** — Tally consensus from opinions you already posted. [GitHub](https://github.com/AzielEliab/aziel-runtime)
 20. **Post-King Chess** — Play continuity chess where the aim is to remain. [Worker](https://postking-download-tracker.vibelock.workers.dev/) · [GitHub](https://github.com/AzielEliab/postking-chess)
 21. **StaticClock** — Record a forward-only gear-click timeline and read companion advice. [Worker](https://staticclock-download-tracker.vibelock.workers.dev/) · [GitHub](https://github.com/AzielEliab/staticclock)
 22. **The ARK** — Keep a local deniable vault; one phrase opens one vault. [Worker](https://ark-download-tracker.vibelock.workers.dev/) · [GitHub](https://github.com/AzielEliab/ark)
 23. **ToolBench** — Run synthetic door cases to see how FragGate classifies them. [GitHub](https://github.com/AzielEliab/aziel-runtime)
-24. **Whitestone** — Advise on short Criminal, Civil, and Divorce questions with historical as-of and Case Mode (suppression axes, TrajectoryLock-lite, export, confidence labeled up to 75%). Session-only web app plus optional zip. https://whitestone.vibelock.workers.dev/ [Worker](https://whitestone-download-tracker.vibelock.workers.dev/) · [GitHub](https://github.com/AzielEliab/Whitestone)
+24. **Whitestone** — Advise on short Criminal, Civil, and Divorce questions with historical as-of and Case Mode (suppression axes, TrajectoryLock-lite, export, confidence labeled up to 75%). Session-only web app plus optional zip. https://whitestone.vibelock.workers.dev/ [Worker](https://whitestone.vibelock.workers.dev/) · [GitHub](https://github.com/AzielEliab/Whitestone)
 25. **ZionPattern Solver** — Score answers against nine ontology nodes, with scores labeled up to 75%. [Worker](https://zsolver-download-tracker.vibelock.workers.dev/) · [GitHub](https://github.com/AzielEliab/zion-pattern-solver)
 26. **ZKAttest** — Attest a statement with a hash commitment that keeps the witness private. [GitHub](https://github.com/AzielEliab/aziel-runtime)
 

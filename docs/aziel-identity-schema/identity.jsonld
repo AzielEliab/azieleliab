@@ -167,13 +167,18 @@
     "https://github.com/AzielEliab",
     "https://github.com/azieltherevealerofthesealed-arch",
     "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime",
+    "https://glama.ai/mcp/servers/AzielEliab/trades-runtime",
     "https://www.azieleliab.com/runtime/",
     "https://www.azieleliab.com/",
     "https://www.azielcorpuslibrary.net/",
     "https://godlock.uk/",
-    "https://www.hedidntjump.com/",
-    "https://www.furnaceisntfree.com/",
-    "https://www.timetounsealthebook.net",
+    "https://hedidntjump.com/",
+    "https://furnaceisntfree.com/",
+    "https://timetounsealthebook.net/",
+    "https://whitestone.vibelock.workers.dev/",
+    "https://aziel-runtime.vibelock.workers.dev/",
+    "https://trades-runtime.vibelock.workers.dev/",
+    "https://miragegrid.vibelock.workers.dev/",
     "https://x.com/AzielEliab"
   ],
   "relatedLink": [
@@ -197,8 +202,8 @@
       "@type": "ItemList",
       "@id": "https://www.azieleliab.com/#official-sites",
       "name": "Official sites of Aziel Eliab",
-      "description": "Aziel Eliab (aka Aziel Elroi Eliab | AzielEliab | azieleliab | The Revealer of the Sealed | Elias Artista | AzielElroiEliab | The Revealer of The Sealed | Revealer of The Sealed) is the same Person https://www.azieleliab.com/#aziel. Official sites: azieleliab.com (https://www.azieleliab.com/); Softwares (https://aziel-runtime.vibelock.workers.dev/; https://www.azieleliab.com/software); azielcorpuslibrary.net (https://www.azielcorpuslibrary.net/); godlock.uk (https://godlock.uk/); The Furnace Isn't Free (https://www.furnaceisntfree.com/; https://furnaceisntfree.com/aziel/); Time to Unseal the Book (https://www.timetounsealthebook.net); hedidntjump.com (https://www.hedidntjump.com/). Aziel Eliab and aliases name the same Person https://www.azieleliab.com/#aziel on these official https sites. Not Live Nodes. Cap-7 is not an ICANN registration and is not a public egress address. Paid satellite stays HELD. ",
-      "numberOfItems": 7,
+      "description": "Aziel Eliab (aka Aziel Elroi Eliab | AzielEliab | azieleliab | The Revealer of the Sealed | Elias Artista | AzielElroiEliab | The Revealer of The Sealed | Revealer of The Sealed) is the same Person https://www.azieleliab.com/#aziel. Official sites: azieleliab.com (https://www.azieleliab.com/); Softwares (https://aziel-runtime.vibelock.workers.dev/; https://www.azieleliab.com/software); azielcorpuslibrary.net (https://www.azielcorpuslibrary.net/); godlock.uk (https://godlock.uk/); The Furnace Isn't Free (https://furnaceisntfree.com/; https://furnaceisntfree.com/aziel/); Time to Unseal the Book (https://timetounsealthebook.net/); hedidntjump.com (https://hedidntjump.com/); Whitestone (https://whitestone.vibelock.workers.dev/); Trades-Runtime (https://trades-runtime.vibelock.workers.dev/); MirageGrid (https://miragegrid.vibelock.workers.dev/). Aziel Eliab and aliases name the same Person https://www.azieleliab.com/#aziel on these official https sites. Not Live Nodes. Cap-7 is not an ICANN registration and is not a public egress address. Paid satellite stays HELD. ",
+      "numberOfItems": 10,
       "about": {
         "@id": "https://www.azieleliab.com/#aziel"
       },
@@ -247,9 +252,9 @@
           "@type": "ListItem",
           "position": 5,
           "name": "Aziel Eliab — The Furnace Isn't Free",
-          "url": "https://www.furnaceisntfree.com/",
+          "url": "https://furnaceisntfree.com/",
           "item": {
-            "@id": "https://www.furnaceisntfree.com/#website"
+            "@id": "https://furnaceisntfree.com/#website"
           },
           "description": "https://furnaceisntfree.com/aziel/"
         },
@@ -257,18 +262,45 @@
           "@type": "ListItem",
           "position": 6,
           "name": "Aziel Eliab — Time to Unseal the Book",
-          "url": "https://www.timetounsealthebook.net",
+          "url": "https://timetounsealthebook.net/",
           "item": {
-            "@id": "https://www.timetounsealthebook.net#website"
+            "@id": "https://timetounsealthebook.net/#website"
           }
         },
         {
           "@type": "ListItem",
           "position": 7,
           "name": "Aziel Eliab — hedidntjump.com",
-          "url": "https://www.hedidntjump.com/",
+          "url": "https://hedidntjump.com/",
           "item": {
-            "@id": "https://www.hedidntjump.com/#website"
+            "@id": "https://hedidntjump.com/#website"
+          }
+        },
+        {
+          "@type": "ListItem",
+          "position": 8,
+          "name": "Aziel Eliab — Whitestone",
+          "url": "https://whitestone.vibelock.workers.dev/",
+          "item": {
+            "@id": "https://whitestone.vibelock.workers.dev/#website"
+          }
+        },
+        {
+          "@type": "ListItem",
+          "position": 9,
+          "name": "Aziel Eliab — Trades-Runtime",
+          "url": "https://trades-runtime.vibelock.workers.dev/",
+          "item": {
+            "@id": "https://trades-runtime.vibelock.workers.dev/#website"
+          }
+        },
+        {
+          "@type": "ListItem",
+          "position": 10,
+          "name": "Aziel Eliab — MirageGrid",
+          "url": "https://miragegrid.vibelock.workers.dev/",
+          "item": {
+            "@id": "https://miragegrid.vibelock.workers.dev/#website"
           }
         }
       ]
@@ -443,7 +475,7 @@
       "@type": "SoftwareSourceCode",
       "name": "hedidntjump.com",
       "url": "https://github.com/AzielEliab/hedidntjump.com",
-      "description": "He Didn't Jump — Marion Zioncheck 7 Aug 1936 newspaper/volume archive by Aziel Eliab. https://www.hedidntjump.com/ · not a verdict · sister of azieleliab.com."
+      "description": "He Didn't Jump — Marion Zioncheck 7 Aug 1936 newspaper/volume archive by Aziel Eliab. https://hedidntjump.com/ · not a verdict · sister of azieleliab.com."
     },
     {
       "@type": "SoftwareSourceCode",

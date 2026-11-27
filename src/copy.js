@@ -45,17 +45,19 @@ export const LIBRARY_RUNTIME = LIBRARY + "/runtime";
 export const LIBRARY_AZIEL = LIBRARY + "/AzielEliab";
 export const GODLOCK = "https://godlock.uk";
 export const GODLOCK_AZIEL = GODLOCK + "/AzielEliab";
-/** Sister research archive. www host as published on this hub. */
-export const HEDIDNTJUMP = "https://www.hedidntjump.com";
+/** Sister research archive. Apex is the canonical live door (www also answers). */
+export const HEDIDNTJUMP = "https://hedidntjump.com";
 /**
  * Official sister doors confirmed by FurnaceBot.
  * Exact https links. Not Live Nodes. Cap-7 is not ICANN. Paid satellite stays HELD.
+ * www.furnaceisntfree.com 301s to the apex. Never cite thefurnaceisntfree.com.
  */
 export const FURNACE_NAME = "The Furnace Isn't Free";
-export const FURNACE_HOME = "https://www.furnaceisntfree.com/";
+export const FURNACE_HOME = "https://furnaceisntfree.com/";
 export const FURNACE_AZIEL = "https://furnaceisntfree.com/aziel/";
 export const UNSEAL_NAME = "Time to Unseal the Book";
-export const UNSEAL = "https://www.timetounsealthebook.net";
+/** www.timetounsealthebook.net 301s here. */
+export const UNSEAL = "https://timetounsealthebook.net/";
 export const PAID_SATELLITE = "HELD";
 export const SISTER_MESH_NOTE =
   "Official sister https doors. Not Live Nodes. Cap-7 is not ICANN. Paid satellite stays HELD. Mesh live stays off until Dual + Aziel merge + Cos.";
@@ -137,7 +139,14 @@ export const DUAL_SURFACE = Object.freeze({
 });
 /** Verified Glama listing (owner/repo path). Do not invent a server id. Label is exact. */
 export const GLAMA_RUNTIME = "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime";
+export const GLAMA_TRADES = "https://glama.ai/mcp/servers/AzielEliab/trades-runtime";
 export const GLAMA_LABEL = "Try on Glama";
+/** Live public apps. Download-tracker hosts are counted zips, not these doors. */
+export const WHITESTONE_LIVE = "https://whitestone.vibelock.workers.dev/";
+export const MIRAGEGRID = "https://miragegrid.vibelock.workers.dev";
+export const MIRAGEGRID_LIVE = MIRAGEGRID + "/";
+export const MIRAGEGRID_PUBLIC_NOTE =
+  "Cap-7 mesh DNS factory Worker. Mesh-only. public_icann: false. Not an ICANN registrar. Not a public egress address.";
 export const RUNTIME_DOCS = "https://github.com/AzielEliab/aziel-runtime/tree/main/docs/2.0";
 
 /** Sister product (cite-only extra). Not a FragGate true-engine. Not Softwares-tab. */
@@ -164,6 +173,7 @@ export const TRADES_RUNTIME_NOTE =
 export const TRADES_RUNTIME_SAME_AS = [
   TRADES_RUNTIME_GITHUB,
   TRADES_RUNTIME + "/",
+  GLAMA_TRADES,
   TRADES_RUNTIME_DOWNLOAD,
   TRADES_RUNTIME_MCP,
   TRADES_RUNTIME_CITE,
@@ -270,6 +280,7 @@ export const PERSON_SAME_AS = [
   GITHUB,
   GITHUB_SECONDARY,
   GLAMA_RUNTIME,
+  GLAMA_TRADES,
   CANON_ORIGIN + "/runtime/",
   CANON_ORIGIN + "/",
   LIBRARY + "/",
@@ -277,6 +288,10 @@ export const PERSON_SAME_AS = [
   HEDIDNTJUMP + "/",
   FURNACE_HOME,
   UNSEAL,
+  WHITESTONE_LIVE,
+  RUNTIME + "/",
+  TRADES_RUNTIME + "/",
+  MIRAGEGRID_LIVE,
   X_URL,
 ];
 
@@ -289,6 +304,22 @@ export const SISTER_MESH = Object.freeze([
   { id: "softwares", label: "Softwares", url: RUNTIME + "/" },
   { id: "furnace", label: FURNACE_NAME, url: FURNACE_HOME, aziel: FURNACE_AZIEL },
   { id: "unseal", label: UNSEAL_NAME, url: UNSEAL },
+  { id: "whitestone", label: "Whitestone", url: WHITESTONE_LIVE, note: "Live pro se web app." },
+  {
+    id: "trades",
+    label: TRADES_RUNTIME_NAME,
+    url: TRADES_RUNTIME + "/",
+    live_backends: false,
+    note: TRADES_RUNTIME_ONE_LINE,
+  },
+  {
+    id: "miragegrid",
+    label: "MirageGrid",
+    url: MIRAGEGRID_LIVE,
+    mesh_only: true,
+    public_icann: false,
+    note: MIRAGEGRID_PUBLIC_NOTE,
+  },
 ]);
 
 export function sisterMeshCite() {
@@ -307,6 +338,10 @@ export function sisterMeshCite() {
         live_node: false,
       };
       if (row.aziel) out.aziel = row.aziel;
+      if (row.note) out.note = row.note;
+      if (row.mesh_only) out.mesh_only = true;
+      if (row.public_icann === false) out.public_icann = false;
+      if (row.live_backends === false) out.live_backends = false;
       return out;
     }),
   };
@@ -325,6 +360,9 @@ export const SEARCH_ASSOCIATION_ORDER = Object.freeze([
   "furnace",
   "unseal",
   "hedidntjump",
+  "whitestone",
+  "trades",
+  "miragegrid",
 ]);
 
 export function searchAssociationSites() {
@@ -339,22 +377,34 @@ export function searchAssociationSites() {
     };
     if (row.id === "softwares") out.catalog = CANON_ORIGIN + "/software";
     if (row.aziel) out.also = [row.aziel];
+    if (row.note) out.note = row.note;
+    if (row.mesh_only) out.mesh_only = true;
+    if (row.public_icann === false) out.public_icann = false;
+    if (row.live_backends === false) out.live_backends = false;
     return out;
   });
 }
 
 export const ECOSYSTEM_TITLE = "Part of the Aziel Eliab ecosystem";
+/** Ten live public sites, then the extra identity doors that are not those sites. */
+export const LIVE_PUBLIC_SITES = Object.freeze([
+  { id: "hub", label: "Aziel Eliab", href: CANON_ORIGIN + "/" },
+  { id: "corpus", label: "Aziel Corpus Library", href: LIBRARY + "/" },
+  { id: "godlock", label: "GodLock", href: GODLOCK + "/" },
+  { id: "hedidntjump", label: "He Didn't Jump", href: HEDIDNTJUMP + "/" },
+  { id: "furnace", label: FURNACE_NAME, href: FURNACE_HOME },
+  { id: "unseal", label: UNSEAL_NAME, href: UNSEAL },
+  { id: "whitestone", label: "Whitestone", href: WHITESTONE_LIVE },
+  { id: "runtime", label: RUNTIME_TITLE, href: RUNTIME + "/" },
+  { id: "trades", label: TRADES_RUNTIME_NAME, href: TRADES_RUNTIME + "/" },
+  { id: "miragegrid", label: "MirageGrid", href: MIRAGEGRID_LIVE },
+]);
 export const ECOSYSTEM_LINKS = [
-  { label: "Official site", href: CANON_ORIGIN + "/" },
-  { label: "Aziel Corpus Library", href: LIBRARY + "/" },
-  { label: "GodLock", href: GODLOCK + "/" },
-  { label: "He Didn't Jump", href: HEDIDNTJUMP + "/" },
+  ...LIVE_PUBLIC_SITES.map((row) => ({ label: row.label, href: row.href })),
   { label: "Softwares", href: CANON_ORIGIN + "/software" },
-  { label: FURNACE_NAME, href: FURNACE_HOME },
-  { label: UNSEAL_NAME, href: UNSEAL },
   { label: "GitHub AzielEliab", href: GITHUB },
-  { label: RUNTIME_TITLE, href: RUNTIME + "/" },
   { label: GLAMA_LABEL, href: GLAMA_RUNTIME },
+  { label: "Trades Runtime on Glama", href: GLAMA_TRADES },
   { label: X_LABEL, href: X_URL },
 ];
 
@@ -591,6 +641,10 @@ export const OFFICIAL_ECOSYSTEM = [
   { id: "furnace-aziel", label: "The Furnace Isn't Free · Aziel", url: FURNACE_AZIEL },
   { id: "unseal", label: UNSEAL_NAME, url: UNSEAL },
   { id: "runtime", label: "Aziel Runtime", url: RUNTIME + "/" },
+  { id: "whitestone", label: "Whitestone", url: WHITESTONE_LIVE },
+  { id: "trades", label: TRADES_RUNTIME_NAME, url: TRADES_RUNTIME + "/" },
+  { id: "trades-glama", label: "Trades Runtime on Glama", url: GLAMA_TRADES },
+  { id: "miragegrid", label: "MirageGrid", url: MIRAGEGRID_LIVE },
   { id: "github", label: "GitHub AzielEliab", url: GITHUB },
   { id: "glama", label: GLAMA_LABEL, url: GLAMA_RUNTIME },
   { id: "x", label: X_LABEL, url: X_URL },
@@ -639,8 +693,9 @@ export const ARK_DOWNLOAD = "https://ark-download-tracker.vibelock.workers.dev/d
 /** Whitestone is Worker-catalog Softwares (FragGate status none). Do not invent fraggate_call ops. */
 export const WHITESTONE_SLUG = "whitestone";
 export const WHITESTONE_NAME = "Whitestone";
+/** Counted zip host. Not the public door. Do not put this URL in sitemap or doors JSON-LD. */
 export const WHITESTONE_WORKER = "https://whitestone-download-tracker.vibelock.workers.dev/";
-export const WHITESTONE_WEB = "https://whitestone.vibelock.workers.dev/";
+export const WHITESTONE_WEB = WHITESTONE_LIVE;
 export const WHITESTONE_GITHUB = "https://github.com/AzielEliab/Whitestone";
 export const WHITESTONE_ONE_LINE = CATALOG_PURPOSE.whitestone.one_line;
 export const WHITESTONE_DESCRIPTION = CATALOG_PURPOSE.whitestone.description;
@@ -715,8 +770,7 @@ export const AZHUB_WORKER = "https://azhub-download-tracker.vibelock.workers.dev
 export const AZHUB_GITHUB = "https://github.com/AzielEliab/azhub";
 export const AZINTERFACE_WORKER = "https://azinterface-download-tracker.vibelock.workers.dev/";
 export const AZINTERFACE_GITHUB = "https://github.com/AzielEliab/azinterface";
-/** Cap-7 shuffle app Worker (LIVE). Download-tracker stays the counted Softwares plane. */
-export const MIRAGEGRID = "https://miragegrid.vibelock.workers.dev";
+/** Cap-7 shuffle app Worker (LIVE). Download-tracker stays the counted Softwares plane, not the public door. */
 export const MIRAGEGRID_HEALTH = MIRAGEGRID + "/v1/health";
 export const MIRAGEGRID_BRIDGE = MIRAGEGRID + "/bridge";
 export const MIRAGEGRID_SHUFFLE = MIRAGEGRID + "/v1/shuffle";
@@ -852,13 +906,13 @@ export const TAB_PAGES = [
     heading: "Doors",
     title: "Doors — Aziel Eliab",
     description:
-      "Public doors for Aziel Eliab: GitHub AzielEliab, Corpus, GodLock, He Didn't Jump, " +
+      "Public doors for Aziel Eliab: Aziel Eliab, Corpus, GodLock, He Didn't Jump, " +
       FURNACE_NAME +
       ", " +
       UNSEAL_NAME +
-      ", Runtime, " +
+      ", Whitestone, Aziel Runtime, " +
       TRADES_RUNTIME_NAME +
-      ", X @AzielEliab, " +
+      ", MirageGrid, X @AzielEliab, " +
       UNSEAL_HANDLE +
       ".",
   },
@@ -1160,7 +1214,8 @@ export function catalogWorkerHome(slug, product) {
   if (slug === "aziel-corpus") return LIBRARY + "/";
   if (slug === "azmail") return AZMAIL_WORKER;
   if (slug === "peacelock") return PEACELOCK_WORKER;
-  if (slug === "whitestone") return WHITESTONE_WORKER;
+  if (slug === "whitestone") return WHITESTONE_LIVE;
+  if (slug === "miragegrid") return MIRAGEGRID_LIVE;
   if (isInRuntimePlacement(product, slug)) return runtimeTaskHome(slug);
   if (CATALOG_RUNTIME_HOME[slug]) return CATALOG_RUNTIME_HOME[slug];
   return "https://" + slug + "-download-tracker.vibelock.workers.dev/";
@@ -1171,6 +1226,58 @@ export function catalogHref(slug, product) {
   if (slug === "aziel-corpus") return LIBRARY + "/";
   if (CATALOG_GITHUB_FALLBACK.has(slug)) return catalogGithub(slug);
   return catalogWorkerHome(slug, product);
+}
+
+const DOWNLOAD_TRACKER_HOST = /-download-tracker\.vibelock\.workers\.dev/i;
+const PRIVATE_DOOR_SLUGS = new Set(["lumen", "ark-private"]);
+
+/** Counted download hosts. Crawlers must not be sent here. */
+export function isDownloadTrackerUrl(url) {
+  return DOWNLOAD_TRACKER_HOST.test(String(url || ""));
+}
+
+/** Private repos stay off public doors. */
+export function isPrivateDoorSlug(slug) {
+  return PRIVATE_DOOR_SLUGS.has(String(slug || "").trim().toLowerCase());
+}
+
+export function isPrivateDoorUrl(url) {
+  return /(?:^|\/)(?:lumen|ark-private)(?:\/|$)|github\.com\/[^/\s]+\/(?:lumen|ark-private)(?:\/|$)/i.test(
+    String(url || ""),
+  );
+}
+
+/** Drop crawl-trap URLs from machine prose. */
+export function stripCrawlTraps(text) {
+  return String(text || "")
+    .replace(/https?:\/\/[^\s)]*download-tracker\.vibelock\.workers\.dev[^\s)]*/gi, "")
+    .replace(/https?:\/\/thefurnaceisntfree\.com[^\s)]*/gi, "")
+    .replace(/https?:\/\/[^\s)]*\/(?:lumen|ark-private)(?:\/|[^\s)]*)/gi, "")
+    .replace(/\s{2,}/g, " ")
+    .replace(/\s+·\s*(?:·\s*)+/g, " · ")
+    .replace(/(?:^|\s)·\s*$/g, "")
+    .trim();
+}
+
+/**
+ * Public JSON-LD url for a Softwares row.
+ * Whitestone and MirageGrid use the live Workers. Download-tracker URLs are never returned.
+ * lumen and ark-private return empty. The ARK cites its public GitHub, not the tracker.
+ */
+export function jsonLdSoftwareUrl(item) {
+  const slug = String((item && item.slug) || "").trim().toLowerCase();
+  if (isPrivateDoorSlug(slug)) return "";
+  if (slug === "whitestone") return WHITESTONE_LIVE;
+  if (slug === "miragegrid") return MIRAGEGRID_LIVE;
+  const href = String((item && (item.href || item.url)) || "");
+  if (isPrivateDoorUrl(href)) return "";
+  if (!isDownloadTrackerUrl(href)) return href;
+  const github = item && typeof item.github === "string" ? item.github : "";
+  if (github && !isDownloadTrackerUrl(github) && !isPrivateDoorUrl(github)) return github;
+  if (slug === "ark") return "https://github.com/AzielEliab/ark";
+  const fallback = catalogGithub(slug);
+  if (fallback && !isDownloadTrackerUrl(fallback) && !isPrivateDoorUrl(fallback)) return fallback;
+  return "";
 }
 
 /** True for aziel-runtime, including catalog mash like "runtime 1.6.15 FragGate". */
@@ -1664,6 +1771,7 @@ export function humanTabRecord(tab) {
 }
 
 export const DOORS = [
+  { label: "Aziel Eliab", href: CANON_ORIGIN + "/" },
   { label: "GitHub", href: GITHUB },
   { label: "Secondary source", href: GITHUB_SECONDARY },
   { label: "Corpus", href: LIBRARY + "/" },
@@ -1672,12 +1780,24 @@ export const DOORS = [
   { label: "He Didn't Jump", href: HEDIDNTJUMP + "/" },
   { label: FURNACE_NAME, href: FURNACE_HOME, also: { label: "Aziel", href: FURNACE_AZIEL } },
   { label: UNSEAL_NAME, href: UNSEAL },
-  { label: "Runtime", href: RUNTIME_LOCAL, also: { label: GLAMA_LABEL, href: GLAMA_RUNTIME } },
+  { label: "Whitestone", href: WHITESTONE_LIVE, purpose: "Live pro se web app." },
+  {
+    label: "Runtime",
+    href: RUNTIME + "/",
+    also: { label: GLAMA_LABEL, href: GLAMA_RUNTIME },
+    cites: [{ label: "Hub door", href: RUNTIME_LOCAL }],
+  },
   {
     label: TRADES_RUNTIME_NAME,
     href: TRADES_RUNTIME + "/",
     purpose: TRADES_RUNTIME_ONE_LINE,
     also: { label: "MCP", href: TRADES_RUNTIME_MCP, labelOnly: true },
+    cites: [{ label: "Glama", href: GLAMA_TRADES, labelOnly: true }],
+  },
+  {
+    label: "MirageGrid",
+    href: MIRAGEGRID_LIVE,
+    purpose: MIRAGEGRID_PUBLIC_NOTE,
   },
   { label: X_LABEL, href: X_URL },
   {

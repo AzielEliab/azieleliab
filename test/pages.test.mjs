@@ -43,6 +43,7 @@ import {
   DOORS,
   ECOSYSTEM_LINKS,
   ECOSYSTEM_TITLE,
+  LIVE_PUBLIC_SITES,
   LIBRARY,
   LIBRARY_AZIEL,
   LIBRARY_SOFTWARE,
@@ -816,7 +817,7 @@ describe("doors", () => {
   });
 
   it("lists He Didn't Jump as a first-class door and ecosystem sister site", () => {
-    assert.equal(HEDIDNTJUMP, "https://www.hedidntjump.com");
+    assert.equal(HEDIDNTJUMP, "https://hedidntjump.com");
     const door = DOORS.find((d) => d.label === "He Didn't Jump");
     assert.ok(door);
     assert.equal(door.href, HEDIDNTJUMP + "/");
@@ -848,17 +849,18 @@ describe("doors", () => {
     assert.ok(aiTxt().includes("sameAs: " + PERSON_SAME_AS.join(" · ")));
     assert.ok(llmsTxt().includes("## Site coverage"));
     assert.ok(aiTxt().includes("## Site coverage"));
-    assert.ok(cite.site_coverage.length === 7);
-    assert.match(llmsTxt(), /## Doors[\s\S]*He Didn't Jump: https:\/\/www\.hedidntjump\.com\//);
-    assert.match(aiTxt(), /## Doors[\s\S]*He Didn't Jump: https:\/\/www\.hedidntjump\.com\//);
-    assert.ok(sitemapXml().includes("<loc>" + HEDIDNTJUMP + "/</loc>"));
-    assert.ok(sitemapXml().includes("<loc>https://github.com/AzielEliab/peacelock</loc>"));
+    assert.ok(cite.site_coverage.length === 10);
+    assert.match(llmsTxt(), /## Doors[\s\S]*He Didn't Jump: https:\/\/hedidntjump\.com\//);
+    assert.match(aiTxt(), /## Doors[\s\S]*He Didn't Jump: https:\/\/hedidntjump\.com\//);
+    assert.ok(!sitemapXml().includes("<loc>" + HEDIDNTJUMP + "/</loc>"));
+    assert.ok(!sitemapXml().includes("<loc>https://github.com/AzielEliab/peacelock</loc>"));
+    assert.ok(!sitemapXml().includes("download-tracker"));
   });
 
   it("lists Furnace and Time to Unseal as official doors, Aziel handles, and SEO links", () => {
-    const furnace = "https://www.furnaceisntfree.com/";
+    const furnace = "https://furnaceisntfree.com/";
     const furnaceAziel = "https://furnaceisntfree.com/aziel/";
-    const unseal = "https://www.timetounsealthebook.net";
+    const unseal = "https://timetounsealthebook.net/";
     const furnaceDoor = DOORS.find((d) => d.label === "The Furnace Isn't Free");
     const unsealDoor = DOORS.find((d) => d.label === "Time to Unseal the Book");
     assert.ok(furnaceDoor);
@@ -878,7 +880,7 @@ describe("doors", () => {
       "https://www.azieleliab.com/",
       "https://www.azielcorpuslibrary.net/",
       "https://godlock.uk/",
-      "https://www.hedidntjump.com/",
+      "https://hedidntjump.com/",
       "https://www.azieleliab.com/software",
       "https://aziel-runtime.vibelock.workers.dev/",
       furnace,
@@ -904,7 +906,7 @@ describe("doors", () => {
     assert.equal(cite.sister_mesh.cap7_public_icann, false);
     assert.equal(cite.sister_mesh.live_nodes, false);
     assert.equal(cite.sister_mesh.mesh_live, false);
-    assert.equal(cite.sister_mesh.sites.length, 7);
+    assert.equal(cite.sister_mesh.sites.length, 10);
     assert.ok(cite.sister_mesh.sites.every((row) => row.official === true && row.live_node === false));
     assert.ok(llmsTxt().includes(furnace));
     assert.ok(llmsTxt().includes(furnaceAziel));
@@ -916,9 +918,11 @@ describe("doors", () => {
     assert.ok(aiTxt().includes("Paid satellite: HELD"));
     assert.match(llmsTxt(), /Cap-7 public_icann: false/);
     const map = sitemapXml();
-    assert.ok(map.includes("<loc>" + furnace + "</loc>"));
-    assert.ok(map.includes("<loc>" + furnaceAziel + "</loc>"));
-    assert.ok(map.includes("<loc>" + unseal + "</loc>"));
+    assert.ok(!map.includes("<loc>" + furnace + "</loc>"));
+    assert.ok(!map.includes("<loc>" + furnaceAziel + "</loc>"));
+    assert.ok(!map.includes("<loc>" + unseal + "</loc>"));
+    assert.ok(!map.includes("thefurnaceisntfree.com"));
+    assert.ok(!map.includes("download-tracker"));
     assert.ok(PERSON_SAME_AS.includes(furnace));
     assert.ok(PERSON_SAME_AS.includes(unseal));
   });
@@ -929,12 +933,12 @@ describe("doors", () => {
     const runtime = labels.indexOf("Runtime");
     const trades = labels.indexOf(TRADES_RUNTIME_NAME);
     assert.equal(trades, runtime + 1);
-    assert.equal(labels[trades + 1], "X @AzielEliab");
+    assert.equal(labels[trades + 1], "MirageGrid");
     const door = DOORS[trades];
     assert.equal(door.href, TRADES_RUNTIME + "/");
     assert.equal(door.purpose, TRADES_RUNTIME_ONE_LINE);
     assert.equal(door.version, undefined);
-    assert.equal(door.cites, undefined);
+    assert.equal(door.cites[0].href, "https://glama.ai/mcp/servers/AzielEliab/trades-runtime");
     assert.equal(door.also.label, "MCP");
     assert.equal(door.also.href, TRADES_RUNTIME_MCP);
     assert.equal(door.also.labelOnly, true);
@@ -943,7 +947,7 @@ describe("doors", () => {
     assert.ok(card);
     const tradesLi = card[0].split("<li>").find((part) => part.includes(">Trades-Runtime<"));
     assert.ok(tradesLi);
-    assert.equal((tradesLi.match(/class="also"/g) || []).length, 1);
+    assert.equal((tradesLi.match(/class="also"/g) || []).length, 2);
     assert.match(tradesLi, /class="also">also <a [^>]*href="https:\/\/trades-runtime\.vibelock\.workers\.dev\/mcp"[^>]*>MCP<\/a><\/span>/);
     assert.ok(card[0].includes(">Trades-Runtime<"));
     assert.ok(card[0].includes('class="door-purpose"'));
@@ -965,17 +969,18 @@ describe("doors", () => {
   it("keeps /doors to one Runtime door and does not re-host the homepage Runtime panel", () => {
     const runtimeDoors = DOORS.filter((d) => d.label === "Runtime" || d.label === "Aziel Runtime");
     assert.equal(runtimeDoors.length, 1);
-    assert.equal(runtimeDoors[0].href, RUNTIME_LOCAL);
+    assert.equal(runtimeDoors[0].href, RUNTIME + "/");
     assert.equal(runtimeDoors[0].also.label, "Try on Glama");
     assert.equal(runtimeDoors[0].also.href, GLAMA_RUNTIME);
-    assert.notEqual(runtimeDoors[0].also.href, RUNTIME + "/");
+    assert.equal(runtimeDoors[0].cites[0].href, RUNTIME_LOCAL);
     const html = doorsHtml();
     const body = html.split("<body>")[1].split("</body>")[0];
     const card = body.match(/<section class="card lead" id="doors">[\s\S]*?<\/section>/)[0];
     assert.equal(card.split(">Runtime<").length - 1, 1);
     assert.ok(card.includes(">Try on Glama<"));
     assert.ok(card.includes(">" + GLAMA_RUNTIME + "<"));
-    assert.doesNotMatch(card, /aziel-runtime\.vibelock\.workers\.dev|id="runtime"|class="runtime-cta"|Official Runtime|Suite pack/);
+    assert.ok(card.includes('href="' + RUNTIME + '/"'));
+    assert.doesNotMatch(card, /id="runtime"|class="runtime-cta"|Official Runtime|Suite pack/);
     assert.doesNotMatch(body, /class="soft-name"|class="soft-list"|class="soft-line"|id="runtime"|class="runtime-cta"|Official Runtime|Suite pack/);
     assert.doesNotMatch(html, />Aziel Runtime on GitHub</);
     const footer = body.match(/<nav class="ecosystem"[\s\S]*?<\/nav>/);
@@ -985,6 +990,52 @@ describe("doors", () => {
     assert.ok(footer[0].includes(">Try on Glama<"));
     assert.doesNotMatch(footer[0], /Aziel Runtime on GitHub/);
     assert.equal((footer[0].match(/aziel-runtime\.vibelock\.workers\.dev/g) || []).length, 1);
+  });
+
+  it("cross-links the ten live public sites and keeps download-trackers out of the sitemap and doors JSON-LD", () => {
+    const html = doorsHtml();
+    const card = html.match(/<section class="card lead" id="doors">[\s\S]*?<\/section>/)[0];
+    const eco = html.match(/<nav class="ecosystem"[\s\S]*?<\/nav>/)[0];
+    const ld = jsonLd();
+    const blob = JSON.stringify(ld);
+    const doorPage = ld["@graph"].find((n) => n["@type"] === "WebPage" && n.url === CANON_ORIGIN + "/doors");
+    assert.deepEqual(doorPage.relatedLink, LIVE_PUBLIC_SITES.map((row) => row.href));
+    for (const site of LIVE_PUBLIC_SITES) {
+      assert.ok(card.includes('href="' + site.href + '"'), "doors " + site.label);
+      assert.ok(eco.includes('href="' + site.href + '"'), "ecosystem " + site.label);
+      assert.ok(llmsTxt().includes(site.href), "llms " + site.label);
+      assert.ok(aiTxt().includes(site.href), "ai " + site.label);
+      assert.ok(PERSON_SAME_AS.includes(site.href), "sameAs " + site.label);
+    }
+    const white = ld["@graph"].find((n) => n["@type"] === "SoftwareApplication" && n.name === "Whitestone");
+    const mira = ld["@graph"].find((n) => n["@type"] === "SoftwareApplication" && n.name === "MirageGrid");
+    assert.equal(white.url, "https://whitestone.vibelock.workers.dev/");
+    assert.equal(mira.url, "https://miragegrid.vibelock.workers.dev/");
+    assert.equal(mira.public_icann, undefined);
+    const miraSite = ld["@graph"].find((n) => n["@type"] === "WebSite" && n.name === "MirageGrid");
+    assert.equal(miraSite.public_icann, false);
+    assert.equal(miraSite.mesh_only, true);
+    assert.match(miraSite.description, /Not an ICANN registrar/);
+    assert.ok(!blob.includes("download-tracker"));
+    assert.ok(!blob.includes("ark-private"));
+    assert.ok(!blob.includes("thefurnaceisntfree.com"));
+    assert.doesNotMatch(blob, /github\.com\/[^/\s"]+\/lumen/);
+    assert.ok(!card.includes("ark-download-tracker"));
+    assert.ok(!card.includes("lumen"));
+    assert.ok(!card.includes("ark-private"));
+    assert.ok(!html.includes("pilot_started"));
+    const map = sitemapXml();
+    const locs = [...map.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
+    assert.ok(locs.length > 10);
+    assert.ok(locs.every((loc) => loc.startsWith("https://www.azieleliab.com/")));
+    assert.ok(!map.includes("download-tracker"));
+    assert.ok(!map.includes("thefurnaceisntfree.com"));
+    const robots = robotsTxt();
+    assert.match(robots, /Content-Signal: search=yes, ai-input=yes, ai-train=yes/);
+    assert.match(robots, /User-agent: GPTBot\nAllow: \//);
+    assert.doesNotMatch(robots, /Disallow:/);
+    assert.equal(PERSON_ID, "https://www.azieleliab.com/#aziel");
+    assert.doesNotMatch((html.split("<body>")[1] || "").replace(/<script[\s\S]*?<\/script>/g, ""), /1 Chronicles 15:20/);
   });
 });
 
@@ -1322,10 +1373,12 @@ describe("SEO routes", () => {
     assert.deepEqual(citeBody, citeDoc());
     assert.ok(sitemapXml().includes(CANON_ORIGIN + "/"));
     assert.ok(sitemapXml().includes(RUNTIME_LOCAL));
-    assert.ok(mapBody.includes("<loc>" + GLAMA_RUNTIME + "</loc>"));
-    assert.ok(mapBody.includes("<loc>https://x.com/AzielEliab</loc>"));
-    assert.ok(mapBody.includes("<loc>https://github.com/AzielEliab</loc>"));
-    assert.ok(mapBody.includes("<loc>https://godlock.uk/</loc>"));
+    assert.ok(!mapBody.includes("<loc>" + GLAMA_RUNTIME + "</loc>"));
+    assert.ok(!mapBody.includes("<loc>https://x.com/AzielEliab</loc>"));
+    assert.ok(!mapBody.includes("<loc>https://github.com/AzielEliab</loc>"));
+    assert.ok(!mapBody.includes("<loc>https://godlock.uk/</loc>"));
+    assert.ok(!mapBody.includes("download-tracker"));
+    assert.ok(!mapBody.includes("thefurnaceisntfree.com"));
     assert.ok(llmsBody.includes("## Official Aziel ecosystem"));
     assert.ok(llmsBody.includes("## Why"));
     assert.ok(llmsBody.includes("Try on Glama — " + GLAMA_RUNTIME));
@@ -1511,13 +1564,18 @@ describe("public entity graph phases B–D + E audit", () => {
       "https://github.com/AzielEliab",
       "https://github.com/azieltherevealerofthesealed-arch",
       "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime",
+      "https://glama.ai/mcp/servers/AzielEliab/trades-runtime",
       "https://www.azieleliab.com/runtime/",
       "https://www.azieleliab.com/",
       "https://www.azielcorpuslibrary.net/",
       "https://godlock.uk/",
-      "https://www.hedidntjump.com/",
-      "https://www.furnaceisntfree.com/",
-      "https://www.timetounsealthebook.net",
+      "https://hedidntjump.com/",
+      "https://furnaceisntfree.com/",
+      "https://timetounsealthebook.net/",
+      "https://whitestone.vibelock.workers.dev/",
+      "https://aziel-runtime.vibelock.workers.dev/",
+      "https://trades-runtime.vibelock.workers.dev/",
+      "https://miragegrid.vibelock.workers.dev/",
       "https://x.com/AzielEliab",
     ]);
     assert.equal(GLAMA_RUNTIME, "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime");
@@ -1542,7 +1600,11 @@ describe("public entity graph phases B–D + E audit", () => {
     assert.deepEqual(person.sameAs, PERSON_SAME_AS);
     assert.ok(!person.sameAs.includes(GITHUB_RUNTIME));
     assert.ok(person.sameAs.includes(CANON_ORIGIN + "/runtime/"));
-    assert.ok(!person.sameAs.includes(RUNTIME + "/"));
+    assert.ok(person.sameAs.includes(RUNTIME + "/"));
+    assert.ok(person.sameAs.includes("https://whitestone.vibelock.workers.dev/"));
+    assert.ok(person.sameAs.includes("https://trades-runtime.vibelock.workers.dev/"));
+    assert.ok(person.sameAs.includes("https://miragegrid.vibelock.workers.dev/"));
+    assert.ok(person.sameAs.includes("https://glama.ai/mcp/servers/AzielEliab/trades-runtime"));
     assert.ok(!person.sameAs.includes(LIBRARY_AZIEL));
     assert.ok(!person.sameAs.includes(GODLOCK_AZIEL));
     assert.equal(ld["@graph"].filter((n) => n["@type"] === "Person").length, 1);
@@ -1602,16 +1664,20 @@ describe("public entity graph phases B–D + E audit", () => {
     assert.deepEqual(
       ECOSYSTEM_LINKS.map((d) => [d.label, d.href, Boolean(d.secondary)]),
       [
-        ["Official site", "https://www.azieleliab.com/", false],
+        ["Aziel Eliab", "https://www.azieleliab.com/", false],
         ["Aziel Corpus Library", "https://www.azielcorpuslibrary.net/", false],
         ["GodLock", "https://godlock.uk/", false],
-        ["He Didn't Jump", "https://www.hedidntjump.com/", false],
-        ["Softwares", "https://www.azieleliab.com/software", false],
-        ["The Furnace Isn't Free", "https://www.furnaceisntfree.com/", false],
-        ["Time to Unseal the Book", "https://www.timetounsealthebook.net", false],
-        ["GitHub AzielEliab", "https://github.com/AzielEliab", false],
+        ["He Didn't Jump", "https://hedidntjump.com/", false],
+        ["The Furnace Isn't Free", "https://furnaceisntfree.com/", false],
+        ["Time to Unseal the Book", "https://timetounsealthebook.net/", false],
+        ["Whitestone", "https://whitestone.vibelock.workers.dev/", false],
         ["Aziel Runtime", "https://aziel-runtime.vibelock.workers.dev/", false],
+        ["Trades-Runtime", "https://trades-runtime.vibelock.workers.dev/", false],
+        ["MirageGrid", "https://miragegrid.vibelock.workers.dev/", false],
+        ["Softwares", "https://www.azieleliab.com/software", false],
+        ["GitHub AzielEliab", "https://github.com/AzielEliab", false],
         ["Try on Glama", "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime", false],
+        ["Trades Runtime on Glama", "https://glama.ai/mcp/servers/AzielEliab/trades-runtime", false],
         ["X @AzielEliab", "https://x.com/AzielEliab", false],
       ],
     );
@@ -1717,8 +1783,9 @@ describe("public entity graph phases B–D + E audit", () => {
     assert.match(ai, /Paid satellite stays HELD/);
     assert.match(robotsTxt(), /User-agent: GPTBot\nAllow: \//);
     assert.doesNotMatch(robotsTxt(), /Disallow:/);
-    assert.ok(sitemapXml().includes("<loc>https://timetounsealthebook.net/aziel</loc>"));
-    assert.ok(sitemapXml().includes("<loc>https://timetounsealthebook.net/</loc>"));
+    assert.ok(!sitemapXml().includes("<loc>https://timetounsealthebook.net/aziel</loc>"));
+    assert.ok(!sitemapXml().includes("<loc>https://timetounsealthebook.net/</loc>"));
+    assert.ok(!sitemapXml().includes("download-tracker"));
   });
 
   it("keeps self-referencing www canonicals and never canonicalizes to another domain", () => {

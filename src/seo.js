@@ -50,6 +50,7 @@ import {
   RUNTIME_DOORS,
   GLAMA_LABEL,
   GLAMA_RUNTIME,
+  GLAMA_TRADES,
   officialEcosystemCite,
   officialEcosystemLines,
   OFFICIAL_ECOSYSTEM,
@@ -136,6 +137,15 @@ import {
   X_HANDLE,
   X_LABEL,
   X_URL,
+  LIVE_PUBLIC_SITES,
+  WHITESTONE_LIVE,
+  MIRAGEGRID_LIVE,
+  MIRAGEGRID_PUBLIC_NOTE,
+  isDownloadTrackerUrl,
+  isPrivateDoorSlug,
+  isPrivateDoorUrl,
+  jsonLdSoftwareUrl,
+  stripCrawlTraps,
 } from "./copy.js";
 import { outletLlmsLines, sotOutletCite } from "./sotOutlet.js";
 import {
@@ -652,6 +662,15 @@ const SITEMAP_RANK = {
   [TRADES_RUNTIME_GITHUB]: { changefreq: "weekly", priority: "0.6" },
 };
 
+/** First-party sitemap locs only. Download-tracker hosts inflate counters when crawled. */
+export function isFirstPartySitemapLoc(loc) {
+  const url = String(loc || "");
+  if (!url.startsWith(CANON_ORIGIN + "/")) return false;
+  if (isDownloadTrackerUrl(url) || isPrivateDoorUrl(url)) return false;
+  if (/thefurnaceisntfree\.com/i.test(url)) return false;
+  return true;
+}
+
 export function sitemapXml(now = new Date(), software = SOFTWARE) {
   const lastmod = sitemapLastmod(now);
   const doors = software && software.length ? software : SOFTWARE;
@@ -755,7 +774,7 @@ export function sitemapXml(now = new Date(), software = SOFTWARE) {
   const seen = new Set();
   const unique = [];
   for (const loc of locs) {
-    if (!loc || seen.has(loc)) continue;
+    if (!isFirstPartySitemapLoc(loc) || seen.has(loc)) continue;
     seen.add(loc);
     unique.push(loc);
   }
@@ -1170,6 +1189,9 @@ function officialEcosystemLlmsBlock() {
     "- Runtime CTA: " + GLAMA_LABEL + " " + GLAMA_RUNTIME,
     "- " + X_LABEL + ": " + X_URL,
     "- Donate is " + DONATE_HREF + " (not a Doors row).",
+    "- Whitestone live pro se web app: " + WHITESTONE_LIVE,
+    "- MirageGrid: " + MIRAGEGRID_LIVE + " — " + MIRAGEGRID_PUBLIC_NOTE,
+    "- Trades Runtime on Glama: " + GLAMA_TRADES + " (live_backends false)",
     "",
   ].join("\n");
 }
@@ -1689,7 +1711,10 @@ export function softwareNodeId(item) {
 }
 
 export function jsonLd(software = SOFTWARE, runtimeVersion = RUNTIME_VERSION, sot = null) {
-  const doorsSoftware = software && software.length ? software : SOFTWARE;
+  const doorsSoftware = (software && software.length ? software : SOFTWARE).filter(
+    (item) => !isPrivateDoorSlug(item && item.slug),
+  );
+  const publicSoftware = doorsSoftware;
   const pin = sot && sot.git_sha ? sot : null;
   const tip = runtimeTip(pin);
   const version = pin && pin.version ? pin.version : resolveRuntimeVersion(runtimeVersion);
@@ -1724,8 +1749,8 @@ export function jsonLd(software = SOFTWARE, runtimeVersion = RUNTIME_VERSION, so
       if (help.length) node.hasPart = help.map((row) => ({ "@id": runtimeToolId(row.slug) }));
     }
     if (tool.slug === SPECTRALLOCK_SLUG) {
-      node.description = SPECTRALLOCK_ONE_LINE + " " + SPECTRALLOCK_DESCRIPTION;
-      node.url = SPECTRALLOCK_WORKER;
+      node.description = stripCrawlTraps(SPECTRALLOCK_ONE_LINE + " " + SPECTRALLOCK_DESCRIPTION);
+      node.url = "https://github.com/AzielEliab/spectrallock";
     }
     return node;
   });
@@ -1821,14 +1846,18 @@ export function jsonLd(software = SOFTWARE, runtimeVersion = RUNTIME_VERSION, so
         "@id": softwareId,
         name: "Software",
         url: SOFTWARE_HREF,
-        numberOfItems: doorsSoftware.length,
-        itemListElement: doorsSoftware.map((item, i) => ({
-          "@type": "ListItem",
-          position: i + 1,
-          name: item.name,
-          url: item.href,
-          item: { "@id": softwareNodeId(item) },
-        })),
+        numberOfItems: publicSoftware.length,
+        itemListElement: publicSoftware.map((item, i) => {
+          const row = {
+            "@type": "ListItem",
+            position: i + 1,
+            name: item.name,
+            item: { "@id": softwareNodeId(item) },
+          };
+          const url = jsonLdSoftwareUrl(item);
+          if (url) row.url = url;
+          return row;
+        }),
       },
       {
         "@type": "WebPage",
@@ -1866,22 +1895,23 @@ export function jsonLd(software = SOFTWARE, runtimeVersion = RUNTIME_VERSION, so
           CANON_ORIGIN + "/v1/software",
           RUNTIME + "/v1/software",
           RUNTIME_LOCAL + "/v1/fraggate/list",
-          FRAGGATE,
+          FRAGGATE_GITHUB,
           TRADES_RUNTIME + "/",
           TRADES_RUNTIME_GITHUB,
         ],
       },
-      ...doorsSoftware.map((item) => {
+      ...publicSoftware.map((item) => {
         const node = {
           "@type": "SoftwareApplication",
           "@id": softwareNodeId(item),
           name: item.name,
-          url: item.href,
           applicationCategory: "DeveloperApplication",
           author: person,
           isPartOf: { "@id": softwareId },
         };
-        const desc = item.description || item.one_line;
+        const url = jsonLdSoftwareUrl(item);
+        if (url) node.url = url;
+        const desc = stripCrawlTraps(item.description || item.one_line || "");
         if (desc) node.description = desc;
         const ver = (item.slug && CATALOG_VERSIONS[item.slug]) || item.version;
         if (ver) node.softwareVersion = String(ver);

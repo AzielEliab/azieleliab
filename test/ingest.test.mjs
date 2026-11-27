@@ -41,7 +41,7 @@ import {
 import { GENESIS_PREVIOUS_HASH, hostReceipts, verifyChain } from "../src/receipts.js";
 
 const TIP =
-  "INGEST-AS-RECEIPT-1.0 sha256:c71e8c07d838b148fc8ec5f18c7e261d53566ea8a090ca81445e3483586082a5 https://www.azieleliab.com/";
+  "INGEST-AS-RECEIPT-1.0 sha256:507cdf4d7723467091cc05599247cc3de93e544b504ea9a84564274cdc434089 https://www.azieleliab.com/";
 
 function isolatedEnv(extra) {
   return {
@@ -220,7 +220,7 @@ describe("Growth-ON Allow and public doors", () => {
 
 describe("CROSS-NETWORK-SURVIVAL-1.0 and NO-LIE / NO-REWRITE chrome", () => {
   it("cites both laws on first-screen, cite, llms, and ai — outside hashed tip bytes", async () => {
-    assert.equal(pageBytesSha256(), "c71e8c07d838b148fc8ec5f18c7e261d53566ea8a090ca81445e3483586082a5");
+    assert.equal(pageBytesSha256(), "507cdf4d7723467091cc05599247cc3de93e544b504ea9a84564274cdc434089");
     assert.equal(tipString(), TIP);
     const bytes = canonicalPageBytes();
     assert.ok(!bytes.includes(SURVIVAL_SPEC));
