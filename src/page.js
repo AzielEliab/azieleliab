@@ -1091,7 +1091,9 @@ export function comicsHtml() {
     const line = film.line ? '<p class="reel-line">' + esc(film.line) + "</p>" : "";
     const x = film.x ? '<p class="reel-x">' + a(film.x, "X") + "</p>" : "";
     return (
-      '<li class="card">' +
+      '<li class="card" id="' +
+      attr(film.id) +
+      '">' +
       "<h2>" +
       esc(film.title) +
       "</h2>" +

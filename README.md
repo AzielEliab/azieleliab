@@ -101,6 +101,7 @@ Cloudflare Worker `azieleliab-com` serves the literary landing, crawl files, and
 | `/survival` · `/v1/survival` | BAN-SURVIVAL-1.0 machine pull of runtime `GET /survival` (short TTL). Mutual backup, live_doors, platforms all LIVE, calling-name `*new name alert:`, Cap-7 shuffle via MirageGrid, SPORE-1.0 last-resort failsafe, RE-COLD-STORE (allowed, destinations[], no invent). Cold shelves not marked failed. JSON only — no visible 15:20 chrome. |
 | `/cite.json` | Citation record (`cold_multi_shelf`, `REDLINE-2026-09-14`, Cap-7 `design_of` + `resolves_to_hub: false` + MirageGrid shuffle LIVE, BAN-SURVIVAL, SPORE-1.0, RE-COLD-STORE, attack-surface refuse, FoldLock tip-safe) |
 | `/sitemap.xml` | Canonical urlset |
+| `/rss.xml` | RSS 2.0 of the human pages and the six Comics films. `/feed.xml`, `/feed`, and `/rss` 301 here. No invented dates. |
 | `/runtime` · `/runtime/*` | Same-origin aziel-runtime / FragGate proxy (AI background) |
 | `GET /runtime/v1/uses` | This host's `/runtime` API use stats (local KV; not proxied) |
 | `GET /v1/stats` | Views, Nodes, and Live Nodes (no increment). `downloads` is null: this host has no download counter. A mesh peek timeout is null, not 0. |

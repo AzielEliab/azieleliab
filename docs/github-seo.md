@@ -2,7 +2,7 @@
 
 GitHub-side SEO / indexing / AI pickup for [AzielEliab/azieleliab](https://github.com/AzielEliab/azieleliab). This file is the **About box spec**. It does **not** change live azieleliab.com Worker UI. No wrangler deploy.
 
-Live crawl surfaces (`/robots.txt`, `/llms.txt`, `/ai.txt`, `/cite.json`, `/shelves`, `/v1/shelves`, `/sitemap.xml`, JSON-LD) stay on the Worker. This repo’s README, CITATION.cff, and GitHub description / homepage / topics are what Google and AI crawlers see on GitHub. Canonical shelves registry remains https://www.azielcorpuslibrary.net/shelves.
+Live crawl surfaces (`/robots.txt`, `/llms.txt`, `/ai.txt`, `/cite.json`, `/shelves`, `/v1/shelves`, `/sitemap.xml`, `/rss.xml`, JSON-LD) stay on the Worker. This repo’s README, CITATION.cff, and GitHub description / homepage / topics are what Google and AI crawlers see on GitHub. Canonical shelves registry remains https://www.azielcorpuslibrary.net/shelves.
 
 Same published tip as Receipts-tab first-screen HTML (`/receipts`) / `/ingest` / `/cite.json` / `/llms.txt`:
 
@@ -53,11 +53,11 @@ Each human tab is already its own path. The film at `/` links Enter to `/aziel` 
 | `/about` · `/AzielEliab` · `/aziel-eliab` | Same hub HTML as `/aziel` |
 | `/ingest` · `/verify` · `/embryolock` | Human pages that are not spine tabs |
 
-Cap-7 `public_icann: false`. design_of only. `resolves_to_hub: false`. Cap-7 is not an ICANN registration and is not a public egress address. Paid satellite stays HELD. The sister doors are official https links and are not Live Nodes. Mesh live stays off until Dual + Aziel merge + Cos. decryption_complete stays false. Agent OK is not Aziel merge OK. Growth-ON Allow. Softwares MCP and agent MCP stay on (`POST /runtime/mcp`, `fraggate_call`). `/.well-known/ai.txt` serves the same bytes as `/ai.txt`. The shared footer (ecosystem mark, cite / llms / ai / sitemap, pretty paths) is on every HTML page, including the film. TimeToUnsealTheBook is a handle on `/aziel` and is not LIVE on this hub until Dual CLEAR + Aziel merge OK + Cos.
+Cap-7 `public_icann: false`. design_of only. `resolves_to_hub: false`. Cap-7 is not an ICANN registration and is not a public egress address. Paid satellite stays HELD. The sister doors are official https links and are not Live Nodes. Mesh live stays off until Dual + Aziel merge + Cos. decryption_complete stays false. Agent OK is not Aziel merge OK. Growth-ON Allow. Softwares MCP and agent MCP stay on (`POST /runtime/mcp`, `fraggate_call`). `/.well-known/ai.txt` serves the same bytes as `/ai.txt`. The shared footer (ecosystem mark, cite / llms / ai / sitemap, pretty paths) is on every HTML page, including the film. `/rss.xml` is head and machine discovery only, not footer chrome. TimeToUnsealTheBook is a handle on `/aziel` and is not LIVE on this hub until Dual CLEAR + Aziel merge OK + Cos.
 
 Machine who-is: https://www.azieleliab.com/who-is
 
-Hub crawl routes (`/person.jsonld` · `/cite.json` · `/llms.txt` · `/ai.txt` · `/sitemap.xml` · `/who-is` · `/survival`) plus Runtime `/openapi.json` and `POST /mcp`. Pack copy: [github-profile-readme/](github-profile-readme/).
+Hub crawl routes (`/person.jsonld` · `/cite.json` · `/llms.txt` · `/ai.txt` · `/sitemap.xml` · `/rss.xml` · `/who-is` · `/survival`) plus Runtime `/openapi.json` and `POST /mcp`. Pack copy: [github-profile-readme/](github-profile-readme/).
 
 GitHub **cannot** create special repo `AzielEliab/AzielEliab` — the name case-collides with this Worker. Keep the pack as the GitHub-side index, or copy `github-profile-readme/README.md` to another public surface. Do not rename this repo.
 

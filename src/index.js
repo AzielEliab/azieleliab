@@ -81,6 +81,7 @@ import {
   sitemapXml,
 } from "./seo.js";
 import { helpBody, isHelpPath } from "./help.js";
+import { isRssAliasPath, RSS_HREF, RSS_PATH, rssXml } from "./rss.js";
 import { worksDoc } from "./works.js";
 import { handleSotOutlet, isSotOutletPath, loadSurfacePin } from "./sotOutlet.js";
 import {
@@ -135,6 +136,7 @@ function html(body, status = 200, cache) {
       "content-type": "text/html; charset=utf-8",
       "cache-control": status === 200 ? cache || HTML_CACHE : "public, max-age=60",
       "Content-Signal": CONTENT_SIGNAL,
+      link: "<" + RSS_HREF + '>; rel="alternate"; type="application/rss+xml"',
       ...SECURITY,
     },
   });
@@ -288,17 +290,23 @@ function inboundHttp(request, url) {
   }
 }
 
+/** A trailing dot is the same DNS name. azieleliab.com. is the apex. */
+function bareHost(hostname) {
+  return String(hostname || "").toLowerCase().replace(/\.+$/, "");
+}
+
 /** HTTPS for this host when the client (or the edge) still used HTTP. */
 export function httpsRedirect(url, request) {
-  const host = String(url.hostname || "").toLowerCase();
+  const host = bareHost(url.hostname);
   if (host !== WWW_HOST && host !== APEX_HOST) return "";
   if (!inboundHttp(request, url)) return "";
   return CANON_ORIGIN + url.pathname + url.search;
 }
 
 export function apexRedirect(url) {
-  const host = String(url.hostname || "").toLowerCase();
-  if (host === APEX_HOST) {
+  const raw = String(url.hostname || "").toLowerCase();
+  const host = bareHost(raw);
+  if (host === APEX_HOST || (host === WWW_HOST && raw.endsWith("."))) {
     return CANON_ORIGIN + url.pathname + url.search;
   }
   return "";
@@ -388,6 +396,17 @@ export async function handleRequest(request, env = {}, ctx) {
     return new Response("Method Not Allowed", {
       status: 405,
       headers: { allow: allowWrite ? "GET, HEAD, POST, OPTIONS" : "GET, HEAD", ...SECURITY },
+    });
+  }
+
+  if (isRssAliasPath(path)) {
+    return new Response(null, {
+      status: 301,
+      headers: {
+        Location: RSS_HREF,
+        "Content-Signal": CONTENT_SIGNAL,
+        ...SECURITY,
+      },
     });
   }
 
@@ -575,6 +594,8 @@ export async function handleRequest(request, env = {}, ctx) {
     res = text(JSON.stringify(citeDoc(doors, live && live.version, survival, surfaceSot), null, 1) + "\n", "application/json", { cache: SEO_CACHE });
   } else if (path === "/sitemap.xml") {
     res = text(sitemapXml(new Date(), doors), "application/xml", { cache: SEO_CACHE });
+  } else if (path === RSS_PATH) {
+    res = text(rssXml(), "application/rss+xml", { cache: SEO_CACHE });
   } else if (path === "/v1/software") {
     res = json(softwareIndexBody(live, mesh), CATALOG_HTTP_CACHE);
   } else if (path === MESH_PATH) {
