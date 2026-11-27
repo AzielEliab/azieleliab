@@ -61,6 +61,15 @@ function itemXml(item) {
     .join("\n");
 }
 
+/** A trailing dot is the same host. Apex becomes the www origin. */
+export function normalizeFeedHosts(xml) {
+  return String(xml).replace(/azieleliab\.com\.+/gi, (match, offset, str) => {
+    const before = str.slice(Math.max(0, offset - 4), offset);
+    if (before.toLowerCase().endsWith("www.")) return "azieleliab.com";
+    return "www.azieleliab.com";
+  });
+}
+
 /** Comics newest first (the page lists them oldest first), then the standing pages. */
 export function rssItems() {
   const films = COMICS.slice()
@@ -81,29 +90,30 @@ export function rssItems() {
   return films.concat(pages);
 }
 
-export function rssXml(now = new Date()) {
-  const built = now instanceof Date ? now : new Date(now);
+/** Stable bytes. No lastBuildDate: this site has no content clock to derive one from. */
+export function rssXml() {
   const items = rssItems();
-  return [
-    '<?xml version="1.0" encoding="UTF-8"?>',
-    '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">',
-    "  <channel>",
-    "    <title>" + xmlText(SITE) + "</title>",
-    "    <link>" + xmlText(CANON_ORIGIN + "/") + "</link>",
-    '    <atom:link href="' + xmlAttr(RSS_HREF) + '" rel="self" type="application/rss+xml"/>',
-    "    <description>" + xmlText(DESCRIPTION) + "</description>",
-    "    <language>en</language>",
-    "    <copyright>" + xmlText(LICENSE + ". " + AUTHOR + ".") + "</copyright>",
-    "    <lastBuildDate>" + xmlText(built.toUTCString()) + "</lastBuildDate>",
-    "    <generator>azieleliab-com</generator>",
-    "    <image>",
-    "      <url>" + xmlText(SIGIL) + "</url>",
-    "      <title>" + xmlText(SITE) + "</title>",
-    "      <link>" + xmlText(CANON_ORIGIN + "/") + "</link>",
-    "    </image>",
-    items.map(itemXml).join("\n"),
-    "  </channel>",
-    "</rss>",
-    "",
-  ].join("\n");
+  return normalizeFeedHosts(
+    [
+      '<?xml version="1.0" encoding="UTF-8"?>',
+      '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">',
+      "  <channel>",
+      "    <title>" + xmlText(SITE) + "</title>",
+      "    <link>" + xmlText(CANON_ORIGIN + "/") + "</link>",
+      '    <atom:link href="' + xmlAttr(RSS_HREF) + '" rel="self" type="application/rss+xml"/>',
+      "    <description>" + xmlText(DESCRIPTION) + "</description>",
+      "    <language>en</language>",
+      "    <copyright>" + xmlText(LICENSE + ". " + AUTHOR + ".") + "</copyright>",
+      "    <generator>azieleliab-com</generator>",
+      "    <image>",
+      "      <url>" + xmlText(SIGIL) + "</url>",
+      "      <title>" + xmlText(SITE) + "</title>",
+      "      <link>" + xmlText(CANON_ORIGIN + "/") + "</link>",
+      "    </image>",
+      items.map(itemXml).join("\n"),
+      "  </channel>",
+      "</rss>",
+      "",
+    ].join("\n"),
+  );
 }

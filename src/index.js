@@ -290,17 +290,23 @@ function inboundHttp(request, url) {
   }
 }
 
+/** A trailing dot is the same DNS name. azieleliab.com. is the apex. */
+function bareHost(hostname) {
+  return String(hostname || "").toLowerCase().replace(/\.+$/, "");
+}
+
 /** HTTPS for this host when the client (or the edge) still used HTTP. */
 export function httpsRedirect(url, request) {
-  const host = String(url.hostname || "").toLowerCase();
+  const host = bareHost(url.hostname);
   if (host !== WWW_HOST && host !== APEX_HOST) return "";
   if (!inboundHttp(request, url)) return "";
   return CANON_ORIGIN + url.pathname + url.search;
 }
 
 export function apexRedirect(url) {
-  const host = String(url.hostname || "").toLowerCase();
-  if (host === APEX_HOST) {
+  const raw = String(url.hostname || "").toLowerCase();
+  const host = bareHost(raw);
+  if (host === APEX_HOST || (host === WWW_HOST && raw.endsWith("."))) {
     return CANON_ORIGIN + url.pathname + url.search;
   }
   return "";
@@ -589,7 +595,7 @@ export async function handleRequest(request, env = {}, ctx) {
   } else if (path === "/sitemap.xml") {
     res = text(sitemapXml(new Date(), doors), "application/xml", { cache: SEO_CACHE });
   } else if (path === RSS_PATH) {
-    res = text(rssXml(new Date()), "application/rss+xml", { cache: SEO_CACHE });
+    res = text(rssXml(), "application/rss+xml", { cache: SEO_CACHE });
   } else if (path === "/v1/software") {
     res = json(softwareIndexBody(live, mesh), CATALOG_HTTP_CACHE);
   } else if (path === MESH_PATH) {

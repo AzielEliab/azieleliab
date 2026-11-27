@@ -4,7 +4,7 @@ import worker from "../src/index.js";
 import { comicsHtml, pageHtml, siteFooterHtml, whoHtml } from "../src/page.js";
 import { filmTheaterHtml } from "../src/film.js";
 import { aiTxt, citeDoc, llmsTxt, robotsTxt, sitemapXml } from "../src/seo.js";
-import { rssItems, rssXml, RSS_HREF, RSS_PATH } from "../src/rss.js";
+import { normalizeFeedHosts, rssItems, rssXml, RSS_HREF, RSS_PATH } from "../src/rss.js";
 import {
   AUTHOR,
   CANON_ORIGIN,
@@ -42,7 +42,8 @@ describe("RSS feed", () => {
       [...HUMAN_TABS, ...HUMAN_PAGES].map((tab) => humanTabUrl(tab)),
     );
     assert.equal(items.find((row) => row.title === "Donate").link, DONATE_HREF);
-    const xml = rssXml(new Date("2026-11-27T05:46:12.000Z"));
+    const xml = rssXml();
+    assert.equal(xml, rssXml());
     assert.match(xml, /^<\?xml version="1\.0" encoding="UTF-8"\?>/);
     assert.ok(xml.includes('<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">'));
     assert.ok(xml.includes("<title>" + AUTHOR + "</title>"));
@@ -53,7 +54,13 @@ describe("RSS feed", () => {
       ),
     );
     assert.ok(xml.includes("<description>" + DESCRIPTION.replace(/&/g, "&amp;") + "</description>"));
-    assert.ok(xml.includes("<lastBuildDate>Fri, 27 Nov 2026 05:46:12 GMT</lastBuildDate>"));
+    assert.equal(xml.includes("<lastBuildDate>"), false);
+    assert.equal(xml.includes("<pubDate>"), false);
+    assert.equal(xml.includes("azieleliab.com."), false);
+    assert.equal(
+      normalizeFeedHosts("See https://azieleliab.com./rss.xml and https://www.azieleliab.com./feed"),
+      "See https://www.azieleliab.com/rss.xml and https://www.azieleliab.com/feed",
+    );
     assert.ok(xml.includes("<language>en</language>"));
     assert.equal(itemBlocks(xml).length, items.length);
     assert.doesNotMatch(xml, /<item>[\s\S]*?<pubDate>/);
@@ -76,7 +83,9 @@ describe("RSS feed", () => {
     assert.equal(res.status, 200);
     assert.match(res.headers.get("content-type"), /application\/rss\+xml/);
     const body = await res.text();
-    assert.equal(body, rssXml(new Date(body.match(/<lastBuildDate>([^<]+)<\/lastBuildDate>/)[1])));
+    const again = await fetchPath(RSS_PATH);
+    assert.equal(await again.text(), body);
+    assert.equal(body, rssXml());
     assert.ok(body.includes(RSS_HREF));
 
     for (const path of ["/feed.xml", "/feed", "/rss", "/rss.xml/"]) {
@@ -93,6 +102,15 @@ describe("RSS feed", () => {
     const apex = await fetchPath("/rss.xml", "azieleliab.com");
     assert.equal(apex.status, 301);
     assert.equal(apex.headers.get("location"), RSS_HREF);
+    const dotted = await fetchPath("/rss.xml", "azieleliab.com.");
+    assert.equal(dotted.status, 301);
+    assert.equal(dotted.headers.get("location"), RSS_HREF);
+    const dottedFeed = await fetchPath("/feed", "azieleliab.com.");
+    assert.equal(dottedFeed.status, 301);
+    assert.equal(dottedFeed.headers.get("location"), CANON_ORIGIN + "/feed");
+    const dottedWww = await fetchPath("/rss.xml", "www.azieleliab.com.");
+    assert.equal(dottedWww.status, 301);
+    assert.equal(dottedWww.headers.get("location"), RSS_HREF);
   });
 
   it("is listed for crawlers and linked from HTML", () => {
